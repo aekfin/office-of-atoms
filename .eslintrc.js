@@ -31,6 +31,7 @@ module.exports = {
     'eol-last': 'off',
     'no-mixed-operators': 'off',
     'arrow-parens': 'off',
+    'comma-dangle': 'off',
 
     // Vue
     // Rules - https://vuejs.github.io/eslint-plugin-vue/rules/
