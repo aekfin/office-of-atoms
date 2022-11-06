@@ -1,12 +1,28 @@
 <template>
-  <VApp>
+  <VApp id="default-layout">
     <VNavigationDrawer v-model="drawer" clipped fixed app>
       <VList>
-        <VListItem v-for="(menu, i) in leftMenus" :key="i" :to="menu.hasChild ? '' : menu.to" router exact>
-          <VListItemContent :class="menu.parent ? 'ml-7' : ''">
-            <VListItemTitle>{{ menu.title }}</VListItemTitle>
-          </VListItemContent>
-        </VListItem>
+        <div v-for="(menu, i) in leftMenus" :key="i">
+          <VListItem v-if="menu.children">
+            <VExpansionPanels tile flat :value.sync="menu.expand">
+              <VExpansionPanel>
+                <VExpansionPanelHeader>{{ menu.title }}</VExpansionPanelHeader>
+                <VExpansionPanelContent>
+                  <VListItem v-for="child in menu.children" :key="child.title" :to=" child.to" router exact>
+                    <VListItemContent>
+                      <VListItemTitle>{{ child.title }}</VListItemTitle>
+                    </VListItemContent>
+                  </VListItem>
+                </VExpansionPanelContent>
+              </VExpansionPanel>
+            </VExpansionPanels>
+          </VListItem>
+          <VListItem v-else :to=" menu.to" router exact>
+            <VListItemContent>
+              <VListItemTitle>{{ menu.title }}</VListItemTitle>
+            </VListItemContent>
+          </VListItem>
+        </div>
       </VList>
     </VNavigationDrawer>
     <VAppBar clippedLeft fixed app>
@@ -33,86 +49,65 @@ export default {
       drawer: true,
       leftMenus: [
         {
-          id: 1,
           title: 'หนักหลัก',
           to: '/'
         },
         {
-          id: 2,
           title: 'โครงการ',
           to: '/project/'
         },
         {
-          id: 3,
           title: 'พัสดุ-ครุภัณฑ์',
           to: '/goods/',
-          hasChild: true
+          expand: 0,
+          children: [
+            {
+              title: 'บริหารพัสดุ-ครุภัณฑ์',
+              to: '/goods/'
+            },
+            {
+              title: 'เบิกพัสดุ',
+              to: '/goods/withdraw/'
+            },
+            {
+              title: 'ยืม-คืน ครุภัณฑ์',
+              to: '/goods/borrow/'
+            },
+            {
+              title: 'ตรวจนับ ครุภัณฑ์',
+              to: '/goods/count/'
+            }
+          ]
         },
         {
-          id: 4,
-          title: 'บริหารพัสดุ-ครุภัณฑ์',
-          to: '/goods/',
-          parent: 3
-        },
-        {
-          id: 5,
-          title: 'เบิกพัสดุ',
-          to: '/goods/withdraw/',
-          parent: 3
-        },
-        {
-          id: 6,
-          title: 'ยืม-คืน ครุภัณฑ์',
-          to: '/goods/borrow/',
-          parent: 3
-        },
-        {
-          id: 7,
-          title: 'ตรวจนับ ครุภัณฑ์',
-          to: '/goods/count/',
-          parent: 3
-        },
-        {
-          id: 8,
           title: 'ผู้ดูแลระบบ',
           to: '/management/',
-          hasChild: true
-        },
-        {
-          id: 9,
-          title: 'บริหารขั้นตอนอนุมัติ',
-          to: '/management/approval/',
-          parent: 8
-        },
-        {
-          id: 10,
-          title: 'บริหารบุคลากร',
-          to: '/management/staff/',
-          parent: 8
-        },
-        {
-          id: 11,
-          title: 'บริหารผู้ใช้ระบบ',
-          to: '/management/user/',
-          parent: 8
-        },
-        {
-          id: 12,
-          title: 'ค่าเริ่มต้น พัสดุ-ครุภัณฑ์',
-          to: '/management/goods/',
-          parent: 8
-        },
-        {
-          id: 13,
-          title: 'บริหารคู่สัญญา',
-          to: '/management/vendor/',
-          parent: 8
-        },
-        {
-          id: 14,
-          title: 'รายงานการใช้งานระบบ',
-          to: '/management/report/',
-          parent: 8
+          children: [
+            {
+              title: 'บริหารขั้นตอนอนุมัติ',
+              to: '/management/approval/'
+            },
+            {
+              title: 'บริหารบุคลากร',
+              to: '/management/staff/'
+            },
+            {
+              title: 'บริหารผู้ใช้ระบบ',
+              to: '/management/user/'
+            },
+            {
+              title: 'ค่าเริ่มต้น พัสดุ-ครุภัณฑ์',
+              to: '/management/goods/'
+            },
+            {
+              title: 'บริหารคู่สัญญา',
+              to: '/management/vendor/'
+            },
+            {
+              title: 'รายงานการใช้งานระบบ',
+              to: '/management/report/'
+            }
+          ]
         }
       ]
     }
@@ -124,3 +119,24 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+  #default-layout {
+    .v-navigation-drawer {
+      .v-expansion-panel-header {
+        padding: 0;
+      }
+
+      .v-expansion-panel-content {
+        .v-expansion-panel-content__wrap {
+          padding-left: 0;
+          padding-right: 0;
+
+          a.v-list-item {
+            padding-left: 24px;
+          }
+        }
+      }
+    }
+  }
+</style>
