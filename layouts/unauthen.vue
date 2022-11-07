@@ -12,5 +12,9 @@
 <style lang="scss">
   #unauthen-layout {
     background-color: #FAFAFA;
+
+    .v-label.theme--light{
+      color: #222831;
+    }
   }
 </style>

@@ -64,6 +64,10 @@ export default {
   #default-layout {
     background-color: #FAFAFA;
 
+    .v-label.theme--light{
+      color: #222831;
+    }
+
     .v-navigation-drawer {
       .v-expansion-panel-header {
         padding: 0;
