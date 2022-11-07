@@ -37,7 +37,7 @@
         <Nuxt/>
       </VContainer>
     </VMain>
-    <VFooter absolute app>
+    <VFooter app>
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </VFooter>
   </VApp>
@@ -62,6 +62,8 @@ export default {
 
 <style lang="scss">
   #default-layout {
+    background-color: #FAFAFA;
+
     .v-navigation-drawer {
       .v-expansion-panel-header {
         padding: 0;
