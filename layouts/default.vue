@@ -1,52 +1,58 @@
 <template>
-  <VApp id="default-layout">
-    <VNavigationDrawer v-model="drawer" clipped fixed app>
-      <VList>
+  <v-app id="default-layout">
+    <v-navigation-drawer v-model="drawer" color="#F5F5F5" clipped fixed app>
+      <v-list>
         <div v-for="(menu, i) in $store.state.leftMenus" :key="i">
-          <VListItem v-if="menu.children">
-            <VExpansionPanels tile flat :value.sync="menu.expand">
-              <VExpansionPanel>
-                <VExpansionPanelHeader>
+          <v-list-item v-if="menu.children">
+            <v-expansion-panels tile flat :value.sync="menu.expand">
+              <v-expansion-panel>
+                <v-expansion-panel-header>
                   <div class="text-base">{{ menu.title }}</div>
-                </VExpansionPanelHeader>
-                <VExpansionPanelContent>
-                  <VListItem v-for="child in menu.children" :key="child.title" :to=" child.to" router exact>
-                    <VListItemContent>
-                      <VListItemTitle>{{ child.title }}</VListItemTitle>
-                    </VListItemContent>
-                  </VListItem>
-                </VExpansionPanelContent>
-              </VExpansionPanel>
-            </VExpansionPanels>
-          </VListItem>
-          <VListItem v-else :to=" menu.to" router exact>
-            <VListItemContent>
-              <VListItemTitle>{{ menu.title }}</VListItemTitle>
-            </VListItemContent>
-          </VListItem>
+                </v-expansion-panel-header>
+                <v-expansion-panel-content>
+                  <v-list-item v-for="child in menu.children" :key="child.title" :to=" child.to" router exact>
+                    <v-list-item-content>
+                      <v-list-item-title>{{ child.title }}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+            </v-expansion-panels>
+          </v-list-item>
+          <v-list-item v-else :to=" menu.to" router exact>
+            <v-list-item-content>
+              <v-list-item-title>{{ menu.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </div>
-      </VList>
-    </VNavigationDrawer>
-    <VAppBar clippedLeft fixed app>
-      <VAppBarNavIcon @click.stop="drawer = !drawer"/>
-      <VToolbarTitle v-text="title" />
-      <VSpacer/>
-    </VAppBar>
-    <VMain>
-      <VContainer>
+      </v-list>
+    </v-navigation-drawer>
+    <v-app-bar color="#BBDEFB" clippedLeft fixed app>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
+      <v-toolbar-title v-text="title" />
+      <v-spacer/>
+      <ProfileNavBar/>
+    </v-app-bar>
+    <v-main>
+      <v-container>
         <Nuxt/>
-      </VContainer>
-    </VMain>
-    <VFooter app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
-    </VFooter>
-  </VApp>
+      </v-container>
+    </v-main>
+    <v-footer color="#BBDEFB">
+      <div style="transform: translateX(256px)">
+        <span>&copy; {{ new Date().getFullYear() }}</span>
+      </div>
+    </v-footer>
+  </v-app>
 </template>
 
 <script>
 export default {
   name: 'DefaultLayout',
   middleware: 'auth',
+  component: {
+    ProfileNavBar: () => import('~/components/ProfileNavBar.vue')
+  },
   data () {
     return {
       drawer: true
@@ -73,13 +79,17 @@ export default {
         padding: 0;
       }
 
-      .v-expansion-panel-content {
-        .v-expansion-panel-content__wrap {
-          padding-left: 0;
-          padding-right: 0;
+      .v-expansion-panel {
+        background-color: transparent;
 
-          a.v-list-item {
-            padding-left: 24px;
+        .v-expansion-panel-content {
+          .v-expansion-panel-content__wrap {
+            padding-left: 0;
+            padding-right: 0;
+  
+            a.v-list-item {
+              padding-left: 24px;
+            }
           }
         }
       }

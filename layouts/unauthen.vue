@@ -1,7 +1,7 @@
 <template>
-  <VApp id="unauthen-layout">
+  <v-app id="unauthen-layout">
     <Nuxt/>
-  </VApp>
+  </v-app>
 </template>
 
 <script>
@@ -11,7 +11,7 @@
 
 <style lang="scss">
   #unauthen-layout {
-    background-color: #FAFAFA;
+    background-color: #BBDEFB;
 
     .v-label.theme--light{
       color: #222831;

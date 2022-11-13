@@ -1,22 +1,21 @@
 <template>
   <div id="login-page">
-    <VCard elevation="1">
-      <VForm ref="form" v-model="valid">
-        <VContainer>
-          <VRow>
-            <VTextField v-model="form.username" name="username" :rules="usernameRules" label="รหัสผู้ใช้งาน" required outlined/>
-            <VTextField v-model="form.password" name="password" :rules="passwordRules" label="รหัสผ่าน" required outlined/>
-            <VCheckbox v-model="form.loginAsAdmin" class="mt-0" label="ลงชื่อเข้าใช้ด้วยสิทธิ์ผู้ดูแลระบบ" />
-          </VRow>
-          <VRow>
-            <VBtn class="w-full" elevation="2" color="primary" x-large @click.stop="login">ลงชื่อเข้าใช้</VBtn>
+    <v-card elevation="1">
+      <v-form ref="form" v-model="valid">
+        <v-container>
+          <v-row class="mb-12">
+            <v-text-field v-model="form.username" name="username" :rules="usernameRules" label="รหัสผู้ใช้งาน" required outlined/>
+            <v-text-field v-model="form.password" name="password" :rules="passwordRules" label="รหัสผ่าน" required outlined/>
+          </v-row>
+          <v-row>
+            <v-btn class="w-full" elevation="2" color="primary" x-large @click.stop="login">ลงชื่อเข้าใช้</v-btn>
             <div class="w-full text-center mt-4">
               <NLink class="hover:underline" to="/forgot-password/">ลืมรหัสผ่าน</NLink>
             </div>
-          </VRow>
-        </VContainer>
-      </VForm>      
-    </VCard>
+          </v-row>
+        </v-container>
+      </v-form>      
+    </v-card>
   </div>
 </template>
 
@@ -28,8 +27,7 @@
         valid: false,
         form: {
           username: '',
-          password: '',
-          loginAsAdmin: false
+          password: ''
         },
         usernameRules: [
           v => !!v || 'โปรดใส่รหัสผู้ใช้งาน'
