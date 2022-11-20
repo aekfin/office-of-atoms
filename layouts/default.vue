@@ -10,7 +10,7 @@
                   <div class="text-base">{{ menu.title }}</div>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-list-item v-for="child in menu.children" :key="child.title" :to=" child.to" router exact>
+                  <v-list-item v-for="child in menu.children" :key="child.title" :to=" child.to" router>
                     <v-list-item-content>
                       <v-list-item-title>{{ child.title }}</v-list-item-title>
                     </v-list-item-content>
@@ -19,7 +19,7 @@
               </v-expansion-panel>
             </v-expansion-panels>
           </v-list-item>
-          <v-list-item v-else :to=" menu.to" router exact>
+          <v-list-item v-else :to=" menu.to" router>
             <v-list-item-content>
               <v-list-item-title>{{ menu.title }}</v-list-item-title>
             </v-list-item-content>
@@ -27,18 +27,18 @@
         </div>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar color="#BBDEFB" clippedLeft fixed app>
+    <v-app-bar color="#0288D1" clippedLeft fixed dark app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
       <v-toolbar-title v-text="title" />
       <v-spacer/>
       <ProfileNavBar/>
     </v-app-bar>
     <v-main>
-      <v-container>
+      <v-container class="mt-7 mb-10">
         <Nuxt/>
       </v-container>
     </v-main>
-    <v-footer color="#BBDEFB">
+    <v-footer color="#0288D1" dark>
       <div style="transform: translateX(256px)">
         <span>&copy; {{ new Date().getFullYear() }}</span>
       </div>

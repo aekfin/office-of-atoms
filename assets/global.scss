@@ -5,3 +5,61 @@
 .v-input .v-input__control .v-input__slot .v-text-field__slot .v-label {
   height: 22px;
 }
+
+button.v-btn.v-size--large {
+  font-size: 1rem;
+}
+
+.text-white {
+  color: white !important;
+}
+
+.text-black {
+  color: #222831 !important;
+}
+
+.v-data-table-header {
+  tr {
+    th[role=columnheader] {
+      font-size: 1rem !important;
+      color: white !important;
+      background-color: #424242;
+
+      &:first-child {
+        border-top-left-radius: 4px;
+      }
+
+      &:last-child {
+        border-top-right-radius: 4px;
+      }
+    }
+  }
+}
+
+.v-data-table {
+  tbody tr:nth-of-type(odd) {
+    background-color: #F5F5F5;
+  
+    &:hover {
+      background-color: #E0E0E0;
+    }
+  }
+}
+
+.theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
+  background: #E0E0E0 !important;
+}
+
+.v-input {
+  .v-input__slot {
+    .v-label {
+      height: 24px !important;
+    }
+  }
+}
+
+.v-input--is-disabled {
+  input {
+    cursor: default !important;
+  }
+}

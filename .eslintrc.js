@@ -52,6 +52,7 @@ module.exports = {
     'vue/html-indent': 'off',
     'vue/html-closing-bracket-newline': 'off',
     'vue/no-v-html': 'off',
-    'vue/custom-event-name-casing': 'off'
+    'vue/custom-event-name-casing': 'off',
+    'vue/valid-v-slot': 'off'
   }
 }
