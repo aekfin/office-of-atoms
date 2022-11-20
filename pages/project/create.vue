@@ -24,10 +24,13 @@
             <v-select v-model="form.vendor" :items="items" itemValue="id" itemText="name" label="บริษัทคู่สัญญา" required/>
           </div>
         </v-row>
-        <v-row>
-          <AttachFileBtn class="mt-12"/>
+        <v-row class="mt-12">
+          <AttachFileBtn/>
         </v-row>
       </v-container>
+      <v-row class="mt-12" justify="end">
+        <v-btn elevation="2" large color="success">บันทึก</v-btn>
+      </v-row>
     </v-form>
   </div>
 </template>

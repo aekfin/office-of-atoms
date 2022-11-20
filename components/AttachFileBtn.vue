@@ -38,11 +38,10 @@
   .attach-file-btn {
     display: flex;
     flex-flow: column;
-    align-items: flex-end;
+    align-items: flex-start;
     width: 100%;
 
     .file {
-      align-self: flex-start;
       margin-top: 8px;
       background: #E0E0E0;
       border-radius: 8px;
