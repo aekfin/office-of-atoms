@@ -3,7 +3,7 @@
     <PageHeader text="โครงการ" btnText="เพิ่มโครงการ" createRoute="/project/create/"/>
     <v-data-table
       :headers="headers"
-      :items="desserts"
+      :items="items"
       :itemsPerPage="20"
       disableSort
       hideDefaultFooter
@@ -14,6 +14,10 @@
       </template>
       <template #item.datetimeStartVendor="{ item }">
         {{ $moment(item).format('DD-MM-YYYY') }}
+      </template>
+      <template #item.action="{ item }">
+        <NLink :to="`/project/${item.id}/`"><v-icon>mdi-pencil</v-icon></NLink>
+        <v-icon>mdi-delete</v-icon>
       </template>
     </v-data-table>
   </div>
@@ -26,19 +30,17 @@
     },
     data () {
       return {
-        page: 1,
-        pageCount: 0,
-        itemsPerPage: 10,
         headers: [
           { text: 'เลขที่โครงการ', value: 'code', width: '140px', align: 'center' },
           { text: 'ชื่อโครงการ', value: 'name', width: '28%' },
           { text: 'คู่สัญญา', value: 'vendor', align: 'center' },
           { text: 'วันเริ่มโครงการ', value: 'datetimeStart', width: '140px', align: 'center' },
           { text: 'วันเริ่มสัญญา', value: 'datetimeStartVendor', width: '140px', align: 'center' },
-          { text: 'เครื่องมือ', width: '140px', align: 'center' },
+          { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
-        desserts: [
+        items: [
           {
+            id: 1,
             code: '6500000001',
             name: 'ชื่อโครงการ 1',
             vendor: 'บริษัท A',
@@ -46,6 +48,7 @@
             datetimeStartVendor: new Date(),
           },
           {
+            id: 2,
             code: '6500000002',
             name: 'ชื่อโครงการ 2',
             vendor: 'บริษัท B',
@@ -53,6 +56,7 @@
             datetimeStartVendor: new Date(),
           },
           {
+            id: 3,
             code: '6500000003',
             name: 'ชื่อโครงการ 3',
             vendor: 'บริษัท C',
@@ -60,6 +64,7 @@
             datetimeStartVendor: new Date(),
           },
           {
+            id: 4,
             code: '6500000004',
             name: 'ชื่อโครงการ 4',
             vendor: 'บริษัท D',
@@ -68,7 +73,7 @@
           }
         ],
       }
-    },
+    }
   }
 </script>
 

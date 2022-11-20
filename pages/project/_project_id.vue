@@ -1,17 +1,17 @@
 <template>
   <div id="project-create-page">
-    <PageHeader text="การเพิ่มโครงการ"/>
-    <v-form ref="form" v-model="valid" lazyValidation class="mt-8">
+    <PageHeader :text="isCreate ? 'การเพิ่มโครงการ' : 'การแก้ไขโครงการ'"/>
+    <v-form ref="form" v-model="valid" class="mt-8">
       <v-container>
         <v-row>
           <div class="year-of-budget">
-            <v-select v-model="form.year" :items="years" itemValue="id" itemText="name" label="ปีงบประมาณ" required/>
+            <v-select v-model="form.year" :items="years" itemValue="id" itemText="name" label="ปีงบประมาณ*" required/>
           </div>
-          <v-select v-model="form.projectRoot" :items="items" itemValue="id" itemText="name" label="เลือกโครงการงบประมาณ" required :disabled="!form.year"/>
+          <v-select v-model="form.projectRoot" :items="items" itemValue="id" itemText="name" label="เลือกโครงการงบประมาณ*" required :disabled="!form.year"/>
         </v-row>
         <v-row>
           <div class="selector-project">
-            <v-select v-model="form.project" :items="items" itemValue="id" itemText="name" label="โครงการ" required :disabled="!form.projectRoot"/>
+            <v-select v-model="form.project" :items="items" itemValue="id" itemText="name" label="โครงการ*" required :disabled="!form.projectRoot"/>
           </div>
           <v-text-field v-model="form.code" name="code" label="เลขที่โครงการ" disabled/>
           <v-text-field v-model="form.code" name="code" label="เลขที่คุมสัญญา" disabled/>
@@ -21,16 +21,16 @@
           <InputDatePicker :value.sync="form.datetimeVendorStart" label="วันเริ่มสัญญา" disabled/>
           <InputDatePicker :value.sync="form.datetimeVendorEnd" label="วันสิ้นสัญญา" disabled/>
           <div class="selector-vendor">
-            <v-select v-model="form.vendor" :items="items" itemValue="id" itemText="name" label="บริษัทคู่สัญญา" required/>
+            <v-select v-model="form.vendor" :items="items" itemValue="id" itemText="name" label="บริษัทคู่สัญญา*" required/>
           </div>
         </v-row>
         <v-row class="mt-12">
           <AttachFileBtn/>
         </v-row>
+        <v-row class="mt-12" justify="end">
+          <v-btn elevation="2" large color="success">บันทึก</v-btn>
+        </v-row>
       </v-container>
-      <v-row class="mt-12" justify="end">
-        <v-btn elevation="2" large color="success">บันทึก</v-btn>
-      </v-row>
     </v-form>
   </div>
 </template>
@@ -67,6 +67,11 @@
           { id: 3, name: '2020' },
           { id: 4, name: '2019' }
         ],
+      }
+    },
+    computed: {
+      isCreate () {
+        return this.$route.params.project_id === 'create'
       }
     }
   }
