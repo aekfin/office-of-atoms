@@ -4,15 +4,7 @@
     <v-form ref="form" v-model="valid" lazyValidation class="mt-8">
       <v-container>
         <v-row>
-          <div class="image-uploader-wrapper">
-            <div class="mt-8 image-uploader" :style="{ backgroundImage: `url('${previewImage}')` }" @click="onUploadImage">
-              <div :class="`filter-upload${previewImage ? '' : ' is-show'}`">
-                <v-icon color="white">mdi-image</v-icon>
-                <div class="text-white text-lg">อัพโหลดรูปภาพ</div>
-              </div>
-            </div>
-            <input v-show="false" ref="uploadImage" type="file" accept="image/*" @change="onChangeImage">
-          </div>
+          <UploadImage :image.sync="form.image"/>
           <v-col>
             <v-text-field v-model="form.code" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
             <v-text-field v-model="form.fistNameTh" label="ชื่อ *" :rules="fistNameThRules" required/>
@@ -58,12 +50,13 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
+      UploadImage: () => import('~/components/UploadImage.vue'),
     },
     data () {
       return {
         valid: true,
-        previewImage: '',
         form: {
+          image: '',
           code: '',
           idCard: '',
           fistNameTh: '',
@@ -134,16 +127,6 @@
       onSave () {
         this.$refs.form.validate()
       },
-      onUploadImage () {
-       if (this.$refs.uploadImage) this.$refs.uploadImage.click()
-      },
-      onChangeImage ({ target: { files } }) {
-        const reader = new FileReader()
-        reader.readAsDataURL(files[0])
-        reader.onload = () => {
-          this.previewImage = reader.result
-        }
-      },
     }
   }
 </script>
@@ -164,47 +147,6 @@
 
       .selector-vendor {
         flex-grow: 1;
-      }
-    }
-
-    .image-uploader-wrapper {
-      width: 200px;
-
-      .image-uploader {
-        background-color: #9E9E9E;
-        transition-duration: 0.3s;
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-        cursor: pointer;
-        background-position: center;
-        background-size: cover;
-        overflow: hidden;
-
-        .filter-upload {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-flow: column;
-          opacity: 0;
-          width: 100%;
-          height: 100%;
-          transition-duration: 0.3s;
-
-          &.is-show {
-            opacity: 100;
-            background-color: rgba(0, 0, 0, 0);;
-          }
-
-          &:hover {
-            opacity: 100;
-            background-color: rgba(0, 0, 0, 0.5);
-          }
-        }
-
-        i {
-          font-size: 64px;
-        }
       }
     }
   }
