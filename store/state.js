@@ -11,11 +11,11 @@ export default () => ({
     {
       title: 'พัสดุ-ครุภัณฑ์',
       to: '/goods/',
-      expand: 0,
       children: [
         {
           title: 'บริหารพัสดุ-ครุภัณฑ์',
-          to: '/goods/'
+          to: '/goods/',
+          exactPath: true
         },
         {
           title: 'เบิกพัสดุ',

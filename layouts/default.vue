@@ -4,13 +4,13 @@
       <v-list>
         <div v-for="(menu, i) in $store.state.leftMenus" :key="i">
           <v-list-item v-if="menu.children">
-            <v-expansion-panels tile flat :value.sync="menu.expand">
+            <v-expansion-panels tile flat :value="expands[i]">
               <v-expansion-panel>
                 <v-expansion-panel-header>
                   <div class="text-base">{{ menu.title }}</div>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-list-item v-for="child in menu.children" :key="child.title" :to=" child.to" router>
+                  <v-list-item v-for="child in menu.children" :key="child.title" :to=" child.to" router :exactPath="child.exactPath || false">
                     <v-list-item-content>
                       <v-list-item-title>{{ child.title }}</v-list-item-title>
                     </v-list-item-content>
@@ -55,14 +55,36 @@ export default {
   },
   data () {
     return {
-      drawer: true
+      drawer: true,
+      expands: [-1, -1, 0, -1]
+    }
+  },
+  head () {
+    return {
+      title: this.title
     }
   },
   computed: {
     title () {
       return 'ระบบบริหารจัดการครุภัณฑ์ทางอิเลกทรอนิกส์'
+    },
+    isGoods () {
+      return this.$route.path.includes('/goods')
+    },
+    isManagement () {
+      return this.$route.path.includes('/management')
+    },
+  },
+  mounted () {
+    if (this.isGoods || this.isManagement) {
+      this.expands = [
+        -1,
+        -1,
+        this.isManagement ? -1 : 0,
+        this.isGoods ? -1 : 0, 
+      ]
     }
-  }
+  },
 }
 </script>
 

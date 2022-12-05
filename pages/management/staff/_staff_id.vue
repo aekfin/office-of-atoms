@@ -4,7 +4,7 @@
     <v-form ref="form" v-model="valid" lazyValidation class="mt-8">
       <v-container>
         <v-row>
-          <UploadImage :image.sync="form.image"/>
+          <UploadImage class="mt-4" :image.sync="form.image"/>
           <v-col>
             <v-text-field v-model="form.code" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
             <v-text-field v-model="form.fistNameTh" label="ชื่อ *" :rules="fistNameThRules" required/>
