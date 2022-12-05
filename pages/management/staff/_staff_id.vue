@@ -1,5 +1,5 @@
 <template>
-  <div id="project-create-page">
+  <div id="project-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มบุคลากร' : 'การแก้ไขบุคลากร'"/>
     <v-form ref="form" v-model="valid" lazyValidation class="mt-8">
       <v-container>
@@ -26,10 +26,10 @@
         </v-row>
       </v-container>
       <v-container>
-        <h3 class="text-xl font-bold mb-2">ข้อมูลติดต่อ</h3>
+        <h3 class="text-2xl font-bold mb-2">ข้อมูลติดต่อ</h3>
         <v-row>
           <v-col>
-            <v-text-field v-model="form.tel" name="tel" label="เบอร์โทรศัพท์"/>
+            <v-text-field v-model="form.tel" name="tel" type="tel" label="เบอร์โทรศัพท์"/>
           </v-col>
           <v-col>
             <v-text-field v-model="form.email" name="email" label="E-Mail"/>
@@ -132,7 +132,7 @@
 </script>
 
 <style lang="scss">
-  #project-create-page {
+  #project-detail-page {
     .row {
       justify-content: space-between;
       gap: 40px;

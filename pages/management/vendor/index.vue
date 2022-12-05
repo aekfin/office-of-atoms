@@ -37,7 +37,7 @@
         headers: [
           { text: 'รหัสบริษัท', value: 'code', align: 'center', width: '200px' },
           { text: 'ชื่อบริษัท', value: 'name' },
-          { text: 'ที่อยู่บริษัท', value: 'address', width: '280px' },
+          { text: 'ที่อยู่บริษัท', value: 'address', width: '240px' },
           { text: 'การติดต่อ', value: 'contact', width: '100px' },
           { text: 'ไฟล์แนบ', value: 'attachment', width: '100px' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
