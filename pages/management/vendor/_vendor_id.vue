@@ -4,8 +4,10 @@
     <v-form ref="form" v-model="valid" lazyValidation class="mt-8">
       <v-container>
         <v-row>
-          <UploadImage class="mt-4" :image.sync="form.image"/>
-          <v-col class="ml-8 column-vendor-info">
+          <v-col cols="auto">
+            <UploadImage class="mt-4" :image.sync="form.image"/>
+          </v-col>
+          <v-col cols="7" class="ml-6">
             <v-text-field v-model="form.code" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
             <v-text-field v-model="form.name" label="ชื่อ *" :rules="nameRules" required/>
             <v-textarea v-model="form.address" name="address" label="ที่อยู่ *" :rules="addressRules" required/>
@@ -81,10 +83,5 @@
 
 <style lang="scss">
   #project-detail-page {
-    .column-vendor-info {
-      width: calc(80% - 240px);
-      flex-basis: calc(80% - 240px);
-      flex-grow: 0;
-    }
   }
 </style>

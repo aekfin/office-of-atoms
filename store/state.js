@@ -9,26 +9,45 @@ export default () => ({
       to: '/project/'
     },
     {
-      title: 'พัสดุ-ครุภัณฑ์',
-      to: '/goods/',
+      title: 'พัสดุ',
+      to: '/parcel/',
       children: [
         {
-          title: 'บริหารพัสดุ-ครุภัณฑ์',
-          to: '/goods/',
+          title: 'บริหารพัสดุ',
+          to: '/parcel/',
           exactPath: true
         },
         {
           title: 'เบิกพัสดุ',
-          to: '/goods/withdraw/'
+          to: '/parcel/withdraw/'
         },
         {
-          title: 'ยืม-คืน ครุภัณฑ์',
-          to: '/goods/borrow/'
+          title: 'พัสดุ ที่รออนุมัติ',
+          to: '/parcel/request/'
+        },
+      ]
+    },
+    {
+      title: 'ครุภัณฑ์',
+      to: '/durable-goods/',
+      children: [
+        {
+          title: 'บริหารครุภัณฑ์',
+          to: '/durable-goods/',
+          exactPath: true
+        },
+        {
+          title: 'ยืม - คืน ครุภัณฑ์',
+          to: '/durable-goods/borrow/'
         },
         {
           title: 'ตรวจนับ ครุภัณฑ์',
-          to: '/goods/count/'
-        }
+          to: '/durable-goods/counting/'
+        },
+        {
+          title: 'ครุภัณฑ์ ที่รออนุมัติ',
+          to: '/durable-goods/request/'
+        },
       ]
     },
     {
@@ -41,10 +60,6 @@ export default () => ({
         },
         {
           title: 'บริหารบุคลากร',
-          to: '/management/staff/'
-        },
-        {
-          title: 'บริหารผู้ใช้ระบบ',
           to: '/management/user/'
         },
         {

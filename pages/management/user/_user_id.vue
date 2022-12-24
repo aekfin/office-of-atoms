@@ -1,5 +1,5 @@
 <template>
-  <div id="project-detail-page">
+  <div id="management-user-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มบุคลากร' : 'การแก้ไขบุคลากร'"/>
     <v-form ref="form" v-model="valid" lazyValidation class="mt-8">
       <v-container>
@@ -120,7 +120,7 @@
     },
     computed: {
       isCreate () {
-        return this.$route.params.staff_id === 'create'
+        return this.$route.params.user_id === 'create'
       },
     },
     methods: {
@@ -132,7 +132,7 @@
 </script>
 
 <style lang="scss">
-  #project-detail-page {
+  #management-user-detail-page {
     .row {
       justify-content: space-between;
       gap: 40px;

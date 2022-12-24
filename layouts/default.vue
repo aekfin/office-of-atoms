@@ -4,7 +4,7 @@
       <v-list>
         <div v-for="(menu, i) in $store.state.leftMenus" :key="i">
           <v-list-item v-if="menu.children">
-            <v-expansion-panels tile flat :value="expands[i]">
+            <v-expansion-panels tile flat multiple :value="expands">
               <v-expansion-panel>
                 <v-expansion-panel-header>
                   <div class="text-base">{{ menu.title }}</div>
@@ -34,7 +34,7 @@
       <ProfileNavBar/>
     </v-app-bar>
     <v-main>
-      <v-container class="mt-7 mb-10">
+      <v-container class="mt-7 mb-10 pl-12 pr-12">
         <Nuxt/>
       </v-container>
     </v-main>
@@ -56,7 +56,7 @@ export default {
   data () {
     return {
       drawer: true,
-      expands: [-1, -1, 0, -1]
+      expands: [0, 1, 2, 3, 4]
     }
   },
   head () {
@@ -68,22 +68,8 @@ export default {
     title () {
       return 'ระบบบริหารจัดการครุภัณฑ์ทางอิเลกทรอนิกส์'
     },
-    isGoods () {
-      return this.$route.path.includes('/goods')
-    },
-    isManagement () {
-      return this.$route.path.includes('/management')
-    },
   },
   mounted () {
-    if (this.isGoods || this.isManagement) {
-      this.expands = [
-        -1,
-        -1,
-        this.isManagement ? -1 : 0,
-        this.isGoods ? -1 : 0, 
-      ]
-    }
   },
 }
 </script>

@@ -53,8 +53,41 @@ button.v-btn.v-size--large {
 .v-input {
   .v-input__slot {
     .v-label {
-      padding-top: 4px;
-      height: 24px !important;
+      padding-top: 2px;
+      margin-top: -2px;
+      height: 26px !important;
+    }
+  }
+
+  .v-input__control {
+    .v-text-field__details {
+      .v-messages {
+        .v-messages__wrapper {
+          .v-messages__message {
+            line-height: 18px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.form-expansion-panels.v-expansion-panels.theme--light {
+  .v-expansion-panel {
+    background-color: transparent;
+
+    .v-expansion-panel-header {
+      font-weight: bold;
+      font-size: 1.5rem;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .v-expansion-panel-content {
+      .v-expansion-panel-content__wrap {
+        padding-left: 0;
+        padding-right: 0;
+      }
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
-  <div id="staff-page">
-    <PageHeader text="บริหารบุคลากร" btnText="เพิ่มบุคลากร" createRoute="/management/staff/create/"/>
+  <div id="user-page">
+    <PageHeader text="บริหารบุคลากร" btnText="เพิ่มบุคลากร" createRoute="/management/user/create/"/>
     <v-data-table
       :headers="headers"
       :items="items"
@@ -10,7 +10,7 @@
       class="elevation-1 mt-6"
     >
       <template #item.action="{ item }">
-        <NLink :to="`/management/staff/${item.id}/`"><v-icon>mdi-pencil</v-icon></NLink>
+        <NLink :to="`/management/user/${item.id}/`"><v-icon>mdi-pencil</v-icon></NLink>
         <v-icon>mdi-delete</v-icon>
       </template>
     </v-data-table>
@@ -50,6 +50,6 @@
 </script>
 
 <style lang="scss">
-  #staff-page {
+  #user-page {
   }
 </style>
