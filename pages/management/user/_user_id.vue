@@ -21,22 +21,26 @@
             <v-text-field v-model="form.lastNameEn" label="นามสกุล (Eng) *" :rules="lastNameEnRules" required/>
             <v-select v-model="form.group" :items="items" itemValue="id" itemText="name" label="กลุ่ม *" :rules="groupRules" required/>
             <v-select v-model="form.position" :items="items" itemValue="id" itemText="name" label="ตำแหน่ง *" :rules="positionRules" required/>
-            <v-select v-model="form.role" :items="items" itemValue="id" itemText="name" label="สิทธ์การใช้งาน *" :rules="roleRules" required/>
+            <v-select v-model="form.role" :items="items" itemValue="id" itemText="name" label="สิทธ์การใช้งาน *" :rules="roleRules" multiple required/>
           </v-col>
         </v-row>
       </v-container>
-      <v-container>
-        <h3 class="text-2xl font-bold mb-2">ข้อมูลติดต่อ</h3>
-        <v-row>
-          <v-col>
-            <v-text-field v-model="form.tel" name="tel" type="tel" label="เบอร์โทรศัพท์"/>
-          </v-col>
-          <v-col>
-            <v-text-field v-model="form.email" name="email" label="E-Mail"/>
-          </v-col>
-        </v-row>
-        <v-textarea v-model="form.address" name="address" label="ที่อยู่"/>
-      </v-container>
+      <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
+        <v-expansion-panel>
+          <v-expansion-panel-header>ข้อมูลติดต่อ</v-expansion-panel-header>
+          <v-expansion-panel-content>
+              <v-row>
+                <v-col>
+                  <v-text-field v-model="form.tel" name="tel" type="tel" label="เบอร์โทรศัพท์"/>
+                </v-col>
+                <v-col>
+                  <v-text-field v-model="form.email" name="email" label="E-Mail"/>
+                </v-col>
+              </v-row>
+              <v-textarea v-model="form.address" name="address" label="ที่อยู่"/>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
       <v-container class="mt-6">
         <v-row justify="end">
           <v-btn elevation="2" large color="success" @click="onSave">บันทึก</v-btn>
@@ -68,11 +72,12 @@
           division: null,
           group: null,
           position: null,
-          role: null,
+          role: [],
           tel: '',
           email: '',
           address: ''
         },
+        formExpand: [0],
         items: [
           { id: 1, name: 'Foo' },
           { id: 2, name: 'Bar' },
@@ -114,7 +119,7 @@
           v => !!v || 'โปรดใส่ตำแหน่ง',
         ],
         roleRules: [
-          v => !!v || 'โปรดใส่สิทธ์การใช้งาน',
+          v => !!v && v.length || 'โปรดใส่สิทธ์การใช้งาน',
         ],
       }
     },

@@ -1,14 +1,7 @@
 <template>
   <div id="project-page">
     <PageHeader text="โครงการ" btnText="เพิ่มโครงการ" createRoute="/project/create/"/>
-    <v-data-table
-      :headers="headers"
-      :items="items"
-      :itemsPerPage="20"
-      disableSort
-      hideDefaultFooter
-      class="elevation-1 mt-6"
-    >
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
       <template #item.datetimeStart="{ item }">
         {{ $moment(item).format('DD-MM-YYYY') }}
       </template>

@@ -50,6 +50,18 @@ button.v-btn.v-size--large {
   background: #E0E0E0 !important;
 }
 
+.v-tabs {
+  .v-item-group.theme--light.v-slide-group.v-tabs-bar {
+    background-color: transparent;
+
+    .v-tab {
+      font-size: 1.125rem;
+      font-weight: bold;
+    }
+  }
+}
+
+
 .v-input {
   .v-input__slot {
     .v-label {

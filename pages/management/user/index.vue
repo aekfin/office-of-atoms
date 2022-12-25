@@ -1,14 +1,7 @@
 <template>
   <div id="user-page">
     <PageHeader text="บริหารบุคลากร" btnText="เพิ่มบุคลากร" createRoute="/management/user/create/"/>
-    <v-data-table
-      :headers="headers"
-      :items="items"
-      :itemsPerPage="20"
-      disableSort
-      hideDefaultFooter
-      class="elevation-1 mt-6"
-    >
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
       <template #item.action="{ item }">
         <NLink :to="`/management/user/${item.id}/`"><v-icon>mdi-pencil</v-icon></NLink>
         <v-icon>mdi-delete</v-icon>

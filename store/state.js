@@ -63,6 +63,10 @@ export default () => ({
           to: '/management/user/'
         },
         {
+          title: 'หมวดหมู่ พัสดุ-ครุภัณฑ์',
+          to: '/management/category/'
+        },
+        {
           title: 'ค่าเริ่มต้น พัสดุ-ครุภัณฑ์',
           to: '/management/goods/'
         },
@@ -72,7 +76,7 @@ export default () => ({
         },
         {
           title: 'รายงานการใช้งานระบบ',
-          to: '/management/report/'
+          to: '/management/log/'
         }
       ]
     }

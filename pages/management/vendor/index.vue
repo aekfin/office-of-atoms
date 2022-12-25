@@ -1,14 +1,7 @@
 <template>
   <div id="vendor-page">
     <PageHeader text="บริหารคู่สัญญา" btnText="เพิ่มคู่สัญญา" createRoute="/management/vendor/create/"/>
-    <v-data-table
-      :headers="headers"
-      :items="items"
-      :itemsPerPage="20"
-      disableSort
-      hideDefaultFooter
-      class="elevation-1 mt-6"
-    >
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
       <template #item.contact="{ item }">
         <div class="text-center">
           <v-icon>mdi-information-outline</v-icon>
