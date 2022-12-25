@@ -7,27 +7,46 @@
           <v-col cols="auto">
             <UploadImage class="mt-4" :image.sync="form.image"/>
           </v-col>
-          <v-col cols="7" class="ml-6">
+          <v-col class="ml-6">
             <v-text-field v-model="form.code" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
             <v-text-field v-model="form.name" label="ชื่อ *" :rules="nameRules" required/>
             <v-textarea v-model="form.address" name="address" label="ที่อยู่ *" :rules="addressRules" required/>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-container>
-        <h3 class="text-2xl font-bold mb-2">ข้อมูลติดต่อ</h3>
-        <v-row>
-          <v-col>
-            <v-text-field v-model="form.contact" name="contact" label="ผู้ติดต่อ"/>
-            <v-text-field v-model="form.contactPosition" name="contactPosition" label="ตำแหน่งผู้ติดต่อ"/>
+            <v-text-field v-model="form.service" name="service" label="การบริการ"/>
             <v-text-field v-model="form.warranty" type="number" name="warranty" label="การรับประกัน"/>
           </v-col>
-          <v-col>
-            <v-text-field v-model="form.tel" name="tel" type="tel" label="เบอร์โทรศัพท์"/>
-            <v-text-field v-model="form.service" name="service" label="การบริการ"/>
-          </v-col>
         </v-row>
       </v-container>
+      <v-expansion-panels v-model="formExpand" class="form-expansion-panels mt-8" flat multiple>
+        <v-expansion-panel>
+          <v-expansion-panel-header>ข้อมูลติดต่อ</v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-container>
+              <v-row v-for="(contact, i) in form.contactList" :key="i" class="flex-nowrap gap-5">
+                <v-col cols="7">
+                  <v-row>
+                    <div class="self-center mr-5">{{ i + 1 }}.</div>
+                    <v-text-field v-model="contact.name" label="ชื่อ - นามสกุล *" :rules="contactNameRules"/>
+                  </v-row>
+                  <v-row>
+                    <v-text-field v-model="contact.email" class="pl-8" label="E-mail *" :rules="contactEmailRules"/>
+                  </v-row>
+                </v-col>
+                <v-col>
+                  <v-row>
+                    <v-text-field v-model="contact.position" name="code" label="ตำแหน่ง *" :rules="contactPositionRules" required/>
+                  </v-row>
+                  <v-row>
+                    <v-text-field v-model="contact.tel" label="เบอร์โทรศัพท์ *" :rules="contactTelRules"/>
+                  </v-row>
+                </v-col>
+              </v-row>
+              <v-row class="mt-5">
+                <v-btn block rounded outlined @click="addContact">เพิ่มผู้ติดต่อ</v-btn>
+              </v-row>
+            </v-container>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
       <v-container class="mt-6">
         <v-row justify="end">
           <v-btn elevation="2" large color="success" @click="onSave">บันทึก</v-btn>
@@ -51,12 +70,13 @@
           code: '',
           name: '',
           address: '',
-          contact: '',
-          contactPosition: '',
-          tel: '',
           service: '',
-          warranty: ''
+          warranty: '',
+          contactList: [
+            { name: '', position: '', email: '', tel: '' }
+          ]
         },
+        formExpand: [0],
         codeRules: [
           v => !!v || 'โปรดใส่รหัสพนักงาน',
         ],
@@ -66,6 +86,18 @@
         addressRules: [
           v => !!v || 'โปรดใส่ที่อยู่',
         ],
+        contactNameRules: [
+          v => !!v || 'โปรดใส่ชื่อ - นามสกุล',
+        ],
+        contactTelRules: [
+          v => !!v || 'โปรดใส่เบอร์โทรศัพท์',
+        ],
+        contactPositionRules: [
+          v => !!v || 'โปรดใส่ตำแหน่ง',
+        ],
+        contactEmailRules: [
+          v => !!v || 'โปรดใส่ E-mail',
+        ],
       }
     },
     computed: {
@@ -74,6 +106,10 @@
       },
     },
     methods: {
+      addContact () {
+        const newContact = { name: '', position: '', email: '', tel: '' }
+        this.form.contactList = [ ...this.form.contactList, newContact ]
+      },
       onSave () {
         this.$refs.form.validate()
       },

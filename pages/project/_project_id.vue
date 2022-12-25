@@ -50,14 +50,21 @@
             </v-container>
           </v-expansion-panel-content>
         </v-expansion-panel>
+        <v-expansion-panel>
+          <v-expansion-panel-header>แนบเอกสารเพิ่มเติม</v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-container>
+                <v-row>
+                  <AttachFileBtn/>
+                </v-row>
+              </v-container>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
       </v-expansion-panels>
-      <v-container>
-        <v-row class="mt-12">
-          <AttachFileBtn/>
-        </v-row>
-        <v-row class="mt-12" justify="end">
-          <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
-        </v-row>
+        <v-container class="mt-12">
+          <v-row justify="end">
+            <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
+          </v-row>
       </v-container>
     </v-form>
   </div>
@@ -85,7 +92,7 @@
           vendor: null,
           vendorContactList: [],
         },
-        formExpand: [0],
+        formExpand: [0, 1],
         items: [
           { id: 1, name: 'Foo' },
           { id: 2, name: 'Bar' },
@@ -124,7 +131,7 @@
           v => !!v || 'โปรดใส่ตำแหน่ง',
         ],
         contactNameRules: [
-          v => !!v || 'โปรดใส่ชื่อ-สกุล',
+          v => !!v || 'โปรดเลือกผู้ติดต่อ',
         ],
       }
     },
