@@ -3,18 +3,13 @@
     <PageHeader text="บริหารคู่สัญญา" btnText="เพิ่มคู่สัญญา" createRoute="/management/vendor/create/"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
       <template #item.contact="{ item }">
-        <div class="text-center">
-          <v-icon>mdi-information-outline</v-icon>
-        </div>
+        <ActionIconList :list="getInformationActionIcon(item)"/>
       </template>
       <template #item.attachment="{ item }">
-        <div class="text-center">
-          <v-icon>mdi-download</v-icon>
-        </div>
+        <ActionIconList :list="getDownloadActionIcon(item)"/>
       </template>
       <template #item.action="{ item }">
-        <NLink :to="`/management/vendor/${item.id}/`"><v-icon>mdi-pencil</v-icon></NLink>
-        <v-icon>mdi-delete</v-icon>
+        <ActionIconList :list="getActionIconList(item)"/>
       </template>
     </v-data-table>
   </div>
@@ -23,7 +18,8 @@
 <script>
   export default {
     components: {
-      PageHeader: () => import('~/components/PageHeader.vue')
+      PageHeader: () => import('~/components/PageHeader.vue'),
+      ActionIconList: () => import('~/components/ActionIconList.vue'),
     },
     data () {
       return {
@@ -49,6 +45,24 @@
       return {
         title: 'บริหารบุคลากร'
       }
+    },
+    methods: {
+      getInformationActionIcon (item) {
+        return [
+          { type: 'button', icon: 'mdi-information-outline', action: () => { console.log('Information') } },
+        ]
+      },
+      getDownloadActionIcon (item) {
+        return [
+          { type: 'button', icon: 'mdi-download', action: () => { console.log('Download') } },
+        ]
+      },
+      getActionIconList (item) {
+        return [
+          { type: 'link', icon: 'mdi-pencil', action: `/management/vendor/${item.id}/` },
+          { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
+        ]
+      },
     },
   }
 </script>

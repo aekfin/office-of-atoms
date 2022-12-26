@@ -9,8 +9,7 @@
         {{ $moment(item).format('DD-MM-YYYY') }}
       </template>
       <template #item.action="{ item }">
-        <NLink :to="`/project/${item.id}/`"><v-icon>mdi-pencil</v-icon></NLink>
-        <v-icon>mdi-delete</v-icon>
+        <ActionIconList :list="getActionIconList(item)"/>
       </template>
     </v-data-table>
   </div>
@@ -19,7 +18,8 @@
 <script>
   export default {
     components: {
-      PageHeader: () => import('~/components/PageHeader.vue')
+      PageHeader: () => import('~/components/PageHeader.vue'),
+      ActionIconList: () => import('~/components/ActionIconList.vue'),
     },
     data () {
       return {
@@ -65,6 +65,14 @@
             datetimeStartVendor: new Date(),
           }
         ],
+      }
+    },
+    methods: {
+      getActionIconList (item) {
+        return [
+          { type: 'link', icon: 'mdi-pencil', action: `/project/${item.id}/` },
+          { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
+        ]
       }
     }
   }

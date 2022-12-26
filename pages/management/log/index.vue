@@ -3,7 +3,7 @@
     <PageHeader text="รายงานผู้ใช้ระบบ"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
       <template #item.datetimeCreate="{ item }">
-        <div class="text-center">{{ $moment(item.datetimeCreate).format('DD/MM/YYYY, HH:MM:SS') }}</div>
+        <div class="text-center">{{ $moment(item.datetimeCreate).format('DD-MM-YYYY, HH:MM:SS') }}</div>
       </template>
     </v-data-table>
   </div>

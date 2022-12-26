@@ -3,8 +3,7 @@
     <PageHeader text="บริหารบุคลากร" btnText="เพิ่มบุคลากร" createRoute="/management/user/create/"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
       <template #item.action="{ item }">
-        <NLink :to="`/management/user/${item.id}/`"><v-icon>mdi-pencil</v-icon></NLink>
-        <v-icon>mdi-delete</v-icon>
+        <ActionIconList :list="getActionIconList(item)"/>
       </template>
     </v-data-table>
   </div>
@@ -13,7 +12,8 @@
 <script>
   export default {
     components: {
-      PageHeader: () => import('~/components/PageHeader.vue')
+      PageHeader: () => import('~/components/PageHeader.vue'),
+      ActionIconList: () => import('~/components/ActionIconList.vue'),
     },
     data () {
       return {
@@ -37,6 +37,14 @@
             group: 'กลุ่ม ก'
           },
         ],
+      }
+    },
+    methods: {
+      getActionIconList (item) {
+        return [
+          { type: 'link', icon: 'mdi-pencil', action: `/management/user/${item.id}/` },
+          { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
+        ]
       }
     }
   }
