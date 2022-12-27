@@ -25,7 +25,7 @@
         subCategoryItems: [
           {
             id: 1,
-            name: 'Nokia N95',
+            name: 'Nokia',
             category: 'โทรศัพท์มือถือ',
             countParcel: 5,
             countDurableGoods: 2,

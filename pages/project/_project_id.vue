@@ -4,22 +4,34 @@
     <v-form ref="form" v-model="valid" class="mt-4">
       <v-container>
         <v-row>
-          <div class="year-of-budget">
+          <v-col :cols="3">
             <v-select v-model="form.year" :items="years" itemValue="id" itemText="name" label="ปีงบประมาณ*" :rules="yearRules" required/>
-          </div>
-          <v-select v-model="form.projectRoot" :items="items" itemValue="id" itemText="name" label="เลือกโครงการงบประมาณ*" :rules="projectRootRules" required :disabled="!form.year"/>
+          </v-col>
+          <v-col :cols="9">
+            <v-select v-model="form.projectRoot" :items="items" itemValue="id" itemText="name" label="เลือกโครงการงบประมาณ*" :rules="projectRootRules" required :disabled="!form.year"/>
+          </v-col>
         </v-row>
         <v-row>
-          <v-select v-model="form.project" :items="items" itemValue="id" itemText="name" label="โครงการ*" :rules="projectRules" required :disabled="!form.projectRoot"/>
+          <v-col :cols="9">
+            <v-select v-model="form.project" :items="items" itemValue="id" itemText="name" label="โครงการ*" :rules="projectRules" required :disabled="!form.projectRoot"/>
+          </v-col>
+          <v-col :cols="3">
+            <v-text-field v-model="form.code" name="code" label="เลขที่โครงการ" disabled/>
+          </v-col>
         </v-row>
         <v-row>
-          <v-text-field v-model="form.code" name="code" label="เลขที่โครงการ" disabled/>
-          <v-text-field v-model="form.contractControlNumber" name="code" label="เลขที่คุมสัญญา" disabled/>
-          <div class="date-wrapper">
+          <v-col :cols="3">
+            <v-text-field v-model="form.contractControlNumber" name="code" label="เลขที่คุมสัญญา" disabled/>
+          </v-col>
+          <v-col :cols="3">
             <InputDatePicker :value.sync="form.datetimeStart" label="วันเริ่มโครงการ" disabled/>
+          </v-col>
+          <v-col :cols="3">
             <InputDatePicker :value.sync="form.datetimeVendorStart" label="วันเริ่มสัญญา" disabled/>
+          </v-col>
+          <v-col :cols="3">
             <InputDatePicker :value.sync="form.datetimeVendorEnd" label="วันสิ้นสัญญา" disabled/>
-          </div>
+          </v-col>
         </v-row>
       </v-container>
       <v-expansion-panels v-model="formExpand" class="form-expansion-panels mt-8" flat multiple>
@@ -166,19 +178,6 @@
 <style lang="scss">
   #project-create-page {
     .row {
-      justify-content: space-between;
-      gap: 40px;
-
-      .year-of-budget {
-        width: 200px;
-      }
-
-      .date-wrapper {
-        width: 60%;
-        display: flex;
-        gap: 20px;
-      }
-
       .prefix-wrapper {
         width: 40%;
         display: flex;

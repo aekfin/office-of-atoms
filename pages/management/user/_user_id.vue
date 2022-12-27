@@ -4,7 +4,9 @@
     <v-form ref="form" v-model="valid" lazyValidation class="mt-8">
       <v-container>
         <v-row>
-          <UploadImage class="mt-4" :image.sync="form.image"/>
+          <v-col cols="auto">
+            <UploadImage class="mt-4" :image.sync="form.image"/>
+          </v-col>
           <v-col>
             <v-text-field v-model="form.code" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
             <v-text-field v-model="form.fistNameTh" label="ชื่อ *" :rules="fistNameThRules" required/>
@@ -29,6 +31,7 @@
         <v-expansion-panel>
           <v-expansion-panel-header>ข้อมูลติดต่อ</v-expansion-panel-header>
           <v-expansion-panel-content>
+            <v-container>
               <v-row>
                 <v-col>
                   <v-text-field v-model="form.tel" name="tel" type="tel" label="เบอร์โทรศัพท์"/>
@@ -37,7 +40,12 @@
                   <v-text-field v-model="form.email" name="email" label="E-Mail"/>
                 </v-col>
               </v-row>
-              <v-textarea v-model="form.address" name="address" label="ที่อยู่"/>
+              <v-row>
+                <v-col>
+                  <v-textarea v-model="form.address" name="address" label="ที่อยู่"/>
+                </v-col>
+              </v-row>
+            </v-container>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -138,21 +146,5 @@
 
 <style lang="scss">
   #management-user-detail-page {
-    .row {
-      justify-content: space-between;
-      gap: 40px;
-
-      .selector-project {
-        width: 50%;
-      }
-
-      .year-of-budget {
-        width: 200px;
-      }
-
-      .selector-vendor {
-        flex-grow: 1;
-      }
-    }
   }
 </style>
