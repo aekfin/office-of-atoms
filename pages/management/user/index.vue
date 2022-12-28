@@ -1,6 +1,6 @@
 <template>
   <div id="user-page">
-    <PageHeader text="บริหารบุคลากร" btnText="เพิ่มบุคลากร" createRoute="/management/user/create/"/>
+    <PageHeader text="บริหารบุคลากร" btnText="เพิ่มบุคลากร" createRoute="/management/user/create/" :filters="filters"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
@@ -17,6 +17,7 @@
     },
     data () {
       return {
+        search: '',
         headers: [
           { text: 'รหัสพนักงาน', value: 'code', align: 'center' },
           { text: 'ชื่อ', value: 'fistName', width: '16%' },
@@ -36,6 +37,32 @@
             division: 'กอง ก',
             group: 'กลุ่ม ก'
           },
+        ],
+        filters: [
+          {
+            param: 'position',
+            name: 'ตำแหน่ง',
+            options: [
+              { id: 1, name: 'ตำแหน่ง ก' },
+              { id: 2, name: 'ตำแหน่ง ข' },
+            ]
+          },
+          {
+            param: 'division',
+            name: 'กอง',
+            options: [
+              { id: 1, name: 'กอง ก' },
+              { id: 2, name: 'กอง ข' },
+            ]
+          },
+          {
+            param: 'group',
+            name: 'กลุ่ม',
+            options: [
+              { id: 1, name: 'กลุ่ม ก' },
+              { id: 2, name: 'กลุ่ม ข' },
+            ]
+          }
         ],
       }
     },
