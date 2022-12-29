@@ -28,6 +28,12 @@
           </v-col>
         </v-row>
       </v-container>
+      <v-container class="mt-12">
+        <v-row justify="end">
+          <v-btn large plain @click="$router.push('/management/goods/')">ย้อนหลับ</v-btn>
+          <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
+        </v-row>
+      </v-container>
     </v-form>
   </div>
 </template>
@@ -88,7 +94,7 @@
       }
     },
     methods: {
-      onSave () {
+      onSubmit () {
         this.$refs.form.validate()
       },
     }

@@ -1,6 +1,7 @@
 <template>
   <div id="subcategory-list-page">
-    <v-data-table :headers="subCategoryHeaders" :items="subCategoryItems" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1">
+    <PageHeader text="หมวดหมู่ย่อย" btnText="เพิ่มหมวดหมู่ย่อย" createRoute="/management/category/sub/create/"/>
+    <v-data-table :headers="subCategoryHeaders" :items="subCategoryItems" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
       </template>
@@ -11,6 +12,7 @@
 <script>
   export default {
     components: {
+      PageHeader: () => import('~/components/PageHeader.vue'),
       ActionIconList: () => import('~/components/ActionIconList.vue'),
     },
     data () {

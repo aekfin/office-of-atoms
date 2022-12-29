@@ -49,7 +49,8 @@
       </v-expansion-panels>
       <v-container class="mt-6">
         <v-row justify="end">
-          <v-btn elevation="2" large color="success" @click="onSave">บันทึก</v-btn>
+          <v-btn large plain @click="$router.push('/management/vendor/')">ย้อนหลับ</v-btn>
+          <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
         </v-row>
       </v-container>
     </v-form>
@@ -110,7 +111,7 @@
         const newContact = { name: '', position: '', email: '', tel: '' }
         this.form.contactList = [ ...this.form.contactList, newContact ]
       },
-      onSave () {
+      onSubmit () {
         this.$refs.form.validate()
       },
     }

@@ -11,7 +11,8 @@
         </v-btn>
       </slot>
     </div>
-    <div v-if="filters.length" class="filter-wrapper mt-6">
+    <div class="mt-4">ทั้งหมด {{ 1 }} {{ unit }}</div>
+    <div v-if="filters.length" class="filter-wrapper">
       <div class="filter-results">
         <div v-if="currentFilters.length">กรองโดย:</div>
         <v-chip v-for="current in currentFilters" :key="current.param" close @click:close="onClearFilter(current)">{{ getFilterLabel(current) }}</v-chip>
@@ -59,6 +60,7 @@
       text: { type: String, required: true },
       btnText: { type: String },
       createRoute: { type: [String, Object] },
+      unit: { type: String, default: 'คน' },
       filters: { type: Array, default: () => [] },
     },
     data () {

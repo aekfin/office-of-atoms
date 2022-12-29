@@ -51,7 +51,8 @@
       </v-expansion-panels>
       <v-container class="mt-6">
         <v-row justify="end">
-          <v-btn elevation="2" large color="success" @click="onSave">บันทึก</v-btn>
+          <v-btn large plain @click="$router.push('/management/user/')">ย้อนหลับ</v-btn>
+          <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
         </v-row>
       </v-container>
     </v-form>
@@ -137,7 +138,7 @@
       },
     },
     methods: {
-      onSave () {
+      onSubmit () {
         this.$refs.form.validate()
       },
     }
