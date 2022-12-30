@@ -11,7 +11,7 @@
         </v-btn>
       </slot>
     </div>
-    <div class="mt-4">ทั้งหมด {{ 1 }} {{ unit }}</div>
+    <div v-if="!hideTotal" class="mt-4">ทั้งหมด {{ total || 0 }} {{ unit }}</div>
     <div v-if="filters.length" class="filter-wrapper">
       <div class="filter-results">
         <div v-if="currentFilters.length">กรองโดย:</div>
@@ -62,6 +62,8 @@
       createRoute: { type: [String, Object] },
       unit: { type: String, default: 'คน' },
       filters: { type: Array, default: () => [] },
+      total: { type: Number },
+      hideTotal: { type: Boolean },
     },
     data () {
       return {

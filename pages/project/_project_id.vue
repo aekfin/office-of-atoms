@@ -1,6 +1,6 @@
 <template>
   <div id="project-create-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มโครงการ' : 'การแก้ไขโครงการ'"/>
+    <PageHeader :text="isCreate ? 'การเพิ่มโครงการ' : 'การแก้ไขโครงการ'" hideTotal/>
     <v-form ref="form" v-model="valid" class="mt-4">
       <v-container>
         <v-row>
@@ -39,20 +39,23 @@
           <v-expansion-panel-header>เลือกบริษัทคู่สัญญา</v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-container>
-              <v-row>
+              <v-row class="pl-3 pr-3">
                 <v-select v-model="form.vendor" :items="items" itemValue="id" itemText="name" label="บริษัทคู่สัญญา*" :rules="vendorRules" required/>
               </v-row>
-              <v-row v-if="form.vendor">
+              <v-row v-if="form.vendor" class="pl-3 pr-3">
                 <v-col class="mt-2">
                   <v-row class="mb-2">
                     <div class="text-lg font-bold">รายชื่อผู้ติดต่อ</div>
                   </v-row>
-                  <v-row v-for="(contact, i) in form.vendorContactList" :key="i" class="flex-nowrap">
-                    <div class="prefix-wrapper">
+                  <v-row v-for="(contact, i) in form.vendorContactList" :key="i" class="flex-nowrap pl-2 pr-3 mb-3" align="baseline">
+                    <div class="prefix-wrapper mr-5">
                       <div class="mr-5">{{ i + 1 }}.</div>
                       <v-select v-model="contact.position" :items="vendorPositionList" itemValue="id" itemText="name" label="ตำแหน่ง" :rules="contactPositionRules"/>
                     </div>
                     <v-select v-model="contact.name" :items="vendorNameList" class="vendor-name" itemValue="id" itemText="name" label="ชื่อ-นามสกุล" :rules="contactNameRules"/>
+                    <v-btn v-if="form.vendorContactList.length > 1" icon color="red" @click="removeContact(i)">
+                      <v-icon>mdi-close-circle</v-icon>
+                    </v-btn>
                   </v-row>
                   <v-row v-if="form.vendorContactList.length < 15">
                     <v-btn block rounded outlined @click="addContact">เพิ่มผู้ติดต่อ</v-btn>
@@ -168,6 +171,9 @@
         }
         this.form.vendorContactList = [ ...this.form.vendorContactList, newContact ]
       },
+      removeContact (i) {
+        this.form.vendorContactList.splice(i, 1)
+      },
       onSubmit () {
         const validate = this.$refs.form.validate()
         console.log(validate)
@@ -182,7 +188,7 @@
       .prefix-wrapper {
         width: 40%;
         display: flex;
-        align-items: center;
+        align-items: baseline;
       }
 
       .vendor-name {

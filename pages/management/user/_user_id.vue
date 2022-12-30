@@ -1,6 +1,6 @@
 <template>
   <div id="management-user-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มบุคลากร' : 'การแก้ไขบุคลากร'"/>
+    <PageHeader :text="isCreate ? 'การเพิ่มบุคลากร' : 'การแก้ไขบุคลากร'" hideTotal/>
     <v-form ref="form" v-model="valid" lazyValidation class="mt-8">
       <v-container>
         <v-row>

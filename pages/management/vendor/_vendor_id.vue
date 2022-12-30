@@ -1,6 +1,6 @@
 <template>
   <div id="project-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มคู่สัญญา' : 'การแก้ไขคู่สัญญา'"/>
+    <PageHeader :text="isCreate ? 'การเพิ่มคู่สัญญา' : 'การแก้ไขคู่สัญญา'" hideTotal/>
     <v-form ref="form" v-model="valid" lazyValidation class="mt-8">
       <v-container>
         <v-row>

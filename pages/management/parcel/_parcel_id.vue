@@ -1,13 +1,10 @@
 <template>
-  <div id="management-goods-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มพัสดุ - ครุภัณฑ์' : 'การแก้ไขพัสดุ - ครุภัณฑ์'"/>
+  <div id="management-parcel-detail-page">
+    <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นพัสดุ' : 'การแก้ไขค่าเริ่มต้นพัสดุ'" hideTotal/>
     <v-form ref="form" v-model="valid" lazyValidation class="mt-8">
       <v-container>
         <v-row>
-          <v-col :cols="3">
-            <v-select v-model="form.type" :items="typeList" itemValue="id" itemText="name" label="ประเภท *" :rules="typeRules" required/>
-          </v-col>
-          <v-col :cols="9">
+          <v-col :cols="8">
             <v-text-field v-model="form.name" name="name" label="ชื่อ *" :rules="nameRules" required/>
           </v-col>
         </v-row>
@@ -16,21 +13,24 @@
             <v-select v-model="form.category" :items="categoryList" itemValue="id" itemText="name" label="หมวดหมู่หลัก *" :rules="cateogryRules" required/>
           </v-col>
           <v-col :cols="5">
-            <v-select v-model="form.subcategory" :items="subcategoryList" itemValue="id" itemText="name" label="หมวดหมู่ย่อย *" :rules="subcateogryRules" required/>
+            <v-select v-model="form.subcategory" :items="subcategoryList" itemValue="id" itemText="name" label="หมวดหมู่ย่อย *" :rules="subcateogryRules" required :disabled="!form.category"/>
           </v-col>
           <v-col :cols="2">
             <v-select v-model="form.year" :items="yearList" itemValue="id" itemText="name" label="ปี *" :rules="yearRules" required/>
           </v-col>
         </v-row>
         <v-row>
-          <v-col>
+          <v-col :cols="5">
+            <v-text-field v-model="form.price" label="ราคากลาง" type="number"/>
+          </v-col>
+          <v-col :cols="7">
             <v-textarea v-model="form.note" label="คำอธิบายเพิ่มเติม"/>
           </v-col>
         </v-row>
       </v-container>
       <v-container class="mt-12">
         <v-row justify="end">
-          <v-btn large plain @click="$router.push('/management/goods/')">ย้อนหลับ</v-btn>
+          <v-btn large plain @click="$router.push('/management/parcel/')">ย้อนหลับ</v-btn>
           <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
         </v-row>
       </v-container>
@@ -52,6 +52,7 @@
           category: null,
           subcategory: null,
           year: (new Date()).getFullYear(),
+          price: '',
           note: '',
         },
         categoryList: [
@@ -83,7 +84,7 @@
     },
     computed: {
       isCreate () {
-        return this.$route.params.good_id === 'create'
+        return this.$route.params.parcel_id === 'create'
       },
       yearList () {
         return new Array(5).fill().map((_val, i) => {
@@ -102,7 +103,7 @@
 </script>
 
 <style lang="scss">
-  #management-goods-detail-page {
+  #management-parcel-detail-page {
 
   }
 </style>

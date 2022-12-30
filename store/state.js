@@ -22,7 +22,7 @@ export default () => ({
           to: '/parcel/withdraw/'
         },
         {
-          title: 'พัสดุ ที่รออนุมัติ',
+          title: 'พัสดุที่รออนุมัติ',
           to: '/parcel/request/'
         },
       ]
@@ -41,11 +41,11 @@ export default () => ({
           to: '/durable-goods/borrow/'
         },
         {
-          title: 'ตรวจนับ ครุภัณฑ์',
+          title: 'ตรวจนับครุภัณฑ์',
           to: '/durable-goods/counting/'
         },
         {
-          title: 'ครุภัณฑ์ ที่รออนุมัติ',
+          title: 'ครุภัณฑ์ที่รออนุมัติ',
           to: '/durable-goods/request/'
         },
       ]
@@ -67,8 +67,12 @@ export default () => ({
           to: '/management/category/'
         },
         {
-          title: 'ค่าเริ่มต้น พัสดุ - ครุภัณฑ์',
-          to: '/management/goods/'
+          title: 'ค่าเริ่มต้นพัสดุ',
+          to: '/management/parcel/'
+        },
+        {
+          title: 'ค่าเริ่มต้นครุภัณฑ์',
+          to: '/management/durable-goods/'
         },
         {
           title: 'บริหารคู่สัญญา',
