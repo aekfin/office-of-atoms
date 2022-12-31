@@ -14,7 +14,8 @@ export default () => ({
       children: [
         {
           title: 'บริหารพัสดุ',
-          to: '/parcel/',
+          to: '/parcel/list/',
+          exactPath: true
         },
         {
           title: 'เบิกพัสดุ',
@@ -33,6 +34,7 @@ export default () => ({
         {
           title: 'บริหารครุภัณฑ์',
           to: '/durable-goods/',
+          exactPath: true
         },
         {
           title: 'ยืม - คืน ครุภัณฑ์',

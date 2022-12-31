@@ -15,6 +15,8 @@
           persistentHint
           prependIcon="mdi-calendar"
           :disabled="disabled"
+          :required="required"
+          :rules="rules"
           v-bind="attrs"
           v-on="on"
           @blur="date = parseDate(dateFormatted)"
@@ -35,7 +37,9 @@
     props: {
       value: { type: [Date, String], required: true },
       label: { type: String, required: true },
-      disabled: { type: Boolean }
+      disabled: { type: Boolean },
+      required: { type: Boolean },
+      rules: { type: Array },
     },
     data () {
       const date = this.parseValue(this.value)
