@@ -34,7 +34,7 @@
           </v-col>
         </v-row>
       </v-container>
-      <v-expansion-panels v-model="formExpand" class="form-expansion-panels mt-8" flat multiple>
+      <v-expansion-panels v-model="formExpand" class="form-expansion-panels mt-4" flat multiple>
         <v-expansion-panel>
           <v-expansion-panel-header>เลือกบริษัทคู่สัญญา</v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -76,7 +76,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
       </v-expansion-panels>
-      <v-container class="mt-12">
+      <v-container class="mt-8">
         <v-row justify="end">
           <v-btn large plain @click="$router.push('/project/')">ย้อนหลับ</v-btn>
           <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>

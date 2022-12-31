@@ -15,7 +15,6 @@ export default () => ({
         {
           title: 'บริหารพัสดุ',
           to: '/parcel/',
-          exactPath: true
         },
         {
           title: 'เบิกพัสดุ',
@@ -34,7 +33,6 @@ export default () => ({
         {
           title: 'บริหารครุภัณฑ์',
           to: '/durable-goods/',
-          exactPath: true
         },
         {
           title: 'ยืม - คืน ครุภัณฑ์',

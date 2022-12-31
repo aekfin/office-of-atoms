@@ -1,7 +1,7 @@
 <template>
   <div id="project-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มคู่สัญญา' : 'การแก้ไขคู่สัญญา'" hideTotal/>
-    <v-form ref="form" v-model="valid" lazyValidation class="mt-8">
+    <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
           <v-col cols="auto">
@@ -16,7 +16,7 @@
           </v-col>
         </v-row>
       </v-container>
-      <v-expansion-panels v-model="formExpand" class="form-expansion-panels mt-8" flat multiple>
+      <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
         <v-expansion-panel>
           <v-expansion-panel-header>ข้อมูลติดต่อ</v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -47,7 +47,7 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
-      <v-container class="mt-6">
+      <v-container class="mt-8">
         <v-row justify="end">
           <v-btn large plain @click="$router.push('/management/vendor/')">ย้อนหลับ</v-btn>
           <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>

@@ -1,7 +1,7 @@
 <template>
   <div id="management-parcel-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นพัสดุ' : 'การแก้ไขค่าเริ่มต้นพัสดุ'" hideTotal/>
-    <v-form ref="form" v-model="valid" lazyValidation class="mt-8">
+    <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
           <v-col :cols="8">
@@ -28,7 +28,7 @@
           </v-col>
         </v-row>
       </v-container>
-      <v-container class="mt-12">
+      <v-container class="mt-8">
         <v-row justify="end">
           <v-btn large plain @click="$router.push('/management/parcel/')">ย้อนหลับ</v-btn>
           <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>

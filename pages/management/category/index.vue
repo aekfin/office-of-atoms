@@ -5,7 +5,7 @@
       <template #item.countSubCategory="{ item }">
         <div class="flex items-center justify-center">
           <div>{{ item.countSubCategory }}</div>
-          <v-btn icon color="info">
+          <v-btn icon color="grey" @click="openDialog(item)">
             <v-icon>mdi-information-outline</v-icon>
           </v-btn>
         </div>
@@ -14,6 +14,22 @@
         <ActionIconList :list="getActionIconList(item)"/>
       </template>
     </v-data-table>
+    <v-dialog v-model="dialog" width="480">
+      <v-card>
+        <v-card-title class="text-h5 justify-between">
+          <div>หมวดหมู่ย่อย</div>
+          <v-btn icon @click="closeDialog">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-text class="black--text">
+          <div class="pl-3 pr-3 mb-2">ทั้งหมด {{ selectedSubcategory.length }} หมวด</div>
+          <div class="pl-5 pr-5">
+            <div v-for="subcategory in selectedSubcategory" :key="subcategory.id" class="mb-2">- {{ subcategory.name }}</div>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -36,14 +52,30 @@
           {
             id: 1,
             name: 'โทรศัพท์มือถือ',
-            countSubCategory: 1,
+            countSubCategory: 4,
             countParcel: 5,
             countDurableGoods: 2,
+            subcategory: [
+              { id: 1, name: 'Nokia' },
+              { id: 2, name: 'Apple' },
+              { id: 3, name: 'Samsung' },
+              { id: 4, name: 'One Plus' },
+            ]
           },
         ],
+        selectedSubcategory: [],
+        dialog: false,
       }
     },
     methods: {
+      openDialog (item) {
+        this.selectedSubcategory = item.subcategory
+        this.dialog = true
+      },
+      closeDialog () {
+        this.selectedSubcategory = []
+        this.dialog = false
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'mdi-pencil', action: `/management/category/${item.id}/` },

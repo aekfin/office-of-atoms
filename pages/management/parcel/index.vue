@@ -23,6 +23,7 @@
           { text: 'หมวดหมู่หลัก', value: 'category', width: '200px', align: 'center' },
           { text: 'หมวดหมู่ย่อย', value: 'subcategory', width: '200px', align: 'center' },
           { text: 'ราคากลาง', value: 'price', align: 'center', width: '120px' },
+          { text: 'จำนวน', value: 'count', align: 'center', width: '100px' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
         items: [
@@ -32,6 +33,7 @@
             name: 'โทรศัพท์มือถือ Nokia N95',
             category: 'โทรศัพท์มือถือ',
             subcategory: 'Nokia',
+            count: 15,
             price: 1000,
           },
         ],
