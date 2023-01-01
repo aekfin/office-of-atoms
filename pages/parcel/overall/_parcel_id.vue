@@ -27,7 +27,7 @@
         </v-row>
         <v-row>
           <v-col :cols="6">
-            <v-text-field v-model="form.countRules" :items="categoryList" label="จำนวนรับเข้าคลัง *"/>
+            <v-text-field v-model="form.countRules" label="จำนวนรับเข้าคลัง *"/>
           </v-col>
           <v-col :cols="6">
             <InputDatePicker :value.sync="form.datetimeCreate" label="วันเริ่มโครงการ *" :rules="datetimeCreateRules" required/>
@@ -36,7 +36,7 @@
       </v-container>
       <v-container class="mt-8">
         <v-row justify="end">
-          <v-btn large plain @click="$router.push('/parcel/list/')">ย้อนหลับ</v-btn>
+          <v-btn large plain @click="$router.push('/parcel/overall/')">ย้อนหลับ</v-btn>
           <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
         </v-row>
       </v-container>

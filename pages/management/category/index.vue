@@ -5,7 +5,7 @@
       <template #item.countSubCategory="{ item }">
         <div class="flex items-center justify-center">
           <div>{{ item.countSubCategory }}</div>
-          <v-btn icon color="grey" @click="openDialog(item)">
+          <v-btn icon @click="openDialog(item)">
             <v-icon>mdi-information-outline</v-icon>
           </v-btn>
         </div>
@@ -23,9 +23,11 @@
           </v-btn>
         </v-card-title>
         <v-card-text class="black--text">
-          <div class="pl-3 pr-3 mb-2">ทั้งหมด {{ selectedSubcategory.length }} หมวด</div>
-          <div class="pl-5 pr-5">
-            <div v-for="subcategory in selectedSubcategory" :key="subcategory.id" class="mb-2">- {{ subcategory.name }}</div>
+          <div class="mt-2">ทั้งหมด {{ selectedSubcategory.length }} หมวด</div>
+          <div class="">
+            <v-data-table :headers="subcategoryHeaders" :items="selectedSubcategory" :itemsPerPage="20" disableSort hideDefaultFooter class="mt-3">
+              <template #item.number="{ index }">{{ index + 1 }}.</template>
+            </v-data-table>
           </div>
         </v-card-text>
       </v-card>
@@ -63,6 +65,10 @@
             ]
           },
         ],
+        subcategoryHeaders: [
+          { text: 'ลำดับ', value: 'number', width: '80px', align: 'center' },
+          { text: 'ชื่อ', value: 'name' },
+        ],
         selectedSubcategory: [],
         dialog: false,
       }
@@ -73,7 +79,6 @@
         this.dialog = true
       },
       closeDialog () {
-        this.selectedSubcategory = []
         this.dialog = false
       },
       getActionIconList (item) {

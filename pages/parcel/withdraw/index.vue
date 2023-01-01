@@ -1,0 +1,143 @@
+<template>
+  <div id="parcel-withdraw-page">
+    <PageHeader text="การเบิกพัสดุ" btnText="เพิ่มการเบิกพัสดุ" createRoute="/parcel/withdraw/create/"/>
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
+      <template #item.datetimeWithdraw="{ item }">
+        <div>{{ $moment(item.datetimeWithdraw).format('DD-MM-YYYY') }}</div>
+      </template>
+      <template #item.datetimeApprove="{ item }">
+        <div>{{ $moment(item.datetimeApprove).format('DD-MM-YYYY') }}</div>
+      </template>
+      <template #item.status="{ item }">
+        <v-chip :color="$store.state.approveStatusColor[item.status]">{{ $store.state.approveStatus[item.status] }}</v-chip>
+      </template>
+      <template #item.countParcel="{ item }">
+        <div class="flex items-center justify-center">
+          <div>{{ item.countParcel }}</div>
+          <v-btn icon @click="openDialog(item)">
+            <v-icon>mdi-information-outline</v-icon>
+          </v-btn>
+        </div>
+      </template>
+      <template #item.action="{ item }">
+        <ActionIconList :list="getActionIconList(item)"/>
+      </template>
+    </v-data-table>
+    <v-dialog v-model="dialog" width="640">
+      <v-card v-if="selectedWithdrawParcel">
+        <v-card-title class="text-h5 flex justify-between">
+          <b>พัสดุ</b>
+          <v-btn icon @click="closeDialog">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-text class="black--text">
+          <div class="mt-2">ทั้งหมด {{ selectedWithdrawParcel.countParcel }} ชนิด</div>
+          <v-data-table :headers="parcelHeaders" :items="selectedWithdrawParcel.parcelList" :itemsPerPage="20" disableSort hideDefaultFooter class="mt-3">
+            <template #item.number="{ index }">{{ index + 1 }}.</template>
+          </v-data-table>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+
+<script>
+  export default {
+    components: {
+      PageHeader: () => import('~/components/PageHeader.vue'),
+    },
+    data () {
+      return {
+        dialog: false,
+        selectedWithdrawParcel: null,
+        headers: [
+          { text: 'เลขที่เอกสาร', value: 'code', width: '160px', align: 'center' },
+          { text: 'หน่วยงาน', value: 'agency' },
+          { text: 'วันที่เบิกพัสดุ', value: 'datetimeWithdraw', width: '140px', align: 'center' },
+          { text: 'วันที่อนุมัติ', value: 'datetimeApprove', width: '140px', align: 'center' },
+          { text: 'จำนวนพัสดุ', value: 'countParcel', width: '160px', align: 'center' },
+          { text: 'สถานะการเบิก', value: 'status', width: '160px', align: 'center' },
+          { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
+        ],
+        items: [
+          {
+            id: 1,
+            code: '65-000000001',
+            datetimeWithdraw: new Date(),
+            datetimeApprove: new Date(),
+            agency: 'หน่วยงาน A',
+            status: 1,
+            countParcel: 5,
+            parcelList: [
+              { id: 1, name: 'โทรศัพท์ Nokia N95', countWithdraw: 10, countPaid: 10 },
+              { id: 1, name: 'โทรศัพท์ Nokia N95', countWithdraw: 10, countPaid: 10 },
+            ],
+          },
+          {
+            id: 2,
+            code: '65-000000001',
+            datetimeWithdraw: new Date(),
+            datetimeApprove: new Date(),
+            agency: 'หน่วยงาน B',
+            status: 2,
+            countParcel: 4,
+            parcelList: [
+              { id: 1, name: 'โทรศัพท์ Samsung C', countWithdraw: 5, countPaid: 5 },
+            ],
+          },
+          {
+            id: 3,
+            code: '65-000000001',
+            datetimeWithdraw: new Date(),
+            datetimeApprove: new Date(),
+            agency: 'หน่วยงาน C',
+            status: 3,
+            countParcel: 1,
+            parcelList: [
+              { id: 1, name: 'โทรศัพท์ One Plus', countWithdraw: 8, countPaid: 8 },
+            ],
+          },
+          {
+            id: 4,
+            code: '65-000000001',
+            datetimeWithdraw: new Date(),
+            datetimeApprove: new Date(),
+            agency: 'หน่วยงาน D',
+            status: 4,
+            countParcel: 3,
+            parcelList: [
+              { id: 1, name: 'โทรศัพท์ Nokia N91', countWithdraw: 20, countPaid: 20 },
+            ],
+          },
+        ],
+        parcelHeaders: [
+          { text: 'ลำดับ', value: 'number', width: '80px', align: 'center' },
+          { text: 'ชื่อ', value: 'name' },
+          { text: 'จำนวนเบิก', value: 'countWithdraw', width: '120px', align: 'center' },
+          { text: 'จำนวนจ่าย', value: 'countPaid', width: '120px', align: 'center' },
+        ],
+      }
+    },
+    methods: {
+      openDialog (item) {
+        this.selectedWithdrawParcel = item
+        this.dialog = true
+      },
+      closeDialog () {
+        this.dialog = false
+      },
+      getActionIconList (item) {
+        return [
+          { type: 'link', icon: 'mdi-pencil', action: `/parcel/withdraw/${item.id}/` },
+          { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
+        ]
+      }
+    }
+  }
+</script>
+
+<style lang="scss">
+  #parcel-withdraw-page {
+  }
+</style>

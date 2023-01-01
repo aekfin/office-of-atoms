@@ -1,6 +1,6 @@
 <template>
   <div id="parcel-page">
-    <PageHeader text="บริหารพัสดุ" btnText="เพิ่มพัสดุ" createRoute="/parcel/create/"/>
+    <PageHeader text="บริหารพัสดุ" btnText="เพิ่มพัสดุ" createRoute="/parcel/overall/create/"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
       <template #item.datetimeCreate="{ item }">
         <div>{{ $moment(item.datetimeCreate).format('DD-MM-YYYY') }}</div>
@@ -44,7 +44,7 @@
     methods: {
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'mdi-pencil', action: `/parcel/${item.id}/` },
+          { type: 'link', icon: 'mdi-pencil', action: `/parcel/overall/${item.id}/` },
           { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
         ]
       }

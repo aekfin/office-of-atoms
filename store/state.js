@@ -1,4 +1,16 @@
 export default () => ({
+  approveStatus: {
+    '1': 'อนุมัติ',
+    '2': 'รออนุมัติ',
+    '3': 'ไม่อนุมัติ',
+    '4': 'แบบร่าง',
+  },
+  approveStatusColor: {
+    '1': 'success',
+    '2': 'warning',
+    '3': 'error',
+    '4': 'primary',
+  },
   leftMenus: [
     {
       title: 'หนักหลัก',
@@ -14,8 +26,7 @@ export default () => ({
       children: [
         {
           title: 'บริหารพัสดุ',
-          to: '/parcel/list/',
-          exactPath: true
+          to: '/parcel/overall/',
         },
         {
           title: 'เบิกพัสดุ',
@@ -33,8 +44,7 @@ export default () => ({
       children: [
         {
           title: 'บริหารครุภัณฑ์',
-          to: '/durable-goods/',
-          exactPath: true
+          to: '/durable-goods/overall/',
         },
         {
           title: 'ยืม - คืน ครุภัณฑ์',
@@ -84,5 +94,5 @@ export default () => ({
         }
       ]
     }
-  ]
+  ],
 })
