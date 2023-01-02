@@ -1,6 +1,6 @@
 <template>
-  <div id="parcel-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มพัสดุ' : 'การแก้ไขพัสดุ'" hideTotal/>
+  <div id="durable-goods-detail-page">
+    <PageHeader :text="isCreate ? 'การเพิ่มครุภัณฑ์' : 'การแก้ไขครุภัณฑ์'" hideTotal/>
     <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
@@ -22,21 +22,21 @@
             <v-select v-model="form.subcategory" :items="subcategoryList" itemValue="id" itemText="name" label="หมวดหมู่ย่อย *" :rules="subcategoryRules" required :disabled="!form.category"/>
           </v-col>
           <v-col :cols="6">
-            <v-select v-model="form.parcel" :items="parcelList" itemValue="id" itemText="name" label="พัสดุ *" :rules="parcelRules" required :disabled="!form.subcategory"/>
+            <v-select v-model="form.durableGoods" :items="durableGoodsList" itemValue="id" itemText="name" label="พัสดุ *" :rules="durableGoodsRules" required :disabled="!form.subcategory"/>
           </v-col>
         </v-row>
         <v-row>
           <v-col :cols="6">
-            <v-text-field v-model="form.count" :rules="countRules" label="จำนวนรับเข้าคลัง *"/>
+            <v-select v-model="form.owner" :items="ownerList" :rules="ownerRules" itemValue="id" itemText="name" label="ผู้ครอบครอง *"/>
           </v-col>
           <v-col :cols="6">
-            <InputDatePicker :value.sync="form.datetimeCreate" label="วันที่รับเข้า *" :rules="datetimeCreateRules" required/>
+            <InputDatePicker :value.sync="form.datetimeCreate" label="วันเริ่มโครงการ *" :rules="datetimeCreateRules" required/>
           </v-col>
         </v-row>
       </v-container>
       <v-container class="mt-8">
         <v-row justify="end">
-          <v-btn large plain @click="$router.push('/parcel/overall/')">ย้อนหลับ</v-btn>
+          <v-btn large plain @click="$router.push('/durableGoods/overall/')">ย้อนหลับ</v-btn>
           <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
         </v-row>
       </v-container>
@@ -48,7 +48,6 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
-      InputDatePicker: () => import('~/components/InputDatePicker.vue'),
     },
     data () {
       return {
@@ -59,8 +58,8 @@
           project: null,
           category: null,
           subcategory: null,
-          parcel: null,
-          count: '',
+          durableGoods: null,
+          owner: null,
           datetimeCreate: new Date(),
         },
         years: [
@@ -85,10 +84,15 @@
           { id: 2, name: 'Samsung' },
           { id: 3, name: 'Apple' },
         ],
-        parcelList: [
+        durableGoodsList: [
           { id: 1, name: 'โทรศัพท์ Nokia รุ่น 1' },
           { id: 2, name: 'โทรศัพท์ Samsung รุ่น 1' },
           { id: 3, name: 'โทรศัพท์ Apple รุ่น 1' },          
+        ],
+        ownerList: [
+          { id: 1, name: 'นาย ก' },
+          { id: 2, name: 'นาย ข' },
+          { id: 3, name: 'นาย ค' },  
         ],
         yearRules: [
           v => !!v || 'โปรดเลือกปีงบประมาณ',
@@ -105,7 +109,7 @@
         subcategoryRules: [
           v => !!v || 'โปรดเลือกหมวดหมู่ย่อย',
         ],
-        parcelRules: [
+        durableGoodsRules: [
           v => !!v || 'โปรดเลือกพัสดุ',
         ],
         countRules: [
@@ -118,7 +122,7 @@
     },
     computed: {
       isCreate () {
-        return this.$route.params.parcel_id === 'create'
+        return this.$route.params.durable_goods_id === 'create'
       },
     },
     methods: {
@@ -130,6 +134,6 @@
 </script>
 
 <style lang="scss">
-  #parcel-detail-page {
+  #durable-goods-detail-page {
   }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-page">
-    <PageHeader text="บริหารครุภัณฑ์" btnText="เพิ่มครุภัณฑ์" createRoute="/durable-goods/create/"/>
+    <PageHeader text="บริหารครุภัณฑ์" btnText="เพิ่มครุภัณฑ์" createRoute="/durable-goods/overall/create/"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
       <template #item.datetimeCreate="{ item }">
         <div>{{ $moment(item.datetimeCreate).format('DD-MM-YYYY') }}</div>
@@ -44,7 +44,7 @@
     methods: {
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'mdi-pencil', action: `/durable-goods/${item.id}/` },
+          { type: 'link', icon: 'mdi-pencil', action: `/durable-goods/overall/${item.id}/` },
           { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
         ]
       }
