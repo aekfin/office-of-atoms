@@ -1,7 +1,7 @@
 <template>
-  <div id="parcel-withdraw-page">
-    <PageHeader text="การเบิกพัสดุ" btnText="เพิ่มการเบิกพัสดุ" createRoute="/parcel/withdraw/create/"/>
-    <ParcelWithdrawTable :items="items" :getActionIconList="getActionIconList"/>
+  <div id="parcel-request-page">
+    <PageHeader text="พัสดุที่รออนุมัติ"/>
+    <ParcelWithdrawTable :items="items" isApprover :getActionIconList="getActionIconList"/>
   </div>
 </template>
 
@@ -19,7 +19,7 @@
             datetimeWithdraw: new Date(),
             datetimeApprove: new Date(),
             agency: 'หน่วยงาน A',
-            status: 1,
+            status: 2,
             countParcel: 5,
             parcelList: [
               { id: 1, name: 'โทรศัพท์ Nokia N95', countWithdraw: 10, countPaid: 10 },
@@ -44,7 +44,7 @@
             datetimeWithdraw: new Date(),
             datetimeApprove: new Date(),
             agency: 'หน่วยงาน C',
-            status: 3,
+            status: 2,
             countParcel: 1,
             parcelList: [
               { id: 1, name: 'โทรศัพท์ One Plus', countWithdraw: 8, countPaid: 8 },
@@ -56,7 +56,7 @@
             datetimeWithdraw: new Date(),
             datetimeApprove: new Date(),
             agency: 'หน่วยงาน D',
-            status: 4,
+            status: 2,
             countParcel: 3,
             parcelList: [
               { id: 1, name: 'โทรศัพท์ Nokia N91', countWithdraw: 20, countPaid: 20 },
@@ -68,8 +68,7 @@
     methods: {
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'mdi-pencil', action: `/parcel/withdraw/${item.id}/` },
-          { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
+          { type: 'link', icon: 'mdi-eye', action: `/parcel/request/${item.id}/` },
         ]
       },
     },
@@ -77,6 +76,6 @@
 </script>
 
 <style lang="scss">
-  #parcel-withdraw-page {
+  #parcel-request-page {
   }
 </style>

@@ -32,7 +32,7 @@
           </v-col>
         </v-row>
       </v-container>
-      <v-expansion-panels v-model="formExpand" class="form-expansion-panels mt-4" flat multiple>
+      <v-expansion-panels v-model="formExpand" class="form-expansion-panels mt-5" flat multiple>
         <v-expansion-panel>
           <v-expansion-panel-header>เลือกบริษัทคู่สัญญา</v-expansion-panel-header>
           <v-expansion-panel-content>
