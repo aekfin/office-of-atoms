@@ -1,6 +1,6 @@
 <template>
-  <div id="durable-goods-borrow-page">
-    <PageHeader text="ยืม-คืน ครุภัณฑ์" btnText="เพิ่มการยืมครุภัณฑ์" createRoute="/durable-goods/borrow/create/"/>
+  <div id="durable-goods-request-page">
+    <PageHeader text="ครุภัณฑ์ที่รออนุมัติ"/>
     <DurableGoodsBorrowTable :items="items" :getActionIconList="getActionIconList"/>
   </div>
 </template>
@@ -68,7 +68,7 @@
     methods: {
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'mdi-pencil', action: `/parcel/withdraw/${item.id}/` },
+          { type: 'link', icon: 'mdi-pencil', action: `/durable-goods/request/${item.id}/` },
           { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
         ]
       },
@@ -77,6 +77,6 @@
 </script>
 
 <style lang="scss">
-  #durable-goods-borrow-page {
+  #parcel-withdraw-page {
   }
 </style>

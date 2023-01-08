@@ -1,7 +1,7 @@
 <template>
   <div id="parcel-withdraw-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มการเบิกพัสดุ' : 'การแก้ไขการเบิกพัสดุ'" hideTotal/>
-    <ParcelWithdrawForm :viewMode="!isCreate" @onSave="onSave" @submit="onSubmit"/>
+    <ParcelWithdrawForm viewMode @onSave="onSave" @submit="onSubmit"/>
   </div>
 </template>
 
