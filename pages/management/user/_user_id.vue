@@ -11,7 +11,7 @@
             <v-text-field v-model="form.code" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
             <v-text-field v-model="form.fistNameTh" label="ชื่อ *" :rules="fistNameThRules" required/>
             <v-text-field v-model="form.fistNameEn" label="ชื่อ (Eng) *" :rules="fistNameEnRules" required/>
-            <v-select v-model="form.division" :items="items" itemValue="id" itemText="name" label="กอง *" :rules="divisionRules" required/>
+            <SelectDropdown :value.sync="form.division" :items="items" label="กอง *" :rules="divisionRules" required apiPath="aaa"/>
             <v-text-field v-model="form.username" label="รหัสผู้ใช้งาน *" :rules="usernameRules" required/>
             <v-text-field v-model="form.password" label="รหัสผ่าน *" :type="seePassword ? 'text' : 'password'" :rules="passwordRules" required>
               <template #append><v-icon @click="seePassword = !seePassword" v-text="`mdi-eye${seePassword ? '-off' : ''}`"/></template>
@@ -21,9 +21,9 @@
             <v-text-field v-model="form.idCard" label="รหัสบัตรประชาชน *" :rules="idCardRules" required/>
             <v-text-field v-model="form.lastNameTh" label="นามสกุล *" :rules="lastNameThRules" required/>
             <v-text-field v-model="form.lastNameEn" label="นามสกุล (Eng) *" :rules="lastNameEnRules" required/>
-            <v-select v-model="form.group" :items="items" itemValue="id" itemText="name" label="กลุ่ม *" :rules="groupRules" required/>
-            <v-select v-model="form.position" :items="items" itemValue="id" itemText="name" label="ตำแหน่ง *" :rules="positionRules" required/>
-            <v-select v-model="form.role" :items="items" itemValue="id" itemText="name" label="สิทธ์การใช้งาน *" :rules="roleRules" multiple required/>
+            <SelectDropdown :value.sync="form.group" :items="items" label="กลุ่ม *" :rules="groupRules" required apiPath="aaa"/>
+            <SelectDropdown :value.sync="form.position" :items="items" label="ตำแหน่ง *" :rules="positionRules" required/>
+            <SelectDropdown :value.sync="form.role" :items="items" label="สิทธ์การใช้งาน *" :rules="roleRules" multiple required/>
           </v-col>
         </v-row>
       </v-container>
@@ -64,6 +64,7 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       UploadImage: () => import('~/components/UploadImage.vue'),
+      SelectDropdown: () => import('~/components/SelectDropdown.vue'),
     },
     data () {
       return {
@@ -91,7 +92,19 @@
           { id: 1, name: 'Foo' },
           { id: 2, name: 'Bar' },
           { id: 3, name: 'Fizz' },
-          { id: 4, name: 'Buzz' }
+          { id: 4, name: 'Buzz' },
+          { id: 5, name: 'Foo' },
+          { id: 6, name: 'Bar' },
+          { id: 7, name: 'Fizz' },
+          { id: 8, name: 'Buzz' },
+          { id: 9, name: 'Foo' },
+          { id: 10, name: 'Bar' },
+          { id: 11, name: 'Fizz' },
+          { id: 12, name: 'Buzz' },
+          { id: 13, name: 'Foo' },
+          { id: 14, name: 'Bar' },
+          { id: 15, name: 'Fizz' },
+          { id: 16, name: 'Buzz' },
         ],
         seePassword: false,
         codeRules: [
