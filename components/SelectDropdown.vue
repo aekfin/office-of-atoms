@@ -1,6 +1,6 @@
 <template>
   <div class="select-dropdown">
-    <v-select ref="selector" v-model="val" :items="items" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :loading="isLoading"
+    <v-select ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :loading="isLoading"
       @focus="onFocus">
       <template #append-item>
         <div id="bottom-of-scroll"/>
@@ -54,10 +54,13 @@
           }
         }, 250)
       },
-      async getList () {
+      async getList (more = false) {
         try {
           this.isLoading = true
           await setTimeout(() => {
+            if (more) {
+              this.list = [ ...this.list, { id: 100, name: 'Aek' } ]
+            }
             this.isLoading = false
           }, 2000)
           return Promise.resolve()
@@ -66,7 +69,7 @@
       onScroll (e, menu) {
         const bottom = menu.querySelector('#bottom-of-scroll')?.offsetTop
         if (bottom && (menu.offsetHeight + e.target.scrollTop > bottom)) {
-          if (!this.isLoading) this.getList()
+          if (!this.isLoading) this.getList(true)
         }
       },
     },
