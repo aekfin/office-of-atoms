@@ -4,9 +4,9 @@
     <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <v-col cols="auto">
+          <!-- <v-col cols="auto">
             <UploadImage class="mt-4" :image.sync="form.image"/>
-          </v-col>
+          </v-col> -->
           <v-col class="ml-6">
             <v-text-field v-model="form.code" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
             <v-text-field v-model="form.name" label="ชื่อ *" :rules="nameRules" required/>
@@ -61,7 +61,7 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
-      UploadImage: () => import('~/components/UploadImage.vue'),
+      // UploadImage: () => import('~/components/UploadImage.vue'),
     },
     data () {
       return {

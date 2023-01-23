@@ -4,26 +4,26 @@
     <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <v-col cols="auto">
+          <!-- <v-col cols="auto">
             <UploadImage class="mt-4" :image.sync="form.image"/>
-          </v-col>
+          </v-col> -->
           <v-col>
             <v-text-field v-model="form.code" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
             <v-text-field v-model="form.fistNameTh" label="ชื่อ *" :rules="fistNameThRules" required/>
             <v-text-field v-model="form.fistNameEn" label="ชื่อ (Eng) *" :rules="fistNameEnRules" required/>
             <SelectDropdown :value.sync="form.division" :items="items" label="กอง *" :rules="divisionRules" required apiPath="aaa"/>
-            <v-text-field v-model="form.username" label="รหัสผู้ใช้งาน *" :rules="usernameRules" required/>
-            <v-text-field v-model="form.password" label="รหัสผ่าน *" :type="seePassword ? 'text' : 'password'" :rules="passwordRules" required>
-              <template #append><v-icon @click="seePassword = !seePassword" v-text="`mdi-eye${seePassword ? '-off' : ''}`"/></template>
-            </v-text-field>
+            <SelectDropdown :value.sync="form.position" :items="items" label="ตำแหน่ง *" :rules="positionRules" required/>
+            <v-text-field v-model="form.username" label="E-Mail ผู้ใช้งาน *" :rules="usernameRules" name="email" required/>
+            <SelectDropdown :value.sync="form.role" :items="items" label="สิทธ์การใช้งาน *" :rules="roleRules" multiple required/>
           </v-col>
           <v-col>
             <v-text-field v-model="form.idCard" label="รหัสบัตรประชาชน *" :rules="idCardRules" required/>
             <v-text-field v-model="form.lastNameTh" label="นามสกุล *" :rules="lastNameThRules" required/>
             <v-text-field v-model="form.lastNameEn" label="นามสกุล (Eng) *" :rules="lastNameEnRules" required/>
             <SelectDropdown :value.sync="form.group" :items="items" label="กลุ่ม *" :rules="groupRules" required apiPath="aaa"/>
-            <SelectDropdown :value.sync="form.position" :items="items" label="ตำแหน่ง *" :rules="positionRules" required/>
-            <SelectDropdown :value.sync="form.role" :items="items" label="สิทธ์การใช้งาน *" :rules="roleRules" multiple required/>
+            <v-text-field v-model="form.password" label="รหัสผ่าน *" :type="seePassword ? 'text' : 'password'" :rules="passwordRules" required>
+              <template #append><v-icon @click="seePassword = !seePassword" v-text="`mdi-eye${seePassword ? '-off' : ''}`"/></template>
+            </v-text-field>
           </v-col>
         </v-row>
       </v-container>
@@ -35,9 +35,6 @@
               <v-row>
                 <v-col>
                   <v-text-field v-model="form.tel" name="tel" type="tel" label="เบอร์โทรศัพท์"/>
-                </v-col>
-                <v-col>
-                  <v-text-field v-model="form.email" name="email" label="E-Mail"/>
                 </v-col>
               </v-row>
               <v-row>
@@ -63,7 +60,7 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
-      UploadImage: () => import('~/components/UploadImage.vue'),
+      // UploadImage: () => import('~/components/UploadImage.vue'),
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
     },
     data () {
@@ -126,7 +123,7 @@
           v => !!v || 'โปรดใส่นามสกุล (Eng)',
         ],
         usernameRules: [
-          v => !!v || 'โปรดใส่รหัสผู้ใช้งาน',
+          v => !!v || 'โปรดใส่ E-Mail ผู้ใช้งาน',
         ],
         passwordRules: [
           v => !!v || 'โปรดใส่รหัสผ่าน',
@@ -149,6 +146,10 @@
       isCreate () {
         return this.$route.params.user_id === 'create'
       },
+    },
+    async mounted () {
+      const res = await this.$axios.$get('api/oauth/test')
+      console.log(res)
     },
     methods: {
       onSubmit () {

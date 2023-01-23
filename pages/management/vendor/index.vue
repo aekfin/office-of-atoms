@@ -2,12 +2,6 @@
   <div id="vendor-page">
     <PageHeader text="บริหารคู่สัญญา" btnText="เพิ่มคู่สัญญา" createRoute="/management/vendor/create/"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
-      <template #item.contact="{ item }">
-        <ActionIconList :list="getInformationActionIcon(item)"/>
-      </template>
-      <template #item.attachment="{ item }">
-        <ActionIconList :list="getDownloadActionIcon(item)"/>
-      </template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
       </template>
@@ -27,8 +21,6 @@
           { text: 'รหัสบริษัท', value: 'code', align: 'center', width: '200px' },
           { text: 'ชื่อบริษัท', value: 'name' },
           { text: 'ที่อยู่บริษัท', value: 'address', width: '240px' },
-          { text: 'การติดต่อ', value: 'contact', width: '100px' },
-          { text: 'ไฟล์แนบ', value: 'attachment', width: '100px' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
         items: [
