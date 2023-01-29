@@ -1,0 +1,65 @@
+<template>
+  <div id="vendor-page">
+    <PageHeader text="บริหารคู่สัญญา" btnText="เพิ่มคู่สัญญา" createRoute="/management/vendor/create/"/>
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
+      <template #item.action="{ item }">
+        <ActionIconList :list="getActionIconList(item)"/>
+      </template>
+    </v-data-table>
+  </div>
+</template>
+
+<script>
+  export default {
+    components: {
+      PageHeader: () => import('~/components/PageHeader.vue'),
+      ActionIconList: () => import('~/components/ActionIconList.vue'),
+    },
+    data () {
+      return {
+        headers: [
+          { text: 'รหัสบริษัท', value: 'code', align: 'center', width: '200px' },
+          { text: 'ชื่อบริษัท', value: 'name' },
+          { text: 'ที่อยู่บริษัท', value: 'address', width: '240px' },
+          { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
+        ],
+        items: [
+          {
+            id: 1,
+            code: '6500000001',
+            name: 'นาย ก',
+            address: '11/22 คอนโด A'
+          },
+        ],
+      }
+    },
+    head () {
+      return {
+        title: 'บริหารบุคลากร'
+      }
+    },
+    methods: {
+      getInformationActionIcon (item) {
+        return [
+          { type: 'button', icon: 'mdi-information-outline', action: () => { console.log('Information') } },
+        ]
+      },
+      getDownloadActionIcon (item) {
+        return [
+          { type: 'button', icon: 'mdi-download', action: () => { console.log('Download') } },
+        ]
+      },
+      getActionIconList (item) {
+        return [
+          { type: 'link', icon: 'mdi-pencil', action: `/management/vendor/${item.id}/` },
+          { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
+        ]
+      },
+    },
+  }
+</script>
+
+<style lang="scss">
+  #vendor-page {
+  }
+</style>
