@@ -35,7 +35,7 @@
     </v-app-bar>
     <v-main>
       <v-container class="mt-7 mb-10 pl-12 pr-12">
-        <Nuxt v-if="!isLoading"/>
+        <Nuxt/>
       </v-container>
     </v-main>
     <v-footer color="#0288D1" dark>
@@ -79,7 +79,7 @@ export default {
       try {
         if (window.localStorage.authToken) {
           this.$store.commit('SET_STATE', { name: 'isFullLoading', val: false })
-          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'oauth/test' })
+          const { data } = await this.$store.dispatch('http', { apiPath: 'oauth/test' })
           this.isLoading = false
         } else {
           this.$router.replace('/login/')

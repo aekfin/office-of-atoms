@@ -3,7 +3,8 @@ export default {
     try {
       const config = { method, url: `api/${apiPath}`, data, headers, responseType, params: query }
       const res = await this.$axios(config)
-      return Promise.resolve(res)
+      const data = res.data?.data
+      return Promise.resolve({ res, data })
     } catch (err) {
       const status = err.response.status
       if (status === 401) this.$router.replace('/login/')

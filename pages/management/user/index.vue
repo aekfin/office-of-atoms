@@ -1,7 +1,8 @@
 <template>
   <div id="user-page">
     <PageHeader text="บริหารบุคลากร" btnText="เพิ่มบุคลากร" createRoute="/management/user/create/" :filters="filters"/>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
+      <template #item.order="{ index }">{{ index + 1 }}</template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
       </template>
@@ -17,27 +18,21 @@
     },
     data () {
       return {
+        isLoading: true,
+        count: 0,
+        total: 0,
         search: '',
         headers: [
-          { text: 'รหัสพนักงาน', value: 'code', align: 'center' },
-          { text: 'ชื่อ', value: 'fistName', width: '16%' },
-          { text: 'นามสกุล', value: 'lastName', width: '20%' },
-          { text: 'ตำแหน่ง', value: 'position', align: 'center' },
-          { text: 'กอง', value: 'division', align: 'center' },
-          { text: 'กลุ่ม', value: 'group', align: 'center' },
+          { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
+          { text: 'ชื่อ', value: 'engFristName' },
+          { text: 'นามสกุล', value: 'engLastName' },
+          { text: 'E-Mail', value: 'username' },
+          { text: 'กอง', value: 'organizationMaster.ouName', align: 'center', width: '160px' },
+          { text: 'กลุ่ม', value: 'departmentMaster.departmentName', align: 'center', width: '160px' },
+          { text: 'ตำแหน่ง', value: 'positionMaster.positionName', align: 'center', width: '160px' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
-        items: [
-          {
-            id: 1,
-            code: '6500000001',
-            fistName: 'นาย ก',
-            lastName: 'บริษัท A',
-            position: 'ตำแหน่ง ก',
-            division: 'กอง ก',
-            group: 'กลุ่ม ก'
-          },
-        ],
+        items: [],
         filters: [
           {
             param: 'position',
@@ -48,7 +43,7 @@
             ]
           },
           {
-            param: 'division',
+            param: 'organization',
             name: 'กอง',
             options: [
               { id: 1, name: 'กอง ก' },
@@ -56,7 +51,7 @@
             ]
           },
           {
-            param: 'group',
+            param: 'department',
             name: 'กลุ่ม',
             options: [
               { id: 1, name: 'กลุ่ม ก' },
@@ -66,7 +61,21 @@
         ],
       }
     },
+    mounted () {
+      this.getList()
+    },
     methods: {
+      async getList () {
+        try {
+          this.isLoading = true
+          const { data: { users } } = await this.$store.dispatch('http', { apiPath: 'user/listUsers' })
+          this.items = users
+          this.total = users.length
+          this.count = users.length
+          this.isLoading = false
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'mdi-pencil', action: `/management/user/${item.id}/` },
