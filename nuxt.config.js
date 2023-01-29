@@ -26,6 +26,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    { mode: 'all', src: '~/plugins/axios.js' },
     { mode: 'all', src: '~/plugins/function.js' },
   ],
 
@@ -50,9 +51,7 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    debug: false,
     proxy: true /* !isProd */,
-    retry: { retries: 1 },
   },
 
   proxy: { '/api': { target: 'http://178.128.99.60:8081/frs/webservice/', ws: true } },

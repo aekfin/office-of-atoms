@@ -147,10 +147,6 @@
         return this.$route.params.user_id === 'create'
       },
     },
-    async mounted () {
-      const res = await this.$axios.$get('api/oauth/test')
-      console.log(res)
-    },
     methods: {
       onSubmit () {
         this.$refs.form.validate()

@@ -35,7 +35,7 @@
     </v-app-bar>
     <v-main>
       <v-container class="mt-7 mb-10 pl-12 pr-12">
-        <Nuxt/>
+        <Nuxt v-if="!isLoading"/>
       </v-container>
     </v-main>
     <v-footer color="#0288D1" dark>
@@ -43,6 +43,7 @@
         <span>&copy; {{ new Date().getFullYear() }}</span>
       </div>
     </v-footer>
+    <FullLoading v-if="$store.state.isFullLoading"/>
   </v-app>
 </template>
 
@@ -56,7 +57,8 @@ export default {
   data () {
     return {
       drawer: true,
-      expands: [0, 1, 2, 3, 4]
+      expands: [0, 1, 2, 3, 4],
+      isLoading: true,
     }
   },
   head () {
@@ -70,6 +72,21 @@ export default {
     },
   },
   mounted () {
+    this.checkAuthen()
+  },
+  methods: {
+    async checkAuthen () {
+      try {
+        if (window.localStorage.authToken) {
+          this.$store.commit('SET_STATE', { name: 'isFullLoading', val: false })
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'oauth/test' })
+          this.isLoading = false
+        } else {
+          this.$router.replace('/login/')
+        }
+        return Promise.resolve()
+      } catch (err) { return Promise.reject(err) }
+    }
   },
 }
 </script>

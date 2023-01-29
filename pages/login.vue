@@ -1,11 +1,13 @@
 <template>
   <div id="login-page">
     <v-card elevation="1">
-      <v-form ref="form" v-model="valid">
+      <v-form ref="form" v-model="valid" lazyValidation>
         <v-container>
           <v-row class="mb-12">
-            <v-text-field v-model="form.username" name="username" :rules="usernameRules" label="รหัสผู้ใช้งาน" required outlined/>
-            <v-text-field v-model="form.password" name="password" :rules="passwordRules" label="รหัสผ่าน" required outlined/>
+            <v-text-field v-model="form.username" name="email" :rules="usernameRules" label="E-Mail ผู้ใช้งาน" required outlined/>
+            <v-text-field v-model="form.password" label="รหัสผ่าน" :type="seePassword ? 'text' : 'password'" :rules="passwordRules" required outlined class="mt-2">
+              <template #append><v-icon @click="seePassword = !seePassword" v-text="`mdi-eye${seePassword ? '-off' : ''}`"/></template>
+            </v-text-field>
           </v-row>
           <v-row>
             <v-btn class="w-full" elevation="2" color="primary" x-large @click.stop="login">ลงชื่อเข้าใช้</v-btn>
@@ -25,21 +27,39 @@
     data () {
       return {
         valid: false,
+        seePassword: false,
         form: {
           username: '',
           password: ''
         },
         usernameRules: [
-          v => !!v || 'โปรดใส่รหัสผู้ใช้งาน'
+          v => v ? this.checkEmailFormat(v) || 'โปรดใส่ E-Mail ให้ถูกต้อง' : 'โปรดใส่ E-Mail ผู้ใช้งาน'
         ],
         passwordRules: [
           v => !!v || 'โปรดใส่รหัสผ่าน'
         ]
       }
     },
+    mounted () {
+      localStorage.removeItem('authToken')
+    },
     methods: {
-      login () {
-        this.$refs.form.validate()
+      checkEmailFormat (email) {
+        return String(email).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+      },
+      async login () {
+        try {
+          if (this.$refs.form.validate()) {
+            const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'oauth/authorize', data: this.form })
+            localStorage.setItem('authToken', data.jwttoken)
+            this.$axios.setHeader('Authorization', `Bearer ${data.jwttoken}`)
+            this.$router.push('/')
+            return Promise.resolve(data)
+          }
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
+        }
       }
     }
   }

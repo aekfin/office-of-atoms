@@ -1,4 +1,5 @@
 export default () => ({
+  isFullLoading: true,
   approveStatus: {
     '1': 'อนุมัติ',
     '2': 'รออนุมัติ',
