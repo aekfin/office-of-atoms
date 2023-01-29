@@ -50,7 +50,6 @@
 <script>
 export default {
   name: 'DefaultLayout',
-  middleware: 'auth',
   component: {
     ProfileNavBar: () => import('~/components/ProfileNavBar.vue')
   },
