@@ -44,7 +44,7 @@
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <div class="d-flex justify-end">
+          <div class="d-flex justify-end w-full">
             <v-btn plain @click="dialog = false">ยกเลิก</v-btn>
             <v-btn depressed color="secondary" @click="onApply">นำมาใช้</v-btn>
           </div>

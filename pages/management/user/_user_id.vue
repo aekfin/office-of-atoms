@@ -4,26 +4,55 @@
     <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <!-- <v-col cols="auto">
-            <UploadImage class="mt-4" :image.sync="form.image"/>
-          </v-col> -->
-          <v-col>
+          <v-col :cols="6">
             <v-text-field v-model="form.code" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
-            <v-text-field v-model="form.fistNameTh" label="ชื่อ *" :rules="fistNameThRules" required/>
-            <v-text-field v-model="form.fistNameEn" label="ชื่อ (Eng) *" :rules="fistNameEnRules" required/>
-            <SelectDropdown :value.sync="form.division" :items="items" label="กอง *" :rules="divisionRules" required apiPath="aaa"/>
-            <SelectDropdown :value.sync="form.position" :items="items" label="ตำแหน่ง *" :rules="positionRules" required/>
-            <v-text-field v-model="form.username" label="E-Mail ผู้ใช้งาน *" :rules="usernameRules" name="email" required/>
-            <SelectDropdown :value.sync="form.role" :items="items" label="สิทธ์การใช้งาน *" :rules="roleRules" multiple required/>
           </v-col>
-          <v-col>
+          <v-col :cols="6">
             <v-text-field v-model="form.idCard" label="รหัสบัตรประชาชน *" :rules="idCardRules" required/>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :cols="6">
+            <v-text-field v-model="form.fistNameTh" label="ชื่อ *" :rules="fistNameThRules" required/>
+          </v-col>
+          <v-col :cols="6">
             <v-text-field v-model="form.lastNameTh" label="นามสกุล *" :rules="lastNameThRules" required/>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :cols="6">
+            <v-text-field v-model="form.fistNameEn" label="ชื่อ (Eng) *" :rules="fistNameEnRules" required/>
+          </v-col>
+          <v-col :cols="6">
             <v-text-field v-model="form.lastNameEn" label="นามสกุล (Eng) *" :rules="lastNameEnRules" required/>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :cols="6">
+            <SelectDropdown :value.sync="form.division" :items="items" label="กอง *" :rules="divisionRules" required apiPath="aaa"/>
+          </v-col>
+          <v-col :cols="6">
             <SelectDropdown :value.sync="form.group" :items="items" label="กลุ่ม *" :rules="groupRules" required apiPath="aaa"/>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :cols="6">
+            <SelectDropdown :value.sync="form.position" :items="items" label="ตำแหน่ง *" :rules="positionRules" required/>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :cols="6">
+            <v-text-field v-model="form.username" label="E-Mail ผู้ใช้งาน *" :rules="usernameRules" name="email" required/>
+          </v-col>
+          <v-col :cols="6">
             <v-text-field v-model="form.password" label="รหัสผ่าน *" :type="seePassword ? 'text' : 'password'" :rules="passwordRules" required>
               <template #append><v-icon @click="seePassword = !seePassword" v-text="`mdi-eye${seePassword ? '-off' : ''}`"/></template>
             </v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :cols="6">
+            <SelectDropdown :value.sync="form.role" :items="items" label="สิทธ์การใช้งาน *" :rules="roleRules" multiple required/>
           </v-col>
         </v-row>
       </v-container>

@@ -13,7 +13,7 @@
       </template>
       <div>
         <div>คุณยืนยันที่จะลบหรือไม่ ?</div>
-        <div class="d-flex justify-end mt-3">
+        <div class="d-flex justify-end w-full mt-3">
           <v-btn small plain>ยกเลิก</v-btn>
           <v-btn small color="error" @click="onConfirm">ยืนยัน</v-btn>
         </div>
