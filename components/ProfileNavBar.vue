@@ -3,14 +3,17 @@
     <v-menu offset-y :nudge-bottom="12" :min-width="320">
       <template #activator="{ on, attrs }">
         <div class="profile-button" v-bind="attrs" v-on="on">
-          <div class="profile-image mr-3" :style="`background-image: url(${require('~/assets/images/14992789.jpg')}`"/>
-          <div class="profile-name mr-2">John Doe</div>
+          <!-- <div class="profile-image mr-3" :style="`background-image: url(${require('~/assets/images/14992789.jpg')}`"/> -->
+          <div v-if="user" class="profile-name mr-2">{{ user.thaiFristName }} {{ user.thaiLastName }}</div>
           <v-icon class="profile-icon">mdi-chevron-down</v-icon>
         </div>
       </template>
       <v-list>
-        <v-list-item v-for="(item, index) in items" :key="index" link>
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        <v-list-item v-for="(item, index) in items" :key="index" link :to="item.to">
+          <v-list-item-title>
+            <v-icon v-if="item.icon" class="profile-icon mr-1" v-text="item.icon"/>
+            <span>{{ item.title }}</span>
+          </v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -21,14 +24,32 @@
   export default {
     data () {
       return {
-        items: [
-          { title: 'Click Me' },
-          { title: 'Click Me' },
-          { title: 'Click Me' },
-          { title: 'Click Me 2' }
+      }
+    },
+    computed: {
+      user () {
+        return this.$store.state.userProfile
+      },
+      items () {
+        return [
+          {
+            title: 'Profile',
+            icon: 'mdi-account',
+            to: `/management/user/${this.user?.id}/`
+          },
+          {
+            title: 'Logout',
+            icon: 'mdi-logout',
+            to: '/login/'
+          },
         ]
       }
-    }
+    },
+    methods: {
+      onClick () {
+        console.log('AAA')
+      }
+    },
   }
 </script>
 

@@ -41,7 +41,7 @@
       }
     },
     mounted () {
-      // localStorage.removeItem('authToken')
+      localStorage.removeItem('authToken')
     },
     methods: {
       checkEmailFormat (email) {
@@ -51,9 +51,7 @@
         try {
           if (this.$refs.form.validate()) {
             const { res, data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'oauth/authorize', data: this.form })
-            console.log(res, data)
             localStorage.setItem('authToken', data.jwttoken)
-            console.log(localStorage)
             this.$axios.setHeader('Authorization', `Bearer ${data.jwttoken}`)
             this.$router.push('/')
             return Promise.resolve(data)

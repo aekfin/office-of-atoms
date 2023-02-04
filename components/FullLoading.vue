@@ -8,7 +8,7 @@
         </div>
       </div>
     </div>
-    <div class="loading-text font-bold text-white mt-5">Loading...</div>
+    <div class="loading-text text-white mt-5"><b>Loading...</b></div>
   </div>
 </template>
 

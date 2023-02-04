@@ -67,7 +67,7 @@ export default {
   },
   computed: {
     title () {
-      return 'ระบบบริหารจัดการครุภัณฑ์ทางอิเลกทรอนิกส์'
+      return `ระบบบริหารจัดการครุภัณฑ์ | ${this.$store.state?.role}`
     },
   },
   mounted () {
@@ -76,16 +76,27 @@ export default {
   methods: {
     async checkAuthen () {
       try {
-        if (window.localStorage.authToken) {
+        const authToken = window.localStorage.authToken
+        if (authToken) {
           this.$store.commit('SET_STATE', { name: 'isFullLoading', val: false })
-          const { data } = await this.$store.dispatch('http', { apiPath: 'oauth/test' })
+          await this.$store.dispatch('http', { apiPath: 'oauth/valify-token' })
+          const { data: profile } = await this.$store.dispatch('http', { apiPath: 'user/getUserbytoken' })
+          const { data: role } = await this.$store.dispatch('http', { apiPath: 'roles/getRoles' })
+          this.$store.commit('SET_STATE', { name: 'userProfile', val: profile})
+          this.$store.commit('SET_STATE', { name: 'role', val: role})
           this.isLoading = false
         } else {
-          this.$router.replace('/login/')
+          this.resetToken()
         }
         return Promise.resolve()
-      } catch (err) { return Promise.reject(err) }
-    }
+      } catch (err) {
+        this.resetToken()
+        return Promise.reject(err)
+      }
+    },
+    resetToken () {
+      this.$router.replace('/login/')
+    },
   },
 }
 </script>

@@ -6,7 +6,9 @@ export default {
       return Promise.resolve({ res, data: res.data?.data || res.data })
     } catch (err) {
       const status = err.response.status
-      if (status === 401) this.$router.replace('/login/')
+      if (status === 401) {
+        this.$router.replace('/login/')
+      }
       return Promise.reject(err)
     }
   },

@@ -1,5 +1,7 @@
 export default () => ({
   isFullLoading: true,
+  userProfile: null,
+  role: null,
   approveStatus: {
     '1': 'อนุมัติ',
     '2': 'รออนุมัติ',
