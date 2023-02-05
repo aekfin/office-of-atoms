@@ -9,6 +9,18 @@ export default {
       if (status === 401) {
         this.$router.replace('/login/')
       }
+      await dispatch('snackbar', { text: `<b>Error ${status}: </b> ${err.response.statusText}`, props: { color: 'red', top: true } })
+      console.log(err)
+      return Promise.reject(err)
+    }
+  },
+  async snackbar ({ state, commit, dispatch }, { text = 'Success', props = { color: 'success' } }) {
+    try {
+      commit('SET_STATE', { name: 'snackbarText', val: text })
+      commit('SET_STATE', { name: 'snackbarProps', val: props })
+      commit('SET_STATE', { name: 'snackbarVisible', val: true })
+      return Promise.resolve()
+    } catch (err) {
       return Promise.reject(err)
     }
   },

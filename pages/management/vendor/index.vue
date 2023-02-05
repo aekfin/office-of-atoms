@@ -1,7 +1,7 @@
 <template>
   <div id="vendor-page">
-    <PageHeader text="บริหารคู่สัญญา" btnText="เพิ่มคู่สัญญา" createRoute="/management/vendor/create/"/>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
+    <PageHeader text="บริหารคู่สัญญา" btnText="เพิ่มคู่สัญญา" createRoute="/management/vendor/create/" :total="total"/>
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
       </template>
@@ -17,10 +17,13 @@
     },
     data () {
       return {
+        isLoading: true,
+        count: 0,
+        total: 0,
         headers: [
-          { text: 'รหัสบริษัท', value: 'code', align: 'center', width: '200px' },
-          { text: 'ชื่อบริษัท', value: 'name' },
-          { text: 'ที่อยู่บริษัท', value: 'address', width: '240px' },
+          { text: 'รหัสบริษัท', value: 'companyNumber', align: 'center', width: '200px' },
+          { text: 'ชื่อบริษัท', value: 'companyName' },
+          { text: 'ที่อยู่บริษัท', value: 'companyAddress', width: '240px' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
         items: [
@@ -38,16 +41,20 @@
         title: 'บริหารบุคลากร'
       }
     },
+    mounted () {
+      this.getList()
+    },
     methods: {
-      getInformationActionIcon (item) {
-        return [
-          { type: 'button', icon: 'mdi-information-outline', action: () => { console.log('Information') } },
-        ]
-      },
-      getDownloadActionIcon (item) {
-        return [
-          { type: 'button', icon: 'mdi-download', action: () => { console.log('Download') } },
-        ]
+      async getList () {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', { apiPath: 'Project/getListCompany' })
+          this.items = data.content
+          this.total = data.numberOfElements
+          this.count = data.content.length
+          this.isLoading = false
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
       },
       getActionIconList (item) {
         return [

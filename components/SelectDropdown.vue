@@ -57,12 +57,9 @@
       async getList (more = false) {
         try {
           this.isLoading = true
-          await setTimeout(() => {
-            if (more) {
-              this.list = [ ...this.list, { id: 100, name: 'Aek' } ]
-            }
-            this.isLoading = false
-          }, 2000)
+          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath })
+          this.list = data
+          this.isLoading = false
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },

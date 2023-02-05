@@ -27,7 +27,7 @@
     <v-dialog v-model="dialog" width="800" contentClass="filter-dialog">
       <v-card>
         <v-card-title>
-          <div class="d-flex justify-space-between">
+          <div class="d-flex w-full justify-space-between">
             <h3 class="text-2xl font-bold">กรองข้อมูลด้วย</h3>
             <v-btn icon @click="dialog = false"><v-icon>mdi-close</v-icon></v-btn>
           </div>

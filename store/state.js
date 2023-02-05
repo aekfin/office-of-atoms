@@ -2,6 +2,9 @@ export default () => ({
   isFullLoading: true,
   userProfile: null,
   role: null,
+  snackbarVisible: false,
+  snackbarText: '',
+  snackbarProps: {},
   approveStatus: {
     '1': 'อนุมัติ',
     '2': 'รออนุมัติ',

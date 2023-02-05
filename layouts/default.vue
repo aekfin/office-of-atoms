@@ -44,6 +44,7 @@
       </div>
     </v-footer>
     <FullLoading v-if="$store.state.isFullLoading"/>
+    <SnackBarMessage/>
   </v-app>
 </template>
 
@@ -51,7 +52,8 @@
 export default {
   name: 'DefaultLayout',
   component: {
-    ProfileNavBar: () => import('~/components/ProfileNavBar.vue')
+    ProfileNavBar: () => import('~/components/ProfileNavBar.vue'),
+    SnackBarMessage: () => import('~/components/SnackBarMessage.vue')
   },
   data () {
     return {

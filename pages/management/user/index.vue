@@ -1,6 +1,6 @@
 <template>
   <div id="user-page">
-    <PageHeader text="บริหารบุคลากร" btnText="เพิ่มบุคลากร" createRoute="/management/user/create/" :filters="filters"/>
+    <PageHeader text="บริหารบุคลากร" btnText="เพิ่มบุคลากร" createRoute="/management/user/create/" :filters="filters" :total="total"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ index + 1 }}</template>
       <template #item.action="{ item }">
@@ -76,10 +76,18 @@
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
+      async deleteUser (item) {
+        try {
+            const { data } = await this.$store.dispatch('http', { method: 'delete', apiPath: `user/${item.id}` })
+            await this.$store.dispatch('snackbar', { text: 'ลบบุคลากรสำเร็จ' })
+            await this.getList()
+            return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'mdi-pencil', action: `/management/user/${item.id}/` },
-          { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
+          { type: 'confirm', icon: 'mdi-delete', action: () => { this.deleteUser(item) } },
         ]
       }
     }

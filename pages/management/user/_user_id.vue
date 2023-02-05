@@ -1,50 +1,50 @@
 <template>
   <div id="management-user-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มบุคลากร' : 'การแก้ไขบุคลากร'" hideTotal/>
-    <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
+    <v-form ref="form" v-model="valid" lazyValidation class="mt-4 relative">
       <v-container>
         <v-row>
           <v-col :cols="6">
-            <v-text-field v-model="form.code" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
+            <v-text-field v-model="form.employeeId" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
           </v-col>
           <v-col :cols="6">
-            <v-text-field v-model="form.idCard" label="รหัสบัตรประชาชน *" :rules="idCardRules" required/>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col :cols="6">
-            <v-text-field v-model="form.fistNameTh" label="ชื่อ *" :rules="fistNameThRules" required/>
-          </v-col>
-          <v-col :cols="6">
-            <v-text-field v-model="form.lastNameTh" label="นามสกุล *" :rules="lastNameThRules" required/>
+            <v-text-field v-model="form.thaiId" label="รหัสบัตรประชาชน *" :rules="idCardRules" required/>
           </v-col>
         </v-row>
         <v-row>
           <v-col :cols="6">
-            <v-text-field v-model="form.fistNameEn" label="ชื่อ (Eng) *" :rules="fistNameEnRules" required/>
+            <v-text-field v-model="form.thaiFristName" label="ชื่อ *" :rules="fistNameThRules" required/>
           </v-col>
           <v-col :cols="6">
-            <v-text-field v-model="form.lastNameEn" label="นามสกุล (Eng) *" :rules="lastNameEnRules" required/>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col :cols="6">
-            <SelectDropdown :value.sync="form.division" :items="items" label="กอง *" :rules="divisionRules" required apiPath="aaa"/>
-          </v-col>
-          <v-col :cols="6">
-            <SelectDropdown :value.sync="form.group" :items="items" label="กลุ่ม *" :rules="groupRules" required apiPath="aaa"/>
+            <v-text-field v-model="form.thaiLastName" label="นามสกุล *" :rules="lastNameThRules" required/>
           </v-col>
         </v-row>
         <v-row>
           <v-col :cols="6">
-            <SelectDropdown :value.sync="form.position" :items="items" label="ตำแหน่ง *" :rules="positionRules" required/>
+            <v-text-field v-model="form.engFristName" label="ชื่อ (Eng) *" :rules="fistNameEnRules" required/>
+          </v-col>
+          <v-col :cols="6">
+            <v-text-field v-model="form.engLastName" label="นามสกุล (Eng) *" :rules="lastNameEnRules" required/>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :cols="6">
+            <SelectDropdown :value.sync="form.ouId" label="กอง *" itemText="ouName" :rules="divisionRules" required apiPath="Orgchart/getOrganizations"/>
+          </v-col>
+          <v-col :cols="6">
+            <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="groupRules" required apiPath="Orgchart/getDepartments"/>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :cols="6">
+            <SelectDropdown :value.sync="form.positionId" label="ตำแหน่ง *" :rules="positionRules" itemText="positionName" required apiPath="Orgchart/getPositions"/>
           </v-col>
         </v-row>
         <v-row>
           <v-col :cols="6">
             <v-text-field v-model="form.username" label="E-Mail ผู้ใช้งาน *" :rules="usernameRules" name="email" required/>
           </v-col>
-          <v-col :cols="6">
+          <v-col v-if="isCreate" :cols="6">
             <v-text-field v-model="form.password" label="รหัสผ่าน *" :type="seePassword ? 'text' : 'password'" :rules="passwordRules" required>
               <template #append><v-icon @click="seePassword = !seePassword" v-text="`mdi-eye${seePassword ? '-off' : ''}`"/></template>
             </v-text-field>
@@ -52,7 +52,7 @@
         </v-row>
         <v-row>
           <v-col :cols="6">
-            <SelectDropdown :value.sync="form.role" :items="items" label="สิทธ์การใช้งาน *" :rules="roleRules" multiple required/>
+            <SelectDropdown :value.sync="form.roleName" :items="roleList" label="สิทธ์การใช้งาน *" :rules="roleRules" multiple required/>
           </v-col>
         </v-row>
       </v-container>
@@ -63,7 +63,7 @@
             <v-container>
               <v-row>
                 <v-col>
-                  <v-text-field v-model="form.tel" name="tel" type="tel" label="เบอร์โทรศัพท์"/>
+                  <v-text-field v-model="form.phone" name="tel" type="tel" label="เบอร์โทรศัพท์"/>
                 </v-col>
               </v-row>
               <v-row>
@@ -96,20 +96,19 @@
       return {
         valid: true,
         form: {
-          image: '',
-          code: '',
-          idCard: '',
-          fistNameTh: '',
-          lastNameTh: '',
-          fistNameEn: '',
-          lastNameEn: '',
+          employeeId: '',
+          thaiId: '',
+          thaiFristName: '',
+          thaiLastName: '',
+          engFristName: '',
+          engLastName: '',
           username: '',
           password: '',
-          division: null,
-          group: null,
-          position: null,
-          role: [],
-          tel: '',
+          ouId: null,
+          departmentId: null,
+          positionId: null,
+          roleName: '',
+          phone: '',
           email: '',
           address: ''
         },
@@ -132,6 +131,10 @@
           { id: 15, name: 'Fizz' },
           { id: 16, name: 'Buzz' },
         ],
+        roleList: [
+          'ADMIN',
+          'USER'
+        ],
         seePassword: false,
         codeRules: [
           v => !!v || 'โปรดใส่รหัสพนักงาน',
@@ -152,7 +155,7 @@
           v => !!v || 'โปรดใส่นามสกุล (Eng)',
         ],
         usernameRules: [
-          v => !!v || 'โปรดใส่ E-Mail ผู้ใช้งาน',
+          v => v ? this.$fn.checkEmailFormat(v) || 'โปรดใส่ E-Mail ให้ถูกต้อง' : 'โปรดใส่ E-Mail ผู้ใช้งาน'
         ],
         passwordRules: [
           v => !!v || 'โปรดใส่รหัสผ่าน',
@@ -176,9 +179,42 @@
         return this.$route.params.user_id === 'create'
       },
     },
+    mounted () {
+      if (!this.isCreate) this.getData()
+    },
     methods: {
-      onSubmit () {
-        this.$refs.form.validate()
+      async getData () {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', { apiPath: 'user/getUser', query: { id: this.$route.params.user_id } })
+          this.form = {
+            ...data,
+            ouId: data.organizationMaster.id,
+            departmentId: data.departmentMaster.id,
+            positionId: data.positionMaster.id
+          }
+          this.isLoading = false
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
+      async onSubmit () {
+        const valid = this.$refs.form.validate()
+        try {
+          if (valid) {
+            const apiPath = this.isCreate ? 'oauth/register' : 'user/update'
+            const method = this.isCreate ? 'post' : 'put'
+            if (!this.isCreate) {
+              this.form.organizationMaster.id = this.form.ouId
+              this.form.departmentMaster.id = this.form.departmentId
+              this.form.positionMaster.id = this.form.positionId
+            }
+            const { data } = await this.$store.dispatch('http', { method, apiPath, data: this.form })
+            await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างบุคลากรสำเร็จ' : 'แก้ไขบุคลากรสำเร็จ' })
+            return Promise.resolve(data)
+          } else {
+            return Promise.resolve()
+          }
+        } catch (err) { return Promise.reject(err) }
       },
     }
   }

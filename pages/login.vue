@@ -33,7 +33,7 @@
           password: ''
         },
         usernameRules: [
-          v => v ? this.checkEmailFormat(v) || 'โปรดใส่ E-Mail ให้ถูกต้อง' : 'โปรดใส่ E-Mail ผู้ใช้งาน'
+          v => v ? this.$fn.checkEmailFormat(v) || 'โปรดใส่ E-Mail ให้ถูกต้อง' : 'โปรดใส่ E-Mail ผู้ใช้งาน'
         ],
         passwordRules: [
           v => !!v || 'โปรดใส่รหัสผ่าน'
@@ -44,9 +44,6 @@
       localStorage.removeItem('authToken')
     },
     methods: {
-      checkEmailFormat (email) {
-        return String(email).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
-      },
       async login () {
         try {
           if (this.$refs.form.validate()) {

@@ -8,9 +8,9 @@
             <UploadImage class="mt-4" :image.sync="form.image"/>
           </v-col> -->
           <v-col class="ml-6">
-            <v-text-field v-model="form.code" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
-            <v-text-field v-model="form.name" label="ชื่อ *" :rules="nameRules" required/>
-            <v-textarea v-model="form.address" name="address" label="ที่อยู่ *" :rules="addressRules" required/>
+            <v-text-field v-model="form.companyNumber" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
+            <v-text-field v-model="form.companyName" label="ชื่อ *" :rules="nameRules" required/>
+            <v-textarea v-model="form.companyAddress" name="address" label="ที่อยู่ *" :rules="addressRules" required/>
             <v-text-field v-model="form.service" name="service" label="การบริการ"/>
             <v-text-field v-model="form.warranty" type="number" name="warranty" label="การรับประกัน"/>
           </v-col>
@@ -21,7 +21,7 @@
           <v-expansion-panel-header>ข้อมูลติดต่อ</v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-container>
-              <v-row v-for="(contact, i) in form.contactList" :key="i" class="flex-nowrap gap-5">
+              <v-row v-for="(contact, i) in form.contractPersons" :key="i" class="flex-nowrap gap-5">
                 <v-col cols="7">
                   <v-row>
                     <div class="self-center mr-5">{{ i + 1 }}.</div>
@@ -36,7 +36,7 @@
                     <v-text-field v-model="contact.position" name="code" label="ตำแหน่ง *" :rules="contactPositionRules" required/>
                   </v-row>
                   <v-row>
-                    <v-text-field v-model="contact.tel" label="เบอร์โทรศัพท์ *" :rules="contactTelRules"/>
+                    <v-text-field v-model="contact.phone" label="เบอร์โทรศัพท์ *" :rules="contactTelRules"/>
                   </v-row>
                 </v-col>
               </v-row>
@@ -67,14 +67,13 @@
       return {
         valid: true,
         form: {
-          image: '',
-          code: '',
-          name: '',
-          address: '',
+          companyNumber: '',
+          companyName: '',
+          companyAddress: '',
           service: '',
           warranty: '',
-          contactList: [
-            { name: '', position: '', email: '', tel: '' }
+          contractPersons: [
+            { name: '', position: '', email: '', phone: '' }
           ]
         },
         formExpand: [0],
@@ -97,7 +96,7 @@
           v => !!v || 'โปรดใส่ตำแหน่ง',
         ],
         contactEmailRules: [
-          v => !!v || 'โปรดใส่ E-mail',
+          v => v ? this.$fn.checkEmailFormat(v) || 'โปรดใส่ E-Mail ให้ถูกต้อง' : 'โปรดใส่ E-Mail'
         ],
       }
     },
@@ -106,10 +105,22 @@
         return this.$route.params.vendor_id === 'create'
       },
     },
+    mounted () {
+      if (!this.isCreate) this.getData()
+    },
     methods: {
+      async getData () {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', { apiPath: 'Project/getcompany', query: { id: this.$route.params.vendor_id } })
+          this.form = data
+          this.isLoading = false
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
       addContact () {
         const newContact = { name: '', position: '', email: '', tel: '' }
-        this.form.contactList = [ ...this.form.contactList, newContact ]
+        this.form.contractPersons = [ ...this.form.contractPersons, newContact ]
       },
       onSubmit () {
         this.$refs.form.validate()
