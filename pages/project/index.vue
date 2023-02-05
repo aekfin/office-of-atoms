@@ -1,7 +1,7 @@
 <template>
   <div id="project-page">
-    <PageHeader text="โครงการ" btnText="เพิ่มโครงการ" createRoute="/project/create/"/>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
+    <PageHeader text="โครงการ" btnText="เพิ่มโครงการ" createRoute="/project/create/" :total="total"/>
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.datetimeStart="{ item }">
         {{ $moment(item).format('DD-MM-YYYY') }}
       </template>
@@ -12,6 +12,7 @@
         <ActionIconList :list="getActionIconList(item)"/>
       </template>
     </v-data-table>
+    <Pagination/>
   </div>
 </template>
 
@@ -20,54 +21,41 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       ActionIconList: () => import('~/components/ActionIconList.vue'),
+      Pagination: () => import('~/components/Pagination.vue'),
     },
     data () {
       return {
+        isLoading: true,
+        count: 0,
+        total: 0,
         headers: [
-          { text: 'เลขที่โครงการ', value: 'code', width: '140px', align: 'center' },
-          { text: 'ชื่อโครงการ', value: 'name', width: '28%' },
-          { text: 'คู่สัญญา', value: 'vendor', align: 'center' },
-          { text: 'วันเริ่มโครงการ', value: 'datetimeStart', width: '140px', align: 'center' },
-          { text: 'วันเริ่มสัญญา', value: 'datetimeStartVendor', width: '140px', align: 'center' },
+          { text: 'เลขที่โครงการ', value: 'projectNumber', width: '140px', align: 'center' },
+          { text: 'ชื่อโครงการ', value: 'projectName', width: '28%' },
+          { text: 'เลขที่สัญญา', value: 'contractNumber', align: 'center' },
+          { text: 'วันเริ่มโครงการ', value: 'projectStartDate', width: '140px', align: 'center' },
+          { text: 'วันเริ่มสัญญา', value: 'contractStartDate', width: '140px', align: 'center' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
-        items: [
-          {
-            id: 1,
-            code: '6500000001',
-            name: 'ชื่อโครงการ 1',
-            vendor: 'บริษัท A',
-            datetimeStart: new Date(),
-            datetimeStartVendor: new Date(),
-          },
-          {
-            id: 2,
-            code: '6500000002',
-            name: 'ชื่อโครงการ 2',
-            vendor: 'บริษัท B',
-            datetimeStart: new Date(),
-            datetimeStartVendor: new Date(),
-          },
-          {
-            id: 3,
-            code: '6500000003',
-            name: 'ชื่อโครงการ 3',
-            vendor: 'บริษัท C',
-            datetimeStart: new Date(),
-            datetimeStartVendor: new Date(),
-          },
-          {
-            id: 4,
-            code: '6500000004',
-            name: 'ชื่อโครงการ 4',
-            vendor: 'บริษัท D',
-            datetimeStart: new Date(),
-            datetimeStartVendor: new Date(),
-          }
-        ],
+        items: [],
       }
     },
+    watch: {
+      '$route.query' () {
+        this.getList()
+      }
+    },
+    mounted () {
+      this.getList()
+    },
     methods: {
+      async getList () {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'Project/getListProject', query: this.$route.query, context: this })
+          this.isLoading = false
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'mdi-pencil', action: `/project/${item.id}/` },

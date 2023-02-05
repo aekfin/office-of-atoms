@@ -24,4 +24,20 @@ export default {
       return Promise.reject(err)
     }
   },
+  async getListPagination ({ state, commit, dispatch }, { method = 'get', apiPath, data, query = {}, headers = {}, responseType = 'json', context, field = 'items' }) {
+    try {
+      const res = await dispatch('http', { method, apiPath, data, query, headers, responseType })
+      const pagination = { ...res.data }
+      delete pagination.content
+      commit('SET_STATE', { name: 'pagination', val: pagination })
+      if (context) {
+        context[field] = res.data.content
+        context.total = res.data.numberOfElements
+        context.count = res.data.content.length
+      }
+      return Promise.resolve(res)
+    } catch (err) {
+      return Promise.reject(err)
+    }
+  },
 }

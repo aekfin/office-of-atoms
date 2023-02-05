@@ -26,14 +26,7 @@
           { text: 'ที่อยู่บริษัท', value: 'companyAddress', width: '240px' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
-        items: [
-          {
-            id: 1,
-            code: '6500000001',
-            name: 'นาย ก',
-            address: '11/22 คอนโด A'
-          },
-        ],
+        items: [],
       }
     },
     head () {
@@ -48,12 +41,9 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: 'Project/getListCompany' })
-          this.items = data.content
-          this.total = data.numberOfElements
-          this.count = data.content.length
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'Project/getListCompany', query: this.$route.query, context: this })
           this.isLoading = false
-          return Promise.resolve()
+          return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
       getActionIconList (item) {
