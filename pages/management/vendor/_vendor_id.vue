@@ -11,8 +11,8 @@
             <v-text-field v-model="form.companyNumber" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
             <v-text-field v-model="form.companyName" label="ชื่อ *" :rules="nameRules" required/>
             <v-textarea v-model="form.companyAddress" name="address" label="ที่อยู่ *" :rules="addressRules" required/>
-            <v-text-field v-model="form.service" name="service" label="การบริการ"/>
-            <v-text-field v-model="form.warranty" type="number" name="warranty" label="การรับประกัน"/>
+            <v-text-field v-model="form.serviceType" name="service" label="การบริการ"/>
+            <v-text-field v-model="form.warrantytype" name="warranty" label="การรับประกัน"/>
           </v-col>
         </v-row>
       </v-container>
@@ -21,7 +21,7 @@
           <v-expansion-panel-header>ข้อมูลติดต่อ</v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-container>
-              <v-row v-for="(contact, i) in form.contractPersons" :key="i" class="flex-nowrap gap-5">
+              <v-row v-for="(contact, i) in form.contractPersons" :key="i" class="flex-nowrap gap-5 mb-2">
                 <v-col cols="7">
                   <v-row>
                     <div class="self-center mr-5">{{ i + 1 }}.</div>
@@ -40,7 +40,7 @@
                   </v-row>
                 </v-col>
               </v-row>
-              <v-row class="mt-5">
+              <v-row>
                 <v-btn block rounded outlined @click="addContact">เพิ่มผู้ติดต่อ</v-btn>
               </v-row>
             </v-container>
@@ -70,8 +70,8 @@
           companyNumber: '',
           companyName: '',
           companyAddress: '',
-          service: '',
-          warranty: '',
+          serviceType: '',
+          warrantytype: '',
           contractPersons: [
             { name: '', position: '', email: '', phone: '' }
           ]
@@ -122,8 +122,19 @@
         const newContact = { name: '', position: '', email: '', tel: '' }
         this.form.contractPersons = [ ...this.form.contractPersons, newContact ]
       },
-      onSubmit () {
-        this.$refs.form.validate()
+      async onSubmit () {
+        const valid = this.$refs.form.validate()
+        try {
+          if (valid) {
+            const apiPath = this.isCreate ? 'Project/addcompany' : 'Project/updateCompany'
+            const method = this.isCreate ? 'post' : 'patch'
+            const { data } = await this.$store.dispatch('http', { method, apiPath, data: this.form })
+            await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างคู่สัญญาสำเร็จ' : 'แก้ไขคู่สัญญาสำเร็จ' })
+            return Promise.resolve(data)
+          } else {
+            return Promise.resolve()
+          }
+        } catch (err) { return Promise.reject(err) }
       },
     }
   }

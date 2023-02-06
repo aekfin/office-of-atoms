@@ -24,12 +24,11 @@
         search: '',
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
-          { text: 'ชื่อ', value: 'engFristName' },
-          { text: 'นามสกุล', value: 'engLastName' },
-          { text: 'E-Mail', value: 'username' },
-          { text: 'กอง', value: 'organizationMaster.ouName', align: 'center', width: '160px' },
-          { text: 'กลุ่ม', value: 'departmentMaster.departmentName', align: 'center', width: '160px' },
-          { text: 'ตำแหน่ง', value: 'positionMaster.positionName', align: 'center', width: '160px' },
+          { text: 'รหัสพนักงาน', value: 'employeeId' },
+          { text: 'ชื่อ', value: 'thaiFristName' },
+          { text: 'นามสกุล', value: 'thaiLastName' },
+          { text: 'E-Mail', value: 'email' },
+          { text: 'เบอร์โทร', value: 'phone', align: 'center', width: '160px' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
         items: [],
@@ -68,12 +67,9 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data: { users } } = await this.$store.dispatch('http', { apiPath: 'user/listUsers' })
-          this.items = users
-          this.total = users.length
-          this.count = users.length
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'user/listUsers', query: this.$route.query, context: this })
           this.isLoading = false
-          return Promise.resolve()
+          return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
       async deleteUser (item) {

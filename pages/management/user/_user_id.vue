@@ -140,7 +140,7 @@
           v => !!v || 'โปรดใส่รหัสพนักงาน',
         ],
         idCardRules: [
-          v => !!v || 'โปรดใส่รหัสบัตรประชาชน',
+          v => v ? v.length === 13 || 'โปรดใส่รหัสบัตรประชาชนให้ครบ 13 หลัก' : 'โปรดใส่รหัสบัตรประชาชน',
         ],
         fistNameThRules: [
           v => !!v || 'โปรดใส่ชื่อ',
@@ -202,12 +202,13 @@
         try {
           if (valid) {
             const apiPath = this.isCreate ? 'oauth/register' : 'user/update'
-            const method = this.isCreate ? 'post' : 'put'
+            const method = this.isCreate ? 'post' : 'patch'
             if (!this.isCreate) {
-              this.form.organizationMaster.id = this.form.ouId
-              this.form.departmentMaster.id = this.form.departmentId
-              this.form.positionMaster.id = this.form.positionId
+              this.form.organizationMaster = this.form.ouId
+              this.form.departmentMaster = this.form.departmentId
+              this.form.positionMaster = this.form.positionId
             }
+            this.form.email = this.form.username
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: this.form })
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างบุคลากรสำเร็จ' : 'แก้ไขบุคลากรสำเร็จ' })
             return Promise.resolve(data)
