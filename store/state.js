@@ -57,10 +57,10 @@ export default () => ({
           title: 'ยืม - คืน ครุภัณฑ์',
           to: '/durable-goods/borrow/'
         },
-        {
-          title: 'ตรวจนับครุภัณฑ์',
-          to: '/durable-goods/counting/'
-        },
+        // {
+        //   title: 'ตรวจนับครุภัณฑ์',
+        //   to: '/durable-goods/counting/'
+        // },
         {
           title: 'ครุภัณฑ์ที่รออนุมัติ',
           to: '/durable-goods/request/'
@@ -71,10 +71,10 @@ export default () => ({
       title: 'ผู้ดูแลระบบ',
       to: '/management/',
       children: [
-        {
-          title: 'บริหารขั้นตอนอนุมัติ',
-          to: '/management/approval/'
-        },
+        // {
+        //   title: 'บริหารขั้นตอนอนุมัติ',
+        //   to: '/management/approval/'
+        // },
         {
           title: 'บริหารบุคลากร',
           to: '/management/user/'
@@ -95,10 +95,10 @@ export default () => ({
           title: 'บริหารคู่สัญญา',
           to: '/management/vendor/'
         },
-        {
-          title: 'รายงานการใช้งานระบบ',
-          to: '/management/log/'
-        }
+        // {
+        //   title: 'รายงานการใช้งานระบบ',
+        //   to: '/management/log/'
+        // }
       ]
     }
   ],

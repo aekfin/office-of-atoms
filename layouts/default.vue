@@ -2,7 +2,7 @@
   <v-app id="default-layout">
     <v-navigation-drawer v-model="drawer" color="#F5F5F5" clipped fixed app>
       <v-list>
-        <div v-for="(menu, i) in $store.state.leftMenus" :key="i">
+        <div v-for="(menu, i) in leftMenus" :key="i">
           <v-list-item v-if="menu.children">
             <v-expansion-panels tile flat multiple :value="expands">
               <v-expansion-panel>
@@ -70,6 +70,11 @@ export default {
   computed: {
     title () {
       return `ระบบบริหารจัดการครุภัณฑ์ | ${this.$store.state?.role}`
+    },
+    leftMenus () {
+      return this.$store.state.role !== 'ADMIN'
+        ? this.$store.state.leftMenus
+        : this.$store.state.leftMenus.filter(menu => menu.to !== '/management/')
     },
   },
   mounted () {
