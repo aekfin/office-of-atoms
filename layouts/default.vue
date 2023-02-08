@@ -72,32 +72,47 @@ export default {
       return `ระบบบริหารจัดการครุภัณฑ์ | ${this.$store.state?.role}`
     },
     leftMenus () {
-      return this.$store.state.role !== 'ADMIN'
+      return this.$store.getters.isAdmin
         ? this.$store.state.leftMenus
         : this.$store.state.leftMenus.filter(menu => menu.to !== '/management/')
     },
   },
-  mounted () {
-    this.checkAuthen()
+  async mounted () {
+    try {
+      await this.checkAuthen()
+      await this.checkRoute()
+      return Promise.resolve()
+    } catch (err) {
+      return Promise.reject(err)
+    }
   },
   methods: {
     async checkAuthen () {
       try {
         const authToken = window.localStorage.authToken
         if (authToken) {
-          this.$store.commit('SET_STATE', { name: 'isFullLoading', val: false })
           await this.$store.dispatch('http', { apiPath: 'oauth/valify-token' })
           const { data: profile } = await this.$store.dispatch('http', { apiPath: 'user/getUserbytoken' })
           const { data: role } = await this.$store.dispatch('http', { apiPath: 'roles/getRoles' })
           this.$store.commit('SET_STATE', { name: 'userProfile', val: profile})
           this.$store.commit('SET_STATE', { name: 'role', val: role})
           this.isLoading = false
+          this.$store.commit('SET_STATE', { name: 'isFullLoading', val: false })
         } else {
           this.resetToken()
         }
         return Promise.resolve()
       } catch (err) {
         this.resetToken()
+        return Promise.reject(err)
+      }
+    },
+    async checkRoute () {
+      try {
+        if (!this.$store.getters.isAdmin && (this.$route.path.includes('management') || this.$route.path.includes('management/user'))) {
+          this.$router.replace('/')
+        }
+      } catch (err) {
         return Promise.reject(err)
       }
     },

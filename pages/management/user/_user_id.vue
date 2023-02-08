@@ -5,54 +5,54 @@
       <v-container>
         <v-row>
           <v-col :cols="6">
-            <v-text-field v-model="form.employeeId" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
+            <v-text-field v-model="form.employeeId" name="code" label="รหัสพนักงาน *" :rules="codeRules" required :disabled="disabled"/>
           </v-col>
           <v-col :cols="6">
-            <v-text-field v-model="form.thaiId" label="รหัสบัตรประชาชน *" :rules="idCardRules" required/>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col :cols="6">
-            <v-text-field v-model="form.thaiFristName" label="ชื่อ *" :rules="fistNameThRules" required/>
-          </v-col>
-          <v-col :cols="6">
-            <v-text-field v-model="form.thaiLastName" label="นามสกุล *" :rules="lastNameThRules" required/>
+            <v-text-field v-model="form.thaiId" label="รหัสบัตรประชาชน *" :rules="idCardRules" required :disabled="disabled"/>
           </v-col>
         </v-row>
         <v-row>
           <v-col :cols="6">
-            <v-text-field v-model="form.engFristName" label="ชื่อ (Eng) *" :rules="fistNameEnRules" required/>
+            <v-text-field v-model="form.thaiFristName" label="ชื่อ *" :rules="fistNameThRules" required :disabled="disabled"/>
           </v-col>
           <v-col :cols="6">
-            <v-text-field v-model="form.engLastName" label="นามสกุล (Eng) *" :rules="lastNameEnRules" required/>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col :cols="6">
-            <SelectDropdown :value.sync="form.ouId" label="กอง *" itemText="ouName" :rules="divisionRules" required apiPath="Orgchart/getOrganizations"/>
-          </v-col>
-          <v-col :cols="6">
-            <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="groupRules" required apiPath="Orgchart/getDepartments"/>
+            <v-text-field v-model="form.thaiLastName" label="นามสกุล *" :rules="lastNameThRules" required :disabled="disabled"/>
           </v-col>
         </v-row>
         <v-row>
           <v-col :cols="6">
-            <SelectDropdown :value.sync="form.positionId" label="ตำแหน่ง *" :rules="positionRules" itemText="positionName" required apiPath="Orgchart/getPositions"/>
+            <v-text-field v-model="form.engFristName" label="ชื่อ (Eng) *" :rules="fistNameEnRules" required :disabled="disabled"/>
+          </v-col>
+          <v-col :cols="6">
+            <v-text-field v-model="form.engLastName" label="นามสกุล (Eng) *" :rules="lastNameEnRules" required :disabled="disabled"/>
           </v-col>
         </v-row>
         <v-row>
           <v-col :cols="6">
-            <v-text-field v-model="form.username" label="E-Mail ผู้ใช้งาน *" :rules="usernameRules" name="email" required/>
+            <SelectDropdown :value.sync="form.ouId" label="กอง *" itemText="ouName" :rules="divisionRules" required apiPath="Orgchart/getOrganizations" :disabled="disabled"/>
+          </v-col>
+          <v-col :cols="6">
+            <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="groupRules" required apiPath="Orgchart/getDepartments" :disabled="disabled"/>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :cols="6">
+            <SelectDropdown :value.sync="form.positionId" label="ตำแหน่ง *" :rules="positionRules" itemText="positionName" required apiPath="Orgchart/getPositions" :disabled="disabled"/>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :cols="6">
+            <v-text-field v-model="form.username" label="E-Mail ผู้ใช้งาน *" :rules="usernameRules" name="email" required :disabled="disabled"/>
           </v-col>
           <v-col v-if="isCreate" :cols="6">
-            <v-text-field v-model="form.password" label="รหัสผ่าน *" :type="seePassword ? 'text' : 'password'" :rules="passwordRules" required>
+            <v-text-field v-model="form.password" label="รหัสผ่าน *" :type="seePassword ? 'text' : 'password'" :rules="passwordRules" required :disabled="disabled">
               <template #append><v-icon @click="seePassword = !seePassword" v-text="`mdi-eye${seePassword ? '-off' : ''}`"/></template>
             </v-text-field>
           </v-col>
         </v-row>
         <v-row>
           <v-col :cols="6">
-            <SelectDropdown :value.sync="form.roleName" :items="roleList" label="สิทธ์การใช้งาน *" :rules="roleRules" multiple required/>
+            <SelectDropdown :value.sync="form.roleName" :items="roleList" label="สิทธ์การใช้งาน *" :rules="roleRules" multiple required :disabled="disabled"/>
           </v-col>
         </v-row>
       </v-container>
@@ -63,19 +63,19 @@
             <v-container>
               <v-row>
                 <v-col>
-                  <v-text-field v-model="form.phone" name="tel" type="tel" label="เบอร์โทรศัพท์"/>
+                  <v-text-field v-model="form.phone" name="tel" type="tel" label="เบอร์โทรศัพท์" :disabled="disabled"/>
                 </v-col>
               </v-row>
               <v-row>
                 <v-col>
-                  <v-textarea v-model="form.address" name="address" label="ที่อยู่"/>
+                  <v-textarea v-model="form.address" name="address" label="ที่อยู่" :disabled="disabled"/>
                 </v-col>
               </v-row>
             </v-container>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
-      <v-container class="mt-8">
+      <v-container v-if="!disabled" class="mt-8">
         <v-row justify="end">
           <v-btn large plain @click="$router.push('/management/user/')">ย้อนหลับ</v-btn>
           <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
@@ -177,6 +177,9 @@
     computed: {
       isCreate () {
         return this.$route.params.user_id === 'create'
+      },
+      disabled () {
+        return !this.$store.getters.isAdmin
       },
     },
     mounted () {

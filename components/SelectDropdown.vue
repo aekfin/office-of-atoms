@@ -1,6 +1,6 @@
 <template>
   <div class="select-dropdown">
-    <v-select ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :loading="isLoading"
+    <v-select ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled" :loading="isLoading"
       @focus="onFocus">
       <template #append-item>
         <div id="bottom-of-scroll"/>
@@ -20,6 +20,7 @@
       items: { type: Array, default: () => [] },
       apiPath: { type: String },
       required: { type: Boolean },
+      disabled: { type: Boolean },
     },
     data () {
       return {

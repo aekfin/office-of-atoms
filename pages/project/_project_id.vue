@@ -4,7 +4,7 @@
     <v-form ref="form" v-model="valid" class="mt-4">
       <v-container>
         <v-row>
-          <v-col :cols="2">
+          <!-- <v-col :cols="2">
             <v-select v-model="form.year" :items="years" itemValue="id" itemText="name" label="ปีงบประมาณ *" :rules="yearRules" required/>
           </v-col>
           <v-col :cols="4">
@@ -12,23 +12,26 @@
           </v-col>
           <v-col :cols="6">
             <v-select v-model="form.project" :items="items" itemValue="id" itemText="name" label="โครงการ *" :rules="projectRules" required :disabled="!form.projectRoot"/>
+          </v-col> -->
+          <v-col :cols="12">
+            <v-text-field v-model="form.project" label="โครงการ *" :rules="projectRules" required/>
           </v-col>
         </v-row>
         <v-row>
           <v-col :cols="3">
-            <v-text-field v-model="form.code" name="code" label="เลขที่โครงการ" disabled/>
+            <v-text-field v-model="form.code" name="code" label="เลขที่โครงการ *" :rules="codeRules" :disabled="disabledInfo"/>
           </v-col>
           <v-col :cols="3">
-            <v-text-field v-model="form.contractControlNumber" name="code" label="เลขที่คุมสัญญา" disabled/>
+            <v-text-field v-model="form.contractControlNumber" name="code" label="เลขที่คุมสัญญา *" :rules="contractControlNumberRules" :disabled="disabledInfo"/>
           </v-col>
           <v-col :cols="2">
-            <InputDatePicker :value.sync="form.datetimeStart" label="วันเริ่มโครงการ" disabled/>
+            <InputDatePicker :value.sync="form.datetimeStart" label="วันเริ่มโครงการ *" :rules="datetimeStartRules" :disabled="disabledInfo"/>
           </v-col>
           <v-col :cols="2">
-            <InputDatePicker :value.sync="form.datetimeVendorStart" label="วันเริ่มสัญญา" disabled/>
+            <InputDatePicker :value.sync="form.datetimeVendorStart" label="วันเริ่มสัญญา *" :rules="datetimeVendorStartRules" :disabled="disabledInfo"/>
           </v-col>
           <v-col :cols="2">
-            <InputDatePicker :value.sync="form.datetimeVendorEnd" label="วันสิ้นสัญญา" disabled/>
+            <InputDatePicker :value.sync="form.datetimeVendorEnd" label="วันสิ้นสัญญา *" :rules="datetimeVendorEndRules" :disabled="disabledInfo"/>
           </v-col>
         </v-row>
       </v-container>
@@ -138,6 +141,21 @@
         projectRules: [
           v => !!v || 'โปรดเลือกโครงการ',
         ],
+        codeRules: [
+          v => !!v || 'โปรดใส่เลขที่โครงการ',
+        ],
+        contractControlNumberRules: [
+          v => !!v || 'โปรดใส่เลขที่คุมสัญญา',
+        ],
+        datetimeStartRules: [
+          v => !!v || 'โปรดใส่วันเริ่มโครงการ',
+        ],
+        datetimeVendorStartRules: [
+          v => !!v || 'โปรดใส่วันเริ่มสัญญา',
+        ],
+        datetimeVendorEndRules: [
+          v => !!v || 'โปรดใส่วันสิ้นสัญญา',
+        ],
         vendorRules: [
           v => !!v || 'โปรดใส่บริษัทคู่สัญญา',
         ],
@@ -152,6 +170,9 @@
     computed: {
       isCreate () {
         return this.$route.params.project_id === 'create'
+      },
+      disabledInfo () {
+        return !this.form.project
       },
     },
     watch: {
@@ -173,8 +194,7 @@
         this.form.vendorContactList.splice(i, 1)
       },
       onSubmit () {
-        const validate = this.$refs.form.validate()
-        console.log(validate)
+        const valid = this.$refs.form.validate()
       }
     },
   }
