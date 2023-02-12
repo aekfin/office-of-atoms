@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import moment from 'moment'
 
 const Fn = {
   getPrice (number) {
@@ -6,6 +7,12 @@ const Fn = {
   },
   checkEmailFormat (email) {
     return String(email).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)
+  },
+  convertDateToString (date) {
+    return moment(date).format('YYYY-MM-DD HH:mm:ss')
+  },
+  convertStringToDate (date) {
+    return new Date(date)
   },
 }
 

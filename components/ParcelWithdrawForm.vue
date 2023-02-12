@@ -41,8 +41,8 @@
                 <v-col :cols="3">
                   <div class="d-flex align-baseline">
                     <v-text-field v-model="form.countPaid" label="จำนวนจ่าย *" disabled/>
-                    <v-btn v-if="parcelWithdrawList.length > 1" icon color="red" @click="removeContact(i)">
-                      <v-icon>mdi-close-circle</v-icon>
+                    <v-btn v-if="parcelWithdrawList.length > 1" icon @click="removeContact(i)">
+                      <v-icon>mdi-delete</v-icon>
                     </v-btn>
                   </div>
                 </v-col>

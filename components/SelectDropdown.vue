@@ -26,6 +26,7 @@
       return {
         val: this.value,
         list: this.items || [],
+        pagination: null,
         isLoading: false,
         initScroll: false,
       }
@@ -59,7 +60,8 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath })
-          this.list = data
+          this.list = data.content || data
+          if (data.content) this.pagination = data
           this.isLoading = false
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
@@ -76,5 +78,6 @@
 
 <style lang="scss">
   .select-dropdown {
+    width: 100%;
   }
 </style>

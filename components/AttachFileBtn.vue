@@ -1,22 +1,31 @@
 <template>
   <div class="attach-file-btn">
-    <input v-show="false" ref="input-file" type="file" accept="*" @change="onChange">
+    <input v-show="false" ref="inputFile" type="file" accept="*" :multiple="multiple" @change="onChange">
     <v-btn elevation="2" color="#546E7A" class="text-white" @click="attach">แนบไฟล์เพิ่มเติม</v-btn>
     <div v-for="(file, i) in files" :key="i" class="file mt-4">
       <div class="file-name-wrapper">
         <v-icon>mdi-file-outline</v-icon>
         <div class="name ml-1">{{ file.name }}</div>
       </div>
-      <v-icon class="ml-4" color="#E53935" @click.stop="onDelete(file)">mdi-delete</v-icon>
+      <v-icon class="ml-4" @click.stop="onDelete(file)">mdi-close-circle</v-icon>
     </div>
   </div>
 </template>
 
 <script>
   export default {
+    props: {
+      value: { type: Array, default: () => [] },
+      multiple: { type: Boolean, default: true },
+    },
     data () {
       return {
-        files: []
+        files: this.attchments
+      }
+    },
+    watch: {
+      'files' (val) {
+        this.$emit('update:value', val)
       }
     },
     methods: {
@@ -24,11 +33,16 @@
         this.files = this.files.filter(f => f.name !== file.name)
       },
       attach () {
-        if (this.$refs['input-file']) this.$refs['input-file'].click()
+        if (this.$refs.inputFile) this.$refs.inputFile.click()
       },
       onChange (e) {
-        const file = e.target.files?.[0]
-        if (file) this.files.push(file)
+        const files = e.target.files
+        const filesPath = []
+        for (const file of files) {
+          this.files.push(file)
+          // this.filesPath.push(URL.createObjectURL(file))
+        }
+        this.$emit('select', { files, filesPath })
       }
     }
   }

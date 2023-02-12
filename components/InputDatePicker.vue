@@ -17,6 +17,7 @@
           :disabled="disabled"
           :required="required"
           :rules="rules"
+          readonly
           v-bind="attrs"
           v-on="on"
           @blur="date = parseDate(dateFormatted)"
@@ -26,7 +27,7 @@
       <v-date-picker
         v-model="date"
         no-title
-        @input="menu1 = false"
+        @input="menu = false"
       />
     </v-menu>
   </div>

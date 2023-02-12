@@ -20,8 +20,8 @@
               <v-row v-for="(subcategory, i) in subcategoryList" :key="i" align="baseline">
                 <div class="mr-4">{{ i + 1 }}.</div>
                 <v-text-field v-model="subcategoryList[i].name" name="name" label="ชื่อหมวดย่อย *" :rules="nameRules" required/>
-                <v-btn v-if="subcategoryList.length > 1" class="ml-2" icon color="red" @click="removeSubcategory(i)">
-                  <v-icon>mdi-close-circle</v-icon>
+                <v-btn v-if="subcategoryList.length > 1" class="ml-2" icon @click="removeSubcategory(i)">
+                  <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </v-row>
               <v-row class="mt-5">

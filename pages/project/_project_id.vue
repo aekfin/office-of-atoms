@@ -14,51 +14,51 @@
             <v-select v-model="form.project" :items="items" itemValue="id" itemText="name" label="โครงการ *" :rules="projectRules" required :disabled="!form.projectRoot"/>
           </v-col> -->
           <v-col :cols="12">
-            <v-text-field v-model="form.project" label="โครงการ *" :rules="projectRules" required/>
+            <v-text-field v-model="form.projectName" label="โครงการ *" :rules="projectRules" required/>
           </v-col>
         </v-row>
         <v-row>
           <v-col :cols="3">
-            <v-text-field v-model="form.code" name="code" label="เลขที่โครงการ *" :rules="codeRules" :disabled="disabledInfo"/>
+            <v-text-field v-model="form.projectNumber" label="เลขที่โครงการ *" :rules="codeRules" :disabled="disabledInfo"/>
           </v-col>
           <v-col :cols="3">
-            <v-text-field v-model="form.contractControlNumber" name="code" label="เลขที่คุมสัญญา *" :rules="contractControlNumberRules" :disabled="disabledInfo"/>
+            <v-text-field v-model="form.contractControlNumber" label="เลขที่คุมสัญญา *" :rules="contractControlNumberRules" :disabled="disabledInfo"/>
           </v-col>
           <v-col :cols="2">
-            <InputDatePicker :value.sync="form.datetimeStart" label="วันเริ่มโครงการ *" :rules="datetimeStartRules" :disabled="disabledInfo"/>
+            <InputDatePicker :value.sync="form.projectStartDate" label="วันเริ่มโครงการ *" :rules="datetimeStartRules" :disabled="disabledInfo"/>
           </v-col>
           <v-col :cols="2">
-            <InputDatePicker :value.sync="form.datetimeVendorStart" label="วันเริ่มสัญญา *" :rules="datetimeVendorStartRules" :disabled="disabledInfo"/>
+            <InputDatePicker :value.sync="form.contractStartDate" label="วันเริ่มสัญญา *" :rules="datetimeCompanyStartRules" :disabled="disabledInfo"/>
           </v-col>
           <v-col :cols="2">
-            <InputDatePicker :value.sync="form.datetimeVendorEnd" label="วันสิ้นสัญญา *" :rules="datetimeVendorEndRules" :disabled="disabledInfo"/>
+            <InputDatePicker :value.sync="form.contractEndDate" label="วันสิ้นสัญญา *" :rules="datetimeCompanyEndRules" :disabled="disabledInfo"/>
           </v-col>
         </v-row>
       </v-container>
-      <v-expansion-panels v-model="formExpand" class="form-expansion-panels mt-5" flat multiple>
+      <v-expansion-panels v-model="formExpand" class="form-expansion-panels mt-10" flat multiple>
         <v-expansion-panel>
           <v-expansion-panel-header>เลือกบริษัทคู่สัญญา</v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-container>
               <v-row class="pl-3 pr-3">
-                <v-select v-model="form.vendor" :items="items" itemValue="id" itemText="name" label="บริษัทคู่สัญญา*" :rules="vendorRules" required/>
+                <SelectDropdown :value.sync="form.contractCompanyId" label="บริษัทคู่สัญญา*" itemText="companyName" :rules="companyRules" apiPath="Project/getListCompany" required/>
               </v-row>
-              <v-row v-if="form.vendor" class="pl-3 pr-3">
+              <v-row v-if="form.contractCompanyId" class="pl-3 pr-3">
                 <v-col class="mt-2">
                   <v-row class="mb-2">
                     <div class="text-lg font-bold">รายชื่อผู้ติดต่อ</div>
                   </v-row>
-                  <v-row v-for="(contact, i) in form.vendorContactList" :key="i" class="flex-nowrap pl-2 pr-3 mb-3" align="baseline">
+                  <v-row v-for="(contact, i) in form.directors" :key="i" class="flex-nowrap pl-2 pr-3 mb-3" align="baseline">
                     <div class="prefix-wrapper mr-5">
                       <div class="mr-5">{{ i + 1 }}.</div>
-                      <v-select v-model="contact.position" :items="vendorPositionList" itemValue="id" itemText="name" label="ตำแหน่ง" :rules="contactPositionRules"/>
+                      <v-select v-model="contact.description" :items="companyPositionList" itemValue="id" itemText="name" label="ตำแหน่ง" :rules="contactPositionRules"/>
                     </div>
-                    <v-select v-model="contact.name" :items="vendorNameList" class="vendor-name" itemValue="id" itemText="name" label="ชื่อ-นามสกุล" :rules="contactNameRules"/>
-                    <v-btn v-if="form.vendorContactList.length > 1" icon color="red" @click="removeContact(i)">
-                      <v-icon>mdi-close-circle</v-icon>
+                    <v-text-field v-model="contact.name" class="cpmpany-name" label="ชื่อ-นามสกุล" :rules="contactNameRules"/>
+                    <v-btn v-if="form.directors.length > 1" icon @click="removeContact(i)">
+                      <v-icon>mdi-delete</v-icon>
                     </v-btn>
                   </v-row>
-                  <v-row v-if="form.vendorContactList.length < 15">
+                  <v-row v-if="form.directors.length < 15">
                     <v-btn block rounded outlined @click="addContact">เพิ่มผู้ติดต่อ</v-btn>
                   </v-row>
                 </v-col>
@@ -71,7 +71,7 @@
             <v-expansion-panel-content>
               <v-container>
                 <v-row>
-                  <AttachFileBtn/>
+                  <AttachFileBtn :value.sync="attachFiles" @select="onSelect"/>
                 </v-row>
               </v-container>
             </v-expansion-panel-content>
@@ -93,6 +93,7 @@
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
       PageHeader: () => import('~/components/PageHeader.vue'),
       AttachFileBtn: () => import('~/components/AttachFileBtn.vue'),
+      SelectDropdown: () => import('~/components/SelectDropdown.vue'),
     },
     data () {
       return {
@@ -100,15 +101,17 @@
         form: {
           year: null,
           projectRoot: null,
-          project: null,
-          code: '',
+          projectName: null,
+          projectNumber: '',
           contractControlNumber: '',
-          datetimeStart: '',
-          datetimeVendorStart: '',
-          datetimeVendorEnd: '',
-          vendor: null,
-          vendorContactList: [],
+          projectStartDate: '',
+          contractStartDate: '',
+          contractEndDate: '',
+          contractCompanyId: null,
+          directors: [],
         },
+        attachFiles: [],
+        attachFilesPath: [],
         formExpand: [0, 1],
         items: [
           { id: 1, name: 'Foo' },
@@ -116,12 +119,7 @@
           { id: 3, name: 'Fizz' },
           { id: 4, name: 'Buzz' }
         ],
-        vendorNameList: [
-          { id: 1, name: 'ชื่อ A นามสกุล A' },
-          { id: 2, name: 'ชื่อ B นามสกุล B' },
-          { id: 3, name: 'ชื่อ C นามสกุล C' },
-        ],
-        vendorPositionList: [
+        companyPositionList: [
           { id: 1, name: 'กรรมการร่าง TOR' },
           { id: 2, name: 'กรรมการพิจารณาโครงการ' },
           { id: 3, name: 'กรรมการตรวจรับ' },
@@ -150,13 +148,13 @@
         datetimeStartRules: [
           v => !!v || 'โปรดใส่วันเริ่มโครงการ',
         ],
-        datetimeVendorStartRules: [
+        datetimeCompanyStartRules: [
           v => !!v || 'โปรดใส่วันเริ่มสัญญา',
         ],
-        datetimeVendorEndRules: [
+        datetimeCompanyEndRules: [
           v => !!v || 'โปรดใส่วันสิ้นสัญญา',
         ],
-        vendorRules: [
+        companyRules: [
           v => !!v || 'โปรดใส่บริษัทคู่สัญญา',
         ],
         contactPositionRules: [
@@ -172,12 +170,12 @@
         return this.$route.params.project_id === 'create'
       },
       disabledInfo () {
-        return !this.form.project
+        return !this.form.projectName
       },
     },
     watch: {
-      'form.vendor' (val) {
-        if (val && this.form.vendorContactList.length === 0) {
+      'form.contractCompanyId' (val) {
+        if (val && this.form.directors.length === 0) {
           this.addContact()
         }
       }
@@ -185,16 +183,39 @@
     methods: {
       addContact () {
         const newContact = {
-          position: null,
+          description: null,
           name: null,
         }
-        this.form.vendorContactList = [ ...this.form.vendorContactList, newContact ]
+        this.form.directors = [ ...this.form.directors, newContact ]
       },
       removeContact (i) {
-        this.form.vendorContactList.splice(i, 1)
+        this.form.directors.splice(i, 1)
       },
-      onSubmit () {
+      onSelect ({ filesPath }) {
+        this.attachFilesPath.concat(filesPath)
+      },
+      async onSubmit () {
         const valid = this.$refs.form.validate()
+        if (!valid) {
+          // this.attachFiles.forEach((file, index) => {
+          //   data.append('file', file)
+          // })
+          try {
+            const data = new FormData()
+            const form = { ...this.form }
+            form.projectStartDate = this.$fn.convertDateToString(form.projectStartDate)
+            // form.contractStartDate = this.$fn.convertDateToString(form.contractStartDate)
+            // form.contractEndDate = this.$fn.convertDateToString(form.contractEndDate)
+            // data.append('project', JSON.stringify(form))
+            // data.append('project', '{\n  "contractCompanyId": 2,\n  "contractNumber": "0968130668",\n  "contractStartDate": "2023-01-16 18:37:05",\n  "directors": [\n    {\n      "description": " ทดสอบ2",\n      "name": "ชัยชนะ สีทัด2"\n    }\n  ],\n  "projectName": " project ทดสอบ3",\n  "projectNumber": "0003",\n  "projectStartDate": "2023-01-16 18:37:05"\n}');
+            // const res = await this.$store.dispatch('http', { method: 'post', apiPath: 'Project/addProject', data })
+            // console.log(data)
+            return Promise.resolve()
+          } catch (err) {
+            console.log(err)
+            return Promise.reject(err)
+          }
+        }
       }
     },
   }
@@ -209,7 +230,7 @@
         align-items: baseline;
       }
 
-      .vendor-name {
+      .cpmpany-name {
         width: 60%;
       }
     }

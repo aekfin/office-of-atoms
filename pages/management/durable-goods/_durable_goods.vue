@@ -43,8 +43,8 @@
                     <v-text-field v-model="deteriorationList[i]" label="" type="number" :rules="deteriorationRules"/>
                   </div>
                   <div class="ml-2">%</div>
-                  <v-btn v-if="deteriorationList.length > 1" class="ml-2" icon color="red" @click="removeDeterioration(i)">
-                    <v-icon>mdi-close-circle</v-icon>
+                  <v-btn v-if="deteriorationList.length > 1" class="ml-2" icon @click="removeDeterioration(i)">
+                    <v-icon>mdi-delete</v-icon>
                   </v-btn>
                 </div>
               </v-row>
