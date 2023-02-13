@@ -1,6 +1,6 @@
 <template>
   <div id="vendor-page">
-    <PageHeader text="บริหารคู่สัญญา" btnText="เพิ่มคู่สัญญา" createRoute="/management/vendor/create/" :total="total"/>
+    <PageHeader text="บริหารคู่สัญญา" btnText="เพิ่มคู่สัญญา" createRoute="/management/vendor/create/" :total="total" unit="คู่สัญญา"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>

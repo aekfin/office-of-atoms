@@ -22,7 +22,7 @@
             <v-text-field v-model="form.projectNumber" label="เลขที่โครงการ *" :rules="codeRules" :disabled="disabledInfo"/>
           </v-col>
           <v-col :cols="3">
-            <v-text-field v-model="form.contractControlNumber" label="เลขที่คุมสัญญา *" :rules="contractControlNumberRules" :disabled="disabledInfo"/>
+            <v-text-field v-model="form.contractNumber" label="เลขที่คุมสัญญา *" :rules="contractNumberRules" :disabled="disabledInfo"/>
           </v-col>
           <v-col :cols="2">
             <InputDatePicker :value.sync="form.projectStartDate" label="วันเริ่มโครงการ *" :rules="datetimeStartRules" :disabled="disabledInfo"/>
@@ -71,7 +71,7 @@
             <v-expansion-panel-content>
               <v-container>
                 <v-row>
-                  <AttachFileBtn :value.sync="attachFiles" @select="onSelect"/>
+                  <AttachFileBtn :value.sync="attachFiles" :attachments="form.fileInfo" @removeAttachment="onRemoveAttachment"/>
                 </v-row>
               </v-container>
             </v-expansion-panel-content>
@@ -98,12 +98,14 @@
     data () {
       return {
         valid: true,
+        isLoading: true,
+        project: null,
         form: {
           year: null,
           projectRoot: null,
           projectName: null,
           projectNumber: '',
-          contractControlNumber: '',
+          contractNumber: '',
           projectStartDate: '',
           contractStartDate: '',
           contractEndDate: '',
@@ -111,18 +113,12 @@
           directors: [],
         },
         attachFiles: [],
-        attachFilesPath: [],
+        removeFile: [],
         formExpand: [0, 1],
-        items: [
-          { id: 1, name: 'Foo' },
-          { id: 2, name: 'Bar' },
-          { id: 3, name: 'Fizz' },
-          { id: 4, name: 'Buzz' }
-        ],
         companyPositionList: [
-          { id: 1, name: 'กรรมการร่าง TOR' },
-          { id: 2, name: 'กรรมการพิจารณาโครงการ' },
-          { id: 3, name: 'กรรมการตรวจรับ' },
+          { id: 'กรรมการร่าง TOR', name: 'กรรมการร่าง TOR' },
+          { id: 'กรรมการพิจารณาโครงการ', name: 'กรรมการพิจารณาโครงการ' },
+          { id: 'กรรมการตรวจรับ', name: 'กรรมการตรวจรับ' },
         ],
         years: [
           { id: 1, name: '2022' },
@@ -142,7 +138,7 @@
         codeRules: [
           v => !!v || 'โปรดใส่เลขที่โครงการ',
         ],
-        contractControlNumberRules: [
+        contractNumberRules: [
           v => !!v || 'โปรดใส่เลขที่คุมสัญญา',
         ],
         datetimeStartRules: [
@@ -180,7 +176,26 @@
         }
       }
     },
+    mounted () {
+      if (!this.isCreate) this.getData()
+    },
     methods: {
+      async getData () {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', { apiPath: 'Project/getProject', query: { id: this.$route.params.project_id } })
+          this.project = data
+          this.form = {
+            ...data,
+            contractCompanyId: data.contractCompany.id,
+            projectStartDate: this.$fn.convertStringToDate(data.projectStartDate),
+            contractStartDate: this.$fn.convertStringToDate(data.contractStartDate),
+            contractEndDate: this.$fn.convertStringToDate(new Date()),
+          }
+          this.isLoading = false
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
       addContact () {
         const newContact = {
           description: null,
@@ -191,26 +206,45 @@
       removeContact (i) {
         this.form.directors.splice(i, 1)
       },
-      onSelect ({ filesPath }) {
-        this.attachFilesPath.concat(filesPath)
+      onRemoveAttachment (attach) {
+        this.removeFile.push(attach)
+        console.log(this.removeFile)
+      },
+      async uploadFiles (id = this.project.id) {
+        try {
+          let data = new FormData()
+          for (const file of this.attachFiles) {
+            data.append('file', file)
+          }
+          data.append('projectId', id)
+          const res = await this.$store.dispatch('http', { method: 'post', apiPath: 'Project/uploadFile', data })
+          return Promise.resolve(res)
+        } catch (err) { return Promise.reject(err) }
+      },
+      setEditForm (form) {
+        delete form.contractCompany
+        delete form.fileInfo
+        form.removeFile = this.removeFile
       },
       async onSubmit () {
         const valid = this.$refs.form.validate()
-        if (!valid) {
-          // this.attachFiles.forEach((file, index) => {
-          //   data.append('file', file)
-          // })
+        if (valid) {
           try {
-            const data = new FormData()
             const form = { ...this.form }
             form.projectStartDate = this.$fn.convertDateToString(form.projectStartDate)
-            // form.contractStartDate = this.$fn.convertDateToString(form.contractStartDate)
-            // form.contractEndDate = this.$fn.convertDateToString(form.contractEndDate)
-            // data.append('project', JSON.stringify(form))
-            // data.append('project', '{\n  "contractCompanyId": 2,\n  "contractNumber": "0968130668",\n  "contractStartDate": "2023-01-16 18:37:05",\n  "directors": [\n    {\n      "description": " ทดสอบ2",\n      "name": "ชัยชนะ สีทัด2"\n    }\n  ],\n  "projectName": " project ทดสอบ3",\n  "projectNumber": "0003",\n  "projectStartDate": "2023-01-16 18:37:05"\n}');
-            // const res = await this.$store.dispatch('http', { method: 'post', apiPath: 'Project/addProject', data })
-            // console.log(data)
-            return Promise.resolve()
+            form.contractStartDate = this.$fn.convertDateToString(form.contractStartDate)
+            form.contractEndDate = this.$fn.convertDateToString(form.contractEndDate)
+            if (!this.isCreate) this.setEditForm(form)
+            const apiPath = this.isCreate ? 'Project/addProjectV2' : 'Project/updateProjectV2'
+            const method = this.isCreate ? 'post' : 'put'
+            const res = await this.$store.dispatch('http', { method, apiPath, data: form })
+            if (this.attachFiles.length) await this.uploadFiles(res.data.id)
+            this.attachFiles = []
+            this.removeFile = []
+            await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างโครงการสำเร็จ' : 'แก้ไขโครงการสำเร็จ' })
+            if (this.isCreate) this.$router.push('/project/')
+            else await this.getData()
+            return Promise.resolve(res)
           } catch (err) {
             console.log(err)
             return Promise.reject(err)

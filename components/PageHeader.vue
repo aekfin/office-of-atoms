@@ -60,7 +60,7 @@
       text: { type: String, required: true },
       btnText: { type: String },
       createRoute: { type: [String, Object] },
-      unit: { type: String, default: 'คน' },
+      unit: { type: String, default: 'ชิ้น' },
       filters: { type: Array, default: () => [] },
       total: { type: Number },
       hideTotal: { type: Boolean },

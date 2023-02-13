@@ -32,8 +32,8 @@ export default {
       commit('SET_STATE', { name: 'pagination', val: pagination })
       if (context) {
         context[field] = res.data.content
-        context.total = res.data.numberOfElements
-        context.count = res.data.content.length
+        context.total = res.data.totalElements
+        context.count = res.data.numberOfElements
       }
       return Promise.resolve(res)
     } catch (err) {

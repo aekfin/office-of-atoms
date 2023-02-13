@@ -1,11 +1,11 @@
 <template>
   <div id="project-page">
-    <PageHeader text="โครงการ" btnText="เพิ่มโครงการ" createRoute="/project/create/" :total="total"/>
+    <PageHeader text="โครงการ" btnText="เพิ่มโครงการ" createRoute="/project/create/" :total="total" unit="โครงการ"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
-      <template #item.datetimeStart="{ item }">
+      <template #item.projectStartDate="{ item }">
         {{ $moment(item).format('DD-MM-YYYY') }}
       </template>
-      <template #item.datetimeStartVendor="{ item }">
+      <template #item.contractStartDate="{ item }">
         {{ $moment(item).format('DD-MM-YYYY') }}
       </template>
       <template #item.action="{ item }">

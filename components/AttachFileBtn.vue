@@ -2,6 +2,13 @@
   <div class="attach-file-btn">
     <input v-show="false" ref="inputFile" type="file" accept="*" :multiple="multiple" @change="onChange">
     <v-btn elevation="2" color="#546E7A" class="text-white" @click="attach">แนบไฟล์เพิ่มเติม</v-btn>
+    <div v-for="(attachment, i) in attachmentList" :key="i" class="file mt-4">
+      <a class="file-name-wrapper" :href="attachment.fileUrl" target="_blank">
+        <v-icon>mdi-download</v-icon>
+        <div class="name ml-1">{{ attachment.filename }}</div>
+      </a>
+      <v-icon class="ml-4" @click.stop="onDeleteAttachment(attachment)">mdi-close-circle</v-icon>
+    </div>
     <div v-for="(file, i) in files" :key="i" class="file mt-4">
       <div class="file-name-wrapper">
         <v-icon>mdi-file-outline</v-icon>
@@ -16,21 +23,34 @@
   export default {
     props: {
       value: { type: Array, default: () => [] },
+      attachments: { type: Array, default: () => [] },
       multiple: { type: Boolean, default: true },
     },
     data () {
       return {
-        files: this.attchments
+        files: this.value,
+        attachmentList: this.attachments,
       }
     },
     watch: {
       'files' (val) {
         this.$emit('update:value', val)
-      }
+      },
+      'value' (val) {
+        this.files = val
+      },
+      'attachments' (val) {
+        this.attachmentList = val
+      },
     },
     methods: {
       onDelete (file) {
         this.files = this.files.filter(f => f.name !== file.name)
+      },
+      onDeleteAttachment (attachment) {
+        const removeAttachment = this.attachmentList.find(a => a.fileUrl === attachment.fileUrl)
+        this.attachmentList = this.attachmentList.filter(a => a.fileUrl !== attachment.fileUrl)
+        this.$emit('removeAttachment', removeAttachment?.fileUrl)
       },
       attach () {
         if (this.$refs.inputFile) this.$refs.inputFile.click()
@@ -71,10 +91,15 @@
         max-width: calc(100% - 40px);
 
         .name {
+          min-width: 180px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
+      }
+
+      a.file-name-wrapper {
+        color: inherit;
       }
     }
   }
