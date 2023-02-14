@@ -1,9 +1,8 @@
 <template>
   <div class="select-dropdown">
-    <v-select ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled" :loading="isLoading"
-      @focus="onFocus">
+    <v-select ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled" :loading="isLoading">
       <template #append-item>
-        <div id="bottom-of-scroll"/>
+        <div v-if="!!pagination" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
       </template>
     </v-select>
   </div>
@@ -31,6 +30,11 @@
         initScroll: false,
       }
     },
+    computed: {
+      isShowLoading () {
+        return this.pagination && this.pagination.last === false
+      }
+    },
     watch: {
       'value' (val) {
         this.val = val
@@ -46,30 +50,24 @@
       if (this.apiPath) this.getList()
     },
     methods: {
-      async onFocus () {
-        await this.$nextTick()
-        setTimeout(() => {
-          const menu = this.$refs?.selector?.$refs?.menu?.$refs?.content
-          if (!this.initScroll && menu) {
-            menu.addEventListener('scroll', e => this.onScroll(e, menu))
-            this.initScroll = true
-          }
-        }, 250)
-      },
       async getList (more = false) {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath })
-          this.list = data.content || data
-          if (data.content) this.pagination = data
+          const pageNo = more ? this.pagination.number + 1 : 0
+          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { pageNo, pageSize: 7 } })
+          if (data.content) {
+            this.pagination = data
+            this.list = more ? [ ...this.list, ...data.content ] : data.content 
+          } else {
+            this.list = data
+          }
           this.isLoading = false
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
-      onScroll (e, menu) {
-        const bottom = menu.querySelector('#bottom-of-scroll')?.offsetTop
-        if (bottom && (menu.offsetHeight + e.target.scrollTop > bottom)) {
-          if (!this.isLoading) this.getList(true)
+      onIntersect (entries, observer, isIntersecting) {
+        if (this.pagination && isIntersecting && this.pagination.last === false && !this.isLoading) {
+          this.getList(true)
         }
       },
     },

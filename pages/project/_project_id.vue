@@ -41,7 +41,8 @@
           <v-expansion-panel-content>
             <v-container>
               <v-row class="pl-3 pr-3">
-                <SelectDropdown :value.sync="form.contractCompanyId" label="บริษัทคู่สัญญา*" itemText="companyName" :rules="companyRules" apiPath="Project/getListCompany" required/>
+                <!-- <SelectDropdown :value.sync="form.contractCompanyId" label="บริษัทคู่สัญญา*" itemText="companyName" :rules="companyRules" apiPath="Project/getListCompany" required/> -->
+                <SelectDropdown :value.sync="form.contractCompanyId" label="บริษัทคู่สัญญา*" itemText="projectName" :rules="companyRules" apiPath="Project/getListProject" required/>
               </v-row>
               <v-row v-if="form.contractCompanyId" class="pl-3 pr-3">
                 <v-col class="mt-2">
