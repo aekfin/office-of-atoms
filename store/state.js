@@ -80,7 +80,7 @@ export default () => ({
           to: '/management/user/'
         },
         {
-          title: 'หมวดหมู่ พัสดุ - ครุภัณฑ์',
+          title: 'ประเภท พัสดุ - ครุภัณฑ์',
           to: '/management/category/'
         },
         {

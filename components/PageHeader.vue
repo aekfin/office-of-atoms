@@ -1,8 +1,10 @@
 <template>
   <div class="page-header">
     <div class="d-flex justify-space-between">
-      <h2 class="text-3xl font-bold">
-        <slot>{{ text }}</slot>
+      <h2 class="text-h4">
+        <b>
+          <slot>{{ text }}</slot>
+        </b>
       </h2>
       <slot v-if="btnText" name="btn">
         <v-btn elevation="2" large color="success" @click="$emit('create')">

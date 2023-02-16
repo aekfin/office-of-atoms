@@ -1,6 +1,6 @@
 <template>
   <div id="category-list-page">
-    <PageHeader text="หมวดหมู่หลัก" btnText="เพิ่มหมวดหมู่หลัก" createRoute="/management/category/create/"/>
+    <PageHeader text="ประเภท พัสดุ - ครุภัณฑ์" btnText="เพิ่มประเภท" createRoute="/management/category/create/"/>
     <v-data-table :headers="categoryHeaders" :items="categoryItems" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
       <template #item.countSubCategory="{ item }">
         <div class="d-flex align-center justify-center">
