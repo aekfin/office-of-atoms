@@ -101,7 +101,7 @@
       async getData () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getParcelType', query: { name: 'โทรศัพท์มือถือ' } })
+          const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getTypeBrandByModelId', query: { ...this.$route.query, modelId: this.$route.params.category_id } })
           console.log(data)
           // this.form = 
           this.isLoading = false

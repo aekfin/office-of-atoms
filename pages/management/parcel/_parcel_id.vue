@@ -4,25 +4,31 @@
     <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <v-col :cols="6">
-            <v-text-field v-model="form.name" name="name" label="ชื่อ *" :rules="nameRules" required/>
+          <v-col :cols="4">
+            <AutocompleteDropdown :value.sync="form.typeId" itemValue="id" itemText="name" label="ประเภท *" :rules="typeRules" apiPath="parcel/getListParcelType"
+            searchApiPath="parcel/getParcelType" required noFilter @select="onSelectType"/>
           </v-col>
-          <v-col :cols="3">
-            <v-select v-model="form.category" :items="categoryList" itemValue="id" itemText="name" label="หมวดหมู่หลัก *" :rules="cateogryRules" required/>
+          <v-col :cols="4">
+            <AutocompleteDropdown :value.sync="form.brandId" :items="brandList" itemValue="id" itemText="name" label="ยี่ห้อ *" :rules="brandRules" required :disabled="disabledBrand" @select="onSelectBrand"/>
           </v-col>
-          <v-col :cols="3">
-            <v-select v-model="form.subcategory" :items="subcategoryList" itemValue="id" itemText="name" label="หมวดหมู่ย่อย *" :rules="subcateogryRules" required :disabled="!form.category"/>
+          <v-col :cols="4">
+            <AutocompleteDropdown :value.sync="form.modeId" :items="modelList" itemValue="id" itemText="name" label="รุ่น *" :rules="modelRules" required :disabled="disabledModel"/>
           </v-col>
         </v-row>
         <v-row>
-          <v-col :cols="2">
-            <v-select v-model="form.year" :items="yearList" itemValue="id" itemText="name" label="ปี *" :rules="yearRules" required/>
+          <v-col :cols="8">
+            <v-text-field v-model="form.parcelName" name="parcel-name" label="ชื่อ *" :rules="nameRules" required/>
           </v-col>
           <v-col :cols="4">
-            <v-text-field v-model="form.price" label="ราคากลาง" type="number"/>
+            <v-text-field v-model="form.classifier" label="หน่วย *" name="unit" :rules="classifierRules" required/>
           </v-col>
-          <v-col :cols="6">
-            <v-textarea v-model="form.note" label="คำอธิบายเพิ่มเติม" :rows="3"/>
+        </v-row>
+        <v-row>
+          <v-col :cols="5">
+            <v-text-field v-model="form.price" label="ราคากลาง *" type="number" :rules="priceRules" required/>
+          </v-col>
+          <v-col :cols="3">
+            <v-text-field v-model="form.quantity" label="จำนวน *" type="number" :rules="quantityRules" required/>
           </v-col>
         </v-row>
       </v-container>
@@ -40,43 +46,42 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
+      AutocompleteDropdown: () => import('~/components/AutocompleteDropdown.vue'),
     },
     data () {
       return {
         valid: true,
         form: {
-          type: null,
-          name: '',
-          category: null,
-          subcategory: null,
-          year: (new Date()).getFullYear(),
+          typeId: null,
+          brandId: null,
+          modeId: null,
+          parcelName: '',
+          classifier: '',
+          quantity: 0,
           price: '',
-          note: '',
         },
-        categoryList: [
-          { id: 1, name: 'โทรศัพท์มือถือ' }
-        ],
-        subcategoryList: [
-          { id: 1, name: 'Nokia' }
-        ],
-        typeList: [
-          { id: 1, name: 'พัสดุ' },
-          { id: 2, name: 'ครุภัณฑ์' }
-        ],
-        typeRules: [
-          v => !!v || 'โปรดใส่ประเภท',
-        ],
+        brandList: [],
+        modelList: [],
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อ',
         ],
-        cateogryRules: [
-          v => !!v || 'โปรดใส่หมวดหมู่หลัก',
+        typeRules: [
+          v => !!v || 'โปรดเลือกประเภท',
         ],
-        subcateogryRules: [
-          v => !!v || 'โปรดใส่หมวดหมู่ย่อย',
+        brandRules: [
+          v => !!v || 'โปรดเลือกยี่ห้อ',
         ],
-        yearRules: [
-          v => !!v || 'โปรดใส่ปี',
+        modelRules: [
+          v => !!v || 'โปรดเลือกรุ่น',
+        ],
+        classifierRules: [
+          v => !!v || 'โปรดใส่หน่วย',
+        ],
+        priceRules: [
+          v => !!v || 'โปรดใส่ราคากลาง',
+        ],
+        quantityRules: [
+          v => !!v || 'โปรดใส่จำนวน',
         ],
       }
     },
@@ -84,17 +89,35 @@
       isCreate () {
         return this.$route.params.parcel_id === 'create'
       },
-      yearList () {
-        return new Array(5).fill().map((_val, i) => {
-          const year = (new Date()).getFullYear()
-          const name = year + i - 2
-          return { id: name, name }
-        })
-      }
+      disabledBrand () {
+        return !this.form.typeId || !this.brandList.length
+      },
+      disabledModel () {
+        return !this.form.brandId || !this.modelList.length
+      },
     },
     methods: {
-      onSubmit () {
-        this.$refs.form.validate()
+      onSelectType ({ val, item }) {
+        this.brandList = item.listBrands
+      },
+      onSelectBrand ({ val, item }) {
+        this.modelList = item.listModels
+      },
+      async onSubmit () {
+        const valid = this.$refs.form.validate()
+        try {
+          if (valid) {
+            const apiPath = this.isCreate ? 'parcel/importMasterAndStock' : ''
+            const method = this.isCreate ? 'post' : 'patch'
+            const form = { data: [{ ...this.form }] }
+            const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
+            await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างค่าเริ่มต้นพัสดุสำเร็จ' : 'แก้ไขค่าเริ่มต้นพัสดุสำเร็จ' })
+            if (this.isCreate) this.$router.push('/management/parcel/')
+            return Promise.resolve(data)
+          } else {
+            return Promise.resolve()
+          }
+        } catch (err) { return Promise.reject(err) }
       },
     }
   }

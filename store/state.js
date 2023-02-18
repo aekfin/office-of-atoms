@@ -6,6 +6,7 @@ export default () => ({
   snackbarText: '',
   snackbarProps: {},
   pagination: null,
+  paginationIndex: 0,
   approveStatus: {
     '1': 'อนุมัติ',
     '2': 'รออนุมัติ',

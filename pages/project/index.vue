@@ -2,6 +2,7 @@
   <div id="project-page">
     <PageHeader text="โครงการ" btnText="เพิ่มโครงการ" createRoute="/project/create/" :total="total" unit="โครงการ"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
+      <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.projectStartDate="{ item }">
         {{ $moment(item).format('DD-MM-YYYY') }}
       </template>
@@ -29,6 +30,7 @@
         count: 0,
         total: 0,
         headers: [
+          { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'เลขที่โครงการ', value: 'projectNumber', width: '140px', align: 'center' },
           { text: 'ชื่อโครงการ', value: 'projectName', width: '28%' },
           { text: 'เลขที่สัญญา', value: 'contractNumber', align: 'center' },

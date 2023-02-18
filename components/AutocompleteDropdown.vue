@@ -1,10 +1,11 @@
 <template>
-  <div class="select-dropdown">
-    <v-select ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled" :loading="isLoading">
+  <div class="autocomplete-dropdown">
+    <v-autocomplete ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled"
+      :loading="isLoading" :noFilter="noFilter" :searchInput.sync="search">
       <template #append-item>
         <div v-if="!!pagination" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
       </template>
-    </v-select>
+    </v-autocomplete>
   </div>
 </template>
 
@@ -19,16 +20,21 @@
       items: { type: Array, default: () => [] },
       apiPath: { type: String },
       query: { type: Object, default: () => ({}) },
+      searchApiPath: { type: String },
+      searchQuery: { type: Object, default: () => ({}) },
       required: { type: Boolean },
       disabled: { type: Boolean },
+      noFilter: { type: Boolean },
     },
     data () {
       return {
         val: this.value,
+        search: '',
         list: this.items || [],
         pagination: null,
         isLoading: false,
         initScroll: false,
+        timeout: null,
       }
     },
     computed: {
@@ -47,6 +53,12 @@
       },
       'items' (val) {
         this.list = val
+      },
+      'search' () {
+        clearTimeout(this.timeout)
+        this.timeout = setTimeout(() => {
+          this.onSearch()
+        }, 1000)
       }
     },
     mounted () {
@@ -74,12 +86,29 @@
           this.getList(true)
         }
       },
+      async onSearch () {
+        if (this.apiPath && !this.isLoading) {
+          try {
+            if (this.searchApiPath && this.search) {
+              this.isLoading = true
+              const { data } = await this.$store.dispatch('http', { apiPath: this.searchApiPath, query: { ...this.searchQuery, name: this.search } })
+              this.list = data
+              this.isLoading = false
+            } else {
+              await this.getList()
+            }
+            return Promise.resolve()
+          } catch (err) {
+            return Promise.reject(err)
+          }
+        }
+      },
     },
   }
 </script>
 
 <style lang="scss">
-  .select-dropdown {
+  .autocomplete-dropdown {
     width: 100%;
   }
 </style>

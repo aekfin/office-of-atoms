@@ -214,7 +214,7 @@
             this.form.email = this.form.username
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: this.form })
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างบุคลากรสำเร็จ' : 'แก้ไขบุคลากรสำเร็จ' })
-            if (this.isCreate) this.$router.push('/user/')
+            if (this.isCreate) this.$router.push('/management/user/')
             return Promise.resolve(data)
           } else {
             return Promise.resolve()

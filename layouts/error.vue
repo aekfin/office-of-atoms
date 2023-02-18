@@ -4,9 +4,10 @@
       {{ pageNotFound }}
     </h1>
     <h1 v-else>
-      {{ otherError }}
+      <div>Error {{ error.statusCode }}</div>
+      <div>{{ error.message }}</div>
     </h1>
-    <NuxtLink to="/">
+    <NuxtLink to="/" class="pl-5">
       Home page
     </NuxtLink>
   </v-app>
@@ -34,12 +35,13 @@ export default {
     return {
       title
     }
-  }
+  },
 }
 </script>
 
 <style scoped>
-h1 {
-  font-size: 20px;
-}
+  h1 {
+    font-size: 20px;
+    padding: 20px;
+  }
 </style>

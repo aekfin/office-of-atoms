@@ -30,6 +30,7 @@ export default {
       const pagination = { ...res.data }
       delete pagination.content
       commit('SET_STATE', { name: 'pagination', val: pagination })
+      commit('SET_STATE', { name: 'paginationIndex', val: (pagination?.pageable?.pageSize || 5) * pagination.number })
       if (context) {
         context[field] = res.data.content
         context.total = res.data.totalElements

@@ -2,11 +2,12 @@
   <div id="user-page">
     <PageHeader text="บริหารบุคลากร" btnText="เพิ่มบุคลากร" createRoute="/management/user/create/" :filters="filters" :total="total" unit="คน"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
-      <template #item.order="{ index }">{{ index + 1 }}</template>
+      <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
       </template>
     </v-data-table>
+    <Pagination/>
   </div>
 </template>
 
@@ -15,6 +16,7 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       ActionIconList: () => import('~/components/ActionIconList.vue'),
+      Pagination: () => import('~/components/Pagination.vue'),
     },
     data () {
       return {
@@ -58,6 +60,11 @@
             ]
           }
         ],
+      }
+    },
+    watch: {
+      '$route.query' () {
+        this.getList()
       }
     },
     mounted () {
