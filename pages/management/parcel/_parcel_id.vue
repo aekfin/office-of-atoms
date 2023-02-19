@@ -96,7 +96,20 @@
         return !this.form.brandId || !this.modelList.length
       },
     },
+    mounted () {
+      if (!this.isCreate) this.getData()
+    },
     methods: {
+      async getData () {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getParcelMaster', query: { ...this.$route.query, id: this.$route.params.parcel_id } })
+          console.log(data)
+          // this.form = data
+          this.isLoading = false
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
       onSelectType ({ val, item }) {
         this.brandList = item.listBrands
       },

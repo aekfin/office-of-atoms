@@ -3,7 +3,7 @@
     <PageHeader text="ค่าเริ่มต้นพัสดุ" btnText="เพิ่มค่าเริ่มต้นพัสดุ" createRoute="/management/parcel/create/"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
-      <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
+      <template #item.price="{ item }">{{ $fn.getPrice(item.price || 0) }}</template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
       </template>
@@ -24,9 +24,10 @@
         isLoading: true,
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
-          { text: 'ชื่อ', value: 'name', width: '25%' },
-          { text: 'หมวดหมู่หลัก', value: 'category', width: '200px', align: 'center' },
-          { text: 'หมวดหมู่ย่อย', value: 'subcategory', width: '200px', align: 'center' },
+          { text: 'ชื่อ', value: 'name' },
+          { text: 'ประเภท', value: 'typeName', width: '160px', align: 'center' },
+          { text: 'ยี่ห้อ', value: 'brandName', width: '160px', align: 'center' },
+          { text: 'รุ่น', value: 'modelName', width: '160px', align: 'center' },
           { text: 'ราคากลาง', value: 'price', align: 'center', width: '120px' },
           { text: 'จำนวน', value: 'count', align: 'center', width: '100px' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },

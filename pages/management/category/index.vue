@@ -25,7 +25,7 @@
     </v-data-table>
     <Pagination/>
 
-    <v-dialog v-model="brandDialog" width="480">
+    <v-dialog v-model="brandDialog" width="720">
       <v-card v-if="selectedType">
         <v-card-title class="text-h5 justify-space-between">
           <div>รายละเอียดยี่ห้อ</div>
@@ -35,14 +35,14 @@
         </v-card-title>
         <v-card-text class="black--text">
           <div class="mt-2">ทั้งหมด {{ selectedType.listBrands.length }} ยี่ห้อ</div>
-          <v-data-table :headers="brandHeaders" :items="selectedType.listBrands" disableSort hideDefaultFooter class="mt-3" height="250px">
+          <v-data-table :headers="brandHeaders" :items="selectedType.listBrands" disableSort hideDefaultFooter class="mt-3" height="250px" :itemsPerPage="-1">
             <template #item.number="{ index }">{{ index + 1 }}.</template>
           </v-data-table>
         </v-card-text>
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="modelDialog" width="480">
+    <v-dialog v-model="modelDialog" width="720">
       <v-card v-if="selectedType">
         <v-card-title class="text-h5 justify-space-between">
           <div>รายละเอียดรุ่น</div>
@@ -52,7 +52,7 @@
         </v-card-title>
         <v-card-text class="black--text">
           <div class="mt-2">ทั้งหมด {{ getCountModels(selectedType) }} รุ่น</div>
-          <v-data-table :headers="modelHeaders" :items="getModels(selectedType)" disableSort hideDefaultFooter class="mt-3" height="250px">
+          <v-data-table :headers="modelHeaders" :items="getModels(selectedType)" disableSort hideDefaultFooter class="mt-3" height="250px" :itemsPerPage="-1">
             <template #item.number="{ index }">{{ index + 1 }}.</template>
           </v-data-table>
         </v-card-text>
@@ -130,7 +130,7 @@
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'mdi-pencil', action: `/management/category/${item.id}/` },
-          { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
+          // { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
         ]
       }
     }

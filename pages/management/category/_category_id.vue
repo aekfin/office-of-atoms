@@ -8,7 +8,7 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-text-field v-model="form.typeName" label="ชื่อประเภท *" :rules="typeNameRules" required/>
+            <v-text-field v-model="form.typeName" label="ชื่อประเภท *" :rules="typeNameRules" required :readOnly="!isCreate"/>
           </v-col>
         </v-row>
       </v-container>
@@ -17,8 +17,8 @@
         <v-container>
           <v-row v-for="(brand, i) in form.brands" :key="i" align="baseline" class="brand-row elevation-4">
             <div class="mr-4">{{ i + 1 }}.</div>
-            <v-text-field v-model="form.brands[i].brandName" label="ชื่อยี่ห้อ *" :rules="brandNameRules" required/>
-            <v-btn v-if="form.brands.length > 1" class="remove-brand-icon" icon @click="removeBrand(i)">
+            <v-text-field v-model="form.brands[i].brandName" label="ชื่อยี่ห้อ *" :rules="brandNameRules" required :readOnly="!canEditBrand(brand)"/>
+            <v-btn v-if="form.brands.length > 1 && canEditBrand(brand)" class="remove-brand-icon" icon @click="removeBrand(i)">
               <v-icon>mdi-close</v-icon>
             </v-btn>
             <v-expansion-panels v-model="form.brands[i].expand" class="form-expansion-panels form-expansion-brands" flat multiple>
@@ -30,8 +30,8 @@
                   <v-container>
                     <v-row v-for="(model, j) in brand.models" :key="j" align="baseline">
                       <div class="mr-4">{{ i + 1 }}.{{ j + 1 }}</div>
-                      <v-text-field v-model="brand.models[j]" label="ชื่อรุ่น *" :rules="modelNameRules" required/>
-                      <v-btn v-if="brand.models.length > 1" class="ml-2" icon @click="removeModel(brand.models, j)">
+                      <v-text-field v-model="brand.models[j].modelName" label="ชื่อรุ่น *" :rules="modelNameRules" required :readOnly="!canEditModel(model)"/>
+                      <v-btn v-if="brand.models.length > 1 && canEditModel(model)" class="ml-2" icon @click="removeModel(brand.models, j)">
                         <v-icon>mdi-delete</v-icon>
                       </v-btn>
                     </v-row>
@@ -59,6 +59,7 @@
 </template>
 
 <script>
+  import _ from 'lodash'
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
@@ -73,11 +74,12 @@
               brandName: '',
               expand: [0],
               models: [
-                ''
+                { modelName: '' }
               ]
             },
           ],
         },
+        originalForm: {},
         typeNameRules: [
           v => !!v || 'โปรดใส่ชื่อประเภท',
         ],
@@ -101,12 +103,31 @@
       async getData () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getTypeBrandByModelId', query: { ...this.$route.query, modelId: this.$route.params.category_id } })
-          console.log(data)
-          // this.form = 
+          const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getTypeBand', query: { ...this.$route.query, id: this.$route.params.category_id } })
+          this.form = this.getForm(data)
+          this.originalForm = this.getForm(data)
           this.isLoading = false
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
+      },
+      getForm (data) {
+        return {
+          typeId: data.id,
+          typeName: data.name,
+          brands: data.listBrands.map(brand => {
+            return {
+              brandId: brand.id,
+              brandName: brand.name,
+              expand: [0],
+              models: brand.listModels.map(model => {
+                return {
+                  modelId: model.id,
+                  modelName: model.name
+                }
+              })
+            }
+          })
+        }
       },
       addBrand () {
         this.form.brands.push(
@@ -114,7 +135,7 @@
             brandName: '',
             expand: [0],
             models: [
-              ''
+              { modelName: '' }
             ]
           },
         )
@@ -123,23 +144,54 @@
         this.form.brands.splice(i, 1)
       },
       addModel (models) {
-        models.push('')
+        models.push({ modelName: '' })
       },
       removeModel (brands, j) {
         brands.splice(j, 1)
+      },
+      canEditBrand (brand) {
+        return brand.brandId === undefined
+      },
+      canEditModel (model) {
+        return model.modelId === undefined
       },
       async onSubmit () {
         const valid = this.$refs.form.validate()
         if (valid) {
           try {
-            const apiPath = this.isCreate ? 'parcel/import/typeBandModel' : ''
-            const method = 'post'
-            const { data } = await this.$store.dispatch('http', { method, apiPath, data: this.form })
+            if (this.isCreate) await this.onCreateNew()
+            else await this.onEdit()
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างประเภท พัสดุ - ครุภัณฑ์ สำเร็จ' : 'แก้ไขประเภท  พัสดุ - ครุภัณฑ์ สำเร็จ' })
-            return Promise.resolve(data)
+            if (this.isCreate) this.$router.push('/management/category/')
+            return Promise.resolve()
           } catch (err) { return Promise.reject(err) }
         }
       },
+      async onCreateNew () {
+        try {
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/import/typeBandModel', data: this.form })
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
+      async onEdit () {
+        try {
+          if (!_.isEqual(this.form, this.originalForm)) {
+            const caseAddBrand = this.form.brands.length !== this.originalForm.brands?.length
+            if (caseAddBrand) {
+              const form = { ...this.form, brands: this.form.brands.filter(brand => brand.brandId === undefined) }
+              await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/AddbrandModel', data: form })
+            }
+            const existBrands = this.form.brands.filter(brand => brand !== undefined)
+            const changedBrands = existBrands.filter(brand => brand.models.some(model => model.modelId === undefined))
+            if (changedBrands.length) {
+              const brands = changedBrands.map(brand => ({ ...brand, models: brand.models.filter(model => model.modelId === undefined) }))
+              await Promise.all(brands.map(brand => this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/AddModelOnly', data: brand })))
+            }
+            await this.getData()
+          }
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      }
     },
   }
 </script>
