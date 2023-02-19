@@ -1,6 +1,6 @@
 <template>
   <div id="parcel-page">
-    <PageHeader text="ค่าเริ่มต้นพัสดุ" btnText="เพิ่มค่าเริ่มต้นพัสดุ" createRoute="/management/parcel/create/"/>
+    <PageHeader text="ค่าเริ่มต้นพัสดุ" btnText="เพิ่มค่าเริ่มต้นพัสดุ" createRoute="/management/parcel/create/" :total="total"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.price || 0) }}</template>
@@ -22,6 +22,8 @@
     data () {
       return {
         isLoading: true,
+        total: 0,
+        count: 0,
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ชื่อ', value: 'name' },

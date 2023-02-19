@@ -4,35 +4,34 @@
     <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <v-col :cols="2">
-            <v-select v-model="form.year" :items="years" itemValue="id" itemText="name" label="ปีงบประมาณ *" :rules="yearRules" required/>
+          <v-col :cols="8">
+            <SelectDropdown :value.sync="form.projectId" itemValue="id" itemText="projectName" label="โครงการ *" apiPath="Project/getListProject" :rules="projectRules" required/>
           </v-col>
           <v-col :cols="4">
-            <v-select v-model="form.projectRoot" :items="items" itemValue="id" itemText="name" label="เลือกโครงการงบประมาณ *" :rules="projectRootRules" required :disabled="!form.year"/>
-          </v-col>
-          <v-col :cols="6">
-            <v-select v-model="form.project" :items="items" itemValue="id" itemText="name" label="โครงการ *" :rules="projectRules" required :disabled="!form.projectRoot"/>
+            <InputDatePicker :value.sync="form.dateEntry" label="วันที่รับเข้า *" :rules="dateEntryRules" required/>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col :cols="3">
-            <v-select v-model="form.category" :items="categoryList" itemValue="id" itemText="name" label="หมวดหมู่หลัก *" :rules="categoryRules" required/>
-          </v-col>
-          <v-col :cols="3">
-            <v-select v-model="form.subcategory" :items="subcategoryList" itemValue="id" itemText="name" label="หมวดหมู่ย่อย *" :rules="subcategoryRules" required :disabled="!form.category"/>
-          </v-col>
-          <v-col :cols="6">
-            <v-select v-model="form.parcel" :items="parcelList" itemValue="id" itemText="name" label="พัสดุ *" :rules="parcelRules" required :disabled="!form.subcategory"/>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col :cols="6">
-            <v-text-field v-model="form.count" :rules="countRules" label="จำนวนรับเข้าคลัง *"/>
-          </v-col>
-          <v-col :cols="6">
-            <InputDatePicker :value.sync="form.datetimeCreate" label="วันที่รับเข้า *" :rules="datetimeCreateRules" required/>
-          </v-col>
-        </v-row>
+        <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
+          <v-expansion-panel>
+            <v-expansion-panel-header>เลือกพัสดุ</v-expansion-panel-header>
+            <v-expansion-panel-content class="pl-4">
+              <v-container>
+                <v-row v-for="(parcel, i) in form.itemParcels" :key="i" align="baseline">
+                  <div class="mr-4">{{ i + 1 }}.</div>
+                  <SelectDropdown :value.sync="form.itemParcels[i].parcelMasterId" itemValue="id" itemText="name" label="พัสดุ *" apiPath="parcel/getListParcelMaster" :rules="parcelRules" required/>
+                  <v-text-field v-model="form.itemParcels[i].price" class="ml-4" label="ราคา *" type="number" :rules="priceRules" required/>
+                  <v-text-field v-model="form.itemParcels[i].quantity" class="ml-4" label="จำนวน *" type="number" :rules="quantityRules" required/>
+                  <v-btn v-if="form.itemParcels.length > 1" class="ml-2" icon @click="removeParcel(ร)">
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </v-row>
+                <v-row class="mt-5">
+                  <v-btn block rounded outlined @click="addParcel()">เพิ่มพัสดุ</v-btn>
+                </v-row>
+              </v-container>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-container>
       <v-container class="mt-8">
         <v-row justify="end">
@@ -49,69 +48,36 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
+      SelectDropdown: () => import('~/components/SelectDropdown.vue'),
     },
     data () {
       return {
         valid: true,
         form: {
-          year: null,
-          projectRoot: null,
-          project: null,
-          category: null,
-          subcategory: null,
-          parcel: null,
-          count: '',
-          datetimeCreate: new Date(),
+          projectId: null,
+          dateEntry: new Date(),
+          itemParcels: [
+            {
+              parcelMasterId: 0,
+              price: '',
+              quantity: ''
+            }
+          ],
         },
-        years: [
-          { id: 1, name: '2022' },
-          { id: 2, name: '2021' },
-          { id: 3, name: '2020' },
-          { id: 4, name: '2019' }
-        ],
-        items: [
-          { id: 1, name: 'Foo' },
-          { id: 2, name: 'Bar' },
-          { id: 3, name: 'Fizz' },
-          { id: 4, name: 'Buzz' }
-        ],
-        categoryList: [
-          { id: 1, name: 'โทรศัพท์มือถือ' },
-          { id: 2, name: 'สมุดบันทึก' },
-          { id: 3, name: 'จอคอมพิวเตอร์' },
-        ],
-        subcategoryList: [
-          { id: 1, name: 'Nokia' },
-          { id: 2, name: 'Samsung' },
-          { id: 3, name: 'Apple' },
-        ],
-        parcelList: [
-          { id: 1, name: 'โทรศัพท์ Nokia รุ่น 1' },
-          { id: 2, name: 'โทรศัพท์ Samsung รุ่น 1' },
-          { id: 3, name: 'โทรศัพท์ Apple รุ่น 1' },          
-        ],
-        yearRules: [
-          v => !!v || 'โปรดเลือกปีงบประมาณ',
-        ],
-        projectRootRules: [
-          v => !!v || 'โปรดเลือกโครงการงบประมาณ',
-        ],
+        formExpand: [0],
         projectRules: [
           v => !!v || 'โปรดเลือกโครงการ',
-        ],
-        categoryRules: [
-          v => !!v || 'โปรดเลือกหมวดหมู่หลัก',
-        ],
-        subcategoryRules: [
-          v => !!v || 'โปรดเลือกหมวดหมู่ย่อย',
         ],
         parcelRules: [
           v => !!v || 'โปรดเลือกพัสดุ',
         ],
-        countRules: [
-          v => !!v || 'โปรดเลือกพัสดุ',
+        priceRules: [
+          v => !!v || 'โปรดใส่ราคา',
         ],
-        datetimeCreateRules: [
+        quantityRules: [
+          v => !!v || 'โปรดใส่จำนวน',
+        ],
+        dateEntryRules: [
           v => !!v || 'โปรดใส่วันที่รับเข้า',
         ],
       }
@@ -122,8 +88,36 @@
       },
     },
     methods: {
-      onSubmit () {
-        this.$refs.form.validate()
+      addParcel () {
+        this.form.itemParcels.push(
+          {
+            parcelMasterId: 0,
+            price: '',
+            quantity: ''
+          }
+        )
+      },
+      removeBrand (i) {
+        this.form.itemParcels.splice(i, 1)
+      },
+      async onSubmit () {
+        const valid = this.$refs.form.validate()
+        if (valid) {
+          try {
+            const apiPath = this.isCreate ? 'parcel/import' : ''
+            const method = this.isCreate ? 'post' : 'patch'
+            const form = {
+              ...this.form,
+              dateEntry: this.$fn.convertDateToString(this.form.dateEntry)
+            }
+            const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
+            await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างโครงการ-พัสดุสำเร็จ' : 'แก้ไขประเภทสร้างโครงการ-พัสดุสำเร็จ' })
+            if (this.isCreate) this.$router.push('/parcel/overall/')
+            return Promise.resolve(data)
+          } catch (err) { return Promise.reject(err) }
+        } else {
+          this.formExpand = [0]
+        }
       },
     }
   }
@@ -131,5 +125,10 @@
 
 <style lang="scss">
   #parcel-detail-page {
+    .form-expansion-panels {
+      .select-dropdown {
+        width: 50%;
+      }
+    }
   }
 </style>

@@ -217,6 +217,7 @@
             if (this.isCreate) this.$router.push('/management/user/')
             return Promise.resolve(data)
           } else {
+            this.formExpand = [0]
             return Promise.resolve()
           }
         } catch (err) { return Promise.reject(err) }

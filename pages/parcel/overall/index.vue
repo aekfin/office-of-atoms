@@ -19,6 +19,7 @@
     },
     data () {
       return {
+        isLoading: true,
         headers: [
           { text: 'เลขที่โครงการ', value: 'projectCode', width: '160px', align: 'center' },
           { text: 'โครงการ', value: 'projectName' },
@@ -41,7 +42,24 @@
         ],
       }
     },
+    watch: {
+      '$route.query' () {
+        this.getList()
+      }
+    },
+    mounted () {
+      this.getList()
+    },
     methods: {
+      async getList () {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListPickUp', query: this.$route.query, context: this })
+          console.log(data)
+          this.isLoading = false
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'mdi-pencil', action: `/parcel/overall/${item.id}/` },

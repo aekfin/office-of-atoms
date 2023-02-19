@@ -132,6 +132,7 @@
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างคู่สัญญาสำเร็จ' : 'แก้ไขคู่สัญญาสำเร็จ' })
             return Promise.resolve(data)
           } else {
+            this.formExpand = [0]
             return Promise.resolve()
           }
         } catch (err) { return Promise.reject(err) }

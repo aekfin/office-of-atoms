@@ -249,6 +249,8 @@
             console.log(err)
             return Promise.reject(err)
           }
+        } else {
+          this.formExpand = [0, 1]
         }
       }
     },

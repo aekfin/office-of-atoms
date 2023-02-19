@@ -1,6 +1,6 @@
 <template>
   <div id="category-list-page">
-    <PageHeader text="ประเภท พัสดุ - ครุภัณฑ์" btnText="เพิ่มประเภท" createRoute="/management/category/create/"/>
+    <PageHeader text="ประเภท พัสดุ - ครุภัณฑ์" btnText="เพิ่มประเภท" createRoute="/management/category/create/" :total="total"/>
     <v-data-table :headers="categoryHeaders" :items="items" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.countBrands="{ item }">
@@ -71,6 +71,8 @@
     data () {
       return {
         isLoading: true,
+        total: 0,
+        count: 0,
         categoryHeaders: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ชื่อ', value: 'name' },

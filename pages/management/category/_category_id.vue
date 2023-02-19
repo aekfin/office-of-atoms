@@ -161,7 +161,7 @@
           try {
             if (this.isCreate) await this.onCreateNew()
             else await this.onEdit()
-            await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างประเภท พัสดุ - ครุภัณฑ์ สำเร็จ' : 'แก้ไขประเภท  พัสดุ - ครุภัณฑ์ สำเร็จ' })
+            await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างประเภท พัสดุ - ครุภัณฑ์ สำเร็จ' : 'แก้ไขประเภท พัสดุ - ครุภัณฑ์ สำเร็จ' })
             if (this.isCreate) this.$router.push('/management/category/')
             return Promise.resolve()
           } catch (err) { return Promise.reject(err) }

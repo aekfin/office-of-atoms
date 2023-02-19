@@ -3,6 +3,7 @@ export default {
     try {
       const config = { method, url: `api/${apiPath}`, data, headers, responseType, params: query }
       const res = await this.$axios(config)
+      if (res.data?.status?.code == 400) console.log(`Error ${res.data?.status?.code}: ${res.data?.status?.description}`)
       return Promise.resolve({ res, data: res.data?.data || res.data })
     } catch (err) {
       const status = err.response.status
