@@ -27,11 +27,10 @@
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ชื่อ', value: 'name' },
-          { text: 'ประเภท', value: 'typeName', width: '160px', align: 'center' },
-          { text: 'ยี่ห้อ', value: 'brandName', width: '160px', align: 'center' },
-          { text: 'รุ่น', value: 'modelName', width: '160px', align: 'center' },
-          { text: 'ราคากลาง', value: 'price', align: 'center', width: '120px' },
-          { text: 'จำนวน', value: 'count', align: 'center', width: '100px' },
+          { text: 'ประเภท', value: 'type', width: '160px', align: 'center' },
+          { text: 'ยี่ห้อ', value: 'brand', width: '160px', align: 'center' },
+          { text: 'รุ่น', value: 'model', width: '160px', align: 'center' },
+          { text: 'จำนวน', value: 'quantity', align: 'center', width: '100px' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
         items: [],
@@ -50,7 +49,6 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListParcelMaster', query: this.$route.query, context: this })
-          console.log(data)
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }

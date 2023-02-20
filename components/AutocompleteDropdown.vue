@@ -1,7 +1,7 @@
 <template>
   <div class="autocomplete-dropdown">
     <v-autocomplete ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled"
-      :loading="isLoading" :noFilter="noFilter" :searchInput.sync="search">
+      :readonly="readonly" :loading="isLoading" :noFilter="noFilter" :searchInput.sync="search">
       <template #append-item>
         <div v-if="!!pagination" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
       </template>
@@ -24,6 +24,7 @@
       searchQuery: { type: Object, default: () => ({}) },
       required: { type: Boolean },
       disabled: { type: Boolean },
+      readonly: { type: Boolean },
       noFilter: { type: Boolean },
     },
     data () {

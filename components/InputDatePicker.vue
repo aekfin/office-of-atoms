@@ -6,6 +6,7 @@
       :close-on-content-click="false"
       transition="scale-transition"
       offset-y
+      :disabled="readonly"
     >
       <template #activator="{ on, attrs }">
         <v-text-field
@@ -39,6 +40,7 @@
       value: { type: [Date, String], required: true },
       label: { type: String, required: true },
       disabled: { type: Boolean },
+      readonly: { type: Boolean },
       required: { type: Boolean },
       rules: { type: Array },
     },

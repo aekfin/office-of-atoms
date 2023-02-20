@@ -8,7 +8,7 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-text-field v-model="form.typeName" label="ชื่อประเภท *" :rules="typeNameRules" required :readOnly="!isCreate"/>
+            <v-text-field v-model="form.typeName" label="ชื่อประเภท *" :rules="typeNameRules" required :readonly="!isCreate"/>
           </v-col>
         </v-row>
       </v-container>
@@ -17,7 +17,7 @@
         <v-container>
           <v-row v-for="(brand, i) in form.brands" :key="i" align="baseline" class="brand-row elevation-4">
             <div class="mr-4">{{ i + 1 }}.</div>
-            <v-text-field v-model="form.brands[i].brandName" label="ชื่อยี่ห้อ *" :rules="brandNameRules" required :readOnly="!canEditBrand(brand)"/>
+            <v-text-field v-model="form.brands[i].brandName" label="ชื่อยี่ห้อ *" :rules="brandNameRules" required :readonly="!canEditBrand(brand)"/>
             <v-btn v-if="form.brands.length > 1 && canEditBrand(brand)" class="remove-brand-icon" icon @click="removeBrand(i)">
               <v-icon>mdi-close</v-icon>
             </v-btn>
@@ -30,7 +30,7 @@
                   <v-container>
                     <v-row v-for="(model, j) in brand.models" :key="j" align="baseline">
                       <div class="mr-4">{{ i + 1 }}.{{ j + 1 }}</div>
-                      <v-text-field v-model="brand.models[j].modelName" label="ชื่อรุ่น *" :rules="modelNameRules" required :readOnly="!canEditModel(model)"/>
+                      <v-text-field v-model="brand.models[j].modelName" label="ชื่อรุ่น *" :rules="modelNameRules" required :readonly="!canEditModel(model)"/>
                       <v-btn v-if="brand.models.length > 1 && canEditModel(model)" class="ml-2" icon @click="removeModel(brand.models, j)">
                         <v-icon>mdi-delete</v-icon>
                       </v-btn>

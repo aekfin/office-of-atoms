@@ -1,6 +1,6 @@
 <template>
   <div class="select-dropdown">
-    <v-select ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled" :loading="isLoading">
+    <v-select ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled" :readonly="readonly" :loading="isLoading">
       <template #append-item>
         <div v-if="!!pagination" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
       </template>
@@ -21,6 +21,7 @@
       query: { type: Object, default: () => ({}) },
       required: { type: Boolean },
       disabled: { type: Boolean },
+      readonly: { type: Boolean },
     },
     data () {
       return {
