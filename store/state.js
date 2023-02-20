@@ -8,16 +8,14 @@ export default () => ({
   pagination: null,
   paginationIndex: 0,
   approveStatus: {
-    '1': 'อนุมัติ',
-    '2': 'รออนุมัติ',
-    '3': 'ไม่อนุมัติ',
-    '4': 'แบบร่าง',
+    'SUCCESS': 'อนุมัติ',
+    'PENDING': 'รออนุมัติ',
+    'REJECT': 'ไม่อนุมัติ',
   },
   approveStatusColor: {
-    '1': 'success',
-    '2': 'warning',
-    '3': 'error',
-    '4': 'primary',
+    'SUCCESS': 'success',
+    'PENDING': 'warning',
+    'REJECT': 'error',
   },
   leftMenus: [
     {

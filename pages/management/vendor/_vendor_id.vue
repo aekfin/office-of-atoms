@@ -7,7 +7,7 @@
           <!-- <v-col cols="auto">
             <UploadImage class="mt-4" :image.sync="form.image"/>
           </v-col> -->
-          <v-col class="ml-6">
+          <v-col>
             <v-text-field v-model="form.companyNumber" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
             <v-text-field v-model="form.companyName" label="ชื่อ *" :rules="nameRules" required/>
             <v-textarea v-model="form.companyAddress" name="address" label="ที่อยู่ *" :rules="addressRules" required/>

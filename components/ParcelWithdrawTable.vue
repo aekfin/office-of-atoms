@@ -1,18 +1,19 @@
 <template>
   <div id="parcel-withdraw-table">
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
-      <template #item.datetimeWithdraw="{ item }">
+      <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
+      <template #item.user_fk.thaiFristName="{ item }">{{ item.user_fk.thaiFristName }} {{ item.user_fk.thaiLastName }}</template>
+      <template #item.createdDate="{ item }">
         <div>{{ $moment(item.datetimeWithdraw).format('DD-MM-YYYY') }}</div>
       </template>
-      <template #item.datetimeApprove="{ item }">
-        <div>{{ $moment(item.datetimeApprove).format('DD-MM-YYYY') }}</div>
+      <template #item.approveDate="{ item }">
+        <div>{{ approveDate ? $moment(item.datetimeApprove).format('DD-MM-YYYY') : '-' }}</div>
       </template>
       <template #item.status="{ item }">
         <v-chip :color="$store.state.approveStatusColor[item.status]">{{ $store.state.approveStatus[item.status] }}</v-chip>
       </template>
-      <template #item.countParcel="{ item }">
+      <template #item.parcel="{ item }">
         <div class="d-flex align-center justify-center">
-          <div>{{ item.countParcel }}</div>
           <v-btn icon @click="openDialog(item)">
             <v-icon>mdi-information-outline</v-icon>
           </v-btn>
@@ -31,8 +32,8 @@
           </v-btn>
         </v-card-title>
         <v-card-text class="black--text">
-          <div class="mt-2">ทั้งหมด {{ selectedWithdrawParcel.countParcel }} ชนิด</div>
-          <v-data-table :headers="parcelHeaders" :items="selectedWithdrawParcel.parcelList" :itemsPerPage="20" disableSort hideDefaultFooter class="mt-3">
+          <div class="mt-2">ทั้งหมด {{ selectedWithdrawParcel.items.length }} ชนิด</div>
+          <v-data-table :headers="parcelHeaders" :items="selectedWithdrawParcel.items" :itemsPerPage="20" disableSort hideDefaultFooter class="mt-3" :loading="isLoadingDialog">
             <template #item.number="{ index }">{{ index + 1 }}.</template>
           </v-data-table>
         </v-card-text>
@@ -52,27 +53,36 @@
       return {
         dialog: false,
         selectedWithdrawParcel: null,
+        isLoadingDialog: true,
         headers: [
-          { text: 'เลขที่เอกสาร', value: 'code', width: '160px', align: 'center' },
-          { text: 'หน่วยงาน', value: 'agency' },
-          { text: 'วันที่เบิกพัสดุ', value: 'datetimeWithdraw', width: '140px', align: 'center' },
-          { text: 'วันที่อนุมัติ', value: 'datetimeApprove', width: '140px', align: 'center' },
-          { text: 'จำนวนพัสดุ', value: 'countParcel', width: '160px', align: 'center' },
+          { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
+          { text: 'ผู้ขอเบิกพัสดุ', value: 'user_fk.thaiFristName' },
+          { text: 'วันที่เบิกพัสดุ', value: 'createdDate', width: '140px', align: 'center' },
+          { text: 'วันที่อนุมัติ', value: 'approveDate', width: '140px', align: 'center' },
+          { text: 'พัสดุ', value: 'parcel', width: '160px', align: 'center' },
           { text: 'สถานะการเบิก', value: 'status', width: '160px', align: 'center' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
         parcelHeaders: [
           { text: 'ลำดับ', value: 'number', width: '80px', align: 'center' },
           { text: 'ชื่อ', value: 'name' },
-          { text: 'จำนวนเบิก', value: 'countWithdraw', width: '120px', align: 'center' },
-          { text: 'จำนวนจ่าย', value: 'countPaid', width: '120px', align: 'center' },
+          { text: 'จำนวนเบิก', value: 'quantity', width: '120px', align: 'center' },
+          { text: 'จำนวนจ่าย', value: 'quantity', width: '120px', align: 'center' },
         ],
       }
     },
     methods: {
-      openDialog (item) {
-        this.selectedWithdrawParcel = item
-        this.dialog = true
+      async openDialog (item) {
+        try {
+          this.dialog = true
+          this.isLoadingDialog = true
+          const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getPickUp', query: { id: item.id } })
+          this.selectedWithdrawParcel = data
+          this.isLoadingDialog = false
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
+        }
       },
       closeDialog () {
         this.dialog = false

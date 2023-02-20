@@ -34,21 +34,7 @@
           { text: 'จำนวน', value: 'count', align: 'center', width: '100px' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
-        items: [
-          {
-            id: 1,
-            type: 1,
-            name: 'โทรศัพท์มือถือ Nokia N95',
-            category: 'โทรศัพท์มือถือ',
-            subcategory: 'Nokia',
-            count: 15,
-            price: 1000,
-          },
-        ],
-        types: {
-          '1': 'พัสดุ',
-          '2': 'ครุภัณฑ์'
-        }
+        items: [],
       }
     },
     watch: {

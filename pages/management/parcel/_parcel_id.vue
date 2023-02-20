@@ -6,7 +6,7 @@
         <v-row>
           <v-col :cols="4">
             <AutocompleteDropdown :value.sync="form.typeId" itemValue="id" itemText="name" label="ประเภท *" :rules="typeRules" apiPath="parcel/getListParcelType"
-            searchApiPath="parcel/getParcelType" required noFilter @select="onSelectType"/>
+              searchApiPath="parcel/getParcelType" required noFilter @select="onSelectType"/>
           </v-col>
           <v-col :cols="4">
             <AutocompleteDropdown :value.sync="form.brandId" :items="brandList" itemValue="id" itemText="name" label="ยี่ห้อ *" :rules="brandRules" required :disabled="disabledBrand" @select="onSelectBrand"/>
@@ -111,10 +111,15 @@
         } catch (err) { return Promise.reject(err) }
       },
       onSelectType ({ val, item }) {
-        this.brandList = item.listBrands
+        if (item) {
+          this.brandList = item.listBrands
+        } else {
+          this.brandList = []
+          this.modelList = []
+        }
       },
       onSelectBrand ({ val, item }) {
-        this.modelList = item.listModels
+        this.modelList = item?.listModels || []
       },
       async onSubmit () {
         const valid = this.$refs.form.validate()
