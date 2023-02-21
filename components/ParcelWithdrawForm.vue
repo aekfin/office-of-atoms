@@ -23,12 +23,12 @@
             <v-text-field v-model="form.code" label="เลขที่เอกสาร" :disabled="viewMode"/>
           </v-col> -->
           <v-col :cols="6">
-            <InputDatePicker :value.sync="form.withdrawDate" label="วันที่เบิกพัสดุ *" :rules="datetimeWithdrawRules" required :readonly="viewMode"/>
+            <InputDatePicker :value.sync="form.withdrawDate" label="วันที่เบิกพัสดุ *" :rules="datetimeWithdrawRules" required :disabled="viewMode"/>
           </v-col>
         </v-row>
         <v-row>
           <v-col :cols="12">
-            <v-textarea v-model="form.description" label="หมายเหตุ" :rows="4" :readonly="viewMode"/>
+            <v-textarea v-model="form.description" label="หมายเหตุ" :rows="4" :disabled="viewMode"/>
           </v-col>
         </v-row>  
       </v-container>
@@ -38,11 +38,11 @@
           <v-col :cols="6">
             <div class="d-flex align-baseline">
               <div class="mr-5">{{ i + 1 }}.</div>
-              <SelectDropdown v-model="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="พัสดุ *" :rules="parcelRules" apiPath="parcel/getListParcelMaster" :readonly="viewMode"/>
+              <SelectDropdown v-model="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="พัสดุ *" :rules="parcelRules" apiPath="parcel/getListParcelMaster" :disabled="viewMode"/>
             </div>
           </v-col>
           <v-col :cols="3">
-            <v-text-field v-model="form.pickUpItems[i].quantity" label="จำนวนเบิก *" :rules="countWithdrawRules" required :readonly="viewMode"/>
+            <v-text-field v-model="form.pickUpItems[i].quantity" label="จำนวนเบิก *" :rules="countWithdrawRules" required :disabled="viewMode"/>
           </v-col>
           <v-col :cols="3">
             <div class="d-flex align-baseline">

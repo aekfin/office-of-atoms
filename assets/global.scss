@@ -111,28 +111,34 @@ button.v-btn.v-size--large {
   }
 }
 
-.form-expansion-panels.v-expansion-panels.theme--light {
-  .v-expansion-panel {
-    background-color: transparent;
+#default-layout {
+  .theme--light.v-input--is-disabled input, .theme--light.v-input--is-disabled textarea {
+    color: rgba(0, 0, 0, 0.55);
+  }
 
-    .v-expansion-panel-header {
-      font-weight: bold;
-      font-size: 1.5rem;
-      padding-left: 0;
-      padding-right: 0;
+  .v-input--is-disabled {
+    input {
+      cursor: default !important;
     }
-
-    .v-expansion-panel-content {
-      .v-expansion-panel-content__wrap {
+  }
+  
+  .form-expansion-panels.v-expansion-panels.theme--light {
+    .v-expansion-panel {
+      background-color: transparent;
+  
+      .v-expansion-panel-header {
+        font-weight: bold;
+        font-size: 1.5rem;
         padding-left: 0;
         padding-right: 0;
       }
+  
+      .v-expansion-panel-content {
+        .v-expansion-panel-content__wrap {
+          padding-left: 0;
+          padding-right: 0;
+        }
+      }
     }
-  }
-}
-
-.v-input--is-disabled {
-  input {
-    cursor: default !important;
   }
 }

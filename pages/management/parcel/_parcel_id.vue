@@ -7,15 +7,15 @@
           <v-col :cols="4" alignSelf="center">
             <AutocompleteDropdown v-if="isCreate" :value.sync="form.typeId" itemValue="id" itemText="name" label="ประเภท *" :rules="typeRules" apiPath="parcel/getListParcelType"
               searchApiPath="parcel/getParcelType" required noFilter @select="onSelectType"/>
-            <v-text-field v-else v-model="form.type" label="ประเภท *" required readonly/>
+            <v-text-field v-else v-model="form.type" label="ประเภท *" required disabled/>
           </v-col>
           <v-col :cols="4">
             <AutocompleteDropdown v-if="isCreate" :value.sync="form.brandId" :items="brandList" itemValue="id" itemText="name" label="ยี่ห้อ *" :rules="brandRules" required :disabled="disabledBrand" @select="onSelectBrand"/>
-            <v-text-field v-else v-model="form.brand" label="ยี่ห้อ *" required readonly/>
+            <v-text-field v-else v-model="form.brand" label="ยี่ห้อ *" required disabled/>
           </v-col>
           <v-col :cols="4">
             <AutocompleteDropdown v-if="isCreate" :value.sync="form.modeId" :items="modelList" itemValue="id" itemText="name" label="รุ่น *" :rules="modelRules" required :disabled="disabledModel"/>
-            <v-text-field v-else v-model="form.model" label="รุ่น *" required readonly/>
+            <v-text-field v-else v-model="form.model" label="รุ่น *" required disabled/>
           </v-col>
         </v-row>
         <v-row>
@@ -31,7 +31,7 @@
             <v-text-field v-model="form.price" label="ราคากลาง *" type="number" :rules="priceRules" required/>
           </v-col>
           <v-col :cols="3">
-            <v-text-field v-model="form.quantity" label="จำนวน *" type="number" :rules="quantityRules" required :readOnly="!isCreate"/>
+            <v-text-field v-model="form.quantity" label="จำนวน *" type="number" :rules="quantityRules" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
       </v-container>
