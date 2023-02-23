@@ -29,6 +29,11 @@
         </v-row>
         <v-row>
           <v-col :cols="6">
+            <SelectDropdown :value.sync="form.positionId" label="ตำแหน่ง *" :rules="positionRules" itemText="positionName" required apiPath="Orgchart/getPositions" :disabled="disabled"/>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :cols="6">
             <SelectDropdown :value.sync="form.ouId" label="กอง *" itemText="ouName" :rules="divisionRules" required apiPath="Orgchart/getOrganizations" :disabled="disabled"/>
           </v-col>
           <v-col :cols="6">
@@ -37,23 +42,16 @@
         </v-row>
         <v-row>
           <v-col :cols="6">
-            <SelectDropdown :value.sync="form.positionId" label="ตำแหน่ง *" :rules="positionRules" itemText="positionName" required apiPath="Orgchart/getPositions" :disabled="disabled"/>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col :cols="6">
             <v-text-field v-model="form.username" label="E-Mail ผู้ใช้งาน *" :rules="usernameRules" name="email" required :disabled="disabled"/>
           </v-col>
-          <v-col v-if="isCreate" :cols="6">
-            <v-text-field v-model="form.password" label="รหัสผ่าน *" :type="seePassword ? 'text' : 'password'" :rules="passwordRules" required :disabled="disabled">
-              <template #append><v-icon @click="seePassword = !seePassword" v-text="`mdi-eye${seePassword ? '-off' : ''}`"/></template>
-            </v-text-field>
-          </v-col>
-        </v-row>
-        <v-row>
           <v-col :cols="6">
             <SelectDropdown :value.sync="form.roleName" :items="roleList" label="สิทธ์การใช้งาน *" :rules="roleRules" multiple required :disabled="disabled"/>
           </v-col>
+          <!-- <v-col :cols="6">
+            <v-text-field v-model="form.password" label="รหัสผ่าน *" :type="seePassword ? 'text' : 'password'" :rules="passwordRules" required :disabled="disabled">
+              <template #append><v-icon @click="seePassword = !seePassword" v-text="`mdi-eye${seePassword ? '-off' : ''}`"/></template>
+            </v-text-field>
+          </v-col> -->
         </v-row>
       </v-container>
       <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>

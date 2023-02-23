@@ -20,30 +20,37 @@
         <v-expansion-panel>
           <v-expansion-panel-header>ข้อมูลติดต่อ</v-expansion-panel-header>
           <v-expansion-panel-content>
-            <v-container>
-              <v-row v-for="(contact, i) in form.contractPersons" :key="i" class="flex-nowrap gap-5 mb-2">
-                <v-col cols="7">
-                  <v-row>
-                    <div class="self-center mr-5">{{ i + 1 }}.</div>
-                    <v-text-field v-model="contact.name" label="ชื่อ - นามสกุล *" :rules="contactNameRules"/>
-                  </v-row>
-                  <v-row>
-                    <v-text-field v-model="contact.email" class="pl-8" label="E-mail *" :rules="contactEmailRules"/>
-                  </v-row>
-                </v-col>
-                <v-col>
-                  <v-row>
-                    <v-text-field v-model="contact.position" name="code" label="ตำแหน่ง *" :rules="contactPositionRules" required/>
-                  </v-row>
-                  <v-row>
-                    <v-text-field v-model="contact.phone" label="เบอร์โทรศัพท์ *" :rules="contactTelRules"/>
-                  </v-row>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-btn block rounded outlined @click="addContact">เพิ่มผู้ติดต่อ</v-btn>
-              </v-row>
-            </v-container>
+            <div v-for="(contact, i) in form.contractPersons" :key="i">
+              <v-container>
+                <v-row class="contract-row">
+                  <div class="contract-persons">
+                    <v-row>
+                      <v-col class="d-flex">
+                        <div :cols="7" class="self-center mr-5">{{ i + 1 }}.</div>
+                        <v-text-field v-model="contact.name" label="ชื่อ - นามสกุล *" :rules="contactNameRules"/>
+                      </v-col>
+                      <v-col :cols="5" class="d-flex">
+                        <v-text-field v-model="contact.position" name="code" label="ตำแหน่ง *" :rules="contactPositionRules" required/>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col :cols="7">
+                        <v-text-field v-model="contact.email" class="pl-8" label="E-mail *" :rules="contactEmailRules"/>
+                      </v-col>
+                      <v-col :cols="5">
+                        <v-text-field v-model="contact.phone" label="เบอร์โทรศัพท์ *" :rules="contactTelRules"/>
+                      </v-col>
+                    </v-row>
+                  </div>
+                  <v-btn v-if="form.contractPersons.length > 1" class="ml-2" icon @click="removeContact(i)">
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </v-row>
+              </v-container>
+            </div>
+            <v-row>
+              <v-btn block rounded outlined @click="addContact">เพิ่มผู้ติดต่อ</v-btn>
+            </v-row>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -122,6 +129,9 @@
         const newContact = { name: '', position: '', email: '', tel: '' }
         this.form.contractPersons = [ ...this.form.contractPersons, newContact ]
       },
+      removeContact (i) {
+        this.form.contractPersons.splice(i, 1)
+      },
       async onSubmit () {
         const valid = this.$refs.form.validate()
         try {
@@ -143,5 +153,14 @@
 
 <style lang="scss">
   #project-detail-page {
+    .contract-row {
+      flex-wrap: nowrap;
+      align-items: baseline;
+      margin-bottom: 20px;
+
+      .contract-persons {
+        width: calc(100% - 60px);
+      }
+    }
   }
 </style>

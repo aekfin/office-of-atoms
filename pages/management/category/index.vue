@@ -75,7 +75,7 @@
         count: 0,
         categoryHeaders: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
-          { text: 'ชื่อ', value: 'name' },
+          { text: 'ชื่อประเภท', value: 'name' },
           { text: 'จำนวนยี่ห้อ', value: 'countBrands', align: 'center', width: '200px' },
           { text: 'จำนวนรุ่น', value: 'countModels', align: 'center', width: '200px' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' }
@@ -83,11 +83,11 @@
         items: [],
         brandHeaders: [
           { text: 'ลำดับ', value: 'number', width: '80px', align: 'center' },
-          { text: 'ชื่อ', value: 'name' },
+          { text: 'ชื่อยี่ห้อ', value: 'name' },
         ],
         modelHeaders: [
           { text: 'ลำดับ', value: 'number', width: '80px', align: 'center' },
-          { text: 'ชื่อ', value: 'name' },
+          { text: 'ชื่อรุ่น', value: 'name' },
           { text: 'ยี่ห้อ', value: 'brandName' }          
         ],
         selectedType: null,

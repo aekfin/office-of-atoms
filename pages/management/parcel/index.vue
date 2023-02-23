@@ -26,7 +26,7 @@
         count: 0,
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
-          { text: 'ชื่อ', value: 'name' },
+          { text: 'ชื่อพัสดุ', value: 'name' },
           { text: 'ประเภท', value: 'type', width: '160px', align: 'center' },
           { text: 'ยี่ห้อ', value: 'brand', width: '160px', align: 'center' },
           { text: 'รุ่น', value: 'model', width: '160px', align: 'center' },
@@ -56,7 +56,6 @@
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'mdi-pencil', action: `/management/parcel/${item.id}/` },
-          { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
         ]
       }
     }

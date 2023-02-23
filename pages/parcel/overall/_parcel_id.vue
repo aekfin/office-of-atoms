@@ -16,7 +16,7 @@
           <v-row v-for="(parcel, i) in form.itemParcels" :key="i" class="mt-2" align="baseline">
             <div class="mr-4">{{ i + 1 }}.</div>
             <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].parcelMasterId" itemValue="id" itemText="name" label="พัสดุ *" apiPath="parcel/getListParcelMaster" :rules="parcelRules" required/>
-            <v-text-field v-model="form.itemParcels[i].parcelMasterName" class="ml-4 parcel-name" label="พัสดุ *" :disabled="!isCreate"/>
+            <v-text-field v-else v-model="form.itemParcels[i].parcelMasterName" class="ml-4 parcel-name" label="พัสดุ *" :disabled="!isCreate"/>
             <v-text-field v-model="form.itemParcels[i].price" class="ml-4" label="ราคา *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
             <v-text-field v-model="form.itemParcels[i].quantity" class="ml-4" label="จำนวน *" type="number" :rules="quantityRules" required :disabled="!isCreate"/>
             <v-btn v-if="form.itemParcels.length > 1 && isCreate" class="ml-2" icon @click="removeParcel(i)">
@@ -117,7 +117,7 @@
           }
         )
       },
-      removeBrand (i) {
+      removeParcel (i) {
         this.form.itemParcels.splice(i, 1)
       },
       async onSubmit () {

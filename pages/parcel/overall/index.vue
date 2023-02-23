@@ -53,7 +53,6 @@
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'mdi-pencil', action: `/parcel/overall/${item.id}/` },
-          { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
         ]
       }
     }

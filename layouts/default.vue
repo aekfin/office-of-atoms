@@ -31,6 +31,11 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
       <v-toolbar-title v-text="title" />
       <v-spacer/>
+      <v-btn class="mr-2" icon @click="$router.push('/parcel/request/')">
+        <v-badge overlap color="red" icon content="1">
+          <v-icon>mdi-bell</v-icon>
+        </v-badge>
+      </v-btn>
       <ProfileNavBar/>
     </v-app-bar>
     <v-main>
