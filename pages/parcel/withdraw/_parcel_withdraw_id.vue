@@ -13,7 +13,6 @@
     },
     data () {
       return {
-        isRequested: true,
         isLoading: true,
         item: null,
       }

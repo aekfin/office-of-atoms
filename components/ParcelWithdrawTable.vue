@@ -1,6 +1,6 @@
 <template>
   <div id="parcel-withdraw-table">
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.user_fk.thaiFristName="{ item }">{{ item.user_fk.thaiFristName }} {{ item.user_fk.thaiLastName }}</template>
       <template #item.createdDate="{ item }">
@@ -47,7 +47,7 @@
     props: {
       items: { type: Array, required: true },
       getActionIconList: { type: Function, required: true },
-      isApprover: { type: Boolean },
+      isLoading: { type: Boolean }
     },
     data () {
       return {

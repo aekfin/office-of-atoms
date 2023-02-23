@@ -5,38 +5,33 @@
       <v-container>
         <v-row>
           <v-col :cols="8">
-            <SelectDropdown :value.sync="form.projectId" itemValue="id" itemText="projectName" label="โครงการ *" apiPath="Project/getListProject" :rules="projectRules" required/>
+            <SelectDropdown :value.sync="form.projectId" itemValue="id" itemText="projectName" label="โครงการ *" apiPath="Project/getListProject" :rules="projectRules" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="4">
-            <InputDatePicker :value.sync="form.dateEntry" label="วันที่รับเข้า *" :rules="dateEntryRules" required/>
+            <InputDatePicker :value.sync="form.dateEntry" label="วันที่รับเข้า *" :rules="dateEntryRules" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
-        <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
-          <v-expansion-panel>
-            <v-expansion-panel-header>เลือกพัสดุ</v-expansion-panel-header>
-            <v-expansion-panel-content class="pl-4">
-              <v-container>
-                <v-row v-for="(parcel, i) in form.itemParcels" :key="i" align="baseline">
-                  <div class="mr-4">{{ i + 1 }}.</div>
-                  <SelectDropdown :value.sync="form.itemParcels[i].parcelMasterId" itemValue="id" itemText="name" label="พัสดุ *" apiPath="parcel/getListParcelMaster" :rules="parcelRules" required/>
-                  <v-text-field v-model="form.itemParcels[i].price" class="ml-4" label="ราคา *" type="number" :rules="priceRules" required/>
-                  <v-text-field v-model="form.itemParcels[i].quantity" class="ml-4" label="จำนวน *" type="number" :rules="quantityRules" required/>
-                  <v-btn v-if="form.itemParcels.length > 1" class="ml-2" icon @click="removeParcel(ร)">
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>
-                </v-row>
-                <v-row class="mt-5">
-                  <v-btn block rounded outlined @click="addParcel()">เพิ่มพัสดุ</v-btn>
-                </v-row>
-              </v-container>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
+        <h4 class="text-h5"><b>เลือกพัสดุ</b></h4>
+        <v-container class="form-container">
+          <v-row v-for="(parcel, i) in form.itemParcels" :key="i" class="mt-2" align="baseline">
+            <div class="mr-4">{{ i + 1 }}.</div>
+            <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].parcelMasterId" itemValue="id" itemText="name" label="พัสดุ *" apiPath="parcel/getListParcelMaster" :rules="parcelRules" required/>
+            <v-text-field v-model="form.itemParcels[i].parcelMasterName" class="ml-4 parcel-name" label="พัสดุ *" :disabled="!isCreate"/>
+            <v-text-field v-model="form.itemParcels[i].price" class="ml-4" label="ราคา *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
+            <v-text-field v-model="form.itemParcels[i].quantity" class="ml-4" label="จำนวน *" type="number" :rules="quantityRules" required :disabled="!isCreate"/>
+            <v-btn v-if="form.itemParcels.length > 1 && isCreate" class="ml-2" icon @click="removeParcel(i)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-row>
+          <v-row v-if="isCreate" class="mt-5">
+            <v-btn block rounded outlined @click="addParcel()">เพิ่มพัสดุ</v-btn>
+          </v-row>
+        </v-container>
       </v-container>
       <v-container class="mt-8">
         <v-row justify="end">
           <v-btn large plain @click="$router.push('/parcel/overall/')">ย้อนหลับ</v-btn>
-          <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
+          <v-btn v-if="isCreate" elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
         </v-row>
       </v-container>
     </v-form>
@@ -58,13 +53,12 @@
           dateEntry: new Date(),
           itemParcels: [
             {
-              parcelMasterId: 0,
+              parcelMasterId: null,
               price: '',
               quantity: ''
             }
           ],
         },
-        formExpand: [0],
         projectRules: [
           v => !!v || 'โปรดเลือกโครงการ',
         ],
@@ -87,7 +81,33 @@
         return this.$route.params.parcel_id === 'create'
       },
     },
+    mounted () {
+      if (!this.isCreate) this.getData()
+    },
     methods: {
+      async getData () {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getParcelProject', query: { id: this.$route.params.parcel_id } })
+          this.form = {
+            projectId: data.id,
+            dateEntry: data.dateEntry || new Date(),
+            itemParcels: [
+              {
+                parcelMasterId: null,
+                parcelMasterName: data.parcelMasterName,
+                price: data.price,
+                quantity: data.quantity
+              }
+            ],
+          }
+            console.log(data)
+          this.isLoading = false
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      },
       addParcel () {
         this.form.itemParcels.push(
           {
@@ -125,8 +145,8 @@
 
 <style lang="scss">
   #parcel-detail-page {
-    .form-expansion-panels {
-      .select-dropdown {
+    .form-container {
+      .select-dropdown, .parcel-name {
         width: 50%;
       }
     }

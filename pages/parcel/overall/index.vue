@@ -2,7 +2,8 @@
   <div id="parcel-page">
     <PageHeader text="บริหารพัสดุ" btnText="เพิ่มพัสดุ" createRoute="/parcel/overall/create/"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
-      <template #item.datetimeCreate="{ item }">
+      <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
+      <template #item.dateEntry="{ item }">
         <div>{{ $moment(item.datetimeCreate).format('DD-MM-YYYY') }}</div>
       </template>
       <template #item.action="{ item }">
@@ -21,25 +22,15 @@
       return {
         isLoading: true,
         headers: [
-          { text: 'เลขที่โครงการ', value: 'projectCode', width: '160px', align: 'center' },
+          { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'โครงการ', value: 'projectName' },
-          { text: 'พัสดุ', value: 'parcelName' },
-          { text: 'จำนวนรับเข้าคลัง', value: 'count', width: '160px', align: 'center' },
-          { text: 'วันที่รับเข้า', value: 'datetimeCreate', width: '140px', align: 'center' },
-          { text: 'คงเหลือ', value: 'total', width: '100px', align: 'center' },
+          { text: 'กอง', value: 'ouName', width: '180px' },
+          { text: 'พัสดุ', value: 'parcelMasterName', width: '180px' },
+          { text: 'จำนวนรับเข้าคลัง', value: 'quantity', width: '160px', align: 'center' },
+          { text: 'วันที่รับเข้า', value: 'dateEntry', width: '140px', align: 'center' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
-        items: [
-          {
-            id: 1,
-            projectCode: '65000000001',
-            projectName: 'โครงการ 1',
-            parcelName: 'ปากกาเจล',
-            count: 8,
-            datetimeCreate: new Date(),
-            total: 40,
-          },
-        ],
+        items: [],
       }
     },
     watch: {
@@ -54,8 +45,7 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListPickUp', query: this.$route.query, context: this })
-          console.log(data)
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListParcelProject', query: this.$route.query, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }

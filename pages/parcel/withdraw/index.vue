@@ -1,7 +1,7 @@
 <template>
   <div id="parcel-withdraw-page">
     <PageHeader text="การเบิกพัสดุ" btnText="เพิ่มการเบิกพัสดุ" createRoute="/parcel/withdraw/create/"/>
-    <ParcelWithdrawTable :items="items" :getActionIconList="getActionIconList"/>
+    <ParcelWithdrawTable :items="items" :getActionIconList="getActionIconList" :isLoading="isLoading"/>
   </div>
 </template>
 
@@ -30,7 +30,7 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListPickUp', query: this.$route.query, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListPickUp', query: { ...this.$route.query, isOwner: true }, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
