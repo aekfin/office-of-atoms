@@ -30,15 +30,15 @@
         </v-row>
         <v-row>
           <v-col :cols="6">
-            <SelectDropdown :value.sync="form.positionId" label="ตำแหน่ง *" :rules="positionRules" itemText="positionName" required apiPath="Orgchart/getPositions" :disabled="disabled"/>
+            <SelectDropdown :value.sync="form.positionId" label="ตำแหน่ง *" :rules="positionRules" itemText="positionName" required apiPath="Orgchart/getPositions" :disabled="disabled" @loaded="positionList = $event"/>
           </v-col>
         </v-row>
         <v-row>
           <v-col :cols="6">
-            <SelectDropdown :value.sync="form.ouId" label="กอง *" itemText="ouName" :rules="divisionRules" required apiPath="Orgchart/getOrganizations" :disabled="disabled"/>
+            <SelectDropdown :value.sync="form.ouId" label="กอง *" itemText="ouName" :rules="divisionRules" required apiPath="Orgchart/getOrganizations" :disabled="disabled || disabledByPosition"/>
           </v-col>
           <v-col :cols="6">
-            <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="groupRules" required apiPath="Orgchart/getDepartments" :disabled="disabled"/>
+            <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="groupRules" required apiPath="Orgchart/getDepartments" :disabled="disabled || disabledByPosition"/>
           </v-col>
         </v-row>
         <v-row>
@@ -113,30 +113,14 @@
           email: '',
           address: ''
         },
+        disabledByPosition: false,
         formExpand: [0],
-        items: [
-          { id: 1, name: 'Foo' },
-          { id: 2, name: 'Bar' },
-          { id: 3, name: 'Fizz' },
-          { id: 4, name: 'Buzz' },
-          { id: 5, name: 'Foo' },
-          { id: 6, name: 'Bar' },
-          { id: 7, name: 'Fizz' },
-          { id: 8, name: 'Buzz' },
-          { id: 9, name: 'Foo' },
-          { id: 10, name: 'Bar' },
-          { id: 11, name: 'Fizz' },
-          { id: 12, name: 'Buzz' },
-          { id: 13, name: 'Foo' },
-          { id: 14, name: 'Bar' },
-          { id: 15, name: 'Fizz' },
-          { id: 16, name: 'Buzz' },
-        ],
         roleList: [
           'ADMIN',
           'USER'
         ],
         seePassword: false,
+        positionList: [],
         codeRules: [
           v => !!v || 'โปรดใส่รหัสพนักงาน',
         ],
@@ -162,10 +146,10 @@
           v => !!v || 'โปรดใส่รหัสผ่าน',
         ],
         divisionRules: [
-          v => !!v || 'โปรดใส่กอง',
+          v => !!v || this.disabledByPosition || 'โปรดใส่กอง',
         ],
         groupRules: [
-          v => !!v || 'โปรดใส่กลุ่ม',
+          v => !!v || this.disabledByPosition || 'โปรดใส่กลุ่ม',
         ],
         positionRules: [
           v => !!v || 'โปรดใส่ตำแหน่ง',
@@ -182,6 +166,18 @@
       disabled () {
         return !this.$store.getters.isAdmin
       },
+    },
+    watch: {
+      'form.positionId' (val) {
+        const position = this.positionList.find(position => position.id == val)
+        if (position?.positionName === 'ผ.อ. กองงาน') {
+          this.form.departmentId = null
+          this.form.ouId = null
+          this.disabledByPosition = true
+        } else {
+          this.disabledByPosition = false
+        }     
+      }
     },
     mounted () {
       if (!this.isCreate) this.getData()
@@ -207,13 +203,18 @@
           if (valid) {
             const apiPath = this.isCreate ? 'oauth/register' : 'user/update'
             const method = this.isCreate ? 'post' : 'patch'
+            const form = { ...this.form }
             if (!this.isCreate) {
-              this.form.organizationMaster = this.form.ouId
-              this.form.departmentMaster = this.form.departmentId
-              this.form.positionMaster = this.form.positionId
+              form.organizationMaster = this.form.ouId
+              form.departmentMaster = this.form.departmentId
+              form.positionMaster = this.form.positionId
             }
-            this.form.email = this.form.username
-            const { data } = await this.$store.dispatch('http', { method, apiPath, data: this.form })
+            form.email = this.form.username
+            if (this.disabledByPosition) {
+              delete form.departmentId
+              delete form.ouId
+            }
+            const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างบุคลากรสำเร็จ' : 'แก้ไขบุคลากรสำเร็จ' })
             if (this.isCreate) this.$router.push('/management/user/')
             return Promise.resolve(data)
