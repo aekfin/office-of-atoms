@@ -17,6 +17,7 @@ export default () => ({
     'PENDING': 'warning',
     'REJECT': 'error',
   },
+  approveRequest: null,
   leftMenus: [
     {
       title: 'หนักหลัก',

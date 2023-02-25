@@ -29,10 +29,15 @@
     </v-navigation-drawer>
     <v-app-bar color="#0288D1" clippedLeft fixed dark app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
-      <v-toolbar-title v-text="title" />
+      <v-toolbar-title>
+        <div class="title-header">
+          <img src="~/assets/images/logo.png" alt="logo" width="48px">
+          <div>{{ title }}</div>
+        </div>
+      </v-toolbar-title>
       <v-spacer/>
-      <v-btn class="mr-2" icon @click="$router.push('/parcel/request/')">
-        <v-badge overlap color="red" icon content="1">
+      <v-btn icon @click="$router.push('/parcel/request/')">
+        <v-badge overlap color="red" icon :content="notiCount" :value="!!notiCount">
           <v-icon>mdi-bell</v-icon>
         </v-badge>
       </v-btn>
@@ -74,12 +79,15 @@ export default {
   },
   computed: {
     title () {
-      return `ระบบบริหารจัดการครุภัณฑ์ | ${this.$store.state?.role}`
+      return `ระบบบริหารจัดการพัสดุ-ครุภัณฑ์ | ${this.$store.state?.role}`
     },
     leftMenus () {
       return this.$store.getters.isAdmin
         ? this.$store.state.leftMenus
         : this.$store.state.leftMenus.filter(menu => menu.to !== '/management/')
+    },
+    notiCount () {
+      return this.$store.state.approveRequest?.totalElements || 0
     },
   },
   async mounted () {
@@ -99,8 +107,10 @@ export default {
           await this.$store.dispatch('http', { apiPath: 'oauth/valify-token' })
           const { data: profile } = await this.$store.dispatch('http', { apiPath: 'user/getUserbytoken' })
           const { data: role } = await this.$store.dispatch('http', { apiPath: 'roles/getRoles' })
+          const { data: approveRequest } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListPickUp', query: this.$route.query, context: this })
           this.$store.commit('SET_STATE', { name: 'userProfile', val: profile})
           this.$store.commit('SET_STATE', { name: 'role', val: role})
+          this.$store.commit('SET_STATE', { name: 'approveRequest', val: approveRequest})
           this.isLoading = false
           this.$store.commit('SET_STATE', { name: 'isFullLoading', val: false })
         } else {
@@ -155,6 +165,12 @@ export default {
           }
         }
       }
+    }
+
+    .title-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
   }
 </style>

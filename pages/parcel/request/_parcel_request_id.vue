@@ -17,6 +17,11 @@
         item: null,
       }
     },
+    computed: {
+      isCreate () {
+        return this.$route.params.parcel_request_id === 'create'
+      },
+    },
     mounted () {
       if (!this.isCreate) this.getData()
     },

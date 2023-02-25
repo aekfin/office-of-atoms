@@ -36,7 +36,7 @@
         <v-card-text class="black--text">
           <div class="mt-2">ทั้งหมด {{ selectedType.listBrands.length }} ยี่ห้อ</div>
           <v-data-table :headers="brandHeaders" :items="selectedType.listBrands" disableSort hideDefaultFooter class="mt-3" height="250px" :itemsPerPage="-1">
-            <template #item.number="{ index }">{{ index + 1 }}.</template>
+            <template #item.number="{ index }">{{ index + 1 }}</template>
           </v-data-table>
         </v-card-text>
       </v-card>
@@ -53,7 +53,7 @@
         <v-card-text class="black--text">
           <div class="mt-2">ทั้งหมด {{ getCountModels(selectedType) }} รุ่น</div>
           <v-data-table :headers="modelHeaders" :items="getModels(selectedType)" disableSort hideDefaultFooter class="mt-3" height="250px" :itemsPerPage="-1">
-            <template #item.number="{ index }">{{ index + 1 }}.</template>
+            <template #item.number="{ index }">{{ index + 1 }}</template>
           </v-data-table>
         </v-card-text>
       </v-card>

@@ -5,7 +5,7 @@
         <v-stepper-step :step="1" color="success" complete>ยื่นเบิก</v-stepper-step>
         <template v-for="flow in item.flows">
           <v-divider :key="flow.id"/>
-          <v-stepper-step :key="flow.id" :step="flow.orderApprove + 1" :color="isColor(step)" :complete="isComplete(step)">
+          <v-stepper-step :key="flow.id" :step="flow.orderApprove + 1" :color="isColor(flow)" :complete="isComplete(flow)">
             <v-tooltip bottom :disabled="!getApproverText(flow)">
               <template v-slot:activator="{ on, attrs }">
                 <span v-bind="attrs" v-on="on">{{ getStepText(flow) }}</span>
@@ -93,6 +93,7 @@
         countWithdrawRules: [
           v => !!v || 'โปรดใส่จำนวนเบิก',
         ],
+        step: 1,
       }
     },
     computed: {
@@ -126,6 +127,8 @@
             }
           ]
         }
+        const index = this.item?.flows?.findIndex(flow => flow?.status === 'PENDING') || 0
+        this.step = index + 2
       },
       addParcel () {
         this.form.pickUpItems.push(
