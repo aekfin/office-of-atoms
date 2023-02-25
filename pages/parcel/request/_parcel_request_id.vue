@@ -1,7 +1,8 @@
 <template>
   <div id="parcel-request-detail-page">
     <PageHeader :text="'อนุมัติการเบิกพัสดุ'" hideTotal/>
-    <ParcelWithdrawForm :item="item" :viewMode="!isCreate" @approve="onApprove"/>
+    <Loading v-if="isLoading"/>
+    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" @approve="onApprove"/>
   </div>
 </template>
 
@@ -10,6 +11,7 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       ParcelWithdrawForm: () => import('~/components/ParcelWithdrawForm.vue'),
+      Loading: () => import('~/components/Loading.vue'),
     },
     data () {
       return {

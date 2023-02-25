@@ -140,6 +140,7 @@
             const method = this.isCreate ? 'post' : 'patch'
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: this.form })
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างคู่สัญญาสำเร็จ' : 'แก้ไขคู่สัญญาสำเร็จ' })
+            if (this.isCreate) this.$router.push('/management/vendor/')
             return Promise.resolve(data)
           } else {
             this.formExpand = [0]

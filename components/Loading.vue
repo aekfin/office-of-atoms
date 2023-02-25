@@ -1,6 +1,6 @@
 <template>
   <div :class="{ loading: true, overlay }">
-    <v-progress-circular :size="140" color="primary" indeterminate/>
+    <v-progress-circular :size="100" :width="12" color="primary" indeterminate/>
     <div class="text-loading mt-5">Loading...</div>
   </div>
 </template>
