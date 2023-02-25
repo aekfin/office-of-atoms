@@ -1,7 +1,8 @@
 <template>
   <div id="management-parcel-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นพัสดุ' : 'การแก้ไขค่าเริ่มต้นพัสดุ'" hideTotal/>
-    <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
+    <Loading v-if="isLoading"/>
+    <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
           <v-col :cols="4" alignSelf="center">
@@ -54,6 +55,7 @@
     data () {
       return {
         valid: true,
+        isLoading: false,
         form: {
           typeId: null,
           brandId: null,

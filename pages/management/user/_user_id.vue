@@ -1,7 +1,8 @@
 <template>
   <div id="management-user-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มบุคลากร' : 'การแก้ไขบุคลากร'" hideTotal/>
-    <v-form ref="form" v-model="valid" lazyValidation class="mt-4 relative">
+    <Loading v-if="isLoading"/>
+    <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4 relative">
       <v-container>
         <v-row>
           <v-col :cols="6">
@@ -89,10 +90,12 @@
       PageHeader: () => import('~/components/PageHeader.vue'),
       // UploadImage: () => import('~/components/UploadImage.vue'),
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
+      Loading: () => import('~/components/Loading.vue'),
     },
     data () {
       return {
         valid: true,
+        isLoading: false,
         form: {
           employeeId: '',
           thaiId: '',

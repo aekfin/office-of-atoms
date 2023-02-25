@@ -1,7 +1,8 @@
 <template>
   <div id="category-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มประเภท พัสดุ - ครุภัณฑ์' : 'การแก้ไขประเภท พัสดุ - ครุภัณฑ์'" hideTotal/>
-    <v-form ref="form" v-model="valid" lazyValidation class="mt-6">
+    <Loading v-if="isLoading"/>
+    <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-6">
       <v-container>
         <v-row>
           <h3 class="text-h5"><b>ประเภท</b></h3>
@@ -63,10 +64,12 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
+      Loading: () => import('~/components/Loading.vue'),
     },
     data () {
       return {
         valid: true,
+        isLoading: false,
         form: {
           typeName: '',
           brands: [

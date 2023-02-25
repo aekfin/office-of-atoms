@@ -1,7 +1,9 @@
 <template>
   <div id="parcel-withdraw-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มการเบิกพัสดุ' : 'การแก้ไขการเบิกพัสดุ'" hideTotal/>
-    <ParcelWithdrawForm :item="item" :viewMode="!isCreate" @onSave="onSave" @submit="onSubmit"/>
+    <Loading v-if="isLoading"/>
+    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" @submit="onSubmit"/>
+    <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" text="ไม่สามารถขอเบิกได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้" hideSubmit closeText="รับทราบ"/>
   </div>
 </template>
 
@@ -10,11 +12,14 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       ParcelWithdrawForm: () => import('~/components/ParcelWithdrawForm.vue'),
+      Loading: () => import('~/components/Loading.vue'),
+      ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
     },
     data () {
       return {
-        isLoading: true,
+        isLoading: false,
         item: null,
+        dialog: false
       }
     },
     computed: {
@@ -37,13 +42,15 @@
           return Promise.reject(err)
         }
       },
-      onSave (form) {
-        console.log('Save', form)
-      },
       async onSubmit (form) {
         try{
-          await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/pickup', data: form })
-          await this.$store.dispatch('snackbar', { text: 'ยื่นขอเบิกพัสดุสำเร็จ' })
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/pickup', data: form })
+          if (data.status.code == 400) {
+            await this.$store.dispatch('snackbar', { text: `Error ${data.status.code}: ${data.status.description}`, props: { color: 'red', top: true } })
+            this.dialog = true
+          } else {
+            await this.$store.dispatch('snackbar', { text: 'ยื่นขอเบิกพัสดุสำเร็จ' })
+          }
         } catch (err) { return Promise.reject(err) }
       },
     }

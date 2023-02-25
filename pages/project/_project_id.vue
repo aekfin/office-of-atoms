@@ -1,7 +1,8 @@
 <template>
   <div id="project-create-page">
     <PageHeader :text="isCreate ? 'การเพิ่มโครงการ' : 'การแก้ไขโครงการ'" hideTotal/>
-    <v-form ref="form" v-model="valid" class="mt-4">
+    <Loading v-if="isLoading && !project"/>
+    <v-form v-else ref="form" v-model="valid" class="mt-4">
       <v-container>
         <v-row>
           <!-- <v-col :cols="2">
@@ -94,11 +95,12 @@
       PageHeader: () => import('~/components/PageHeader.vue'),
       AttachFileBtn: () => import('~/components/AttachFileBtn.vue'),
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
+      Loading: () => import('~/components/Loading.vue'),
     },
     data () {
       return {
         valid: true,
-        isLoading: true,
+        isLoading: false,
         project: null,
         form: {
           year: null,
@@ -208,7 +210,6 @@
       },
       onRemoveAttachment (attach) {
         this.removeFile.push(attach)
-        console.log(this.removeFile)
       },
       async uploadFiles (id = this.project.id) {
         try {

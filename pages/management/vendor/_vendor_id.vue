@@ -1,7 +1,8 @@
 <template>
   <div id="project-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มคู่สัญญา' : 'การแก้ไขคู่สัญญา'" hideTotal/>
-    <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
+    <Loading v-if="isLoading"/>
+    <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
           <!-- <v-col cols="auto">
@@ -73,6 +74,7 @@
     data () {
       return {
         valid: true,
+        isLoading: false,
         form: {
           companyNumber: '',
           companyName: '',

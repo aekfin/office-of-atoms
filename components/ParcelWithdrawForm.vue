@@ -35,7 +35,7 @@
       <h2 class="text-h5 mt-5"><b>เลือกพัสดุที่ต้องการเบิก</b></h2>
       <v-container>
         <v-row v-for="(parcel, i) in form.pickUpItems" :key="i" class="mt-0">
-          <v-col :cols="6">
+          <v-col :cols="5">
             <div class="d-flex align-baseline">
               <div class="mr-5">{{ i + 1 }}.</div>
               <SelectDropdown v-model="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="พัสดุ *" :rules="parcelRules" apiPath="parcel/getListParcelMaster" :disabled="viewMode"/>
@@ -44,9 +44,10 @@
           <v-col :cols="3">
             <v-text-field v-model="form.pickUpItems[i].quantity" label="จำนวนเบิก *" :rules="countWithdrawRules" required :disabled="viewMode"/>
           </v-col>
-          <v-col :cols="3">
+          <v-col :cols="4">
             <div class="d-flex align-baseline">
-              <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].paid" label="จำนวนจ่าย *"/>
+              <v-text-field v-if="viewMode && isApprover" v-model="form.pickUpItems[i].paid" label="จำนวนจ่าย *"/>
+              <div v-if="viewMode && isApprover" class="ml-5 text-remaining">คงเหลือ : {{ remaining }}</div>
               <v-btn v-if="form.pickUpItems.length > 1 && !viewMode" icon @click="removeContact(i)">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
@@ -60,12 +61,13 @@
       <v-container class="mt-8">
         <v-row v-if="isApprover" justify="end">
           <v-btn large plain @click="$router.push('/parcel/request/')">ย้อนหลับ</v-btn>
-          <v-btn v-if="isReject" elevation="2" large color="success" @click="onApprove">อนุมัติ</v-btn>
+          <v-btn v-if="!isReject" class="mr-4" elevation="2" large outlined color="error" @click="onReject">ไม่อนุมัติ</v-btn>
+          <v-btn v-if="!isReject" elevation="2" large color="success" @click="onApprove">อนุมัติ</v-btn>
         </v-row>
         <v-row v-else justify="end">
           <v-btn v-if="viewMode" large outlined :elevation="2" @click="$router.push('/parcel/withdraw/')">ย้อนหลับ</v-btn>
           <v-btn v-else large plain @click="$router.push('/parcel/withdraw/')">ย้อนหลับ</v-btn>
-          <v-btn v-if="!viewMode" elevation="2" large outlined color="success" @click="onSave">บันทึก</v-btn>
+          <!-- <v-btn v-if="!viewMode" elevation="2" large outlined color="success" @click="onSave">บันทึก</v-btn> -->
           <v-btn v-if="!viewMode" class="ml-4" elevation="2" large color="success" @click="onSubmit">ยื่นขอเบิก</v-btn>
         </v-row>
       </v-container>
@@ -87,6 +89,7 @@
       return {
         valid: true,
         form: null,
+        remaining: 0,
         parcelRules: [
           v => !!v || 'โปรดเลือกพัสดุ',
         ],
@@ -104,7 +107,7 @@
         return this.currentFlow?.canApprove === 'true'
       },
       isReject () {
-        return this.item && this.item.status !== 'REJECT'
+        return this.item && this.item.status === 'REJECT'
       },
     },
     watch: {
@@ -164,6 +167,9 @@
       onApprove () {
         this.$emit('approve', this.form)
       },
+      onReject () {
+        this.$emit('reject', this.form)
+      },
     }
   }
 </script>
@@ -185,6 +191,10 @@
           margin-top: 45px;
         }
       }
+    }
+
+    .text-remaining {
+      width: max-content;
     }
 
     @media (max-width: 768px) {

@@ -2,7 +2,7 @@
   <div id="parcel-request-detail-page">
     <PageHeader :text="'อนุมัติการเบิกพัสดุ'" hideTotal/>
     <Loading v-if="isLoading"/>
-    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" @approve="onApprove"/>
+    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" @approve="onApprove" @reject="onReject"/>
   </div>
 </template>
 
@@ -15,7 +15,7 @@
     },
     data () {
       return {
-        isLoading: true,
+        isLoading: false,
         item: null,
       }
     },
@@ -39,8 +39,21 @@
           return Promise.reject(err)
         }
       },
-      onApprove (form) {
-        console.log('Submit', form)
+      async onApprove () {
+        try{
+          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/approve', query: { flowId: this.$route.params.parcel_request_id } })
+          await this.$store.dispatch('snackbar', { text: 'อนุมัติการเบิกพัสดุสำเร็จ' })
+          await this.getData()
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
+      async onReject () {
+        try{
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/reject', data: { flowId: parseInt(this.$route.params.parcel_request_id) } })
+          await this.$store.dispatch('snackbar', { text: 'ไม่อนุมัติการเบิกพัสดุสำเร็จ' })
+          await this.getData()
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
       },
     }
   }

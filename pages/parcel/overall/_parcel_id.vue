@@ -1,7 +1,8 @@
 <template>
   <div id="parcel-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มพัสดุ' : 'การแก้ไขพัสดุ'" hideTotal/>
-    <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
+    <Loading v-if="isLoading"/>
+    <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
           <v-col :cols="8">
@@ -44,10 +45,12 @@
       PageHeader: () => import('~/components/PageHeader.vue'),
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
+      Loading: () => import('~/components/Loading.vue'),
     },
     data () {
       return {
         valid: true,
+        isLoading: false,
         form: {
           projectId: null,
           dateEntry: new Date(),
@@ -101,7 +104,6 @@
               }
             ],
           }
-            console.log(data)
           this.isLoading = false
           return Promise.resolve()
         } catch (err) {
