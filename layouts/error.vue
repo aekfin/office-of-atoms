@@ -16,7 +16,7 @@
 <script>
 export default {
   name: 'EmptyLayout',
-  layout: 'empty',
+  layout: 'unauthen',
   props: {
     error: {
       type: Object,

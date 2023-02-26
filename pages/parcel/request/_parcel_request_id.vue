@@ -39,17 +39,17 @@
           return Promise.reject(err)
         }
       },
-      async onApprove () {
+      async onApprove (flow) {
         try{
-          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/approve', query: { flowId: this.$route.params.parcel_request_id } })
+          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/approve', query: { flowId: flow.id } })
           await this.$store.dispatch('snackbar', { text: 'อนุมัติการเบิกพัสดุสำเร็จ' })
           await this.getData()
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
-      async onReject () {
+      async onReject (flow) {
         try{
-          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/reject', data: { flowId: parseInt(this.$route.params.parcel_request_id) } })
+          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/reject', data: { flowId: flow.id } })
           await this.$store.dispatch('snackbar', { text: 'ไม่อนุมัติการเบิกพัสดุสำเร็จ' })
           await this.getData()
           return Promise.resolve(data)

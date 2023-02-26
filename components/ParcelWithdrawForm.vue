@@ -38,7 +38,7 @@
           <v-col :cols="5">
             <div class="d-flex align-baseline">
               <div class="mr-5">{{ i + 1 }}.</div>
-              <SelectDropdown v-model="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="พัสดุ *" :rules="parcelRules" apiPath="parcel/getListParcelMaster" :disabled="viewMode"/>
+              <SelectDropdown :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="พัสดุ *" :rules="parcelRules" apiPath="parcel/getListParcelMaster" :disabled="viewMode"/>
             </div>
           </v-col>
           <v-col :cols="3">
@@ -165,10 +165,10 @@
         if (valid) this.$emit('submit', this.form)
       },
       onApprove () {
-        this.$emit('approve', this.form)
+        this.$emit('approve', this.currentFlow)
       },
       onReject () {
-        this.$emit('reject', this.form)
+        this.$emit('reject', this.currentFlow)
       },
     }
   }

@@ -50,6 +50,7 @@
             this.dialog = true
           } else {
             await this.$store.dispatch('snackbar', { text: 'ยื่นขอเบิกพัสดุสำเร็จ' })
+            this.$router.push('/parcel/withdraw/')
           }
         } catch (err) { return Promise.reject(err) }
       },

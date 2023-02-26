@@ -21,10 +21,10 @@
         </v-row>
         <v-row>
           <v-col :cols="8">
-            <v-text-field v-model="form.parcelName" name="parcel-name" label="ชื่อ *" :rules="nameRules" required/>
+            <v-text-field v-model="form.parcelName" name="parcel-name" label="ชื่อ *" :rules="nameRules" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="4">
-            <v-text-field v-model="form.classifier" label="หน่วย *" name="unit" :rules="classifierRules" required/>
+            <v-text-field v-model="form.classifier" label="หน่วย *" name="unit" :rules="classifierRules" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
         <v-row>
@@ -32,7 +32,7 @@
             <v-text-field v-model="form.price" label="ราคากลาง *" type="number" :rules="priceRules" required/>
           </v-col>
           <v-col :cols="3">
-            <v-text-field v-model="form.quantity" label="จำนวน *" type="number" :rules="quantityRules" required :disabled="!isCreate"/>
+            <v-text-field v-model="form.quantity" label="จำนวน *" type="number" :rules="quantityRules" required/>
           </v-col>
         </v-row>
       </v-container>
@@ -132,9 +132,9 @@
         const valid = this.$refs.form.validate()
         try {
           if (valid) {
-            const apiPath = this.isCreate ? 'parcel/importMasterAndStock' : ''
+            const apiPath = this.isCreate ? 'parcel/importMasterAndStock' : 'parcel/editMaster'
             const method = this.isCreate ? 'post' : 'patch'
-            const form = { data: [{ ...this.form }] }
+            let form = this.isCreate ? { data: [{ ...this.form }] } : { editQuantity: this.form.quantity, parcelMasterId: this.form.id }
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างค่าเริ่มต้นพัสดุสำเร็จ' : 'แก้ไขค่าเริ่มต้นพัสดุสำเร็จ' })
             if (this.isCreate) this.$router.push('/management/parcel/')
