@@ -32,25 +32,28 @@
           </v-col>
         </v-row>  
       </v-container>
+
       <h2 class="text-h5 mt-5"><b>เลือกพัสดุที่ต้องการเบิก</b></h2>
       <v-container>
-        <v-row v-for="(parcel, i) in form.pickUpItems" :key="i" class="mt-0">
-          <v-col :cols="5">
-            <div class="d-flex align-baseline">
-              <div class="mr-5">{{ i + 1 }}.</div>
-              <SelectDropdown :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="พัสดุ *" :rules="parcelRules" apiPath="parcel/getListParcelMaster" :disabled="viewMode"/>
-            </div>
+        <v-row v-for="(parcel, i) in form.pickUpItems" :key="i" class="mt-0 mb-5">
+          <v-col cols="auto" class="align-self-center">{{ i + 1 }}.</v-col>
+          <v-col :cols="10">
+            <TypeBrandModelSearch :type.sync="form.pickUpItems[i].type" :brand.sync="form.pickUpItems[i].brand" :model.sync="form.pickUpItems[i].model" :viewMode="viewMode"/>
           </v-col>
-          <v-col :cols="3">
-            <v-text-field v-model="form.pickUpItems[i].quantity" label="จำนวนเบิก *" :rules="countWithdrawRules" required :disabled="viewMode"/>
+          <v-col cols="auto" class="align-self-center">
+            <v-btn v-if="form.pickUpItems.length > 1 && !viewMode" icon @click="removeContact(i)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
           </v-col>
-          <v-col :cols="4">
+          <v-col :cols="6" class="pl-12 pt-0">
+            <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].name" label="พัสดุ *" disabled/>
+            <SelectDropdown v-else :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="พัสดุ *" :rules="parcelRules" apiPath="parcel/searchParcelMaster"
+              :query="getParcelQuery(form.pickUpItems[i])" reloadOnClick :disabled="viewMode || !form.pickUpItems[i].type"/>
+          </v-col>
+          <v-col :cols="viewMode && canEdit ? 5 : 4" class="pt-0">
             <div class="d-flex align-baseline">
-              <v-text-field v-if="viewMode && isApprover" v-model="form.pickUpItems[i].paid" label="จำนวนจ่าย *"/>
-              <div v-if="viewMode && isApprover" class="ml-5 text-remaining">คงเหลือ : {{ remaining }}</div>
-              <v-btn v-if="form.pickUpItems.length > 1 && !viewMode" icon @click="removeContact(i)">
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
+              <v-text-field v-model="form.pickUpItems[i].quantity" label="จำนวนเบิก *" :rules="countWithdrawRules" required :disabled="viewMode && !canEdit"/>
+              <div v-if="viewMode && canEdit" class="ml-5 text-remaining">คงเหลือ : {{ remaining }}</div>
             </div>
           </v-col>
         </v-row>
@@ -60,13 +63,13 @@
       </v-container>
       <v-container class="mt-8">
         <v-row v-if="isApprover" justify="end">
-          <v-btn large plain @click="$router.push('/parcel/request/')">ย้อนหลับ</v-btn>
+          <v-btn large plain @click="$router.push(backPath)">ย้อนหลับ</v-btn>
           <v-btn v-if="!isReject" class="mr-4" elevation="2" large outlined color="error" @click="onReject">ไม่อนุมัติ</v-btn>
           <v-btn v-if="!isReject" elevation="2" large color="success" @click="onApprove">อนุมัติ</v-btn>
         </v-row>
         <v-row v-else justify="end">
-          <v-btn v-if="viewMode" large outlined :elevation="2" @click="$router.push('/parcel/withdraw/')">ย้อนหลับ</v-btn>
-          <v-btn v-else large plain @click="$router.push('/parcel/withdraw/')">ย้อนหลับ</v-btn>
+          <v-btn v-if="viewMode" large outlined :elevation="2" @click="$router.push(backPath)">ย้อนหลับ</v-btn>
+          <v-btn v-else large plain @click="$router.push(backPath)">ย้อนหลับ</v-btn>
           <!-- <v-btn v-if="!viewMode" elevation="2" large outlined color="success" @click="onSave">บันทึก</v-btn> -->
           <v-btn v-if="!viewMode" class="ml-4" elevation="2" large color="success" @click="onSubmit">ยื่นขอเบิก</v-btn>
         </v-row>
@@ -80,10 +83,12 @@
     components: {
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
+      TypeBrandModelSearch: () => import('~/components/TypeBrandModelSearch.vue'),
     },
     props: {
       item: { type: Object },
       viewMode: { type: Boolean },
+      backPath: { type: String, default: '/parcel/withdraw/' },
     },
     data () {
       return {
@@ -109,6 +114,9 @@
       isReject () {
         return this.item && this.item.status === 'REJECT'
       },
+      canEdit () {
+        return this.item?.canEdit === 'true'
+      },
     },
     watch: {
       'item' () {
@@ -127,10 +135,13 @@
             {
               parcelMasterId: 0,
               quantity: 0,
+              type: '',
+              brand: '',
+              model: '',
             }
           ]
         }
-        const index = this.item?.flows?.findIndex(flow => flow?.status === 'PENDING') || 0
+        const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
         this.step = index + 2
       },
       addParcel () {
@@ -138,11 +149,17 @@
           {
             parcelMasterId: 0,
             quantity: 0,
+            type: '',
+            brand: '',
+            model: '',
           }
         )
       },
       removeContact (i) {
         this.form.pickUpItems.splice(i, 1)
+      },
+      getParcelQuery (parcel) {
+        return { typeId: parcel.type, brandId: parcel.brand, modelId: parcel.model }
       },
       getApproverText (flow) {
         return flow?.emails?.reduce((str, email, i) => `${str}${i > 0 ? ', ' : ''}${email}`, 'ผู้อนุมัติ : ') || false
@@ -154,7 +171,7 @@
         return this.$store.state.approveStatusColor[item?.status] || 'grey'
       },
       isComplete (item) {
-        return item?.status === 'SUCCESS'
+        return item?.status === 'APPROVE'
       },
       onSave () {
         const valid = this.$refs.form.validate()
@@ -165,10 +182,10 @@
         if (valid) this.$emit('submit', this.form)
       },
       onApprove () {
-        this.$emit('approve', this.currentFlow)
+        this.$emit('approve', this.currentFlow, this.form)
       },
       onReject () {
-        this.$emit('reject', this.currentFlow)
+        this.$emit('reject', this.currentFlow, this.form)
       },
     }
   }

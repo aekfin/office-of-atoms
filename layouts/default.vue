@@ -90,6 +90,11 @@ export default {
       return this.$store.state.approveRequest?.totalElements || 0
     },
   },
+  watch: {
+    '$store.state.approveRequestTrigger' () {
+      this.getNoti()
+    }
+  },
   async mounted () {
     try {
       await this.checkAuthen()
@@ -107,10 +112,9 @@ export default {
           await this.$store.dispatch('http', { apiPath: 'oauth/valify-token' })
           const { data: profile } = await this.$store.dispatch('http', { apiPath: 'user/getUserbytoken' })
           const { data: role } = await this.$store.dispatch('http', { apiPath: 'roles/getRoles' })
-          const { data: approveRequest } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListPickUp', query: this.$route.query, context: this })
           this.$store.commit('SET_STATE', { name: 'userProfile', val: profile})
           this.$store.commit('SET_STATE', { name: 'role', val: role})
-          this.$store.commit('SET_STATE', { name: 'approveRequest', val: approveRequest})
+          await this.getNoti()
           this.isLoading = false
           this.$store.commit('SET_STATE', { name: 'isFullLoading', val: false })
         } else {
@@ -119,6 +123,15 @@ export default {
         return Promise.resolve()
       } catch (err) {
         this.resetToken()
+        return Promise.reject(err)
+      }
+    },
+    async getNoti () {
+      try {
+        const { data: approveRequest } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListPickUp', query: this.$route.query, context: this })
+        this.$store.commit('SET_STATE', { name: 'approveRequest', val: approveRequest})
+        return Promise.resolve()
+      } catch (err) {
         return Promise.reject(err)
       }
     },

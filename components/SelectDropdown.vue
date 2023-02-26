@@ -1,6 +1,7 @@
 <template>
   <div class="select-dropdown">
-    <v-select ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled" :readonly="readonly" :loading="isLoading">
+    <v-select ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled || disabledOnload"
+      :readonly="readonly" :loading="isLoading">
       <template #append-item>
         <div v-if="!!pagination" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
       </template>
@@ -9,6 +10,7 @@
 </template>
 
 <script>
+  import _ from 'lodash'
   export default {
     props: {
       value: { type: [String, Number, Array], require: true },
@@ -30,6 +32,7 @@
         pagination: null,
         isLoading: false,
         initScroll: false,
+        disabledOnload: false,
       }
     },
     computed: {
@@ -48,7 +51,15 @@
       },
       'items' (val) {
         this.list = val
-      }
+      },
+      async 'query' (val, oldVal) {
+        if (!_.isEqual(val, oldVal)) {
+          this.disabledOnload = true
+          this.val = null
+          await this.getList()
+          this.disabledOnload = false
+        }
+      },
     },
     mounted () {
       if (this.apiPath) this.getList()

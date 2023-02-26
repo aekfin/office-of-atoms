@@ -2,11 +2,12 @@
   <div id="parcel-request-detail-page">
     <PageHeader :text="'อนุมัติการเบิกพัสดุ'" hideTotal/>
     <Loading v-if="isLoading"/>
-    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" @approve="onApprove" @reject="onReject"/>
+    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" backPath="/parcel/request/" @approve="onApprove" @reject="onReject"/>
   </div>
 </template>
 
 <script>
+  import _ from 'lodash'
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
@@ -17,6 +18,7 @@
       return {
         isLoading: false,
         item: null,
+        originalItems: null,
       }
     },
     computed: {
@@ -33,25 +35,46 @@
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getPickUp', query: { id: this.$route.params.parcel_request_id } })
           this.item = data
+          this.originalItems = _.cloneDeep(this.item)
           this.isLoading = false
           return Promise.resolve()
         } catch (err) {
           return Promise.reject(err)
         }
       },
+      async submitChanged () {
+        try{
+          const isChanged = !_.isEqual(this.originalItems.items, this.item.items)
+          if (isChanged) {
+            const form = {
+              editItems: this.item.items,
+              pickUpId: this.$route.params.parcel_request_id,
+              remark: this.item.description
+            }
+            await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/editPickUp', data: form })
+          }
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
       async onApprove (flow) {
         try{
+          this.isLoading = true
+          await this.submitChanged()
           const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/approve', query: { flowId: flow.id } })
           await this.$store.dispatch('snackbar', { text: 'อนุมัติการเบิกพัสดุสำเร็จ' })
           await this.getData()
-          return Promise.resolve(data)
+          this.$store.commit('TOGGLE_NOTI')
+          return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
       async onReject (flow) {
         try{
+          this.isLoading = true
+          await this.submitChanged()
           const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/reject', query: { flowId: flow.id } })
           await this.$store.dispatch('snackbar', { text: 'ไม่อนุมัติการเบิกพัสดุสำเร็จ' })
           await this.getData()
+          this.$store.commit('TOGGLE_NOTI')
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },

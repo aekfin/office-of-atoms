@@ -4,4 +4,7 @@ export default {
     else if (key) state[name][key] = val
     else state[name] = val
   },
+  TOGGLE_NOTI (state) {
+    state.approveRequestTrigger = !state.approveRequestTrigger
+  }
 }

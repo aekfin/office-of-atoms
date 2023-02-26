@@ -9,15 +9,18 @@ export default () => ({
   paginationIndex: 0,
   approveStatus: {
     'SUCCESS': 'อนุมัติ',
+    'APPROVE': 'อนุมัติ',
     'PENDING': 'รออนุมัติ',
     'REJECT': 'ไม่อนุมัติ',
   },
   approveStatusColor: {
     'SUCCESS': 'success',
+    'APPROVE': 'success',
     'PENDING': 'warning',
     'REJECT': 'error',
   },
   approveRequest: null,
+  approveRequestTrigger: false,
   leftMenus: [
     {
       title: 'หนักหลัก',
