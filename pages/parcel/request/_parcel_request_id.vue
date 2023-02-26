@@ -49,7 +49,7 @@
       },
       async onReject (flow) {
         try{
-          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/reject', data: { flowId: flow.id } })
+          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/reject', query: { flowId: flow.id } })
           await this.$store.dispatch('snackbar', { text: 'ไม่อนุมัติการเบิกพัสดุสำเร็จ' })
           await this.getData()
           return Promise.resolve(data)
