@@ -1,5 +1,5 @@
 <template>
-  <v-dialog contentClass="confirm-dialog" v-model="val" :width="width">
+  <v-dialog v-model="val" contentClass="confirm-dialog" :width="width">
     <v-card>
       <v-card-title class="text-h5 justify-space-between">
         <div>{{ title }}</div>

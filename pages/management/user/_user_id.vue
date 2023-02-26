@@ -35,10 +35,10 @@
         </v-row>
         <v-row>
           <v-col :cols="6">
-            <SelectDropdown :value.sync="form.ouId" label="กอง *" itemText="ouName" :rules="divisionRules" required apiPath="Orgchart/getOrganizations" :disabled="disabled || disabledByPosition"/>
+            <SelectDropdown :value.sync="form.ouId" label="กอง *" itemText="ouName" :rules="ouRules" required apiPath="Orgchart/getOrganizations" :disabled="disabled"/>
           </v-col>
           <v-col :cols="6">
-            <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="groupRules" required apiPath="Orgchart/getDepartments" :disabled="disabled || disabledByPosition"/>
+            <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required apiPath="Orgchart/getDepartments" :disabled="disabled || disabledByPosition"/>
           </v-col>
         </v-row>
         <v-row>
@@ -145,10 +145,10 @@
         passwordRules: [
           v => !!v || 'โปรดใส่รหัสผ่าน',
         ],
-        divisionRules: [
-          v => !!v || this.disabledByPosition || 'โปรดใส่กอง',
+        ouRules: [
+          v => !!v || 'โปรดใส่กอง',
         ],
-        groupRules: [
+        departmentRules: [
           v => !!v || this.disabledByPosition || 'โปรดใส่กลุ่ม',
         ],
         positionRules: [
@@ -172,7 +172,6 @@
         const position = this.positionList.find(position => position.id == val)
         if (position?.positionName === 'ผ.อ. กองงาน') {
           this.form.departmentId = null
-          this.form.ouId = null
           this.disabledByPosition = true
         } else {
           this.disabledByPosition = false
@@ -190,8 +189,12 @@
           this.form = {
             ...data,
             ouId: data.organizationMaster.id,
-            departmentId: data.departmentMaster.id,
+            departmentId: data.departmentMaster?.id || null,
             positionId: data.positionMaster.id
+          }
+          if (!data.departmentMaster) {
+            this.positionList = [data.positionMaster]
+            this.disabledByPosition = true
           }
           this.isLoading = false
           return Promise.resolve()
@@ -212,7 +215,6 @@
             form.email = this.form.username
             if (this.disabledByPosition) {
               delete form.departmentId
-              delete form.ouId
             }
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างบุคลากรสำเร็จ' : 'แก้ไขบุคลากรสำเร็จ' })

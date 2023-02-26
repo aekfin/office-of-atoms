@@ -4,18 +4,28 @@
     <Loading v-if="isLoading && !project"/>
     <v-form v-else ref="form" v-model="valid" class="mt-4">
       <v-container>
-        <v-row>
-          <!-- <v-col :cols="2">
-            <v-select v-model="form.year" :items="years" itemValue="id" itemText="name" label="ปีงบประมาณ *" :rules="yearRules" required/>
+        <v-row v-if="isCreate || editMode">
+          <v-col :cols="2">
+            <v-text-field v-model="year" label="ปีงบประมาณ *" :rules="yearRules" type="number"/>
           </v-col>
-          <v-col :cols="4">
-            <v-select v-model="form.projectRoot" :items="items" itemValue="id" itemText="name" label="เลือกโครงการงบประมาณ *" :rules="projectRootRules" required :disabled="!form.year"/>
+          <v-col :cols="4" class="d-flex align-center">
+            <v-row class="flex-nowrap" align="baseline">
+              <v-text-field class="cost-field" v-model="budgetStart" label="งบประมาณต่ำสุด *" :rules="budgetStartRules" type="number"/>
+              <div class="mr-3 ml-3 text-h5">-</div>
+              <v-text-field class="cost-field" v-model="budgetEnd" label="งบประมาณสูงสุด *" :rules="budgetEndRules" type="number" :disabled="!budgetStart"/>
+            </v-row>
           </v-col>
           <v-col :cols="6">
-            <v-select v-model="form.project" :items="items" itemValue="id" itemText="name" label="โครงการ *" :rules="projectRules" required :disabled="!form.projectRoot"/>
-          </v-col> -->
-          <v-col :cols="12">
-            <v-text-field v-model="form.projectName" label="โครงการ *" :rules="projectRules" required/>
+            <ProjectDropdown v-model="form.projectName" itemValue="projectName" itemText="projectName" label="โครงการ *" :apiPath="propjectApiPath" :query="projectQuery"
+              :rules="projectRules" isProject required :disabled="!year || !budgetStart || !budgetEnd" @select="onSelectProject"/>
+          </v-col>
+        </v-row>
+        <v-row v-else>
+          <v-col>
+            <v-text-field v-model="form.projectName" label="โครงการ *" :rules="projectRules" required disabled/>
+          </v-col>
+          <v-col class="d-flex align-center" cols="auto">
+            <v-btn block outlined @click="onEditProject">เลือกโครงการอื่น</v-btn>
           </v-col>
         </v-row>
         <v-row>
@@ -95,17 +105,20 @@
       PageHeader: () => import('~/components/PageHeader.vue'),
       AttachFileBtn: () => import('~/components/AttachFileBtn.vue'),
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
+      ProjectDropdown: () => import('~/components/ProjectDropdown.vue'),
       Loading: () => import('~/components/Loading.vue'),
     },
     data () {
       return {
         valid: true,
         isLoading: false,
+        editMode: false,
         project: null,
+        year: '2563',
+        budgetStart: '0',
+        budgetEnd: '100000',
         form: {
-          year: null,
-          projectRoot: null,
-          projectName: null,
+          projectName: '',
           projectNumber: '',
           contractNumber: '',
           projectStartDate: '',
@@ -129,10 +142,13 @@
           { id: 4, name: '2019' }
         ],
         yearRules: [
-          v => !!v || 'โปรดเลือกปีงบประมาณ',
+          v => !!v || 'โปรดใส่ปีงบประมาณ',
         ],
-        projectRootRules: [
-          v => !!v || 'โปรดเลือกโครงการงบประมาณ',
+        budgetStartRules: [
+          v => isNaN(parseInt(v)) ? 'โปรดใส่งบประมาณต่ำสุด' : parseInt(v) >= 0 || 'ต้องมากกว่าหรือเท่ากับ 0'
+        ],
+        budgetEndRules: [
+          v => isNaN(parseInt(v)) ? 'โปรดใส่งบประมาณสูงสุด' : parseInt(v) > parseInt(this.budgetStart) || 'ต้องมากกว่างบประมาณต่ำสุด',
         ],
         projectRules: [
           v => !!v || 'โปรดเลือกโครงการ',
@@ -170,6 +186,12 @@
       disabledInfo () {
         return !this.form.projectName
       },
+      propjectApiPath () {
+        return 'thirdParty/project-detail'
+      },
+      projectQuery () {
+        return { year: this.year, budgetStart: this.budgetStart, budgetEnd: this.budgetEnd }
+      },
     },
     watch: {
       'form.contractCompanyId' (val) {
@@ -192,7 +214,7 @@
             contractCompanyId: data.contractCompany.id,
             projectStartDate: this.$fn.convertStringToDate(data.projectStartDate),
             contractStartDate: this.$fn.convertStringToDate(data.contractStartDate),
-            contractEndDate: this.$fn.convertStringToDate(new Date()),
+            contractEndDate: this.$fn.convertStringToDate(data.contractEndDate),
           }
           this.isLoading = false
           return Promise.resolve()
@@ -207,6 +229,20 @@
       },
       removeContact (i) {
         this.form.directors.splice(i, 1)
+      },
+      onEditProject () {
+        this.form.projectName = ''
+        this.editMode = true
+      },
+      onSelectProject ({ val, item }) {
+        if (item) {
+          this.form.projectName = item.projectName
+          this.form.projectNumber = item.projectNumber
+          this.form.contractNumber = item.contractNumber
+          this.form.projectStartDate = item.projectStartDate ? this.$fn.convertStringToDate(item.projectStartDate) : ''
+          this.form.contractStartDate = this.$fn.convertStringToDate(item.contractStartDate)
+          this.form.contractEndDate = this.$fn.convertStringToDate(item.contractEndDate)
+        }
       },
       onRemoveAttachment (attach) {
         this.removeFile.push(attach)
@@ -269,6 +305,12 @@
 
       .cpmpany-name {
         width: 60%;
+      }
+
+      .cost-field {
+        input {
+          text-align: center;
+        }
       }
     }
   }

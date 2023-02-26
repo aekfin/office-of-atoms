@@ -49,7 +49,7 @@
       },
       'val' (val) {
         this.$emit('update:value', val)
-        const item = this.list.find(item => item.id == val)
+        const item = this.list.find(item => item[this.itemValue] == val)
         this.$emit('select', { val, item })
       },
       'items' (val) {
