@@ -53,8 +53,8 @@
           </v-col>
           <v-col :cols="viewMode && canEdit ? 5 : 4" class="pt-0">
             <div class="d-flex align-baseline">
-              <v-text-field v-model="form.pickUpItems[i].quantity" label="จำนวนเบิก *" :rules="countWithdrawRules" required :disabled="viewMode && !canEdit"/>
-              <div v-if="viewMode && canEdit" class="ml-5 text-remaining">คงเหลือ : {{ remaining }}</div>
+              <v-text-field v-model="form.pickUpItems[i].quantity" label="จำนวนเบิก *" :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canEdit"/>
+              <div v-if="viewMode && isApprover" class="ml-5 text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain }}</div>
             </div>
           </v-col>
         </v-row>
@@ -98,9 +98,6 @@
         remaining: 0,
         parcelRules: [
           v => !!v || 'โปรดเลือกพัสดุ',
-        ],
-        countWithdrawRules: [
-          v => !!v || 'โปรดใส่จำนวนเบิก',
         ],
         step: 1,
       }
@@ -189,10 +186,15 @@
         if (valid) this.$emit('submit', this.form)
       },
       onApprove () {
-        this.$emit('approve', this.currentFlow, this.form)
+        const valid = this.$refs.form.validate()
+        if (valid) this.$emit('approve', this.currentFlow, this.form)
       },
       onReject () {
-        this.$emit('reject', this.currentFlow, this.form)
+        const valid = this.$refs.form.validate()
+        if (valid) this.$emit('reject', this.currentFlow, this.form)
+      },
+      countWithdrawRules (item) {
+        return this.viewMode ? [item.remain >= item.quantity || 'จำนวนพัสดุไม่เพียงพอ'] : [v => !!v || 'โปรดใส่จำนวนเบิก']
       },
     }
   }
