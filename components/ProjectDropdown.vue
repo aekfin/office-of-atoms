@@ -1,7 +1,7 @@
 <template>
   <div class="project-dropdown">
     <v-autocomplete ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled"
-      :loading="isLoading" noFilter :searchInput.sync="search">
+      :loading="isLoading" noFilter :hideNoData="isLoading" :searchInput.sync="search">
     </v-autocomplete>    
   </div>
 </template>
