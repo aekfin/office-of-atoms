@@ -1,7 +1,7 @@
 <template>
   <div class="autocomplete-dropdown">
     <v-autocomplete ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled || disabledOnload"
-      :readonly="readonly" :loading="isLoading" :noFilter="noFilter" :searchInput.sync="search" @change="onChange">
+      :readonly="readonly" :loading="isLoading || isSearchLoading" :noFilter="noFilter" :hideNoData="isSearchLoading" :searchInput.sync="search" @change="onChange">
       <template #append-item>
         <div v-if="!!pagination" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
       </template>
@@ -36,6 +36,7 @@
         list: this.items || [],
         pagination: null,
         isLoading: false,
+        isSearchLoading: false,
         initScroll: false,
         timeout: null,
         disabledOnload: false,
@@ -59,6 +60,7 @@
       'search' () {
         clearTimeout(this.timeout)
         this.timeout = setTimeout(() => {
+          this.list = []
           this.onSearch()
         }, 1000)
       },
@@ -103,16 +105,16 @@
       async onSearch () {
         const item = this.list.find(item => item[this.itemValue] == this.val)
         const isSameKeyword = item && (this.search === item[this.itemText])
-        if (this.apiPath && !this.isLoading && !isSameKeyword) {
+        if (this.apiPath && !this.isSearchLoading && !isSameKeyword) {
           try {
+            this.isSearchLoading = true
             if (this.searchApiPath && this.search) {
-              this.isLoading = true
               const { data } = await this.$store.dispatch('http', { apiPath: this.searchApiPath, query: { ...this.searchQuery, name: this.search } })
               this.list = data
-              this.isLoading = false
             } else {
               await this.getList()
             }
+            this.isSearchLoading = false
             return Promise.resolve()
           } catch (err) {
             return Promise.reject(err)
