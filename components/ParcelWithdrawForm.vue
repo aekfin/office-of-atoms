@@ -38,7 +38,8 @@
         <v-row v-for="(parcel, i) in form.pickUpItems" :key="i" class="mt-0 mb-5">
           <v-col cols="auto" class="align-self-center">{{ i + 1 }}.</v-col>
           <v-col :cols="10">
-            <TypeBrandModelSearch :type.sync="form.pickUpItems[i].type" :brand.sync="form.pickUpItems[i].brand" :model.sync="form.pickUpItems[i].model" :viewMode="viewMode"/>
+            <TypeBrandModelSearch v-if="viewMode" :type="form.pickUpItems[i].type" :brand="form.pickUpItems[i].brand" :model="form.pickUpItems[i].model" viewMode/>
+            <TypeBrandModelSearch v-else :type.sync="form.pickUpItems[i].type" :brand.sync="form.pickUpItems[i].brand" :model.sync="form.pickUpItems[i].model"/>
           </v-col>
           <v-col cols="auto" class="align-self-center">
             <v-btn v-if="form.pickUpItems.length > 1 && !viewMode" icon @click="removeContact(i)">

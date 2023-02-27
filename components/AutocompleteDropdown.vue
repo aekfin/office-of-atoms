@@ -1,6 +1,6 @@
 <template>
   <div class="autocomplete-dropdown">
-    <v-autocomplete ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled"
+    <v-autocomplete ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled || disabledOnload"
       :readonly="readonly" :loading="isLoading" :noFilter="noFilter" :searchInput.sync="search">
       <template #append-item>
         <div v-if="!!pagination" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
@@ -10,6 +10,7 @@
 </template>
 
 <script>
+  import _ from 'lodash'
   export default {
     props: {
       value: { type: [String, Number, Array], require: true },
@@ -26,6 +27,7 @@
       disabled: { type: Boolean },
       readonly: { type: Boolean },
       noFilter: { type: Boolean },
+      notCallMounted: { type: Boolean },
     },
     data () {
       return {
@@ -36,6 +38,7 @@
         isLoading: false,
         initScroll: false,
         timeout: null,
+        disabledOnload: false,
       }
     },
     computed: {
@@ -60,10 +63,18 @@
         this.timeout = setTimeout(() => {
           this.onSearch()
         }, 1000)
-      }
+      },
+      async 'query' (val, oldVal) {
+        if (!_.isEqual(val, oldVal)) {
+          this.disabledOnload = true
+          this.val = null
+          await this.getList()
+          this.disabledOnload = false
+        }
+      },
     },
     mounted () {
-      if (this.apiPath) this.getList()
+      if (this.apiPath && !this.notCallMounted) this.getList()
     },
     methods: {
       async getList (more = false) {

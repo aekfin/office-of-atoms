@@ -1,8 +1,8 @@
 <template>
   <v-row class="type-brand-model-search">
     <v-col :cols="4">
-      <AutocompleteDropdown :value.sync="typeId" itemValue="id" itemText="name" label="ประเภท *" apiPath="parcel/getListParcelType" :disabled="viewMode"
-        searchApiPath="parcel/getParcelType" noFilter @select="onSelectType"/>
+      <AutocompleteDropdown :value.sync="typeId" itemValue="id" itemText="name" label="ประเภท *" apiPath="parcel/getListParcelType" :disabled="viewMode" :notCallMounted="viewMode"
+        :items="typeList" searchApiPath="parcel/getParcelType" noFilter @select="onSelectType"/>
     </v-col>
     <v-col :cols="4">
       <AutocompleteDropdown :value.sync="brandId" :items="brandList" itemValue="id" itemText="name" label="ยี่ห้อ *" :disabled="!typeId || viewMode" @select="onSelectBrand"/>
@@ -22,13 +22,14 @@
       type: { type: [String, Number] },
       brand: { type: [String, Number] },
       model: { type: [String, Number] },
-      viewMode: { type: Boolean }
+      viewMode: { type: Boolean },
     },
     data () {
       return {
         typeId: '',
         brandId: '',
         modelId: '',
+        typeList: [],
         brandList: [],
         modelList: [],
         typeRules: [
@@ -67,14 +68,25 @@
     },
     methods: {
       setData () {
-        this.typeId = this.type || ''
-        this.brandId = this.brand || ''
-        this.modelId = this.model || ''
+        if (this.viewMode) {
+          this.typeList = [this.type]
+          this.brandList = [this.brand]
+          this.modelList = [this.model]
+          this.typeId = this.type?.id || ''
+          this.brandId = this.brand?.id || ''
+          this.modelId = this.model?.id || ''
+        } else {
+          this.typeId = this.type || ''
+          this.brandId = this.brand || ''
+          this.modelId = this.model || ''
+        }
       },
       onSelectType ({ val, item }) {
         if (item) {
           this.brandList = item.listBrands
         } else {
+          this.brandId = ''
+          this.modelId = ''
           this.brandList = []
           this.modelList = []
         }
