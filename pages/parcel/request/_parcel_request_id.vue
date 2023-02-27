@@ -42,35 +42,35 @@
           return Promise.reject(err)
         }
       },
-      async submitChanged () {
+      async submitChanged (form) {
         try{
-          const isChanged = !_.isEqual(this.originalItems.items, this.item.items)
+          const isChanged = !_.isEqual(this.originalItems.items, form.pickUpItems)
           if (isChanged) {
-            const form = {
-              editItems: this.item.items,
+            const data = {
+              editItems: form.pickUpItems,
               pickUpId: this.$route.params.parcel_request_id,
               remark: this.item.description
             }
-            await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/editPickUp', data: form })
+            await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/editPickUp', data })
           }
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
-      async onApprove (flow) {
+      async onApprove (flow, form) {
         try{
           this.isLoading = true
-          await this.submitChanged()
+          await this.submitChanged(form)
           const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/approve', query: { flowId: flow.id } })
           await this.$store.dispatch('snackbar', { text: 'อนุมัติการเบิกพัสดุสำเร็จ' })
           await this.getData()
           this.$store.commit('TOGGLE_NOTI')
-          return Promise.resolve()
+          return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
-      async onReject (flow) {
+      async onReject (flow, form) {
         try{
           this.isLoading = true
-          await this.submitChanged()
+          await this.submitChanged(form)
           const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/reject', query: { flowId: flow.id } })
           await this.$store.dispatch('snackbar', { text: 'ไม่อนุมัติการเบิกพัสดุสำเร็จ' })
           await this.getData()

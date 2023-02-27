@@ -8,7 +8,7 @@
       <AutocompleteDropdown :value.sync="brandId" :items="brandList" itemValue="id" itemText="name" label="ยี่ห้อ *" :disabled="!typeId || viewMode" @select="onSelectBrand"/>
     </v-col>
     <v-col :cols="4">
-      <AutocompleteDropdown :value.sync="modelId" :items="modelList" itemValue="id" itemText="name" label="รุ่น *" :disabled="!typeId || viewMode"/>
+      <AutocompleteDropdown :value.sync="modelId" :items="modelList" itemValue="id" itemText="name" label="รุ่น *" :disabled="!brandId || viewMode"/>
     </v-col>
   </v-row>
 </template>
@@ -23,6 +23,7 @@
       brand: { type: [String, Number] },
       model: { type: [String, Number] },
       viewMode: { type: Boolean },
+      item: { type: Object },
     },
     data () {
       return {
@@ -69,17 +70,13 @@
     methods: {
       setData () {
         if (this.viewMode) {
-          this.typeList = [this.type]
-          this.brandList = [this.brand]
-          this.modelList = [this.model]
-          this.typeId = this.type?.id || ''
-          this.brandId = this.brand?.id || ''
-          this.modelId = this.model?.id || ''
-        } else {
-          this.typeId = this.type || ''
-          this.brandId = this.brand || ''
-          this.modelId = this.model || ''
+          this.typeList = [this.item._type]
+          this.brandList = [this.item._brand]
+          this.modelList = [this.item._model]
         }
+        this.typeId = this.type || ''
+        this.brandId = this.brand || ''
+        this.modelId = this.model || ''
       },
       onSelectType ({ val, item }) {
         if (item) {
@@ -93,6 +90,7 @@
       },
       onSelectBrand ({ val, item }) {
         this.modelList = item?.listModels || []
+        this.modelId = ''
       },
     }
   }

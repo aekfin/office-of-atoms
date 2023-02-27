@@ -38,8 +38,8 @@
         <v-row v-for="(parcel, i) in form.pickUpItems" :key="i" class="mt-0 mb-5">
           <v-col cols="auto" class="align-self-center">{{ i + 1 }}.</v-col>
           <v-col :cols="10">
-            <TypeBrandModelSearch v-if="viewMode" :type="form.pickUpItems[i].type" :brand="form.pickUpItems[i].brand" :model="form.pickUpItems[i].model" viewMode/>
-            <TypeBrandModelSearch v-else :type.sync="form.pickUpItems[i].type" :brand.sync="form.pickUpItems[i].brand" :model.sync="form.pickUpItems[i].model"/>
+            <TypeBrandModelSearch :type.sync="form.pickUpItems[i].type" :brand.sync="form.pickUpItems[i].brand" :model.sync="form.pickUpItems[i].model"
+              :item="form.pickUpItems[i]" :viewMode="viewMode"/>
           </v-col>
           <v-col cols="auto" class="align-self-center">
             <v-btn v-if="form.pickUpItems.length > 1 && !viewMode" icon @click="removeContact(i)">
@@ -132,17 +132,23 @@
         this.form = {
           description: this.item?.description || '',
           withdrawDate: new Date(),
-          pickUpItems: this.item?.items || [
-            {
-              parcelMasterId: 0,
-              quantity: 0,
-              type: '',
-              brand: '',
-              model: '',
-            }
-          ]
+          pickUpItems: this.item?.items
+            ? this.item.items.map(item => {
+              const { type, brand, model } = item
+              return { ...item, type: type.id, _type: type, brand: brand.id, _brand: brand, model: model.id, _model: model }
+            })
+            : [
+              {
+                parcelMasterId: 0,
+                quantity: 0,
+                type: '',
+                brand: '',
+                model: '',
+              }
+            ]
         }
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
+        console.log(this.form)
         this.step = index + 2
       },
       addParcel () {
