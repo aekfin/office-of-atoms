@@ -1,7 +1,7 @@
 <template>
   <div class="autocomplete-dropdown">
     <v-autocomplete ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled || disabledOnload"
-      :readonly="readonly" :loading="isLoading" :noFilter="noFilter" :searchInput.sync="search">
+      :readonly="readonly" :loading="isLoading" :noFilter="noFilter" :searchInput.sync="search" @change="onChange">
       <template #append-item>
         <div v-if="!!pagination" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
       </template>
@@ -52,8 +52,6 @@
       },
       'val' (val) {
         this.$emit('update:value', val)
-        const item = this.list.find(item => item[this.itemValue] == val)
-        this.$emit('select', { val, item })
       },
       'items' (val) {
         this.list = val
@@ -98,8 +96,14 @@
           this.getList(true)
         }
       },
+      onChange (val) {
+        const item = this.list.find(item => item[this.itemValue] == val)
+        this.$emit('select', { val, item })
+      },
       async onSearch () {
-        if (this.apiPath && !this.isLoading) {
+        const item = this.list.find(item => item[this.itemValue] == this.val)
+        const isSameKeyword = item && (this.search === item[this.itemText])
+        if (this.apiPath && !this.isLoading && !isSameKeyword) {
           try {
             if (this.searchApiPath && this.search) {
               this.isLoading = true

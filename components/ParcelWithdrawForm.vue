@@ -46,12 +46,12 @@
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-col>
-          <v-col :cols="6" class="pl-12 pt-0">
+          <v-col :cols="7" class="pl-12 pt-0">
             <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].name" label="พัสดุ *" disabled/>
             <SelectDropdown v-else :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="พัสดุ *" :rules="parcelRules" apiPath="parcel/searchParcelMaster"
               :query="getParcelQuery(form.pickUpItems[i])" reloadOnClick :disabled="viewMode || !form.pickUpItems[i].type"/>
           </v-col>
-          <v-col :cols="viewMode && canEdit ? 5 : 4" class="pt-0">
+          <v-col :cols="viewMode && canEdit ? 4 : 3" class="pt-0">
             <div class="d-flex align-baseline">
               <v-text-field v-model="form.pickUpItems[i].quantity" label="จำนวนเบิก *" :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canEdit"/>
               <div v-if="canChangeQuantity" class="ml-5 text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain }}</div>

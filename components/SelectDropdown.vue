@@ -1,7 +1,7 @@
 <template>
   <div class="select-dropdown">
     <v-select ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled || disabledOnload"
-      :readonly="readonly" :loading="isLoading">
+      :readonly="readonly" :loading="isLoading" @change="onChange">
       <template #append-item>
         <div v-if="!!pagination" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
       </template>
@@ -46,8 +46,6 @@
       },
       'val' (val) {
         this.$emit('update:value', val)
-        const item = this.list.find(item => item.id == val)
-        this.$emit('select', { val, item })
       },
       'items' (val) {
         this.list = val
@@ -85,6 +83,10 @@
         if (this.pagination && isIntersecting && this.pagination.last === false && !this.isLoading) {
           this.getList(true)
         }
+      },
+      onChange (val) {
+        const item = this.list.find(item => item[this.itemValue] == val)
+        this.$emit('select', { val, item })
       },
     },
   }

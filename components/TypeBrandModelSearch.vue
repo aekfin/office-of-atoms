@@ -45,15 +45,6 @@
       }
     },
     watch: {
-      'type' () {
-        this.setData()
-      },
-      'brand' () {
-        this.setData()
-      },
-      'model' () {
-        this.setData()
-      },
       'typeId' (val) {
         this.$emit('update:type', val)
       },
@@ -82,11 +73,11 @@
         if (item) {
           this.brandList = item.listBrands
         } else {
-          this.brandId = ''
-          this.modelId = ''
           this.brandList = []
           this.modelList = []
         }
+        this.brandId = ''
+        this.modelId = ''
       },
       onSelectBrand ({ val, item }) {
         this.modelList = item?.listModels || []
