@@ -190,7 +190,7 @@
         return 'thirdParty/project-detail'
       },
       projectQuery () {
-        return { year: this.year, budgetStart: this.budgetStart, budgetEnd: this.budgetEnd }
+        return { year: this.year || 2563, budgetStart: this.budgetStart || 0, budgetEnd: this.budgetEnd || 0 }
       },
     },
     watch: {
@@ -235,13 +235,14 @@
         this.editMode = true
       },
       onSelectProject ({ val, item }) {
+        console.log(item)
         if (item) {
           this.form.projectName = item.projectName
           this.form.projectNumber = item.projectNumber
           this.form.contractNumber = item.contractNumber
           this.form.projectStartDate = item.projectStartDate ? this.$fn.convertStringToDate(item.projectStartDate) : ''
-          this.form.contractStartDate = this.$fn.convertStringToDate(item.contractStartDate)
-          this.form.contractEndDate = this.$fn.convertStringToDate(item.contractEndDate)
+          this.form.contractStartDate = item.contractStartDate ? this.$fn.convertStringToDate(item.contractStartDate) : ''
+          this.form.contractEndDate = item.contractEndDate ? this.$fn.convertStringToDate(item.contractEndDate) : ''
         }
       },
       onRemoveAttachment (attach) {

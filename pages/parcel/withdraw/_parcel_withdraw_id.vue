@@ -44,7 +44,9 @@
       },
       async onSubmit (form) {
         try{
-          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/pickup', data: form })
+          const formData = { ...form }
+          formData.datePickUp = this.$fn.convertDateToString(formData.datePickUp)
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/pickup', data: formData })
           if (data.status.code == 400) {
             await this.$store.dispatch('snackbar', { text: `Error ${data.status.code}: ${data.status.description}`, props: { color: 'red', top: true } })
             this.dialog = true

@@ -1,7 +1,8 @@
 <template>
   <div id="parcel-request-page">
-    <PageHeader text="พัสดุที่รออนุมัติ"/>
+    <PageHeader text="พัสดุที่รออนุมัติ" :total="total"/>
     <ParcelWithdrawTable :items="items" :getActionIconList="getActionIconList" :isLoading="isLoading"/>
+    <Pagination/>
   </div>
 </template>
 
@@ -9,6 +10,7 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
+      Pagination: () => import('~/components/Pagination.vue'),
     },
     data () {
       return {
@@ -16,6 +18,11 @@
         count: 0,
         total: 0,
         items: [],
+      }
+    },
+    watch: {
+      '$route.query' () {
+        this.getList()
       }
     },
     mounted () {

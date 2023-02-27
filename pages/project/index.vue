@@ -4,10 +4,10 @@
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.projectStartDate="{ item }">
-        {{ $moment(item).format('DD-MM-YYYY') }}
+        {{ $moment(item.projectStartDate).format('DD-MM-YYYY') }}
       </template>
       <template #item.contractStartDate="{ item }">
-        {{ $moment(item).format('DD-MM-YYYY') }}
+        {{ $moment(item.contractStartDate).format('DD-MM-YYYY') }}
       </template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>

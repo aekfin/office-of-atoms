@@ -3,11 +3,11 @@
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.user_fk.thaiFristName="{ item }">{{ item.user_fk.thaiFristName }} {{ item.user_fk.thaiLastName }}</template>
-      <template #item.createdDate="{ item }">
-        <div>{{ $moment(item.datetimeWithdraw).format('DD-MM-YYYY') }}</div>
+      <template #item.datePickUp="{ item }">
+        <div>{{ item.datePickUp ? $moment(item.datePickUp).format('DD-MM-YYYY') : '-' }}</div>
       </template>
-      <template #item.approveDate="{ item }">
-        <div>{{ approveDate ? $moment(item.datetimeApprove).format('DD-MM-YYYY') : '-' }}</div>
+      <template #item.dateApprove="{ item }">
+        <div>{{ item.dateApprove ? $moment(item.dateApprove).format('DD-MM-YYYY') : '-' }}</div>
       </template>
       <template #item.status="{ item }">
         <v-chip :color="$store.state.approveStatusColor[item.status]">{{ $store.state.approveStatus[item.status] }}</v-chip>
@@ -57,8 +57,8 @@
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ผู้ขอเบิกพัสดุ', value: 'user_fk.thaiFristName' },
-          { text: 'วันที่เบิกพัสดุ', value: 'createdDate', width: '140px', align: 'center' },
-          { text: 'วันที่อนุมัติ', value: 'approveDate', width: '140px', align: 'center' },
+          { text: 'วันที่เบิกพัสดุ', value: 'datePickUp', width: '140px', align: 'center' },
+          { text: 'วันที่อนุมัติ', value: 'dateApprove', width: '140px', align: 'center' },
           { text: 'พัสดุ', value: 'parcel', width: '160px', align: 'center' },
           { text: 'สถานะการเบิก', value: 'status', width: '160px', align: 'center' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },

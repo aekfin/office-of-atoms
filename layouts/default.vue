@@ -128,7 +128,7 @@ export default {
     },
     async getNoti () {
       try {
-        const { data: approveRequest } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListPickUp', query: this.$route.query, context: this })
+        const { data: approveRequest } = await this.$store.dispatch('http', { apiPath: 'parcel/getListPickUp', query: this.$route.query, context: this })
         this.$store.commit('SET_STATE', { name: 'approveRequest', val: approveRequest})
         return Promise.resolve()
       } catch (err) {

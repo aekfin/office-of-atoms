@@ -19,11 +19,8 @@
     <v-form v-if="form" ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <!-- <v-col :cols="6">
-            <v-text-field v-model="form.code" label="เลขที่เอกสาร" :disabled="viewMode"/>
-          </v-col> -->
           <v-col :cols="6">
-            <InputDatePicker :value.sync="form.withdrawDate" label="วันที่เบิกพัสดุ *" :rules="datetimeWithdrawRules" required :disabled="viewMode"/>
+            <InputDatePicker :value.sync="form.datePickUp" label="วันที่เบิกพัสดุ *" :rules="datetimeWithdrawRules" required :disabled="viewMode"/>
           </v-col>
         </v-row>
         <v-row>
@@ -53,8 +50,8 @@
           </v-col>
           <v-col :cols="viewMode && canEdit ? 4 : 3" class="pt-0">
             <div class="d-flex align-baseline">
-              <v-text-field v-model="form.pickUpItems[i].quantity" label="จำนวนเบิก *" :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canEdit"/>
-              <div v-if="canChangeQuantity" class="ml-5 text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain }}</div>
+              <v-text-field v-model="form.pickUpItems[i].quantity" label="จำนวนเบิก *" :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity"/>
+              <div v-if="showRemain" class="ml-5 text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain }}</div>
             </div>
           </v-col>
         </v-row>
@@ -71,7 +68,6 @@
         <v-row v-else justify="end">
           <v-btn v-if="viewMode" large outlined :elevation="2" @click="$router.push(backPath)">ย้อนหลับ</v-btn>
           <v-btn v-else large plain @click="$router.push(backPath)">ย้อนหลับ</v-btn>
-          <!-- <v-btn v-if="!viewMode" elevation="2" large outlined color="success" @click="onSave">บันทึก</v-btn> -->
           <v-btn v-if="!viewMode" class="ml-4" elevation="2" large color="success" @click="onSubmit">ยื่นขอเบิก</v-btn>
         </v-row>
       </v-container>
@@ -116,6 +112,9 @@
         return this.item?.canEdit === 'true'
       },
       canChangeQuantity () {
+        return this.canEdit && this.isApprover
+      },
+      showRemain () {
         return this.viewMode && this.canEdit
       },
     },
@@ -131,7 +130,7 @@
       setForm () {
         this.form = {
           description: this.item?.description || '',
-          withdrawDate: new Date(),
+          datePickUp: new Date(),
           pickUpItems: this.item?.items
             ? this.item.items.map(item => {
               const { type, brand, model } = item
@@ -196,7 +195,7 @@
         if (valid) this.$emit('reject', this.currentFlow, this.form)
       },
       countWithdrawRules (item) {
-        return this.canChangeQuantity ? [item.remain >= item.quantity || 'จำนวนพัสดุไม่เพียงพอ'] : [v => !!v || 'โปรดใส่จำนวนเบิก']
+        return this.showRemain ? [item.remain >= item.quantity || 'จำนวนพัสดุไม่เพียงพอ'] : [v => !!v || 'โปรดใส่จำนวนเบิก']
       },
     }
   }

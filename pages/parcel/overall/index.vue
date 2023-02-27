@@ -1,15 +1,16 @@
 <template>
   <div id="parcel-page">
-    <PageHeader text="บริหารพัสดุ" btnText="เพิ่มพัสดุ" createRoute="/parcel/overall/create/"/>
+    <PageHeader text="บริหารพัสดุ" btnText="เพิ่มพัสดุ" createRoute="/parcel/overall/create/" :total="total"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.dateEntry="{ item }">
-        <div>{{ $moment(item.datetimeCreate).format('DD-MM-YYYY') }}</div>
+        <div>{{ $moment(item.dateEntry).format('DD-MM-YYYY') }}</div>
       </template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
       </template>
     </v-data-table>
+    <Pagination/>
   </div>
 </template>
 
@@ -17,10 +18,14 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
+      Pagination: () => import('~/components/Pagination.vue'),
     },
     data () {
       return {
         isLoading: true,
+        count: 0,
+        total: 0,
+        items: [],
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'โครงการ', value: 'projectName' },
@@ -30,7 +35,6 @@
           { text: 'วันที่รับเข้า', value: 'dateEntry', width: '140px', align: 'center' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
-        items: [],
       }
     },
     watch: {

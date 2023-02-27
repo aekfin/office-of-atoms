@@ -37,6 +37,7 @@ export default {
         context.total = res.data.totalElements
         context.count = res.data.numberOfElements
       }
+      console.log(apiPath, res.data)
       return Promise.resolve(res)
     } catch (err) {
       return Promise.reject(err)

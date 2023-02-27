@@ -1,7 +1,8 @@
 <template>
   <div id="parcel-withdraw-page">
-    <PageHeader text="การเบิกพัสดุ" btnText="เพิ่มการเบิกพัสดุ" createRoute="/parcel/withdraw/create/"/>
+    <PageHeader text="การเบิกพัสดุ" btnText="เพิ่มการเบิกพัสดุ" createRoute="/parcel/withdraw/create/" :total="total"/>
     <ParcelWithdrawTable :items="items" :getActionIconList="getActionIconList" :isLoading="isLoading"/>
+    <Pagination/>
   </div>
 </template>
 
@@ -9,6 +10,7 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
+      Pagination: () => import('~/components/Pagination.vue'),
     },
     data () {
       return {

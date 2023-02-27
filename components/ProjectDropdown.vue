@@ -1,12 +1,13 @@
 <template>
   <div class="project-dropdown">
     <v-autocomplete ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled"
-      :loading="isLoading" noFilter hideNoData :searchInput.sync="search">
+      :loading="isLoading" noFilter :searchInput.sync="search">
     </v-autocomplete>    
   </div>
 </template>
 
 <script>
+  import _ from 'lodash'
   export default {
     props: {
       value: { type: [String, Number, Array], require: true },
@@ -49,6 +50,11 @@
             this.list = []
             this.getList()
           }, 1000)
+        }
+      },
+      'query' (val, oldVal) {
+        if (!_.isEqual(val, oldVal)) {
+          this.getList()
         }
       }
     },
