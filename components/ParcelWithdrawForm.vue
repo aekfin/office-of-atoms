@@ -54,7 +54,7 @@
           <v-col :cols="viewMode && canEdit ? 5 : 4" class="pt-0">
             <div class="d-flex align-baseline">
               <v-text-field v-model="form.pickUpItems[i].quantity" label="จำนวนเบิก *" :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canEdit"/>
-              <div v-if="viewMode && isApprover" class="ml-5 text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain }}</div>
+              <div v-if="canChangeQuantity" class="ml-5 text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain }}</div>
             </div>
           </v-col>
         </v-row>
@@ -115,6 +115,9 @@
       canEdit () {
         return this.item?.canEdit === 'true'
       },
+      canChangeQuantity () {
+        return this.viewMode && this.canEdit
+      },
     },
     watch: {
       'item' () {
@@ -145,7 +148,6 @@
             ]
         }
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
-        console.log(this.form)
         this.step = index + 2
       },
       addParcel () {
@@ -194,7 +196,7 @@
         if (valid) this.$emit('reject', this.currentFlow, this.form)
       },
       countWithdrawRules (item) {
-        return this.viewMode ? [item.remain >= item.quantity || 'จำนวนพัสดุไม่เพียงพอ'] : [v => !!v || 'โปรดใส่จำนวนเบิก']
+        return this.canChangeQuantity ? [item.remain >= item.quantity || 'จำนวนพัสดุไม่เพียงพอ'] : [v => !!v || 'โปรดใส่จำนวนเบิก']
       },
     }
   }
