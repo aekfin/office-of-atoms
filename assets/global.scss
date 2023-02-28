@@ -70,6 +70,20 @@ button.v-btn.v-size--large {
   }
 }
 
+.tabs-underline {
+  .v-slide-group__content.v-tabs-bar__content {
+    border-bottom: 1px solid #BDBDBD;
+
+    .v-tab:not(.v-tab--active) {
+      color: black !important;
+    }
+
+    .v-tab.v-tab--active {
+      background-color: #E8EAF6;
+    }
+  }
+}
+
 .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
   background: #E0E0E0 !important;
 }

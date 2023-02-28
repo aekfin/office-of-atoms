@@ -1,5 +1,12 @@
 <template>
   <div id="category-list-page">
+    <v-tabs v-model="tabActive" class="tabs-underline mb-7" fixedTabs>
+      <v-tab>หมวด</v-tab>
+      <v-tab>หมวดย่อย</v-tab>
+      <v-tab>ประเภท</v-tab>
+      <v-tab>ยี่ห้อ</v-tab>
+      <v-tab>รุ่น</v-tab>
+    </v-tabs>
     <PageHeader text="ประเภท วัสดุคงคลัง - ครุภัณฑ์" btnText="เพิ่มประเภท" createRoute="/management/category/create/" :total="total"/>
     <v-data-table :headers="categoryHeaders" :items="items" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
@@ -70,6 +77,7 @@
     },
     data () {
       return {
+        tabActive: 0,
         isLoading: true,
         total: 0,
         count: 0,
