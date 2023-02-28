@@ -31,19 +31,19 @@ export default () => ({
       to: '/project/'
     },
     {
-      title: 'พัสดุ',
+      title: 'วัสดุคงคลัง',
       to: '/parcel/',
       children: [
         {
-          title: 'บริหารพัสดุ',
+          title: 'บริหารวัสดุคงคลัง',
           to: '/parcel/overall/',
         },
         {
-          title: 'เบิกพัสดุ',
+          title: 'เบิกวัสดุคงคลัง',
           to: '/parcel/withdraw/'
         },
         {
-          title: 'พัสดุที่รออนุมัติ',
+          title: 'วัสดุคงคลังที่รออนุมัติ',
           to: '/parcel/request/'
         },
       ]
@@ -83,11 +83,11 @@ export default () => ({
           to: '/management/user/'
         },
         {
-          title: 'ประเภท พัสดุ - ครุภัณฑ์',
+          title: 'ประเภท วัสดุคงคลัง - ครุภัณฑ์',
           to: '/management/category/'
         },
         {
-          title: 'ค่าเริ่มต้นพัสดุ',
+          title: 'ค่าเริ่มต้นวัสดุคงคลัง',
           to: '/management/parcel/'
         },
         {

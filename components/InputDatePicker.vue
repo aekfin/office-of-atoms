@@ -28,6 +28,7 @@
       <v-date-picker
         v-model="date"
         no-title
+        locale="th-TH"
         @input="menu = false"
       />
     </v-menu>
@@ -65,7 +66,7 @@
       getDateFormatted (value) {
         if (value) {
           const [year, month, date] = value.split('-')
-          return `${date}-${month}-${year}`
+          return `${date}-${month}-${parseInt(year) + 543}`
         } return ''
       },
       parseValue () {
@@ -74,9 +75,9 @@
       parseDate (dateFormatted) {
         if (dateFormatted) {
           const [date, month, year] = dateFormatted.split('-')
-          return `${year}-${month}-${date}`
+          return `${parseInt(year) - 543}-${month}-${date}`
         } return ''
-      }
+      },
     }
   }
 </script>

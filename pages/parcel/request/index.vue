@@ -1,6 +1,6 @@
 <template>
   <div id="parcel-request-page">
-    <PageHeader text="พัสดุที่รออนุมัติ" :total="total"/>
+    <PageHeader text="วัสดุคงคลังที่รออนุมัติ" :total="total"/>
     <ParcelWithdrawTable :items="items" :getActionIconList="getActionIconList" :isLoading="isLoading"/>
     <Pagination/>
   </div>

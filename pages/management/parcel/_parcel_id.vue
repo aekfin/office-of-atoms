@@ -1,6 +1,6 @@
 <template>
   <div id="management-parcel-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นพัสดุ' : 'การแก้ไขค่าเริ่มต้นพัสดุ'" hideTotal/>
+    <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นวัสดุคงคลัง' : 'การแก้ไขค่าเริ่มต้นวัสดุคงคลัง'" hideTotal/>
     <Loading v-if="isLoading"/>
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
@@ -136,7 +136,7 @@
             const method = this.isCreate ? 'post' : 'patch'
             let form = this.isCreate ? { data: [{ ...this.form }] } : { editQuantity: this.form.quantity, parcelMasterId: this.form.id }
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
-            await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างค่าเริ่มต้นพัสดุสำเร็จ' : 'แก้ไขค่าเริ่มต้นพัสดุสำเร็จ' })
+            await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างค่าเริ่มต้นวัสดุคงคลังสำเร็จ' : 'แก้ไขค่าเริ่มต้นวัสดุคงคลังสำเร็จ' })
             if (this.isCreate) this.$router.push('/management/parcel/')
             return Promise.resolve(data)
           } else {

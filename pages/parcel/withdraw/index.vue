@@ -1,6 +1,6 @@
 <template>
   <div id="parcel-withdraw-page">
-    <PageHeader text="การเบิกพัสดุ" btnText="เพิ่มการเบิกพัสดุ" createRoute="/parcel/withdraw/create/" :total="total"/>
+    <PageHeader text="การเบิกวัสดุคงคลัง" btnText="เพิ่มการเบิกวัสดุคงคลัง" createRoute="/parcel/withdraw/create/" :total="total"/>
     <ParcelWithdrawTable :items="items" :getActionIconList="getActionIconList" :isLoading="isLoading"/>
     <Pagination/>
   </div>

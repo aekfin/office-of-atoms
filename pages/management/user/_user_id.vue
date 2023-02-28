@@ -5,11 +5,8 @@
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4 relative">
       <v-container>
         <v-row>
-          <v-col :cols="6">
+          <v-col :cols="12">
             <v-text-field v-model="form.employeeId" name="code" label="รหัสพนักงาน *" :rules="codeRules" required :disabled="disabled"/>
-          </v-col>
-          <v-col :cols="6">
-            <v-text-field v-model="form.thaiId" label="รหัสบัตรประชาชน *" :rules="idCardRules" required :disabled="disabled"/>
           </v-col>
         </v-row>
         <v-row>
@@ -43,7 +40,7 @@
         </v-row>
         <v-row>
           <v-col :cols="6">
-            <v-text-field v-model="form.username" label="E-Mail ผู้ใช้งาน *" :rules="usernameRules" name="email" required :disabled="disabled"/>
+            <v-text-field v-model="form.username" label="E-Mail ผู้ใช้งาน *" :rules="usernameRules" name="email" required :disabled="disabled || !isCreate"/>
           </v-col>
           <v-col :cols="6">
             <SelectDropdown :value.sync="form.roleName" :items="roleList" label="สิทธ์การใช้งาน *" :rules="roleRules" multiple required :disabled="disabled"/>
@@ -98,7 +95,6 @@
         isLoading: false,
         form: {
           employeeId: '',
-          thaiId: '',
           thaiFristName: '',
           thaiLastName: '',
           engFristName: '',

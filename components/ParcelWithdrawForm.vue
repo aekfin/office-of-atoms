@@ -20,7 +20,7 @@
       <v-container>
         <v-row>
           <v-col :cols="6">
-            <InputDatePicker :value.sync="form.datePickUp" label="วันที่เบิกพัสดุ *" :rules="datetimeWithdrawRules" required :disabled="viewMode"/>
+            <InputDatePicker :value.sync="form.datePickUp" label="วันที่เบิกวัสดุคงคลัง *" :rules="datetimeWithdrawRules" required :disabled="viewMode"/>
           </v-col>
         </v-row>
         <v-row>
@@ -30,7 +30,7 @@
         </v-row>  
       </v-container>
 
-      <h2 class="text-h5 mt-5"><b>เลือกพัสดุที่ต้องการเบิก</b></h2>
+      <h2 class="text-h5 mt-5"><b>เลือกวัสดุคงคลังที่ต้องการเบิก</b></h2>
       <v-container>
         <v-row v-for="(parcel, i) in form.pickUpItems" :key="i" class="mt-0 mb-5">
           <v-col cols="auto" class="align-self-center">{{ i + 1 }}.</v-col>
@@ -44,8 +44,8 @@
             </v-btn>
           </v-col>
           <v-col :cols="7" class="pl-12 pt-0">
-            <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].name" label="พัสดุ *" disabled/>
-            <SelectDropdown v-else :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="พัสดุ *" :rules="parcelRules" apiPath="parcel/searchParcelMaster"
+            <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].name" label="วัสดุคงคลัง *" disabled/>
+            <SelectDropdown v-else :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" :rules="parcelRules" apiPath="parcel/searchParcelMaster"
               :query="getParcelQuery(form.pickUpItems[i])" reloadOnClick :disabled="viewMode || !form.pickUpItems[i].type"/>
           </v-col>
           <v-col :cols="viewMode && canEdit ? 4 : 3" class="pt-0">
@@ -56,7 +56,7 @@
           </v-col>
         </v-row>
         <v-row v-if="!viewMode">
-          <v-btn block rounded outlined @click="addParcel">เพิ่มพัสดุ</v-btn>
+          <v-btn block rounded outlined @click="addParcel">เพิ่มวัสดุคงคลัง</v-btn>
         </v-row>
       </v-container>
       <v-container class="mt-8">
@@ -93,7 +93,7 @@
         form: null,
         remaining: 0,
         parcelRules: [
-          v => !!v || 'โปรดเลือกพัสดุ',
+          v => !!v || 'โปรดเลือกวัสดุคงคลัง',
         ],
         step: 1,
       }
@@ -195,7 +195,7 @@
         if (valid) this.$emit('reject', this.currentFlow, this.form)
       },
       countWithdrawRules (item) {
-        return this.showRemain ? [item.remain >= item.quantity || 'จำนวนพัสดุไม่เพียงพอ'] : [v => !!v || 'โปรดใส่จำนวนเบิก']
+        return this.showRemain ? [item.remain >= item.quantity || 'จำนวนวัสดุคงคลังไม่เพียงพอ'] : [v => !!v || 'โปรดใส่จำนวนเบิก']
       },
     }
   }

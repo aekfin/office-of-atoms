@@ -1,6 +1,6 @@
 <template>
   <div id="category-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มประเภท พัสดุ - ครุภัณฑ์' : 'การแก้ไขประเภท พัสดุ - ครุภัณฑ์'" hideTotal/>
+    <PageHeader :text="isCreate ? 'การเพิ่มประเภท วัสดุคงคลัง - ครุภัณฑ์' : 'การแก้ไขประเภท วัสดุคงคลัง - ครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-6">
       <v-container>
@@ -164,7 +164,7 @@
           try {
             if (this.isCreate) await this.onCreateNew()
             else await this.onEdit()
-            await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างประเภท พัสดุ - ครุภัณฑ์ สำเร็จ' : 'แก้ไขประเภท พัสดุ - ครุภัณฑ์ สำเร็จ' })
+            await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างประเภท วัสดุคงคลัง - ครุภัณฑ์ สำเร็จ' : 'แก้ไขประเภท วัสดุคงคลัง - ครุภัณฑ์ สำเร็จ' })
             if (this.isCreate) this.$router.push('/management/category/')
             return Promise.resolve()
           } catch (err) { return Promise.reject(err) }

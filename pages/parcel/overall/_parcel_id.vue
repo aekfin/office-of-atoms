@@ -1,6 +1,6 @@
 <template>
   <div id="parcel-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มพัสดุ' : 'การแก้ไขพัสดุ'" hideTotal/>
+    <PageHeader :text="isCreate ? 'การเพิ่มวัสดุคงคลัง' : 'การแก้ไขวัสดุคงคลัง'" hideTotal/>
     <Loading v-if="isLoading"/>
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
@@ -12,12 +12,12 @@
             <InputDatePicker :value.sync="form.dateEntry" label="วันที่รับเข้า *" :rules="dateEntryRules" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
-        <h4 class="text-h5"><b>เลือกพัสดุ</b></h4>
+        <h4 class="text-h5"><b>เลือกวัสดุคงคลัง</b></h4>
         <v-container class="form-container">
           <v-row v-for="(parcel, i) in form.itemParcels" :key="i" class="mt-2" align="baseline">
             <div class="mr-4">{{ i + 1 }}.</div>
-            <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].parcelMasterId" itemValue="id" itemText="name" label="พัสดุ *" apiPath="parcel/getListParcelMaster" :rules="parcelRules" required/>
-            <v-text-field v-else v-model="form.itemParcels[i].parcelMasterName" class="ml-4 parcel-name" label="พัสดุ *" :disabled="!isCreate"/>
+            <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" apiPath="parcel/getListParcelMaster" :rules="parcelRules" required/>
+            <v-text-field v-else v-model="form.itemParcels[i].parcelMasterName" class="ml-4 parcel-name" label="วัสดุคงคลัง *" :disabled="!isCreate"/>
             <v-text-field v-model="form.itemParcels[i].price" class="ml-4" label="ราคา *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
             <v-text-field v-model="form.itemParcels[i].quantity" class="ml-4" label="จำนวน *" type="number" :rules="quantityRules" required :disabled="!isCreate"/>
             <v-btn v-if="form.itemParcels.length > 1 && isCreate" class="ml-2" icon @click="removeParcel(i)">
@@ -25,7 +25,7 @@
             </v-btn>
           </v-row>
           <v-row v-if="isCreate" class="mt-5">
-            <v-btn block rounded outlined @click="addParcel()">เพิ่มพัสดุ</v-btn>
+            <v-btn block rounded outlined @click="addParcel()">เพิ่มวัสดุคงคลัง</v-btn>
           </v-row>
         </v-container>
       </v-container>
@@ -66,7 +66,7 @@
           v => !!v || 'โปรดเลือกโครงการ',
         ],
         parcelRules: [
-          v => !!v || 'โปรดเลือกพัสดุ',
+          v => !!v || 'โปรดเลือกวัสดุคงคลัง',
         ],
         priceRules: [
           v => !!v || 'โปรดใส่ราคา',
@@ -133,7 +133,7 @@
               dateEntry: this.$fn.convertDateToString(this.form.dateEntry)
             }
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
-            await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างโครงการ-พัสดุสำเร็จ' : 'แก้ไขประเภทสร้างโครงการ-พัสดุสำเร็จ' })
+            await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างโครงการ-วัสดุคงคลังสำเร็จ' : 'แก้ไขประเภทสร้างโครงการ-วัสดุคงคลังสำเร็จ' })
             if (this.isCreate) this.$router.push('/parcel/overall/')
             return Promise.resolve(data)
           } catch (err) { return Promise.reject(err) }

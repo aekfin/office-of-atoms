@@ -1,6 +1,6 @@
 <template>
   <div id="parcel-request-detail-page">
-    <PageHeader :text="'อนุมัติการเบิกพัสดุ'" hideTotal/>
+    <PageHeader :text="'อนุมัติการเบิกวัสดุคงคลัง'" hideTotal/>
     <Loading v-if="isLoading"/>
     <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" backPath="/parcel/request/" @approve="onApprove" @reject="onReject"/>
   </div>
@@ -61,7 +61,7 @@
           this.isLoading = true
           await this.submitChanged(form)
           const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/approve', query: { flowId: flow.id } })
-          await this.$store.dispatch('snackbar', { text: 'อนุมัติการเบิกพัสดุสำเร็จ' })
+          await this.$store.dispatch('snackbar', { text: 'อนุมัติการเบิกวัสดุคงคลังสำเร็จ' })
           await this.getData()
           this.$store.commit('TOGGLE_NOTI')
           return Promise.resolve(data)
@@ -72,7 +72,7 @@
           this.isLoading = true
           await this.submitChanged(form)
           const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/reject', query: { flowId: flow.id } })
-          await this.$store.dispatch('snackbar', { text: 'ไม่อนุมัติการเบิกพัสดุสำเร็จ' })
+          await this.$store.dispatch('snackbar', { text: 'ไม่อนุมัติการเบิกวัสดุคงคลังสำเร็จ' })
           await this.getData()
           this.$store.commit('TOGGLE_NOTI')
           return Promise.resolve(data)

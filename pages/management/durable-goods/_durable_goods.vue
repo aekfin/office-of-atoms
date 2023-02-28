@@ -93,7 +93,7 @@
           { id: 1, name: 'Nokia' }
         ],
         typeList: [
-          { id: 1, name: 'พัสดุ' },
+          { id: 1, name: 'วัสดุคงคลัง' },
           { id: 2, name: 'ครุภัณฑ์' }
         ],
         codeRules: [

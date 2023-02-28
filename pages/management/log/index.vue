@@ -24,7 +24,7 @@
         items: [
           {
             id: 1,
-            description: 'เพิ่มข้อมูลพัสดุ',
+            description: 'เพิ่มข้อมูลวัสดุคงคลัง',
             datetimeCreate: '2022-12-25T11:12:41.065Z',
             name: 'นาย ก'
           },

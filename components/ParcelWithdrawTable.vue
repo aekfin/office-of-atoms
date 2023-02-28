@@ -26,7 +26,7 @@
     <v-dialog v-model="dialog" width="640">
       <v-card v-if="selectedWithdrawParcel">
         <v-card-title class="text-h5 d-flex justify-space-between">
-          <b>พัสดุ</b>
+          <b>วัสดุคงคลัง</b>
           <v-btn icon @click="closeDialog">
             <v-icon>mdi-close</v-icon>
           </v-btn>
@@ -56,10 +56,10 @@
         isLoadingDialog: true,
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
-          { text: 'ผู้ขอเบิกพัสดุ', value: 'user_fk.thaiFristName' },
-          { text: 'วันที่เบิกพัสดุ', value: 'datePickUp', width: '140px', align: 'center' },
+          { text: 'ผู้ขอเบิกวัสดุคงคลัง', value: 'user_fk.thaiFristName' },
+          { text: 'วันที่เบิกวัสดุคงคลัง', value: 'datePickUp', width: '140px', align: 'center' },
           { text: 'วันที่อนุมัติ', value: 'dateApprove', width: '140px', align: 'center' },
-          { text: 'พัสดุ', value: 'parcel', width: '160px', align: 'center' },
+          { text: 'วัสดุคงคลัง', value: 'parcel', width: '160px', align: 'center' },
           { text: 'สถานะการเบิก', value: 'status', width: '160px', align: 'center' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],

@@ -111,6 +111,11 @@ button.v-btn.v-size--large {
   }
 }
 
+.v-select__selection--comma {
+  margin-bottom: 0 !important;
+  padding-bottom: 7px !important;
+}
+
 #default-layout {
   .theme--light.v-input--is-disabled input, .theme--light.v-input--is-disabled textarea {
     color: rgba(0, 0, 0, 0.55);

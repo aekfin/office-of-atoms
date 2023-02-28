@@ -22,7 +22,7 @@
             <v-select v-model="form.subcategory" :items="subcategoryList" itemValue="id" itemText="name" label="หมวดหมู่ย่อย *" :rules="subcategoryRules" required :disabled="!form.category"/>
           </v-col>
           <v-col :cols="6">
-            <v-select v-model="form.durableGoods" :items="durableGoodsList" itemValue="id" itemText="name" label="พัสดุ *" :rules="durableGoodsRules" required :disabled="!form.subcategory"/>
+            <v-select v-model="form.durableGoods" :items="durableGoodsList" itemValue="id" itemText="name" label="วัสดุคงคลัง *" :rules="durableGoodsRules" required :disabled="!form.subcategory"/>
           </v-col>
         </v-row>
         <v-row>
@@ -110,10 +110,10 @@
           v => !!v || 'โปรดเลือกหมวดหมู่ย่อย',
         ],
         durableGoodsRules: [
-          v => !!v || 'โปรดเลือกพัสดุ',
+          v => !!v || 'โปรดเลือกวัสดุคงคลัง',
         ],
         countRules: [
-          v => !!v || 'โปรดเลือกพัสดุ',
+          v => !!v || 'โปรดเลือกวัสดุคงคลัง',
         ],
         datetimeCreateRules: [
           v => !!v || 'โปรดใส่วันที่รับเข้า',

@@ -1,6 +1,6 @@
 <template>
   <div id="parcel-page">
-    <PageHeader text="บริหารพัสดุ" btnText="เพิ่มพัสดุ" createRoute="/parcel/overall/create/" :total="total"/>
+    <PageHeader text="บริหารวัสดุคงคลัง" btnText="เพิ่มวัสดุคงคลัง" createRoute="/parcel/overall/create/" :total="total"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.dateEntry="{ item }">
@@ -30,7 +30,7 @@
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'โครงการ', value: 'projectName' },
           { text: 'กอง', value: 'ouName', width: '180px' },
-          { text: 'พัสดุ', value: 'parcelMasterName', width: '180px' },
+          { text: 'วัสดุคงคลัง', value: 'parcelMasterName', width: '180px' },
           { text: 'จำนวนรับเข้าคลัง', value: 'quantity', width: '160px', align: 'center' },
           { text: 'วันที่รับเข้า', value: 'dateEntry', width: '140px', align: 'center' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },

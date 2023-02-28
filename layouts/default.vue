@@ -79,7 +79,7 @@ export default {
   },
   computed: {
     title () {
-      return `ระบบบริหารจัดการพัสดุ-ครุภัณฑ์ | ${this.$store.state?.role}`
+      return `ระบบบริหารจัดการวัสดุคงคลัง-ครุภัณฑ์ | ${this.$store.state?.role}`
     },
     leftMenus () {
       return this.$store.getters.isAdmin

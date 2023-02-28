@@ -1,6 +1,6 @@
 <template>
   <div id="category-list-page">
-    <PageHeader text="ประเภท พัสดุ - ครุภัณฑ์" btnText="เพิ่มประเภท" createRoute="/management/category/create/" :total="total"/>
+    <PageHeader text="ประเภท วัสดุคงคลัง - ครุภัณฑ์" btnText="เพิ่มประเภท" createRoute="/management/category/create/" :total="total"/>
     <v-data-table :headers="categoryHeaders" :items="items" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.countBrands="{ item }">

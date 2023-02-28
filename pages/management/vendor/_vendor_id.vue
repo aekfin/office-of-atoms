@@ -8,11 +8,25 @@
           <!-- <v-col cols="auto">
             <UploadImage class="mt-4" :image.sync="form.image"/>
           </v-col> -->
-          <v-col>
-            <v-text-field v-model="form.companyNumber" name="code" label="รหัสพนักงาน *" :rules="codeRules" required/>
-            <v-text-field v-model="form.companyName" label="ชื่อ *" :rules="nameRules" required/>
+          <v-col :cols="8">
+            <v-text-field v-model="form.companyNumber" name="code" label="รหัสผู้ขาย *" :rules="codeRules" required/>
+          </v-col>
+          <v-col :cols="4">
+            <SelectDropdown :value.sync="form.type" :items="typeList" label="ประเภทผู้ขาย *" :rules="typeRules" multiple required :disabled="disabled"/>
+          </v-col>
+          <v-col :cols="12">
+            <v-text-field v-model="form.companyName" label="ชื่อผู้ขาย/บริษัท *" :rules="nameRules" required/>
+          </v-col>
+          <v-col :cols="12">
             <v-textarea v-model="form.companyAddress" name="address" label="ที่อยู่ *" :rules="addressRules" required/>
+          </v-col>
+          <v-col :cols="12">
+            <v-text-field v-model="form.phone" label="เบอร์โทรศัพท์ *" :rules="contactTelRules"/>
+          </v-col>
+          <v-col :cols="12">
             <v-text-field v-model="form.serviceType" name="service" label="การบริการ"/>
+          </v-col>
+          <v-col :cols="12">
             <v-text-field v-model="form.warrantytype" name="warranty" label="การรับประกัน"/>
           </v-col>
         </v-row>
@@ -70,6 +84,7 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       // UploadImage: () => import('~/components/UploadImage.vue'),
+      SelectDropdown: () => import('~/components/SelectDropdown.vue'),
     },
     data () {
       return {
@@ -85,12 +100,19 @@
             { name: '', position: '', email: '', phone: '' }
           ]
         },
+        typeList: [
+          { id: '1', name: 'นิติบุคคล' },
+          { id: '2', name: 'บุคคลธรรมดา' },
+        ],
         formExpand: [0],
         codeRules: [
-          v => !!v || 'โปรดใส่รหัสพนักงาน',
+          v => !!v || 'โปรดใส่รหัสผู้ขาย',
+        ],
+        typeRules: [
+          v => !!v || 'โปรดเลือกประเภทผู้ขาย',
         ],
         nameRules: [
-          v => !!v || 'โปรดใส่รหัสบัตรประชาชน',
+          v => !!v || 'โปรดใส่ชื่อผู้ขาย/บริษัท',
         ],
         addressRules: [
           v => !!v || 'โปรดใส่ที่อยู่',
