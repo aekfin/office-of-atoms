@@ -12,7 +12,7 @@
             <v-text-field v-model="form.companyNumber" name="code" label="รหัสผู้ขาย *" :rules="codeRules" required/>
           </v-col>
           <v-col :cols="4">
-            <SelectDropdown :value.sync="form.type" :items="typeList" label="ประเภทผู้ขาย *" :rules="typeRules" multiple required :disabled="disabled"/>
+            <SelectDropdown :value.sync="form.type" :items="typeList" label="ประเภทผู้ขาย *" :rules="typeRules" required :disabled="disabled"/>
           </v-col>
           <v-col :cols="12">
             <v-text-field v-model="form.companyName" label="ชื่อผู้ขาย/บริษัท *" :rules="nameRules" required/>
