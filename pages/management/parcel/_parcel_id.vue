@@ -7,32 +7,22 @@
         <v-row>
           <v-col :cols="4" alignSelf="center">
             <AutocompleteDropdown v-if="isCreate" :value.sync="form.typeId" itemValue="id" itemText="name" label="ประเภท *" :rules="typeRules" apiPath="parcel/getListParcelType"
-              searchApiPath="parcel/getParcelType" required noFilter @select="onSelectType"/>
+              searchApiPath="parcel/getParcelType" required noFilter/>
             <v-text-field v-else v-model="form.type" label="ประเภท *" required disabled/>
           </v-col>
-          <v-col :cols="4">
-            <AutocompleteDropdown v-if="isCreate" :value.sync="form.brandId" :items="brandList" itemValue="id" itemText="name" label="ยี่ห้อ *" :rules="brandRules" required :disabled="disabledBrand" @select="onSelectBrand"/>
-            <v-text-field v-else v-model="form.brand" label="ยี่ห้อ *" required disabled/>
-          </v-col>
-          <v-col :cols="4">
-            <AutocompleteDropdown v-if="isCreate" :value.sync="form.modeId" :items="modelList" itemValue="id" itemText="name" label="รุ่น *" :rules="modelRules" required :disabled="disabledModel"/>
-            <v-text-field v-else v-model="form.model" label="รุ่น *" required disabled/>
+          <v-col :cols="8">
+            <v-text-field v-model="form.parcelName" label="ชื่อ *" :rules="nameRules" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
         <v-row>
-          <v-col :cols="8">
-            <v-text-field v-model="form.parcelName" name="parcel-name" label="ชื่อ *" :rules="nameRules" required :disabled="!isCreate"/>
+          <v-col v-if="isCreate" :cols="4">
+            <v-text-field v-model="form.price" label="ราคากลาง *" type="number" :rules="priceRules" required/>
+          </v-col>
+          <v-col :cols="4">
+            <v-text-field v-model="form.quantity" label="จำนวน *" type="number" :rules="quantityRules" required/>
           </v-col>
           <v-col :cols="4">
             <v-text-field v-model="form.classifier" label="หน่วย *" name="unit" :rules="classifierRules" required :disabled="!isCreate"/>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col v-if="isCreate" :cols="5">
-            <v-text-field v-model="form.price" label="ราคากลาง *" type="number" :rules="priceRules" required/>
-          </v-col>
-          <v-col :cols="3">
-            <v-text-field v-model="form.quantity" label="จำนวน *" type="number" :rules="quantityRules" required/>
           </v-col>
         </v-row>
       </v-container>
@@ -58,26 +48,16 @@
         isLoading: false,
         form: {
           typeId: null,
-          brandId: null,
-          modeId: null,
           parcelName: '',
           classifier: '',
           quantity: 0,
           price: '',
         },
-        brandList: [],
-        modelList: [],
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อ',
         ],
         typeRules: [
           v => !!v || 'โปรดเลือกประเภท',
-        ],
-        brandRules: [
-          v => !!v || 'โปรดเลือกยี่ห้อ',
-        ],
-        modelRules: [
-          v => !!v || 'โปรดเลือกรุ่น',
         ],
         classifierRules: [
           v => !!v || 'โปรดใส่หน่วย',
@@ -116,17 +96,6 @@
           this.isLoading = false
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
-      },
-      onSelectType ({ val, item }) {
-        if (item) {
-          this.brandList = item.listBrands
-        } else {
-          this.brandList = []
-          this.modelList = []
-        }
-      },
-      onSelectBrand ({ val, item }) {
-        this.modelList = item?.listModels || []
       },
       async onSubmit () {
         const valid = this.$refs.form.validate()

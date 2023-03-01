@@ -75,6 +75,8 @@
             this.list = data
           }
           this.isLoading = false
+          const item = this.list.find(item => item[this.itemValue] == this.val)
+          if (!item) this.val = null
           this.$emit('loaded', this.list)
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }

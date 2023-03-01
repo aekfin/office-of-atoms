@@ -14,6 +14,10 @@ const Fn = {
   convertStringToDate (date) {
     return new Date(date)
   },
+  displayDate (date) {
+    const dateFormat = moment(date)
+    return `${dateFormat.format('DD-MM')}-${dateFormat.year() + 543}`
+  },
 }
 
 Vue.prototype.$fn = Fn

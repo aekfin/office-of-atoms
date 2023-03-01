@@ -4,10 +4,10 @@
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.user_fk.thaiFristName="{ item }">{{ item.user_fk.thaiFristName }} {{ item.user_fk.thaiLastName }}</template>
       <template #item.datePickUp="{ item }">
-        <div>{{ item.datePickUp ? $moment(item.datePickUp).format('DD-MM-YYYY') : '-' }}</div>
+        <div>{{ item.datePickUp ? $fn.displayDate(item.datePickUp) : '-' }}</div>
       </template>
       <template #item.dateApprove="{ item }">
-        <div>{{ item.dateApprove ? $moment(item.dateApprove).format('DD-MM-YYYY') : '-' }}</div>
+        <div>{{ item.dateApprove ? $fn.displayDate(item.dateApprove) : '-' }}</div>
       </template>
       <template #item.status="{ item }">
         <v-chip :color="$store.state.approveStatusColor[item.status]">{{ $store.state.approveStatus[item.status] }}</v-chip>
@@ -24,7 +24,7 @@
       </template>
     </v-data-table>
     <v-dialog v-model="dialog" width="640">
-      <v-card v-if="selectedWithdrawParcel">
+      <v-card>
         <v-card-title class="text-h5 d-flex justify-space-between">
           <b>วัสดุคงคลัง</b>
           <v-btn icon @click="closeDialog">
@@ -32,8 +32,8 @@
           </v-btn>
         </v-card-title>
         <v-card-text class="black--text">
-          <div class="mt-2">ทั้งหมด {{ selectedWithdrawParcel.items.length }} ชนิด</div>
-          <v-data-table :headers="parcelHeaders" :items="selectedWithdrawParcel.items" :itemsPerPage="20" disableSort hideDefaultFooter class="mt-3" :loading="isLoadingDialog">
+          <div class="mt-2">ทั้งหมด {{ selectedWithdrawParcel && selectedWithdrawParcel.items.length || 0 }} ชนิด</div>
+          <v-data-table :headers="parcelHeaders" :items="selectedWithdrawParcel && selectedWithdrawParcel.items || []" :itemsPerPage="20" disableSort hideDefaultFooter class="mt-3" :loading="isLoadingDialog">
             <template #item.number="{ index }">{{ index + 1 }}.</template>
           </v-data-table>
         </v-card-text>
@@ -57,7 +57,7 @@
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ผู้ขอเบิกวัสดุคงคลัง', value: 'user_fk.thaiFristName' },
-          { text: 'วันที่เบิกวัสดุคงคลัง', value: 'datePickUp', width: '140px', align: 'center' },
+          { text: 'วันที่เบิก', value: 'datePickUp', width: '140px', align: 'center' },
           { text: 'วันที่อนุมัติ', value: 'dateApprove', width: '140px', align: 'center' },
           { text: 'วัสดุคงคลัง', value: 'parcel', width: '160px', align: 'center' },
           { text: 'สถานะการเบิก', value: 'status', width: '160px', align: 'center' },
@@ -65,11 +65,16 @@
         ],
         parcelHeaders: [
           { text: 'ลำดับ', value: 'number', width: '80px', align: 'center' },
-          { text: 'ชื่อ', value: 'name' },
+          { text: 'ชื่อวัสดุคงคลัง', value: 'name' },
           { text: 'จำนวนเบิก', value: 'quantity', width: '120px', align: 'center' },
           { text: 'จำนวนจ่าย', value: 'quantity', width: '120px', align: 'center' },
         ],
       }
+    },
+    watch: {
+      'dialog' (val) {
+        if (!val && this.selectedWithdrawParcel) this.selectedWithdrawParcel.items = []
+      },
     },
     methods: {
       async openDialog (item) {

@@ -6,23 +6,45 @@
       <v-container>
         <v-row>
           <v-col :cols="8">
-            <SelectDropdown :value.sync="form.projectId" itemValue="id" itemText="projectName" label="โครงการ *" apiPath="Project/getListProject" :rules="projectRules" required :disabled="!isCreate"/>
+            <SelectDropdown v-if="isCreate" :value.sync="form.projectId" itemValue="id" itemText="projectName" label="โครงการ *" apiPath="Project/getListProject" :rules="projectRules" required :disabled="!isCreate"/>
+            <v-text-field v-else v-model="form.projectName" label="โครงการ *" disabled/>
           </v-col>
           <v-col :cols="4">
             <InputDatePicker :value.sync="form.dateEntry" label="วันที่รับเข้า *" :rules="dateEntryRules" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
-        <h4 class="text-h5"><b>เลือกวัสดุคงคลัง</b></h4>
-        <v-container class="form-container">
+        <h4 class="text-h5 mt-5"><b>เลือกวัสดุคงคลัง</b></h4>
+        <v-container>
           <v-row v-for="(parcel, i) in form.itemParcels" :key="i" class="mt-2" align="baseline">
-            <div class="mr-4">{{ i + 1 }}.</div>
-            <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" apiPath="parcel/getListParcelMaster" :rules="parcelRules" required/>
-            <v-text-field v-else v-model="form.itemParcels[i].parcelMasterName" class="ml-4 parcel-name" label="วัสดุคงคลัง *" :disabled="!isCreate"/>
-            <v-text-field v-model="form.itemParcels[i].price" class="ml-4" label="ราคา *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
-            <v-text-field v-model="form.itemParcels[i].quantity" class="ml-4" label="จำนวน *" type="number" :rules="quantityRules" required :disabled="!isCreate"/>
-            <v-btn v-if="form.itemParcels.length > 1 && isCreate" class="ml-2" icon @click="removeParcel(i)">
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
+            <v-col cols="auto">
+              <div>{{ i + 1 }}.</div>
+            </v-col>
+            <v-col cols="4">
+              <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].typeId" itemValue="id" itemText="name" label="ประเภท *" apiPath="parcel/getListParcelType" :rules="typeRules" required/>
+              <v-text-field v-else v-model="form.itemParcels[i].type" label="ประเภท *" disabled/>
+            </v-col>
+            <v-col cols="6">
+              <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" apiPath="parcel/searchParcelMaster"
+                :query="getParcelQuery(form.itemParcels[i])" :rules="parcelRules" required :disabled="!form.itemParcels[i].typeId"/>
+              <v-text-field v-else v-model="form.itemParcels[i].parcelMasterName" label="วัสดุคงคลัง *" disabled/>
+            </v-col>
+            <v-col cols="1">
+              <v-btn v-if="form.itemParcels.length > 1 && isCreate" class="ml-2" icon @click="removeParcel(i)">
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </v-col>
+            <v-col cols="auto">
+              <v-spacer/>
+            </v-col>
+            <v-col cols="auto" class="pt-0">
+              <div class="hidden">{{ i + 1 }}.</div>
+            </v-col>
+            <v-col cols="4" class="pt-0">
+              <v-text-field v-model="form.itemParcels[i].price" class="pt-0" label="ราคา *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
+            </v-col>
+            <v-col cols="4" class="pt-0">
+              <v-text-field v-model="form.itemParcels[i].quantity" class="pt-0" label="จำนวน *" type="number" :rules="quantityRules" required :disabled="!isCreate"/>
+            </v-col>
           </v-row>
           <v-row v-if="isCreate" class="mt-5">
             <v-btn block rounded outlined @click="addParcel()">เพิ่มวัสดุคงคลัง</v-btn>
@@ -57,6 +79,7 @@
           itemParcels: [
             {
               parcelMasterId: null,
+              typeId: null,
               price: '',
               quantity: ''
             }
@@ -64,6 +87,9 @@
         },
         projectRules: [
           v => !!v || 'โปรดเลือกโครงการ',
+        ],
+        typeRules: [
+          v => !!v || 'โปรดเลือกประเภท',
         ],
         parcelRules: [
           v => !!v || 'โปรดเลือกวัสดุคงคลัง',
@@ -94,13 +120,15 @@
           const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getParcelProject', query: { id: this.$route.params.parcel_id } })
           this.form = {
             projectId: data.id,
+            projectName: data.projectName,
             dateEntry: data.dateEntry || new Date(),
             itemParcels: [
               {
                 parcelMasterId: null,
                 parcelMasterName: data.parcelMasterName,
                 price: data.price,
-                quantity: data.quantity
+                quantity: data.quantity,
+                type: data.type,
               }
             ],
           }
@@ -113,7 +141,8 @@
       addParcel () {
         this.form.itemParcels.push(
           {
-            parcelMasterId: 0,
+            parcelMasterId: null,
+            type: null,
             price: '',
             quantity: ''
           }
@@ -121,6 +150,9 @@
       },
       removeParcel (i) {
         this.form.itemParcels.splice(i, 1)
+      },
+      getParcelQuery (parcel) {
+        return parcel?.typeId ? { typeId: parcel.typeId } : {}
       },
       async onSubmit () {
         const valid = this.$refs.form.validate()
@@ -147,10 +179,5 @@
 
 <style lang="scss">
   #parcel-detail-page {
-    .form-container {
-      .select-dropdown, .parcel-name {
-        width: 50%;
-      }
-    }
   }
 </style>

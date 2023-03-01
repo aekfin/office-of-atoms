@@ -88,6 +88,8 @@
           } else {
             this.list = data
           }
+          const item = this.list.find(item => item[this.itemValue] == this.val)
+          if (!item) this.val = null
           this.isLoading = false
           this.$emit('loaded', this.list)
           return Promise.resolve()

@@ -101,7 +101,10 @@
     watch: {
       'tabIndex' () {
         this.resetForm()
-      }
+      },
+      '$route.query' () {
+        this.getList()
+      },
     },
     mounted () {
       this.getList()

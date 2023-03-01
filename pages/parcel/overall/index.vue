@@ -4,7 +4,7 @@
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.dateEntry="{ item }">
-        <div>{{ $moment(item.dateEntry).format('DD-MM-YYYY') }}</div>
+        <div>{{ $fn.displayDate(item.dateEntry) }}</div>
       </template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>

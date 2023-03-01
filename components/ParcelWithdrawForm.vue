@@ -34,21 +34,27 @@
       <v-container>
         <v-row v-for="(parcel, i) in form.pickUpItems" :key="i" class="mt-0 mb-5">
           <v-col cols="auto" class="align-self-center">{{ i + 1 }}.</v-col>
-          <v-col :cols="10">
-            <TypeBrandModelSearch :type.sync="form.pickUpItems[i].type" :brand.sync="form.pickUpItems[i].brand" :model.sync="form.pickUpItems[i].model"
-              :item="form.pickUpItems[i]" :viewMode="viewMode"/>
+          <v-col :cols="4">
+            <SelectDropdown v-if="!viewMode" :value.sync="form.pickUpItems[i].typeId" itemValue="id" itemText="name" label="ประเภท *" apiPath="parcel/getListParcelType" :rules="typeRules" required/>
+            <v-text-field v-else v-model="form.pickUpItems[i].type" label="ประเภท *" disabled/> 
           </v-col>
-          <v-col cols="auto" class="align-self-center">
+          <v-col :cols="6">
+            <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].name" label="วัสดุคงคลัง *" disabled/>
+            <SelectDropdown v-else :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" :rules="parcelRules" apiPath="parcel/searchParcelMaster"
+              :query="getParcelQuery(form.pickUpItems[i])" reloadOnClick :disabled="viewMode || !form.pickUpItems[i].typeId"/>
+          </v-col>
+          <v-col :cols="1" class="align-self-center">
             <v-btn v-if="form.pickUpItems.length > 1 && !viewMode" icon @click="removeContact(i)">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-col>
-          <v-col :cols="7" class="pl-12 pt-0">
-            <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].name" label="วัสดุคงคลัง *" disabled/>
-            <SelectDropdown v-else :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" :rules="parcelRules" apiPath="parcel/searchParcelMaster"
-              :query="getParcelQuery(form.pickUpItems[i])" reloadOnClick :disabled="viewMode || !form.pickUpItems[i].type"/>
+          <v-col cols="auto">
+            <v-spacer/>
           </v-col>
-          <v-col :cols="viewMode && canEdit ? 4 : 3" class="pt-0">
+          <v-col cols="auto" class="align-self-center">
+            <div class="hidden">{{ i + 1 }}.</div>
+          </v-col>
+          <v-col :cols="4" class="pt-0">
             <div class="d-flex align-baseline">
               <v-text-field v-model="form.pickUpItems[i].quantity" label="จำนวนเบิก *" :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity"/>
               <div v-if="showRemain" class="ml-5 text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain }}</div>
@@ -80,7 +86,6 @@
     components: {
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
-      TypeBrandModelSearch: () => import('~/components/TypeBrandModelSearch.vue'),
     },
     props: {
       item: { type: Object },
@@ -94,6 +99,9 @@
         remaining: 0,
         parcelRules: [
           v => !!v || 'โปรดเลือกวัสดุคงคลัง',
+        ],
+        typeRules: [
+          v => !!v || 'โปรดเลือกประเภท',
         ],
         step: 1,
       }
@@ -133,16 +141,14 @@
           datePickUp: new Date(),
           pickUpItems: this.item?.items
             ? this.item.items.map(item => {
-              const { type, brand, model } = item
-              return { ...item, type: type.id, _type: type, brand: brand.id, _brand: brand, model: model.id, _model: model }
+              const { type } = item
+              return { ...item, typeId: type.id, type: type.name }
             })
             : [
               {
                 parcelMasterId: 0,
                 quantity: 0,
-                type: '',
-                brand: '',
-                model: '',
+                typeId: '',
               }
             ]
         }
@@ -164,7 +170,7 @@
         this.form.pickUpItems.splice(i, 1)
       },
       getParcelQuery (parcel) {
-        return { typeId: parcel.type, brandId: parcel.brand, modelId: parcel.model }
+        return { typeId: parcel.typeId }
       },
       getApproverText (flow) {
         return flow?.emails?.reduce((str, email, i) => `${str}${i > 0 ? ', ' : ''}${email}`, 'ผู้อนุมัติ : ') || false
