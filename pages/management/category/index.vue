@@ -1,13 +1,10 @@
 <template>
   <div id="category-list-page">
-    <v-tabs v-model="tabActive" class="tabs-underline mb-7" fixedTabs>
-      <v-tab>หมวด</v-tab>
-      <v-tab>หมวดย่อย</v-tab>
-      <v-tab>ประเภท</v-tab>
-      <v-tab>ยี่ห้อ</v-tab>
-      <v-tab>รุ่น</v-tab>
+    <v-tabs v-model="tabIndex" class="tabs-underline mb-7" fixedTabs>
+      <v-tab v-for="tab in tabs" :key="tab.text">หมวด</v-tab>
+      <v-tab>{{ tab }}</v-tab>
     </v-tabs>
-    <PageHeader text="ประเภท วัสดุคงคลัง - ครุภัณฑ์" btnText="เพิ่มประเภท" createRoute="/management/category/create/" :total="total"/>
+    <PageHeader :text="tabActive.text" :btnText="tabActive.btnText" createRoute="/management/category/create/" :unit="tabActive.unit" :total="total"/>
     <v-data-table :headers="categoryHeaders" :items="items" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.countBrands="{ item }">
@@ -77,7 +74,14 @@
     },
     data () {
       return {
-        tabActive: 0,
+        tabIndex: 0,
+        tabs: [
+          { text: 'หมวดหมู่', btnText: 'เพิ่มหมวดหมู่', unit: 'หมวด' },
+          { text: 'หมวดหมู่ย่อย', btnText: 'เพิ่มหมวดย่อย', unit: 'หมวด' },
+          { text: 'ประเภท', btnText: 'เพิ่มประเภท', unit: 'ประเภท' },
+          { text: 'ยี่ห้อ', btnText: 'เพิ่มยี่ห้อ', unit: 'ยี่ห้อ' },
+          { text: 'รุ่น', btnText: 'เพิ่มรุ่น', unit: 'รุ่น' },
+        ],
         isLoading: true,
         total: 0,
         count: 0,
@@ -102,6 +106,11 @@
         brandDialog: false,
         modelDialog: false,
       }
+    },
+    computed: {
+      tabActive () {
+        return this.tabs[this.tabIndex || 0]
+      },
     },
     mounted () {
       this.getList()

@@ -83,7 +83,11 @@ export default () => ({
           to: '/management/user/'
         },
         {
-          title: 'ประเภท วัสดุคงคลัง - ครุภัณฑ์',
+          title: 'ประเภทวัสดุคงคลัง',
+          to: '/management/type-parcel/'
+        },
+        {
+          title: 'หมวดหมู่ครุภัณฑ์',
           to: '/management/category/'
         },
         {
