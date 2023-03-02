@@ -4,11 +4,14 @@
       <img class="logo" src="~/assets/images/logo.png" alt="logo" width="200px">
       <v-form ref="form" v-model="valid" lazyValidation>
         <v-container>
-          <v-row class="mb-8">
+          <v-row :class="isError ? '' : 'mb-8'">
             <v-text-field v-model="form.username" name="email" :rules="usernameRules" label="E-Mail ผู้ใช้งาน" required outlined/>
             <v-text-field v-model="form.password" label="รหัสผ่าน" :type="seePassword ? 'text' : 'password'" :rules="passwordRules" required outlined class="mt-2">
               <template #append><v-icon @click="seePassword = !seePassword" v-text="`mdi-eye${seePassword ? '-off' : ''}`"/></template>
             </v-text-field>
+            <v-alert v-if="isError" style="width: 100%;" dense outlined type="error">
+              <strong>Email</strong> หรือ <strong>รหัสผ่าน </strong>ไม่ถูกต้อง
+            </v-alert>
           </v-row>
           <v-row>
             <v-btn class="w-full" elevation="2" color="primary" x-large @click.stop="login">ลงชื่อเข้าใช้</v-btn>
@@ -38,7 +41,8 @@
         ],
         passwordRules: [
           v => !!v || 'โปรดใส่รหัสผ่าน'
-        ]
+        ],
+        isError: false,
       }
     },
     mounted () {
@@ -48,6 +52,7 @@
       async login () {
         try {
           if (this.$refs.form.validate()) {
+            this.isError = false
             const { res, data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'oauth/authorize', data: this.form })
             localStorage.setItem('authToken', data.jwttoken)
             this.$axios.setHeader('Authorization', `Bearer ${data.jwttoken}`)
@@ -56,7 +61,7 @@
           }
           return Promise.resolve()
         } catch (err) {
-          console.log(err)
+          this.isError = true
           return Promise.reject(err)
         }
       }
@@ -73,7 +78,7 @@
 
     .v-card {
       width: 400px;
-      height: 480px;
+      height: 500px;
       padding: 140px 40px 40px 40px;
 
       .logo {

@@ -162,6 +162,10 @@ export default {
     .v-navigation-drawer {
       .v-expansion-panel-header {
         padding: 0;
+
+        .text-base {
+          font-size: 1rem;
+        }
       }
 
       .v-expansion-panel {
