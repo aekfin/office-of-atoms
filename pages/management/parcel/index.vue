@@ -47,7 +47,7 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListParcelMaster', query: this.$route.query, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getLogImportParcelMasters', query: this.$route.query, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }

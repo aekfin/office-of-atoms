@@ -33,6 +33,11 @@
         items: [],
       }
     },
+    watch: {
+      '$route.query' () {
+        this.getList()
+      }
+    },
     head () {
       return {
         title: 'บริหารบุคลากร'

@@ -88,7 +88,7 @@
       async getData () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getParcelMaster', query: { ...this.$route.query, id: this.$route.params.parcel_id } })
+          const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getLogImportParcelMasterById', query: { ...this.$route.query, id: this.$route.params.parcel_id } })
           this.form = {
             ...data,
             parcelName: data.name
@@ -101,8 +101,8 @@
         const valid = this.$refs.form.validate()
         try {
           if (valid) {
-            const apiPath = this.isCreate ? 'parcel/importMasterAndStock' : 'parcel/editMaster'
-            const method = this.isCreate ? 'post' : 'patch'
+            const apiPath = this.isCreate ? 'parcel/importMasterAndStock' : 'parcel/editQuatityLogImportParcelMasters'
+            const method = this.isCreate ? 'post' : 'put'
             let form = this.isCreate ? { data: [{ ...this.form }] } : { editQuantity: this.form.quantity, parcelMasterId: this.form.id }
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างค่าเริ่มต้นวัสดุคงคลังสำเร็จ' : 'แก้ไขค่าเริ่มต้นวัสดุคงคลังสำเร็จ' })

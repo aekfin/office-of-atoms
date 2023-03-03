@@ -5,8 +5,8 @@
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4 relative">
       <v-container>
         <v-row>
-          <v-col :cols="12">
-            <v-text-field v-model="form.employeeId" name="code" label="รหัสพนักงาน *" :rules="codeRules" required :disabled="disabled"/>
+          <v-col v-if="!isCreate" :cols="12">
+            <v-text-field v-model="form.employeeId" name="code" label="รหัสพนักงาน *" :rules="codeRules" required :disabled="disabled || !isCreate"/>
           </v-col>
         </v-row>
         <v-row>

@@ -9,10 +9,11 @@
             <UploadImage class="mt-4" :image.sync="form.image"/>
           </v-col> -->
           <v-col :cols="8">
-            <v-text-field v-model="form.companyNumber" name="code" label="รหัสผู้ขาย *" :rules="codeRules" required/>
+            <v-text-field v-model="form.companyNumber" name="code" label="รหัสผู้ขาย *" :rules="[codeRules, validCompanyNumber || 'รหัสผู้ขายซ้ำ']" required :loading="companyNumberLoading"
+              @blur="checkCompanyNumber"/>
           </v-col>
           <v-col :cols="4">
-            <SelectDropdown :value.sync="form.type" :items="typeList" label="ประเภทผู้ขาย *" :rules="typeRules" required :disabled="disabled"/>
+            <SelectDropdown :value.sync="form.companyType" :items="typeList" label="ประเภทผู้ขาย *" :rules="typeRules" required/>
           </v-col>
           <v-col :cols="12">
             <v-text-field v-model="form.companyName" label="ชื่อผู้ขาย/บริษัท *" :rules="nameRules" required/>
@@ -21,7 +22,7 @@
             <v-textarea v-model="form.companyAddress" name="address" label="ที่อยู่ *" :rules="addressRules" required/>
           </v-col>
           <v-col :cols="12">
-            <v-text-field v-model="form.phone" label="เบอร์โทรศัพท์ *" :rules="contactTelRules"/>
+            <v-text-field v-model="form.companyPhone" label="เบอร์โทรศัพท์ *" :rules="contactTelRules"/>
           </v-col>
           <v-col :cols="12">
             <v-text-field v-model="form.serviceType" name="service" label="การบริการ"/>
@@ -90,10 +91,13 @@
       return {
         valid: true,
         isLoading: false,
+        originalCompanyNumber: '',
         form: {
           companyNumber: '',
           companyName: '',
           companyAddress: '',
+          companyPhone: '',
+          companyType: '',
           serviceType: '',
           warrantytype: '',
           contractPersons: [
@@ -101,15 +105,17 @@
           ]
         },
         typeList: [
-          { id: '1', name: 'นิติบุคคล' },
-          { id: '2', name: 'บุคคลธรรมดา' },
+          { id: 'corporation', name: 'นิติบุคคล' },
+          { id: 'person', name: 'บุคคลธรรมดา' },
         ],
         formExpand: [0],
-        codeRules: [
-          v => !!v || 'โปรดใส่รหัสผู้ขาย',
-        ],
+        validCompanyNumber: true,
+        companyNumberLoading: false,
         typeRules: [
           v => !!v || 'โปรดเลือกประเภทผู้ขาย',
+        ],
+        codeRules: [
+          v => !!v || 'โปรดใส่รหัสผู้ขาย'
         ],
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อผู้ขาย/บริษัท',
@@ -144,6 +150,7 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: 'Project/getcompany', query: { id: this.$route.params.vendor_id } })
+          this.originalCompanyNumber = data.companyNumber
           this.form = data
           this.isLoading = false
           return Promise.resolve()
@@ -156,6 +163,17 @@
       removeContact (i) {
         this.form.contractPersons.splice(i, 1)
       },
+      async checkCompanyNumber () {
+        if (this.form.companyNumber && this.originalCompanyNumber !== this.form.companyNumber) {
+          try {
+            this.companyNumberLoading = true
+            const { data } = await this.$store.dispatch('http', { apiPath: 'Project/checkCompany', query: { companyNumber: this.form.companyNumber } })
+            this.validCompanyNumber = data.data === false
+            this.companyNumberLoading = false
+            return Promise.resolve()
+          } catch (err) { return Promise.reject(err) } 
+        }
+      },
       async onSubmit () {
         const valid = this.$refs.form.validate()
         try {
@@ -165,6 +183,7 @@
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: this.form })
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างคู่สัญญาสำเร็จ' : 'แก้ไขคู่สัญญาสำเร็จ' })
             if (this.isCreate) this.$router.push('/management/vendor/')
+            else await this.getData()
             return Promise.resolve(data)
           } else {
             this.formExpand = [0]
