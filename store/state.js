@@ -49,7 +49,8 @@ export default () => ({
         },
         {
           title: 'วัสดุคงคลังที่รออนุมัติ',
-          to: '/parcel/request/'
+          to: '/parcel/request/',
+          badgeRequest: true,
         },
       ]
     },

@@ -12,7 +12,10 @@
                 <v-expansion-panel-content>
                   <v-list-item v-for="child in menu.children" :key="child.title" :to=" child.to" router :exactPath="child.exactPath || false">
                     <v-list-item-content>
-                      <v-list-item-title>{{ child.title }}</v-list-item-title>
+                      <v-list-item-title>
+                        <span>{{ child.title }}</span>
+                        <v-badge v-if="child.badgeRequest && notiCount" class="ml-2 mr-2" color="red" :content="notiCount"/>
+                      </v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
                 </v-expansion-panel-content>
