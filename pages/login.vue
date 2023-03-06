@@ -47,6 +47,10 @@
     },
     mounted () {
       localStorage.removeItem('authToken')
+      this.$store.commit('SET_STATE', { name: 'userProfile', val: null })
+      this.$store.commit('SET_STATE', { name: 'role', val: null })
+        this.$store.commit('SET_STATE', { name: 'approveRequest', val: null })
+        this.$store.commit('SET_STATE', { name: 'approveRequestDepartment', val: null })
     },
     methods: {
       async login () {
