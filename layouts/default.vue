@@ -36,7 +36,7 @@
         </div>
       </v-toolbar-title>
       <v-spacer/>
-      <v-btn icon @click="$router.push('/parcel/request/')">
+      <v-btn icon @click="$router.push(`/parcel/request/${externalCount ? '' : 'department/'}`)">
         <v-badge overlap color="red" icon :content="notiCount" :value="!!notiCount">
           <v-icon>mdi-bell</v-icon>
         </v-badge>
@@ -86,10 +86,14 @@ export default {
         ? this.$store.state.leftMenus
         : this.$store.state.leftMenus.filter(menu => menu.to !== '/management/')
     },
+    externalCount () {
+      return this.$store.state.approveRequest?.totalElements || 0
+    },
+    internalCount () {
+      return this.$store.state.approveRequestDepartment?.totalElements || 0
+    },
     notiCount () {
-      const count1 = this.$store.state.approveRequest?.totalElements || 0
-      const count2 = this.$store.state.approveRequestDepartment?.totalElements || 0
-      return count1 + count2
+      return this.externalCount + this.internalCount
     },
   },
   watch: {
