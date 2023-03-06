@@ -87,7 +87,9 @@ export default {
         : this.$store.state.leftMenus.filter(menu => menu.to !== '/management/')
     },
     notiCount () {
-      return this.$store.state.approveRequest?.totalElements || 0
+      const count1 = this.$store.state.approveRequest?.totalElements || 0
+      const count2 = this.$store.state.approveRequestDepartment?.totalElements || 0
+      return count1 + count2
     },
   },
   watch: {
@@ -128,8 +130,12 @@ export default {
     },
     async getNoti () {
       try {
-        const { data: approveRequest } = await this.$store.dispatch('http', { apiPath: 'parcel/getListPickUp', query: this.$route.query, context: this })
+        const [{ data: approveRequest }, { data: approveRequestDepartment }] = await Promise.all([
+          this.$store.dispatch('http', { apiPath: 'parcel/getListPickUp', query: this.$route.query, context: this }),
+          this.$store.dispatch('http', { apiPath: 'parcel/department/getListPickUp', query: this.$route.query, context: this })
+        ])
         this.$store.commit('SET_STATE', { name: 'approveRequest', val: approveRequest})
+        this.$store.commit('SET_STATE', { name: 'approveRequestDepartment', val: approveRequestDepartment})
         return Promise.resolve()
       } catch (err) {
         return Promise.reject(err)

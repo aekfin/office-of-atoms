@@ -23,7 +23,7 @@
         <ActionIconList :list="getActionIconList(item)"/>
       </template>
     </v-data-table>
-    <v-dialog v-model="dialog" width="640">
+    <v-dialog v-model="dialog" width="720">
       <v-card>
         <v-card-title class="text-h5 d-flex justify-space-between">
           <b>วัสดุคงคลัง</b>
@@ -47,7 +47,8 @@
     props: {
       items: { type: Array, required: true },
       getActionIconList: { type: Function, required: true },
-      isLoading: { type: Boolean }
+      isLoading: { type: Boolean },
+      apiPath: { type: String, default: 'parcel/getPickUp' },
     },
     data () {
       return {
@@ -66,6 +67,7 @@
         parcelHeaders: [
           { text: 'ลำดับ', value: 'number', width: '80px', align: 'center' },
           { text: 'ชื่อวัสดุคงคลัง', value: 'name' },
+          { text: 'ประเภท', value: 'type.name', width: '160px' },
           { text: 'จำนวนเบิก', value: 'quantity', width: '120px', align: 'center' },
           { text: 'จำนวนจ่าย', value: 'quantity', width: '120px', align: 'center' },
         ],
@@ -81,7 +83,7 @@
         try {
           this.dialog = true
           this.isLoadingDialog = true
-          const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getPickUp', query: { id: item.id } })
+          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { id: item.id } })
           this.selectedWithdrawParcel = data
           this.isLoadingDialog = false
           return Promise.resolve()

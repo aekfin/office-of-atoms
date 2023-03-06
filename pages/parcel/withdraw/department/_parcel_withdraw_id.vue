@@ -1,9 +1,9 @@
 <template>
   <div id="parcel-withdraw-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มการเบิกวัสดุคงคลัง (ภายนอกกลุ่ม)' : 'การแก้ไขการเบิกวัสดุคงคลัง (ภายนอกกลุ่ม)'" hideTotal/>
+    <PageHeader :text="isCreate ? 'การเพิ่มการเบิกวัสดุคงคลัง (ภายในกลุ่ม)' : 'การแก้ไขการเบิกวัสดุคงคลัง (ภายในกลุ่ม)'" hideTotal/>
     <Loading v-if="isLoading"/>
-    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" cannotApprove @submit="onSubmit"/>
-    <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" text="ไม่สามารถขอเบิกได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้" hideSubmit closeText="รับทราบ"/>
+    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" backPath="/parcel/withdraw/department/" cannotApprove @submit="onSubmit"/>
+    <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="warningText" hideSubmit closeText="รับทราบ"/>
   </div>
 </template>
 
@@ -19,7 +19,8 @@
       return {
         isLoading: false,
         item: null,
-        dialog: false
+        dialog: false,
+        warningText: 'Error',
       }
     },
     computed: {
@@ -34,7 +35,7 @@
       async getData () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getPickUp', query: { id: this.$route.params.parcel_withdraw_id } })
+          const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/department/getPickUp', query: { id: this.$route.params.parcel_withdraw_id } })
           this.item = data
           this.isLoading = false
           return Promise.resolve()
@@ -46,13 +47,14 @@
         try{
           const formData = { ...form }
           formData.datePickUp = this.$fn.convertDateToString(formData.datePickUp)
-          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/pickup', data: formData })
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/department/pickup', data: formData })
           if (data.status.code == 400) {
             await this.$store.dispatch('snackbar', { text: `Error ${data.status.code}: ${data.status.description}`, props: { color: 'red', top: true } })
+            this.warningText = data.status.description.includes('Stock not found') ? 'ไม่สามารถขอเบิกได้ เนื่องจากไม่มีวัสดุคงคลังเหลือ กรุณาเบิกจากภายนอกกลุ่มแทน' : 'ไม่สามารถขอเบิกได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้'
             this.dialog = true
           } else {
             await this.$store.dispatch('snackbar', { text: 'ยื่นขอเบิกวัสดุคงคลังสำเร็จ' })
-            this.$router.push('/parcel/withdraw/')
+            this.$router.push('/parcel/withdraw/department/')
           }
         } catch (err) { return Promise.reject(err) }
       },

@@ -1,8 +1,8 @@
 <template>
   <div id="parcel-request-detail-page">
-    <PageHeader :text="'อนุมัติการเบิกวัสดุคงคลัง (ภายนอกกลุ่ม)'" hideTotal/>
+    <PageHeader :text="'อนุมัติการเบิกวัสดุคงคลัง (ภายในกลุ่ม)'" hideTotal/>
     <Loading v-if="isLoading"/>
-    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" backPath="/parcel/request/" @approve="onApprove" @reject="onReject"/>
+    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" backPath="/parcel/request/department/" @approve="onApprove" @reject="onReject"/>
   </div>
 </template>
 
@@ -33,7 +33,7 @@
       async getData () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getPickUp', query: { id: this.$route.params.parcel_request_id } })
+          const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/department/getPickUp', query: { id: this.$route.params.parcel_request_id } })
           this.item = data
           this.originalItems = _.cloneDeep(this.item)
           this.isLoading = false
@@ -51,7 +51,7 @@
               pickUpId: this.$route.params.parcel_request_id,
               remark: this.item.description
             }
-            await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/editPickUp', data })
+            await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/department/editPickUp', data })
           }
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
@@ -59,8 +59,8 @@
       async onApprove (flow, form) {
         try{
           this.isLoading = true
-          await this.submitChanged(form)
-          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/approve', query: { flowId: flow.id } })
+          // await this.submitChanged(form)
+          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/department/approve', query: { flowId: flow.id } })
           await this.$store.dispatch('snackbar', { text: 'อนุมัติการเบิกวัสดุคงคลังสำเร็จ' })
           await this.getData()
           this.$store.commit('TOGGLE_NOTI')
@@ -70,8 +70,8 @@
       async onReject (flow, form) {
         try{
           this.isLoading = true
-          await this.submitChanged(form)
-          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/reject', query: { flowId: flow.id } })
+          // await this.submitChanged(form)
+          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'parcel/department/reject', query: { flowId: flow.id } })
           await this.$store.dispatch('snackbar', { text: 'ไม่อนุมัติการเบิกวัสดุคงคลังสำเร็จ' })
           await this.getData()
           this.$store.commit('TOGGLE_NOTI')

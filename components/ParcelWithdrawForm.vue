@@ -8,7 +8,10 @@
           <v-stepper-step :key="flow.id" :step="flow.orderApprove + 1" :color="isColor(flow)" :complete="isComplete(flow)">
             <v-tooltip bottom :disabled="!getApproverText(flow)">
               <template v-slot:activator="{ on, attrs }">
-                <span v-bind="attrs" v-on="on">{{ getStepText(flow) }}</span>
+                <div v-bind="attrs" v-on="on" class="text-center">
+                  <div>{{ getStepText(flow) }}</div>
+                  <div v-if="flow.position" class="mt-2" style="font-size: 0.9rem">{{ flow.position }}</div>
+                </div>
               </template>
               <span>{{ getApproverText(flow) }}</span>
             </v-tooltip>
@@ -91,6 +94,7 @@
       item: { type: Object },
       viewMode: { type: Boolean },
       backPath: { type: String, default: '/parcel/withdraw/' },
+      cannotApprove: { type: Boolean },
     },
     data () {
       return {
@@ -111,7 +115,7 @@
         return this.item?.flows?.find(flow => flow?.status === 'PENDING') || null
       },
       isApprover () {
-        return this.currentFlow?.canApprove === 'true'
+        return !this.cannotApprove && this.currentFlow?.canApprove === 'true'
       },
       isReject () {
         return this.item && this.item.status === 'REJECT'

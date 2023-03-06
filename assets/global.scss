@@ -83,7 +83,13 @@ button.v-btn.v-size--large {
     }
 
     .v-tab.v-tab--active {
-      background-color: #E8EAF6;
+      &[aria-selected="true"] {
+        background-color: #E8EAF6;
+      }
+
+      &[aria-selected="false"] {
+        color: black !important;
+      }
     }
   }
 }

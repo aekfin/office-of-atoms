@@ -20,6 +20,7 @@ export default () => ({
     'REJECT': 'error',
   },
   approveRequest: null,
+  approveRequestDepartment: null,
   approveRequestTrigger: false,
   leftMenus: [
     {
@@ -34,6 +35,10 @@ export default () => ({
       title: 'วัสดุคงคลัง',
       to: '/parcel/',
       children: [
+        {
+          title: 'วัสดุคงคลังทั้งหมด',
+          to: '/parcel/summary/',
+        },
         {
           title: 'บริหารวัสดุคงคลัง',
           to: '/parcel/overall/',
