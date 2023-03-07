@@ -35,6 +35,7 @@
           <div class="mt-2">ทั้งหมด {{ selectedWithdrawParcel && selectedWithdrawParcel.items.length || 0 }} ชนิด</div>
           <v-data-table :headers="parcelHeaders" :items="selectedWithdrawParcel && selectedWithdrawParcel.items || []" :itemsPerPage="20" disableSort hideDefaultFooter class="mt-3" :loading="isLoadingDialog">
             <template #item.number="{ index }">{{ index + 1 }}.</template>
+            <template #item.numberOfApproved="{ item }">{{ item.numberOfApproved || '-' }}</template>
           </v-data-table>
         </v-card-text>
       </v-card>
@@ -49,6 +50,7 @@
       getActionIconList: { type: Function, required: true },
       isLoading: { type: Boolean },
       apiPath: { type: String, default: 'parcel/getPickUp' },
+      isDepartment: { type: Boolean },
     },
     data () {
       return {
@@ -69,7 +71,7 @@
           { text: 'ชื่อวัสดุคงคลัง', value: 'name' },
           { text: 'ประเภท', value: 'type.name', width: '160px' },
           { text: 'จำนวนเบิก', value: 'quantity', width: '120px', align: 'center' },
-          { text: 'จำนวนจ่าย', value: 'quantity', width: '120px', align: 'center' },
+          { text: 'จำนวนจ่าย', value: 'numberOfApproved', width: '120px', align: 'center' },
         ],
       }
     },

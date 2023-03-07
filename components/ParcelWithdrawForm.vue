@@ -57,9 +57,13 @@
           <v-col cols="auto" class="align-self-center">
             <div class="hidden">{{ i + 1 }}.</div>
           </v-col>
-          <v-col :cols="4" class="pt-0">
+          <v-col v-if="viewMode" :cols="4" class="pt-0">
+            <v-text-field v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" required disabled/>
+          </v-col>
+          <v-col :cols="viewMode ? 6 : 4" class="pt-0">
             <div class="d-flex align-baseline">
-              <v-text-field v-model="form.pickUpItems[i].quantity" label="จำนวนเบิก *" :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity"/>
+              <v-text-field v-if="showQuantity(form.pickUpItems[i])" v-model="form.pickUpItems[i].quantity" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'"
+                :rules="countWithdrawRules(form.pickUpItems[i])" required  :disabled="viewMode && !canChangeQuantity"/>
               <div v-if="showRemain" class="ml-5 text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain }}</div>
             </div>
           </v-col>
@@ -146,7 +150,7 @@
           pickUpItems: this.item?.items
             ? this.item.items.map(item => {
               const { type } = item
-              return { ...item, typeId: type.id, type: type.name }
+              return { ...item, typeId: type.id, type: type.name, quantityFixed: item.quantity, quantity: item.numberOfApproved || item.quantity }
             })
             : [
               {
@@ -188,6 +192,9 @@
       isComplete (item) {
         return item?.status === 'APPROVE'
       },
+      showQuantity (item) {
+        return !this.viewMode || this.canChangeQuantity || item.numberOfApproved
+      },
       onSave () {
         const valid = this.$refs.form.validate()
         if (valid) this.$emit('save', this.form)
@@ -205,7 +212,7 @@
         if (valid) this.$emit('reject', this.currentFlow, this.form)
       },
       countWithdrawRules (item) {
-        return this.showRemain ? [item.remain >= item.quantity || 'จำนวนวัสดุคงคลังไม่เพียงพอ'] : [v => !!v || 'โปรดใส่จำนวนเบิก']
+        return this.showRemain ? [item.remain >= item.quantity || 'จำนวนวัสดุคงคลังไม่เพียงพอ'] : [v => !!v || `โปรดใส่จำนวน${this.viewMode ? 'จ่าย' : 'เบิก'}`]
       },
     }
   }
