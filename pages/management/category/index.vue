@@ -12,7 +12,7 @@
     </v-data-table>
     <Pagination/>
 
-    <v-dialog v-model="createDialog" :key="tabIndex" width="720">
+    <v-dialog :key="tabIndex" v-model="createDialog" width="720">
       <v-card>
         <v-card-title class="text-h5 justify-space-between">
           <div>{{ tabActive.btnText }}</div>
@@ -23,10 +23,10 @@
         <v-card-text class="black--text">
           <div>
             <v-form ref="form" v-model="valid" lazyValidation>
-              <SelectDropdown v-if="tabIndex > 0" :value.sync="form.category" label="หมวดหมู่ *" apiPath="parcel/getListParcelType" :rules="categoryRule" required/>
-              <SelectDropdown v-if="tabIndex > 1" :value.sync="form.category2" label="หมวดหมู่ย่อย *" apiPath="parcel/getListParcelType" :rules="subcategoryRule" required :disabled="!form.category"/>
-              <SelectDropdown v-if="tabIndex > 2" :value.sync="form.category3" label="ประเภท *" apiPath="parcel/getListParcelType" :rules="typeRule" required :disabled="!form.category2"/>
-              <SelectDropdown v-if="tabIndex > 3" :value.sync="form.category4" label="ยี่ห้อ *" apiPath="parcel/getListParcelType" :rules="brandRule" required :disabled="!form.category3"/>
+              <SelectDropdown v-if="tabIndex > 0" :value.sync="form.category" label="หมวดหมู่ *" :apiPath="tabs[0].apiPath" :rules="categoryRule" required/>
+              <SelectDropdown v-if="tabIndex > 1" :value.sync="form.category2" label="หมวดหมู่ย่อย *" :apiPath="tabs[1].apiPath" :rules="subcategoryRule" required :disabled="!form.category"/>
+              <SelectDropdown v-if="tabIndex > 2" :value.sync="form.category3" label="ประเภท *" :apiPath="tabs[2].apiPath" :rules="typeRule" required :disabled="!form.category2"/>
+              <SelectDropdown v-if="tabIndex > 3" :value.sync="form.category4" label="ยี่ห้อ *" :apiPath="tabs[3].apiPath" :rules="brandRule" required :disabled="!form.category3"/>
               <v-text-field v-model="form.name" :label="categoryName" :rules="categoryNameRule" required/>
             </v-form>
           </div>
@@ -52,11 +52,41 @@
       return {
         tabIndex: 0,
         tabs: [
-          { text: 'หมวดหมู่', btnText: 'เพิ่มหมวดหมู่', unit: 'หมวด' },
-          { text: 'หมวดหมู่ย่อย', btnText: 'เพิ่มหมวดย่อย', unit: 'หมวด' },
-          { text: 'ประเภท', btnText: 'เพิ่มประเภท', unit: 'ประเภท' },
-          { text: 'ยี่ห้อ', btnText: 'เพิ่มยี่ห้อ', unit: 'ยี่ห้อ' },
-          { text: 'รุ่น', btnText: 'เพิ่มรุ่น', unit: 'รุ่น' },
+          {
+            text: 'หมวดหมู่',
+            btnText: 'เพิ่มหมวดหมู่',
+            unit: 'หมวด',
+            apiPath: 'equipment/category/getMejorCategorys',
+            postApiPath: 'equipment/category/addMajorCategory'
+          },
+          {
+            text: 'หมวดหมู่ย่อย',
+            btnText: 'เพิ่มหมวดย่อย',
+            unit: 'หมวด',
+            apiPath: 'equipment/category/getSubCategorys',
+            postApiPath: 'equipment/category/addSubCategory'
+          },
+          {
+            text: 'ประเภท',
+            btnText: 'เพิ่มประเภท',
+            unit: 'ประเภท',
+            apiPath: 'equipment/category/types',
+            postApiPath: 'equipment/category/addType'
+          },
+          {
+            text: 'ยี่ห้อ',
+            btnText: 'เพิ่มยี่ห้อ',
+            unit: 'ยี่ห้อ',
+            apiPath: 'equipment/category/brands',
+            postApiPath: 'equipment/category/addBrand'
+          },
+          {
+            text: 'รุ่น',
+            btnText: 'เพิ่มรุ่น',
+            unit: 'รุ่น',
+            apiPath: 'equipment/category/types',
+            postApiPath: 'equipment/category/addModel'
+          },
         ],
         isLoading: true,
         total: 0,
@@ -101,6 +131,7 @@
     watch: {
       'tabIndex' () {
         this.resetForm()
+        this.getList()
       },
       '$route.query' () {
         this.getList()
@@ -113,7 +144,8 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListParcelType', query: this.$route.query, context: this })
+          const apiPath = this.tabActive.apiPath
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath, query: this.$route.query, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
@@ -134,9 +166,18 @@
       closeCreateDialog () {
         this.createDialog = false
       },
-      onCreate () {
-        const valid = this.$refs.form.validate()
-        if (valid) this.createDialog = false
+      async onCreate () {
+        try {
+          const valid = this.$refs.form.validate()
+          if (valid) {
+            const apiPath = this.tabActive.postApiPath
+            const { data } = await this.$store.dispatch('http', { method: 'post', apiPath, data: { names: [this.form.name] }, query: this.$route.query })
+            this.createDialog = false
+            await this.getList()
+            return Promise.resolve(data)
+          }
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
       },
     }
   }
