@@ -1,7 +1,7 @@
 <template>
   <div class="select-dropdown">
     <v-select ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled || disabledOnload"
-      :readonly="readonly" :loading="isLoading" @change="onChange">
+      :readonly="readonly" :loading="forceLoading || isLoading" @change="onChange">
       <template #append-item>
         <div v-if="!!pagination" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
       </template>
@@ -24,6 +24,7 @@
       required: { type: Boolean },
       disabled: { type: Boolean },
       readonly: { type: Boolean },
+      forceLoading: { type: Boolean },
     },
     data () {
       return {

@@ -3,7 +3,7 @@
     <v-tabs v-model="tabIndex" class="tabs-underline mb-10" fixedTabs>
       <v-tab v-for="tab in tabs" :key="tab.text">{{ tab.text }}</v-tab>
     </v-tabs>
-    <PageHeader :text="tabActive.text" :btnText="tabActive.btnText" :unit="tabActive.unit" :total="total" @create="openCreateDialog"/>
+    <PageHeader :text="tabActive.text" :btnText="tabActive.btnText" :unit="tabActive.unit" :total="total" @create="createDialog = true"/>
     <v-data-table :headers="categoryHeaders" :items="items" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.action="{ item }">
@@ -11,33 +11,7 @@
       </template>
     </v-data-table>
     <Pagination/>
-
-    <v-dialog :key="tabIndex" v-model="createDialog" width="720">
-      <v-card>
-        <v-card-title class="text-h5 justify-space-between">
-          <div>{{ tabActive.btnText }}</div>
-          <v-btn icon @click="closeCreateDialog">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
-        <v-card-text class="black--text">
-          <div>
-            <v-form ref="form" v-model="valid" lazyValidation>
-              <SelectDropdown v-if="tabIndex > 0" :value.sync="form.category" label="หมวดหมู่ *" :apiPath="tabs[0].apiPath" :rules="categoryRule" required/>
-              <SelectDropdown v-if="tabIndex > 1" :value.sync="form.category2" label="หมวดหมู่ย่อย *" :apiPath="tabs[1].apiPath" :rules="subcategoryRule" required :disabled="!form.category"/>
-              <SelectDropdown v-if="tabIndex > 2" :value.sync="form.category3" label="ประเภท *" :apiPath="tabs[2].apiPath" :rules="typeRule" required :disabled="!form.category2"/>
-              <SelectDropdown v-if="tabIndex > 3" :value.sync="form.category4" label="ยี่ห้อ *" :apiPath="tabs[3].apiPath" :rules="brandRule" required :disabled="!form.category3"/>
-              <v-text-field v-model="form.name" :label="categoryName" :rules="categoryNameRule" required/>
-            </v-form>
-          </div>
-        </v-card-text>
-        <v-card-actions class="pb-5">
-          <v-spacer/>
-          <v-btn color="grey" text large @click="createDialog = false">ยกเลิก</v-btn>
-          <v-btn color="success" large @click="onCreate">{{ tabActive.btnText }}</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <CategoryDialog :dialog.sync="createDialog" :tabActive="tabActive" :tabIndex="tabIndex" @create="onCreate"/>
   </div>
 </template>
 
@@ -47,6 +21,7 @@
       PageHeader: () => import('~/components/PageHeader.vue'),
       ActionIconList: () => import('~/components/ActionIconList.vue'),
       Pagination: () => import('~/components/Pagination.vue'),
+      CategoryDialog: () => import('~/components/CategoryDialog.vue'),
     },
     data () {
       return {
@@ -84,53 +59,30 @@
             text: 'รุ่น',
             btnText: 'เพิ่มรุ่น',
             unit: 'รุ่น',
-            apiPath: 'equipment/category/types',
+            apiPath: 'equipment/category/models',
             postApiPath: 'equipment/category/addModel'
           },
         ],
         isLoading: true,
         total: 0,
         count: 0,
-        categoryHeaders: [
-          { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
-          { text: 'ชื่อหมวดหมู่', value: 'name' },
-        ],
         items: [],
         createDialog: false,
-        valid: true,
-        form: {
-          name: '',
-        },
-        categoryRule: [
-          v => !!v || 'โปรดเลือกหมวดหมู่',
-        ],
-        subcategoryRule: [
-          v => !!v || 'โปรดเลือกหมวดหมู่ย่อย',
-        ],
-        typeRule: [
-          v => !!v || 'โปรดเลือกประเภท',
-        ],
-        brandRule: [
-          v => !!v || 'โปรดเลือกยี่ห้อ',
-        ],
       }
     },
     computed: {
       tabActive () {
         return this.tabs[this.tabIndex || 0]
       },
-      categoryName () {
-        return `ชื่อ${this.tabActive.text} *`
-      },
-      categoryNameRule () {
+      categoryHeaders () {
         return [
-          v => !!v || `โปรดใส่ชื่อ${this.tabActive.text}`,
+          { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
+          { text: `ชื่อ${this.tabActive.text}`, value: 'name' },
         ]
       },
     },
     watch: {
       'tabIndex' () {
-        this.resetForm()
         this.getList()
       },
       '$route.query' () {
@@ -144,39 +96,28 @@
       async getList () {
         try {
           this.isLoading = true
+          this.items = []
+          this.total = 0
+          this.count = 0
           const apiPath = this.tabActive.apiPath
           const { data } = await this.$store.dispatch('getListPagination', { apiPath, query: this.$route.query, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
-      resetForm () {
-        this.form = {
-          name: ''
-        }
-      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'mdi-pencil', action: `/management/category/${item.id}/` },
         ]
       },
-      openCreateDialog () {
-        this.createDialog = true
-      },
-      closeCreateDialog () {
-        this.createDialog = false
-      },
-      async onCreate () {
+      async onCreate (form) {
         try {
-          const valid = this.$refs.form.validate()
-          if (valid) {
-            const apiPath = this.tabActive.postApiPath
-            const { data } = await this.$store.dispatch('http', { method: 'post', apiPath, data: { names: [this.form.name] }, query: this.$route.query })
-            this.createDialog = false
-            await this.getList()
-            return Promise.resolve(data)
-          }
-          return Promise.resolve()
+          const apiPath = this.tabActive.postApiPath
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath, data: { ...form, names: [form.name] }, query: this.$route.query })
+          this.createDialog = false
+          await this.getList()
+          await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างค่าเริ่มต้นวัสดุคงคลังสำเร็จ' : 'แก้ไขค่าเริ่มต้นวัสดุคงคลังสำเร็จ' })
+          return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
     }

@@ -26,8 +26,14 @@ a {
   line-height: 1.5 !important;
 }
 
-.v-input .v-input__control .v-input__slot .v-text-field__slot .v-label {
-  height: 22px;
+.v-input .v-input__control .v-input__slot .v-text-field__slot {
+  input {
+    padding-top: 12px !important;
+  }
+  
+  .v-label {
+    height: 22px;  
+  }
 }
 
 .v-text-field input {
@@ -136,7 +142,9 @@ button.v-btn.v-size--large {
 }
 
 .v-select__selection--comma {
+  margin-top: 0 !important;
   margin-bottom: 0 !important;
+  padding-top: 12px !important;
   padding-bottom: 7px !important;
 }
 

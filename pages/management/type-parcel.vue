@@ -96,6 +96,7 @@
         if (valid) {
           try {
             const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/import/types', data: this.form })
+            await this.$store.dispatch('snackbar', { text: 'สร้างประเภทวัสดุคงคลังสำเร็จ' })
             this.createDialog = false
             await this.getList()
             return Promise.resolve(data)
