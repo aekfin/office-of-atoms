@@ -20,9 +20,6 @@
           <v-col :cols="2">
             <v-text-field v-model="form.year" label="ปี *" :rules="yearRules" type="number" required/>
           </v-col>
-          <v-col :cols="6">
-            <v-textarea v-model="form.note" label="คำอธิบายเพิ่มเติม" :rows="3"/>
-          </v-col>
         </v-row>
       </v-container>
       <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
@@ -75,7 +72,6 @@
           subcategory: null,
           year: (new Date()).getFullYear() + 543,
           price: '',
-          note: '',
         },
         formExpand: [0],
         deteriorationList: [
