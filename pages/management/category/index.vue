@@ -79,10 +79,10 @@
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: `ชื่อ${this.tabActive.text}`, value: 'name' },
         ]
-        if (this.tabIndex > 3) headers.push({ text: `ชื่อ${this.tabs[3].text}`, value: 'brandName', width: '160px' })
-        if (this.tabIndex > 2) headers.push({ text: `ชื่อ${this.tabs[2].text}`, value: 'typeName', width: '160px' })
-        if (this.tabIndex > 1) headers.push({ text: `ชื่อ${this.tabs[1].text}`, value: 'subCategoryName', width: '200px' })
-        if (this.tabIndex > 0) headers.push({ text: `ชื่อ${this.tabs[0].text}`, value: 'majorCategoryName', width: '200px' })
+        if (this.tabIndex > 3) headers.push({ text: `ชื่อ${this.tabs[3].text}`, value: 'brand.name', width: '200px' })
+        if (this.tabIndex > 2) headers.push({ text: `ชื่อ${this.tabs[2].text}`, value: 'type.name', width: '200px' })
+        if (this.tabIndex > 1) headers.push({ text: `ชื่อ${this.tabs[1].text}`, value: 'subCategory.name', width: '200px' })
+        if (this.tabIndex > 0) headers.push({ text: `ชื่อ${this.tabs[0].text}`, value: 'majorCategory.name', width: '200px' })
         return headers
       },
     },
