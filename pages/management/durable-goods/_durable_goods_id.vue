@@ -3,30 +3,24 @@
     <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นครุภัณฑ์' : 'การแก้ไขค่าเริ่มต้นครุภัณฑ์'" hideTotal/>
     <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
+        <CategoryDurableGood :cols="3">
+          <template>
+            <v-col :cols="isCreate ? 9 : 5">
+              <v-text-field v-model="form.name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required/>
+            </v-col>
+            <v-col v-if="!isCreate" :cols="4">
+              <v-text-field v-model="form.code" name="code" label="เลขที่ครุภัณฑ์ *" :rules="codeRules" required disabled/>
+            </v-col>
+          </template>
+        </CategoryDurableGood>
         <v-row>
-          <v-col :cols="6">
-            <v-text-field v-model="form.name" name="name" label="ชื่อ *" :rules="nameRules" required/>
-          </v-col>
-          <v-col :cols="3">
-            <v-select v-model="form.category" :items="categoryList" itemValue="id" itemText="name" label="หมวดหมู่หลัก *" :rules="cateogryRules" required/>
-          </v-col>
-          <v-col :cols="3">
-            <v-select v-model="form.subcategory" :items="subcategoryList" itemValue="id" itemText="name" label="หมวดหมู่ย่อย *" :rules="subcateogryRules" required :disabled="!form.category"/>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col :cols="6">
-            <v-text-field v-model="form.code" name="code" label="เลขที่ครุภัณฑ์ *" :rules="codeRules" required/>
-          </v-col>
           <v-col :cols="4">
-            <v-text-field v-model="form.price" label="ราคากลาง" type="number"/>
+            <v-text-field v-model="form.price" label="ราคากลาง *" type="number" :rules="priceRules" required/>
           </v-col>
           <v-col :cols="2">
-            <v-select v-model="form.year" :items="yearList" itemValue="id" itemText="name" label="ปี *" :rules="yearRules" required/>
+            <v-text-field v-model="form.year" label="ปี *" :rules="yearRules" type="number" required/>
           </v-col>
-        </v-row>
-        <v-row>
-          <v-col :cols="12">
+          <v-col :cols="6">
             <v-textarea v-model="form.note" label="คำอธิบายเพิ่มเติม" :rows="3"/>
           </v-col>
         </v-row>
@@ -42,7 +36,7 @@
                   <div class="deterioration">
                     <v-text-field v-model="deteriorationList[i]" label="" type="number" :rules="deteriorationRules"/>
                   </div>
-                  <div class="ml-2">%</div>
+                  <div class="ml-2 align-self-center">%</div>
                   <v-btn v-if="deteriorationList.length > 1" class="ml-2" icon @click="removeDeterioration(i)">
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
@@ -69,6 +63,7 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
+      CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
     },
     data () {
       return {
@@ -78,7 +73,7 @@
           name: '',
           category: null,
           subcategory: null,
-          year: (new Date()).getFullYear(),
+          year: (new Date()).getFullYear() + 543,
           price: '',
           note: '',
         },
@@ -109,10 +104,13 @@
           v => !!v || 'โปรดใส่หมวดหมู่ย่อย',
         ],
         yearRules: [
-          v => !!v || 'โปรดใส่ปี',
+          v => v ? `${v}`.length === 4 || 'ตัวอย่าง: 2566' : 'โปรดใส่ปี',
         ],
         deteriorationRules: [
           v => !!v || v === 0 || 'โปรดใส่อัตราเสื่อมสภาพ',
+        ],
+        priceRules: [
+          v => !!v || v === 0 || 'โปรดใส่ราคากลาง',
         ],
       }
     },
@@ -120,13 +118,6 @@
       isCreate () {
         return this.$route.params.durable_goods_id === 'create'
       },
-      yearList () {
-        return new Array(5).fill().map((_val, i) => {
-          const year = (new Date()).getFullYear()
-          const name = year + i - 2
-          return { id: name, name }
-        })
-      }
     },
     methods: {
       addDeterioration () {
