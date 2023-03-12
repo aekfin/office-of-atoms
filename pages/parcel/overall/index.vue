@@ -1,7 +1,7 @@
 <template>
   <div id="parcel-page">
     <PageHeader text="บริหารวัสดุคงคลัง" btnText="เพิ่มวัสดุคงคลัง" createRoute="/parcel/overall/create/" :total="total"/>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6">
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.dateEntry="{ item }">
         <div>{{ $fn.displayDate(item.dateEntry) }}</div>

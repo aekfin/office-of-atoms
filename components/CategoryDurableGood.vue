@@ -1,31 +1,58 @@
 <template>
   <v-row class="category-durable-good">
     <v-col :cols="cols">
-      <SelectDropdown :value.sync="form.majorCategoryId" label="หมวดหมู่ *" apiPath="equipment/category/getMejorCategorys" :rules="categoryRule" required @select="onChangeCategory"/>
+      <SelectDropdown :value.sync="form.majorCategoryId" label="หมวดหมู่ *" apiPath="equipment/category/getMejorCategorys" :rules="categoryRule" required :disabled="disabled" @select="onChangeCategory"/>
     </v-col>
     <v-col :cols="cols">
-      <SelectDropdown :value.sync="form.subCategoryId" label="หมวดหมู่ย่อย *" :items="subCategoryItems" :rules="subcategoryRule" required :disabled="!form.majorCategoryId || isLoadingSubCategory" :forceLoading="isLoadingSubCategory" @select="onChangeSubCategory"/>
+      <SelectDropdown :value.sync="form.subCategoryId" label="หมวดหมู่ย่อย *" :items="subCategoryItems" :rules="subcategoryRule" required :disabled="disabled || !form.majorCategoryId || isLoadingSubCategory" :forceLoading="isLoadingSubCategory" @select="onChangeSubCategory"/>
     </v-col>
     <v-col :cols="cols">
-      <SelectDropdown :value.sync="form.typeId" label="ประเภท *" :items="typeItems" :rules="typeRule" required :disabled="!form.subCategoryId || isLoadingType" :forceLoading="isLoadingType" @select="onChangeType"/>
+      <SelectDropdown :value.sync="form.typeId" label="ประเภท *" :items="typeItems" :rules="typeRule" required :disabled="disabled || !form.subCategoryId || isLoadingType" :forceLoading="isLoadingType" @select="onChangeType"/>
     </v-col>
     <v-col :cols="cols">
-      <SelectDropdown :value.sync="form.brandId" label="ยี่ห้อ *" :items="brandItems" :rules="brandRule" required :disabled="!form.typeId || isLoadingBrand" :forceLoading="isLoadingBrand" @select="onChangeBrand"/>
+      <SelectDropdown :value.sync="form.brandId" label="ยี่ห้อ *" :items="brandItems" :rules="brandRule" required :disabled="disabled || !form.typeId || isLoadingBrand" :forceLoading="isLoadingBrand" @select="onChangeBrand"/>
     </v-col>
     <v-col :cols="cols">
-      <SelectDropdown :value.sync="form.modelId" label="รุ่น *" :items="modelItems" :rules="modelRule" required :disabled="!form.brandId || isLoadingModel" :forceLoading="isLoadingModel" @select="onChangeModel"/>
+      <SelectDropdown :value.sync="form.modelId" label="รุ่น *" :items="modelItems" :rules="modelRule" required :disabled="disabled || !form.brandId || isLoadingModel" :forceLoading="isLoadingModel" @select="onChangeModel"/>
     </v-col>
     <slot :categoryForm="form"/>
   </v-row>
 </template>
 
 <script>
+  import _ from 'lodash'
   import categoryMixins from '~/mixins/categoryMixins.js'
   export default {
     mixins: [categoryMixins],
     props: {
       cols: { type: Number, default: 4 },
+      disabled: { type: Boolean },
+      initForm: { type: Object },
     },
+    mounted () {
+      this.setForm()
+    },
+    watch: {
+      async 'initForm' () {
+        this.setForm()
+      }
+    },
+    methods: {
+      async setForm () {
+        if (!_.isEmpty(this.initForm)) {
+          try {
+            this.form = this.initForm
+            const res = await Promise.all([
+              this.onChangeCategory({ val: this.form.majorCategoryId, reset: false }),
+              this.onChangeSubCategory({ val: this.form.subCategoryId, reset: false }),
+              this.onChangeType({ val: this.form.typeId, reset: false }),
+              this.onChangeBrand({ val: this.form.brandId, reset: false }),
+            ])
+            return Promise.resolve(res)
+          } catch (err) { return Promise.reject(err) }
+        }
+      }
+    }
   }
 </script>
 

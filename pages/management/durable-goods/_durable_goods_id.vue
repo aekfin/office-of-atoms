@@ -3,13 +3,13 @@
     <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นครุภัณฑ์' : 'การแก้ไขค่าเริ่มต้นครุภัณฑ์'" hideTotal/>
     <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
-        <CategoryDurableGood :cols="3">
+        <CategoryDurableGood :cols="3" :disabled="!isCreate" :initForm="initCategoryForm" @change="({ form }) => categoryForm = form">
           <template>
-            <v-col :cols="isCreate ? 9 : 5">
-              <v-text-field v-model="form.name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required/>
-            </v-col>
             <v-col v-if="!isCreate" :cols="4">
-              <v-text-field v-model="form.code" name="code" label="เลขที่ครุภัณฑ์ *" :rules="codeRules" required disabled/>
+              <v-text-field v-model="form.number" name="code" label="เลขที่ครุภัณฑ์ *" required disabled/>
+            </v-col>
+            <v-col :cols="isCreate ? 9 : 5">
+              <v-text-field v-model="form.name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required :disabled="!isCreate"/>
             </v-col>
           </template>
         </CategoryDurableGood>
@@ -20,9 +20,29 @@
           <v-col :cols="2">
             <v-text-field v-model="form.year" label="ปี *" :rules="yearRules" type="number" required/>
           </v-col>
+          <v-col :cols="3">
+            <v-text-field v-model="form.classifier" label="หน่วย *" :rules="classifierRules" name="unit" required/>
+          </v-col>
+          <v-col :cols="3" class="depreciation">
+            <v-text-field v-model="form.depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%"/>
+          </v-col>
+          <v-col :cols="12">
+            <v-textarea v-model="form.description" label="คำอธิบายเพิ่มเติม" :rows="4"/>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :cols="12">
+            <div class="text-h5"><b>ผู้ครอบครอง</b></div>
+          </v-col>
+          <v-col :cols="6">
+            <SelectDropdown :value.sync="form.organizationId" label="กอง *" itemText="ouName" :rules="ouRules" required apiPath="Orgchart/getOrganizations"/>
+          </v-col>
+          <v-col :cols="6">
+            <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required apiPath="Orgchart/getDepartments"/>
+          </v-col>
         </v-row>
       </v-container>
-      <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
+      <!-- <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
         <v-expansion-panel>
           <v-expansion-panel-header>อัตราเสื่อมสภาพ</v-expansion-panel-header>
           <v-expansion-panel-content>
@@ -31,10 +51,9 @@
                 <div class="mr-10">ปีที่ {{ i + 1 }}</div>
                 <div class="d-flex items-baseline">
                   <div class="deterioration">
-                    <v-text-field v-model="deteriorationList[i]" label="" type="number" :rules="deteriorationRules"/>
+                    <v-text-field v-model="deteriorationList[i]" label="" type="number" :rules="deteriorationRules" suffix="%"/>
                   </div>
-                  <div class="ml-2 align-self-center">%</div>
-                  <v-btn v-if="deteriorationList.length > 1" class="ml-2" icon @click="removeDeterioration(i)">
+                  <v-btn v-if="deteriorationList.length > 1" class="ml-2 align-self-center" icon @click="removeDeterioration(i)">
                     <v-icon>mdi-delete</v-icon>
                   </v-btn>
                 </div>
@@ -45,7 +64,7 @@
             </v-container>
           </v-expansion-panel-content>
         </v-expansion-panel>
-      </v-expansion-panels>
+      </v-expansion-panels> -->
       <v-container class="mt-8">
         <v-row justify="end">
           <v-btn large plain @click="$router.push('/management/durable-goods/')">ย้อนหลับ</v-btn>
@@ -66,13 +85,17 @@
       return {
         valid: true,
         form: {
-          code: '',
           name: '',
-          category: null,
-          subcategory: null,
           year: (new Date()).getFullYear() + 543,
           price: '',
+          description: '',
+          depreciation_rate: '',
+          classifier: '',
+          organizationId: null,
+          departmentId: null,
         },
+        categoryForm: {},
+        initCategoryForm: {},
         formExpand: [0],
         deteriorationList: [
           ''
@@ -86,9 +109,6 @@
         typeList: [
           { id: 1, name: 'วัสดุคงคลัง' },
           { id: 2, name: 'ครุภัณฑ์' }
-        ],
-        codeRules: [
-          v => !!v || 'โปรดใส่เลขที่ครุภัณฑ์',
         ],
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อ',
@@ -105,8 +125,17 @@
         deteriorationRules: [
           v => !!v || v === 0 || 'โปรดใส่อัตราเสื่อมสภาพ',
         ],
+        classifierRules: [
+          v => !!v || 'โปรดใส่หน่วย',
+        ],
         priceRules: [
           v => !!v || v === 0 || 'โปรดใส่ราคากลาง',
+        ],
+        ouRules: [
+          v => !!v || 'โปรดใส่กอง',
+        ],
+        departmentRules: [
+          v => !!v || 'โปรดใส่กลุ่ม',
         ],
       }
     },
@@ -115,7 +144,28 @@
         return this.$route.params.durable_goods_id === 'create'
       },
     },
+    mounted () {
+      if (!this.isCreate) this.getData()
+    },
     methods: {
+      async getData () {
+        try {
+          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/${this.$route.params.durable_goods_id}` })
+          this.form = {
+            ...data,
+            organizationId: data.organization.id,
+            departmentId: data.department.id,
+          }
+          this.initCategoryForm = {
+            majorCategoryId: data.majorCategory.id,
+            subCategoryId: data.subCategory.id,
+            typeId: data.type.id,
+            brandId: data.brand.id,
+            modelId: data.model.id,
+          }
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
       addDeterioration () {
         this.deteriorationList.push('')
       },
@@ -123,7 +173,46 @@
         this.deteriorationList.splice(i, 1)
       },
       onSubmit () {
-        this.$refs.form.validate()
+        const valid = this.$refs.form.validate()
+        if (valid) {
+          if (this.isCreate) this.onCreate()
+          else this.onEdit()
+        }
+      },
+      async onCreate () {
+        try {
+          const form = {
+            departmentId: this.form.departmentId,
+            organizationId: this.form.organizationId,
+            equipments: [
+              {
+                name: this.form.name,
+                year: this.form.year,
+                price: this.form.price,
+                description: this.form.description,
+                depreciation_rate: this.form.depreciation_rate,
+                classifier: this.form.classifier,
+              }
+            ]
+          }
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/import', data: form })
+          await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.categoryForm, id: data[0].id } })
+          await this.$store.dispatch('snackbar', { text: 'สร้างค่าเริ่มต้นครุภัณฑ์สำเร็จ' })
+          this.$router.push('/management/durable-goods/')
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
+      async onEdit () {
+        try {
+          const form = {
+            ...this.form,
+            ...this.categoryForm
+          }
+          const { data } = await this.$store.dispatch('http', { method: 'put', apiPath: 'equipment/Edit', data: form })
+          await this.$store.dispatch('snackbar', { text: 'แก้ไขค่าเริ่มต้นครุภัณฑ์สำเร็จ' })
+          await this.getData()
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
       },
     }
   }
@@ -131,7 +220,7 @@
 
 <style lang="scss">
   #management-durable-goods-detail-page {
-    .deterioration {
+    .deterioration, .depreciation {
       input {
         text-align: right;
       }

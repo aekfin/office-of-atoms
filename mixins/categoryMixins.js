@@ -73,10 +73,10 @@ export default {
       this.form.modelId = null
       this.modelItems = []
     },
-    async onChangeCategory ({ val }) {
+    async onChangeCategory ({ val, reset = true }) {
       try {
         this.isLoadingSubCategory = true
-        this.resetOnCategory()
+        if (reset) this.resetOnCategory()
         const { data } = await this.$store.dispatch('http', { apiPath: `equipment/category/mejorCategory/${val}`, query: this.$route.query })
         this.subCategoryItems = data.subCategorys
         this.isLoadingSubCategory = false
@@ -84,10 +84,10 @@ export default {
         return Promise.resolve(data)
       } catch (err) { return Promise.reject(err) }
     },
-    async onChangeSubCategory ({ val }) {
+    async onChangeSubCategory ({ val, reset = true }) {
       try {
         this.isLoadingType = true
-        this.resetOnSubCategory()
+        if (reset) this.resetOnSubCategory()
         const { data } = await this.$store.dispatch('http', { apiPath: `equipment/category/subCategory/${val}`, query: this.$route.query })
         this.typeItems = data.types
         this.isLoadingType = false
@@ -95,10 +95,10 @@ export default {
         return Promise.resolve(data)
       } catch (err) { return Promise.reject(err) }
     },
-    async onChangeType ({ val }) {
+    async onChangeType ({ val, reset = true }) {
       try {
         this.isLoadingBrand = true
-        this.resetOnType()
+        if (reset) this.resetOnType()
         const { data } = await this.$store.dispatch('http', { apiPath: `equipment/category/type/${val}`, query: this.$route.query })
         this.brandItems = data.brands
         this.isLoadingBrand = false
@@ -106,10 +106,10 @@ export default {
         return Promise.resolve(data)
       } catch (err) { return Promise.reject(err) }
     },
-    async onChangeBrand ({ val }) {
+    async onChangeBrand ({ val, reset = true }) {
       try {
         this.isLoadingModel = true
-        this.resetOnBrand()
+        if (reset) this.resetOnBrand()
         const { data } = await this.$store.dispatch('http', { apiPath: `equipment/category/brand/${val}`, query: this.$route.query })
         this.modelItems = data.models
         this.isLoadingModel = false
@@ -117,7 +117,7 @@ export default {
         return Promise.resolve(data)
       } catch (err) { return Promise.reject(err) }
     },
-    async onChangeModel ({ val }) {
+    async onChangeModel ({ val, reset = true }) {
       try {
         this.$emit('change', { form: this.form, trigger: 'model', val })
         return Promise.resolve()
