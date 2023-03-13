@@ -32,8 +32,8 @@ export default () => ({
   durableGoodStatusColor: {
     'NEW': 'primary',
     'RESERVE': 'warning',
-    'BORROWED': 'success',
-    'RETURNED': 'primary',
+    'BORROWED': 'error',
+    'RETURNED': 'success',
   },
   leftMenus: [
     {
