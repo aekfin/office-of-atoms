@@ -3,7 +3,7 @@
     <PageHeader :text="isCreate ? 'การยืม - คืน ครุภัณฑ์' : 'การแก้ไขการยืม - คืน ครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
     <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" cannotApprove @submit="onSubmit"/>
-    <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" text="ไม่สามารถขอยืมได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้" hideSubmit closeText="รับทราบ"/>
+    <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
   </div>
 </template>
 
@@ -18,7 +18,8 @@
       return {
         isLoading: false,
         item: null,
-        dialog: false
+        dialog: false,
+        errorText: 'ไม่สามารถขอยืมได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้',
       }
     },
     computed: {
@@ -48,6 +49,7 @@
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/borrow', data: formData })
           if (data.status.code == 400) {
             await this.$store.dispatch('snackbar', { text: `Error ${data.status.code}: ${data.status.description}`, props: { color: 'red', top: true } })
+            this.errorText = data.status.description.includes('invalid with status') ? 'ไม่สามารถขอยืมได้ เนื่องจากครุภัณฑ์ดังกล่าวอยู่ในระหว่างการรออนุมัติหรือถูกยืมไปแล้ว' : 'ไม่สามารถขอยืมได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้'
             this.dialog = true
           } else {
             await this.$store.dispatch('snackbar', { text: 'ยื่นขอเบิกวัสดุคงคลังสำเร็จ' })
