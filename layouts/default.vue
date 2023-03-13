@@ -14,7 +14,8 @@
                     <v-list-item-content>
                       <v-list-item-title>
                         <span>{{ child.title }}</span>
-                        <v-badge v-if="child.badgeRequest && notiCount" class="ml-2 mr-2" color="red" :content="notiCount"/>
+                        <v-badge v-if="child.parcelBadge && parcelNotiCount" class="ml-2 mr-2" color="red" :content="parcelNotiCount"/>
+                        <v-badge v-if="child.durableGoodsBadge && equipmentCount" class="ml-2 mr-2" color="red" :content="equipmentCount"/>
                       </v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
@@ -39,7 +40,7 @@
         </div>
       </v-toolbar-title>
       <v-spacer/>
-      <v-btn icon @click="$router.push(`/parcel/request/${externalCount ? '' : 'department/'}`)">
+      <v-btn icon @click="$router.push(parcelNotiCount ? `/parcel/request/${externalCount ? '' : 'department/'}` : 'durable-goods/request/')">
         <v-badge overlap color="red" icon :content="notiCount" :value="!!notiCount">
           <v-icon>mdi-bell</v-icon>
         </v-badge>
@@ -95,8 +96,14 @@ export default {
     internalCount () {
       return this.$store.state.approveRequestDepartment?.totalElements || 0
     },
-    notiCount () {
+    equipmentCount () {
+      return this.$store.state.approveEquipmentRequest?.totalElements || 0
+    },
+    parcelNotiCount () {
       return this.externalCount + this.internalCount
+    },
+    notiCount () {
+      return this.parcelNotiCount + this.equipmentCount
     },
   },
   watch: {
@@ -137,12 +144,14 @@ export default {
     },
     async getNoti () {
       try {
-        const [{ data: approveRequest }, { data: approveRequestDepartment }] = await Promise.all([
+        const [{ data: approveRequest }, { data: approveRequestDepartment }, { data: approveEquipmentRequest }] = await Promise.all([
           this.$store.dispatch('http', { apiPath: 'parcel/getListPickUp', query: this.$route.query, context: this }),
-          this.$store.dispatch('http', { apiPath: 'parcel/department/getListPickUp', query: this.$route.query, context: this })
+          this.$store.dispatch('http', { apiPath: 'parcel/department/getListPickUp', query: this.$route.query, context: this }),
+          this.$store.dispatch('http', { apiPath: 'equipment/getListRequest', query: this.$route.query, context: this }),
         ])
         this.$store.commit('SET_STATE', { name: 'approveRequest', val: approveRequest})
         this.$store.commit('SET_STATE', { name: 'approveRequestDepartment', val: approveRequestDepartment})
+        this.$store.commit('SET_STATE', { name: 'approveEquipmentRequest', val: approveEquipmentRequest})
         return Promise.resolve()
       } catch (err) {
         return Promise.reject(err)

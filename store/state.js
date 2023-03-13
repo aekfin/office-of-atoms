@@ -21,7 +21,20 @@ export default () => ({
   },
   approveRequest: null,
   approveRequestDepartment: null,
+  approveEquipmentRequest: null,
   approveRequestTrigger: false,
+  durableGoodStatus: {
+    'NEW': 'ใหม่',
+    'RESERVE': 'รออนุมัติ',
+    'BORROWED': 'ถูกยืม',
+    'RETURNED': 'คืนแล้ว',
+  },
+  durableGoodStatusColor: {
+    'NEW': 'primary',
+    'RESERVE': 'warning',
+    'BORROWED': 'success',
+    'RETURNED': 'primary',
+  },
   leftMenus: [
     {
       title: 'หนักหลัก',
@@ -50,7 +63,7 @@ export default () => ({
         {
           title: 'วัสดุคงคลังที่รออนุมัติ',
           to: '/parcel/request/',
-          badgeRequest: true,
+          parcelBadge: true,
         },
       ]
     },
@@ -72,7 +85,8 @@ export default () => ({
         // },
         {
           title: 'ครุภัณฑ์ที่รออนุมัติ',
-          to: '/durable-goods/request/'
+          to: '/durable-goods/request/',
+          durableGoodsBadge: true,
         },
       ]
     },

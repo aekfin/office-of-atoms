@@ -1,19 +1,19 @@
 <template>
   <v-row class="category-durable-good">
     <v-col :cols="cols">
-      <SelectDropdown :value.sync="form.majorCategoryId" label="หมวดหมู่ *" apiPath="equipment/category/getMejorCategorys" :rules="categoryRule" required :disabled="disabled" @select="onChangeCategory"/>
+      <SelectDropdown :value.sync="form.majorCategoryId" label="หมวดหมู่ *" apiPath="equipment/category/getMejorCategorys" :rules="!noRules && categoryRule" required :disabled="disabled" @select="onChangeCategory"/>
     </v-col>
     <v-col :cols="cols">
-      <SelectDropdown :value.sync="form.subCategoryId" label="หมวดหมู่ย่อย *" :items="subCategoryItems" :rules="subcategoryRule" required :disabled="disabled || !form.majorCategoryId || isLoadingSubCategory" :forceLoading="isLoadingSubCategory" @select="onChangeSubCategory"/>
+      <SelectDropdown :value.sync="form.subCategoryId" label="หมวดหมู่ย่อย *" :items="subCategoryItems" :rules="!noRules && subcategoryRule" required :disabled="disabled || !form.majorCategoryId || isLoadingSubCategory" :forceLoading="isLoadingSubCategory" @select="onChangeSubCategory"/>
     </v-col>
     <v-col :cols="cols">
-      <SelectDropdown :value.sync="form.typeId" label="ประเภท *" :items="typeItems" :rules="typeRule" required :disabled="disabled || !form.subCategoryId || isLoadingType" :forceLoading="isLoadingType" @select="onChangeType"/>
+      <SelectDropdown :value.sync="form.typeId" label="ประเภท *" :items="typeItems" :rules="!noRules && typeRule" required :disabled="disabled || !form.subCategoryId || isLoadingType" :forceLoading="isLoadingType" @select="onChangeType"/>
     </v-col>
     <v-col :cols="cols">
-      <SelectDropdown :value.sync="form.brandId" label="ยี่ห้อ *" :items="brandItems" :rules="brandRule" required :disabled="disabled || !form.typeId || isLoadingBrand" :forceLoading="isLoadingBrand" @select="onChangeBrand"/>
+      <SelectDropdown :value.sync="form.brandId" label="ยี่ห้อ *" :items="brandItems" :rules="!noRules && brandRule" required :disabled="disabled || !form.typeId || isLoadingBrand" :forceLoading="isLoadingBrand" @select="onChangeBrand"/>
     </v-col>
     <v-col :cols="cols">
-      <SelectDropdown :value.sync="form.modelId" label="รุ่น *" :items="modelItems" :rules="modelRule" required :disabled="disabled || !form.brandId || isLoadingModel" :forceLoading="isLoadingModel" @select="onChangeModel"/>
+      <SelectDropdown :value.sync="form.modelId" label="รุ่น *" :items="modelItems" :rules="!noRules && modelRule" required :disabled="disabled || !form.brandId || isLoadingModel" :forceLoading="isLoadingModel" @select="onChangeModel"/>
     </v-col>
     <slot :categoryForm="form"/>
   </v-row>
@@ -28,14 +28,15 @@
       cols: { type: Number, default: 4 },
       disabled: { type: Boolean },
       initForm: { type: Object },
-    },
-    mounted () {
-      this.setForm()
+      noRules: { type: Boolean },
     },
     watch: {
       async 'initForm' () {
         this.setForm()
       }
+    },
+    mounted () {
+      this.setForm()
     },
     methods: {
       async setForm () {

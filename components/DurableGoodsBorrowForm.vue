@@ -1,57 +1,63 @@
 <template>
   <div class="durable-goods-borrow-form">
-    <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
+    <v-stepper v-if="viewMode && item" v-model="step" class="mt-10 mb-10" altLabels>
+      <v-stepper-header>
+        <v-stepper-step :step="1" color="success" complete>ยื่นเบิก</v-stepper-step>
+        <template v-for="flow in item.flows">
+          <v-divider :key="flow.id"/>
+          <v-stepper-step :key="flow.id" :step="flow.orderApprove + 1" :color="isColor(flow)" :complete="isComplete(flow)">
+            <v-tooltip bottom :disabled="!getApproverText(flow)">
+              <template #activator="{ on, attrs }">
+                <div v-bind="attrs" class="text-center" v-on="on">
+                  <div>{{ getStepText(flow) }}</div>
+                  <div v-if="flow.position" class="mt-2" style="font-size: 0.9rem">{{ flow.position }}</div>
+                </div>
+              </template>
+              <span>{{ getApproverText(flow) }}</span>
+            </v-tooltip>
+          </v-stepper-step>
+        </template>
+      </v-stepper-header>
+    </v-stepper>
+
+    <v-form v-if="form" ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
-        <v-row v-if="isDisabled">
+        <v-row>
           <v-col :cols="6">
-            <v-text-field v-model="form.code" label="เลขที่เอกสาร" disabled/>
+            <InputDatePicker :value.sync="form.dateBorrow" label="วันที่ยืมครุภัณฑ์ *" :rules="datetimeBorrowRules" required :disabled="viewMode"/>
           </v-col>
+          <!-- <v-col :cols="4">
+            <InputDatePicker :value.sync="form.dateReturn" label="วันที่ต้องคืน ครุภัณฑ์ *" :rules="datetimeReturnRules" required :disabled="viewMode"/>
+          </v-col> -->
         </v-row>
         <v-row>
-          <v-col :cols="4">
-            <InputDatePicker :value.sync="form.datetimeBorrow" label="วันที่ยืม ครุภัณฑ์ *" :rules="datetimeBorrowRules" required :disabled="isDisabled"/>
+          <v-col :cols="12">
+            <v-textarea v-model="form.description" label="หมายเหตุ" :rows="4" :disabled="viewMode"/>
           </v-col>
-          <v-col :cols="4">
-            <InputDatePicker :value.sync="form.datetimeReturn" label="วันที่ต้องคืน ครุภัณฑ์ *" :rules="datetimeReturnRules" required :disabled="isDisabled"/>
-          </v-col>
-          <v-col :cols="4">
-            <v-text-field v-model="form.agency" label="หน่วยงาน *" :rules="agencyRules" required :disabled="isDisabled"/>
-          </v-col>
-        </v-row>  
+        </v-row>
       </v-container>
-      <v-expansion-panels v-model="formExpand" class="form-expansion-panels mt-5" flat multiple>
-        <v-expansion-panel>
-          <v-expansion-panel-header class="pb-0">เลือกครุภัณฑ์ที่ต้องการยืม</v-expansion-panel-header>
-          <v-expansion-panel-content>
-            <v-container>
-              <v-row v-for="(durableGoods, i) in durableGoodsBorrowList" :key="i" class="mt-0">
-                <v-col :cols="6">
-                  <div class="d-flex align-baseline">
-                    <div class="mr-5">{{ i + 1 }}.</div>
-                    <v-select v-model="durableGoods.durableGoods" :items="durableGoodsList" itemValue="id" itemText="name" label="ครุภัณฑ์" :rules="durableGoodsRules" :disabled="isDisabled"/>
-                  </div>
-                </v-col>
-                <v-col :cols="6">
-                  <v-text-field v-model="form.note" label="จุดประสงค์ *" :rules="noteRules" required :disabled="isDisabled"/>
-                </v-col>
-              </v-row>
-              <v-row v-if="!isDisabled">
-                <v-btn block rounded outlined @click="addDurableGoods">เพิ่มครุภัณฑ์</v-btn>
-              </v-row>
-            </v-container>
-          </v-expansion-panel-content> 
-        </v-expansion-panel>  
-      </v-expansion-panels>
+
+      <h5 class="text-h5 mt-5"><b>เลือกครุภัณฑ์ที่ต้องการยืม</b></h5>
+      <v-container class="mt-2">
+        <CategoryDurableGood :initForm="initCategoryForm" :disabled="viewMode" noRules @change="({ form }) => categoryForm = form"/>
+        <v-row>
+          <v-col>
+            <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
+            <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" apiPath="equipment/getEquipments" :disabled="viewMode"/>
+          </v-col>
+        </v-row>
+      </v-container>
+
       <v-container class="mt-8">
         <v-row v-if="isApprover" justify="end">
-          <v-btn large plain @click="$router.push('/durable-goods/request/')">ย้อนหลับ</v-btn>
-          <v-btn elevation="2" large color="success" @click="onApprove">อนุมัติ</v-btn>
+          <v-btn large plain @click="$router.push(backPath)">ย้อนหลับ</v-btn>
+          <v-btn v-if="!isReject" class="mr-4" elevation="2" large outlined color="error" @click="onReject">ไม่อนุมัติ</v-btn>
+          <v-btn v-if="!isReject" elevation="2" large color="success" @click="onApprove">อนุมัติ</v-btn>
         </v-row>
         <v-row v-else justify="end">
-          <v-btn v-if="isDisabled" large outlined :elevation="2" @click="$router.push('/durable-goods/withdraw/')">ย้อนหลับ</v-btn>
-          <v-btn v-else large plain @click="$router.push('/durable-goods/withdraw/')">ย้อนหลับ</v-btn>
-          <v-btn v-if="!isDisabled" elevation="2" large outlined color="success" @click="onSave">บันทึก</v-btn>
-          <v-btn v-if="!isDisabled" class="ml-4" elevation="2" large color="success" @click="onSubmit">ยื่นขอเบิก</v-btn>
+          <v-btn v-if="viewMode" large outlined :elevation="2" @click="$router.push(backPath)">ย้อนหลับ</v-btn>
+          <v-btn v-else large plain @click="$router.push(backPath)">ย้อนหลับ</v-btn>
+          <v-btn v-if="!viewMode" class="ml-4" elevation="2" large color="success" @click="onSubmit">ยื่นขอเบิก</v-btn>
         </v-row>
       </v-container>
     </v-form>
@@ -60,70 +66,99 @@
 
 <script>
   export default {
+    components: {
+      SelectDropdown: () => import('~/components/SelectDropdown.vue'),
+      InputDatePicker: () => import('~/components/InputDatePicker.vue'),
+      CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
+    },
     props: {
+      item: { type: Object },
       viewMode: { type: Boolean },
-      isApprover: { type: Boolean },
-      step: { type: Number, default: 1 }
+      backPath: { type: String, default: '/durable-goods/borrow/' },
+      cannotApprove: { type: Boolean },
     },
     data () {
       return {
         valid: true,
-        formExpand: [0],
-        durableGoodsBorrowList: [],
-        durableGoodsList: [
-          { id: 1, name: 'โทรศัพท์มือถือ Nokia N95' },
-          { id: 2, name: 'คอมพิวเตอร์' },
-          { id: 3, name: 'แท็บเล็ต' },
-          { id: 4, name: 'หนังสือ' },
-        ],
-        form: {
-          code: '51-1002511-25',
-          datetimeBorrow: new Date(),
-          datetimeReturn: '',
-          agency: '',
-        },
+        form: null,
         datetimeBorrowRules: [
           v => !!v || 'โปรดใส่วันที่ยืม',
         ],
         datetimeReturnRules: [
           v => !!v || 'โปรดใส่วันที่คืน',
         ],
-        agencyRules: [
-          v => !!v || 'โปรดใส่หน่วยงาน',
-        ],
         durableGoodsRules: [
           v => !!v || 'โปรดเลือกครุภัณฑ์',
         ],
-        noteRules: [
-          v => !!v || 'โปรดเลือกครุภัณฑ์',
-        ],
+        step: 1,
+        categoryForm: {},
+        initCategoryForm: {},
       }
     },
     computed: {
-      isDisabled () {
-        return this.viewMode
+      currentFlow () {
+        return this.item?.flows?.find(flow => flow?.status === 'PENDING') || null
       },
+      isApprover () {
+        return !this.cannotApprove && this.currentFlow?.canApprove === 'true'
+      },
+      isReject () {
+        return this.item && this.item.status === 'REJECT'
+      },
+    },
+    watch: {
+      'item' () {
+        this.setForm()
+      }
     },
     mounted () {
-      this.addDurableGoods()
+      this.setForm()
     },
     methods: {
-      addDurableGoods () {
-        this.durableGoodsBorrowList.push({ durableGoods: null, note: '' })
+      setForm () {
+        this.form = {
+          description: this.item?.description || '',
+          dateBorrow: this.item?.dateBorrow || new Date(),
+          itemId: this.item?.items?.[0]?.equipment?.id || null,
+          item: this.item?.items?.[0] || null
+        }
+        if (this.item) this.setCategoryForm()
+        const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
+        this.step = index + 2
       },
-      removeContact (i) {
-        this.durableGoodsBorrowList.splice(i, 1)
+      setCategoryForm () {
+        const data = this.item?.items?.[0]
+        this.initCategoryForm = {
+          majorCategoryId: data.majorCategory.id,
+          subCategoryId: data.subCategory.id,
+          typeId: data.type.id,
+          brandId: data.brand.id,
+          modelId: data.model.id,
+        }
       },
-      onSave () {
-        const valid = this.$refs.form.validate()
-        if (valid) this.$emit('save', this.form)
+      getApproverText (flow) {
+        return flow?.emails?.reduce((str, email, i) => `${str}${i > 0 ? ', ' : ''}${email}`, 'ผู้อนุมัติ : ') || false
+      },
+      getStepText (flow) {
+        return this.$store.state.approveStatus[flow?.status || 'PENDING']
+      },
+      isColor (item) {
+        return this.$store.state.approveStatusColor[item?.status] || 'grey'
+      },
+      isComplete (item) {
+        return item?.status === 'APPROVE'
       },
       onSubmit () {
         const valid = this.$refs.form.validate()
         if (valid) this.$emit('submit', this.form)
       },
       onApprove () {
-        this.$emit('approve', this.form)
+        const valid = this.$refs.form.validate()
+        if (valid) this.$emit('approve', this.currentFlow, this.form)
+      },
+      onReject () {
+        const valid = this.$refs.form.validate()
+        if (valid) this.$emit('reject', this.currentFlow, this.form)
       },
     }
   }
@@ -131,5 +166,33 @@
 
 <style lang="scss">
   .durable-goods-borrow-form {
+    .v-stepper {
+      .v-stepper__header {
+        margin: 0 auto;
+
+        .v-stepper__step {
+          .v-stepper__step__step {
+            width: 40px;
+            height: 40px;
+          }
+        }
+
+        .v-divider {
+          margin-top: 45px;
+        }
+      }
+    }
+
+    .text-remaining {
+      width: max-content;
+    }
+
+    @media (max-width: 768px) {
+      .v-stepper {
+        .v-stepper__header {
+          padding: 0;
+        }
+      }
+    }
   }
 </style>

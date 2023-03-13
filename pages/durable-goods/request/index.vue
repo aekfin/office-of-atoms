@@ -1,7 +1,8 @@
 <template>
   <div id="durable-goods-request-page">
-    <PageHeader text="ครุภัณฑ์ที่รออนุมัติ"/>
-    <DurableGoodsBorrowTable :items="items" :getActionIconList="getActionIconList"/>
+    <PageHeader text="ครุภัณฑ์ที่รออนุมัติ" :total="total"/>
+    <DurableGoodsBorrowTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
+    <Pagination/>
   </div>
 </template>
 
@@ -9,67 +10,37 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
+      DurableGoodsBorrowTable: () => import('~/components/DurableGoodsBorrowTable.vue'),
     },
     data () {
       return {
-        items: [
-          {
-            id: 1,
-            code: '65-000000001',
-            datetimeWithdraw: new Date(),
-            datetimeApprove: new Date(),
-            status: 1,
-            countDurableGoods: 5,
-            agency: 'หน่วย ก',
-            durableGoodsList: [
-              { id: 1, name: 'โทรศัพท์ Nokia N95', countWithdraw: 10, countPaid: 10 },
-              { id: 1, name: 'โทรศัพท์ Nokia N95', countWithdraw: 10, countPaid: 10 },
-            ],
-          },
-          {
-            id: 2,
-            code: '65-000000001',
-            datetimeWithdraw: new Date(),
-            datetimeApprove: new Date(),
-            status: 2,
-            countDurableGoods: 4,
-            agency: 'หน่วย ข',
-            durableGoodsList: [
-              { id: 1, name: 'โทรศัพท์ Samsung C', countWithdraw: 5, countPaid: 5 },
-            ],
-          },
-          {
-            id: 3,
-            code: '65-000000001',
-            datetimeWithdraw: new Date(),
-            datetimeApprove: new Date(),
-            status: 3,
-            countDurableGoods: 1,
-            agency: 'หน่วย ค',
-            durableGoodsList: [
-              { id: 1, name: 'โทรศัพท์ One Plus', countWithdraw: 8, countPaid: 8 },
-            ],
-          },
-          {
-            id: 4,
-            code: '65-000000001',
-            datetimeWithdraw: new Date(),
-            datetimeApprove: new Date(),
-            agency: 'หน่วย ง',
-            status: 4,
-            countDurableGoods: 3,
-            durableGoodsList: [
-              { id: 1, name: 'โทรศัพท์ Nokia N91', countWithdraw: 20, countPaid: 20 },
-            ],
-          },
-        ],
+        isLoading: false,
+        count: 0,
+        total: 0,
+        items: [],
       }
     },
+    watch: {
+      '$route.query' () {
+        this.getList()
+      }
+    },
+    mounted () {
+      this.getList()
+    },
     methods: {
+      async getList () {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getListRequest', query: { ...this.$route.query }, context: this })
+          this.isLoading = false
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'mdi-pencil', action: `/durable-goods/request/${item.id}/` },
-          { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
+          // { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
         ]
       },
     },

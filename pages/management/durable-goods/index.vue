@@ -6,8 +6,8 @@
       <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
       <template #item.majorCategory="{ item }">
         <v-menu open-on-hover top offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" v-on="on" icon>
+          <template #activator="{ on, attrs }">
+            <v-btn v-bind="attrs" icon v-on="on">
               <v-icon>mdi-information-outline</v-icon>
             </v-btn>
           </template>
@@ -32,8 +32,8 @@
       </template>
       <template #item.organization.ouName="{ item }">
         <v-menu open-on-hover top offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" v-on="on" icon>
+          <template #activator="{ on, attrs }">
+            <v-btn v-bind="attrs" icon v-on="on">
               <v-icon>mdi-information-outline</v-icon>
             </v-btn>
           </template>
@@ -46,6 +46,9 @@
             </v-list-item>
           </v-list>
         </v-menu>
+      </template>
+      <template #item.status="{ item }">
+        <v-chip :color="$store.state.durableGoodStatusColor[item.status]">{{ $store.state.durableGoodStatus[item.status] }}</v-chip>
       </template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
@@ -74,8 +77,8 @@
           { text: 'ชื่อครุภัณฑ์', value: 'name' },
           { text: 'หมวดหมู่', value: 'majorCategory', width: '160px', align: 'center' },
           { text: 'ราคากลาง', value: 'price', align: 'center', width: '120px' },
-          { text: 'ปี', value: 'year', align: 'center', width: '80px' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '160px', align: 'center' },
+          { text: 'สถานะ', value: 'status', align: 'center', width: '100px' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
       }

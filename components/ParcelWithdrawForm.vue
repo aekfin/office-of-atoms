@@ -7,8 +7,8 @@
           <v-divider :key="flow.id"/>
           <v-stepper-step :key="flow.id" :step="flow.orderApprove + 1" :color="isColor(flow)" :complete="isComplete(flow)">
             <v-tooltip bottom :disabled="!getApproverText(flow)">
-              <template v-slot:activator="{ on, attrs }">
-                <div v-bind="attrs" v-on="on" class="text-center">
+              <template #activator="{ on, attrs }">
+                <div v-bind="attrs" class="text-center" v-on="on">
                   <div>{{ getStepText(flow) }}</div>
                   <div v-if="flow.position" class="mt-2" style="font-size: 0.9rem">{{ flow.position }}</div>
                 </div>
@@ -19,6 +19,7 @@
         </template>
       </v-stepper-header>
     </v-stepper>
+
     <v-form v-if="form" ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
@@ -44,7 +45,7 @@
           <v-col :cols="6">
             <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].name" label="วัสดุคงคลัง *" disabled/>
             <SelectDropdown v-else :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" :rules="parcelRules" apiPath="parcel/searchParcelMaster"
-              :query="getParcelQuery(form.pickUpItems[i])" reloadOnClick :disabled="viewMode || !form.pickUpItems[i].typeId"/>
+              :query="getParcelQuery(form.pickUpItems[i])" :disabled="viewMode || !form.pickUpItems[i].typeId"/>
           </v-col>
           <v-col :cols="1" class="align-self-center">
             <v-btn v-if="form.pickUpItems.length > 1 && !viewMode" icon @click="removeContact(i)">
@@ -63,7 +64,7 @@
           <v-col :cols="viewMode ? 6 : 4" class="pt-0">
             <div class="d-flex align-baseline">
               <v-text-field v-if="showQuantity(form.pickUpItems[i])" v-model="form.pickUpItems[i].quantity" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'"
-                :rules="countWithdrawRules(form.pickUpItems[i])" required  :disabled="viewMode && !canChangeQuantity"/>
+                :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity"/>
               <div v-if="showRemain" class="ml-5 text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain }}</div>
             </div>
           </v-col>
@@ -72,6 +73,7 @@
           <v-btn block rounded outlined @click="addParcel">เพิ่มวัสดุคงคลัง</v-btn>
         </v-row>
       </v-container>
+
       <v-container class="mt-8">
         <v-row v-if="isApprover" justify="end">
           <v-btn large plain @click="$router.push(backPath)">ย้อนหลับ</v-btn>
@@ -146,7 +148,7 @@
       setForm () {
         this.form = {
           description: this.item?.description || '',
-          datePickUp: new Date(),
+          datePickUp: this.item?.datePickUp || new Date(),
           pickUpItems: this.item?.items
             ? this.item.items.map(item => {
               const { type } = item
