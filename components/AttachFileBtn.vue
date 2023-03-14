@@ -1,7 +1,7 @@
 <template>
   <div class="attach-file-btn">
-    <input v-show="false" ref="inputFile" type="file" accept="*" :multiple="multiple" @change="onChange">
-    <v-btn elevation="2" color="#546E7A" class="text-white" @click="attach">แนบไฟล์เพิ่มเติม</v-btn>
+    <input v-show="false" ref="inputFile" type="file" :accept="accept" :multiple="multiple" @change="onChange">
+    <v-btn v-if="attachmentList.length <= limit" elevation="2" color="#546E7A" class="text-white" @click="attach">แนบไฟล์เพิ่มเติม</v-btn>
     <div v-for="(attachment, i) in attachmentList" :key="i" class="file mt-4">
       <a class="file-name-wrapper" :href="attachment.fileUrl" target="_blank">
         <v-icon>mdi-download</v-icon>
@@ -25,6 +25,8 @@
       value: { type: Array, default: () => [] },
       attachments: { type: Array, default: () => [] },
       multiple: { type: Boolean, default: true },
+      limit: { type: Number, default: Infinity },
+      accept: { type: String, default: '*' }
     },
     data () {
       return {

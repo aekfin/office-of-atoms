@@ -84,9 +84,25 @@ export default () => ({
         //   to: '/durable-goods/counting/'
         // },
         {
+          title: 'เบิกครุภัณฑ์',
+          to: '/durable-goods/withdraw/',
+        },
+        {
+          title: 'โอนย้ายครุภัณฑ์',
+          to: '/durable-goods/transfer/',
+        },
+        {
           title: 'ครุภัณฑ์ที่รออนุมัติ',
           to: '/durable-goods/request/',
           durableGoodsBadge: true,
+        },
+        {
+          title: 'จำหน่ายครุภัณฑ์',
+          to: '/durable-goods/distribute/',
+        },
+        {
+          title: 'ส่งซ่อมครุภัณฑ์',
+          to: '/durable-goods/repair/',
         },
       ]
     },

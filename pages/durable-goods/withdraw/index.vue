@@ -1,6 +1,6 @@
 <template>
-  <div id="durable-goods-request-page">
-    <PageHeader text="ครุภัณฑ์ที่รออนุมัติ" :total="total"/>
+  <div id="durable-goods-withdraw-page">
+    <PageHeader text="การเบิกครุภัณฑ์" btnText="เพิ่มการเบิกครุภัณฑ์" createRoute="/durable-goods/withdraw/create/" :total="total"/>
     <DurableGoodsBorrowTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
     <Pagination/>
   </div>
@@ -32,14 +32,14 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getListRequest', query: { ...this.$route.query }, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getListRequest', query: { ...this.$route.query, isOwner: true }, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'mdi-pencil', action: `/durable-goods/request/${item.id}/` },
+          { type: 'link', icon: 'mdi-pencil', action: `/durable-goods/withdraw/${item.id}/` },
           // { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
         ]
       },
@@ -48,6 +48,6 @@
 </script>
 
 <style lang="scss">
-  #parcel-withdraw-page {
+  #durable-goods-withdraw-page {
   }
 </style>

@@ -24,7 +24,7 @@
     },
     computed: {
       isCreate () {
-        return this.$route.params.durable_goods_id === 'create'
+        return this.$route.params.borrow_id === 'create'
       },
     },
     mounted () {
@@ -34,7 +34,7 @@
       async getData () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/getRequestDetail', query: { id: this.$route.params.durable_goods_id } })
+          const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/getRequestDetail', query: { id: this.$route.params.borrow_id } })
           this.item = data
           this.isLoading = false
           return Promise.resolve()

@@ -65,6 +65,12 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels> -->
+
+      <v-container class="mt-2">
+        <h5 class="text-h5 mb-4"><b>รูปครุภัณฑ์</b></h5>
+        <AttachFileBtn :value.sync="attachFiles" accept="image/*" @removeAttachment="onRemoveAttachment"/>
+      </v-container>
+
       <v-container class="mt-8">
         <v-row justify="end">
           <v-btn large plain @click="$router.push('/management/durable-goods/')">ย้อนหลับ</v-btn>
@@ -80,6 +86,7 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
+      AttachFileBtn: () => import('~/components/AttachFileBtn.vue'),
     },
     data () {
       return {
@@ -137,6 +144,8 @@
         departmentRules: [
           v => !!v || 'โปรดใส่กลุ่ม',
         ],
+        attachFiles: [],
+        removeFile: [],
       }
     },
     computed: {
@@ -171,6 +180,9 @@
       },
       removeDeterioration (i) {
         this.deteriorationList.splice(i, 1)
+      },
+      onRemoveAttachment (attach) {
+        this.removeFile.push(attach)
       },
       onSubmit () {
         const valid = this.$refs.form.validate()
