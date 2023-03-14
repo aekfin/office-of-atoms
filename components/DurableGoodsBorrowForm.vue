@@ -39,11 +39,12 @@
 
       <h5 class="text-h5 mt-5"><b>เลือกครุภัณฑ์ที่ต้องการยืม</b></h5>
       <v-container class="mt-2">
-        <CategoryDurableGood :initForm="initCategoryForm" :disabled="viewMode" noRules @change="({ form }) => categoryForm = form"/>
+        <CategoryDurableGood :initForm="initCategoryForm" :disabled="viewMode" noRules @change="onChangeCategory"/>
         <v-row>
           <v-col>
             <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
-            <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" apiPath="equipment/getEquipments" :disabled="viewMode"/>
+            <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" apiPath="equipment/getEquipmentsAndFilter"
+              :query="categoryForm" :disabled="viewMode"/>
           </v-col>
         </v-row>
       </v-container>
@@ -135,6 +136,10 @@
           brandId: data.brand.id,
           modelId: data.model.id,
         }
+      },
+      onChangeCategory ({ form }) {
+        this.categoryForm = { ...form }
+        this.form.itemId = null
       },
       getApproverText (flow) {
         return flow?.emails?.reduce((str, email, i) => `${str}${i > 0 ? ', ' : ''}${email}`, 'ผู้อนุมัติ : ') || false
