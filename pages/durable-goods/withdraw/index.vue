@@ -1,7 +1,7 @@
 <template>
   <div id="durable-goods-withdraw-page">
     <PageHeader text="การเบิกครุภัณฑ์" btnText="เพิ่มการเบิกครุภัณฑ์" createRoute="/durable-goods/withdraw/create/" :total="total"/>
-    <DurableGoodsBorrowTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
+    <DurableGoodsWithdrawTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
     <Pagination/>
   </div>
 </template>
@@ -10,7 +10,7 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
-      DurableGoodsBorrowTable: () => import('~/components/DurableGoodsBorrowTable.vue'),
+      DurableGoodsWithdrawTable: () => import('~/components/DurableGoodsWithdrawTable.vue'),
     },
     data () {
       return {

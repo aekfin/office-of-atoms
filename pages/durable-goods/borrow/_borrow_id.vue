@@ -13,6 +13,7 @@
       PageHeader: () => import('~/components/PageHeader.vue'),
       DurableGoodsBorrowForm: () => import('~/components/DurableGoodsBorrowForm.vue'),
       Loading: () => import('~/components/Loading.vue'),
+      ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
     },
     data () {
       return {

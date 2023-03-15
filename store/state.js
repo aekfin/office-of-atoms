@@ -87,10 +87,10 @@ export default () => ({
           title: 'เบิกครุภัณฑ์',
           to: '/durable-goods/withdraw/',
         },
-        {
-          title: 'โอนย้ายครุภัณฑ์',
-          to: '/durable-goods/transfer/',
-        },
+        // {
+        //   title: 'โอนย้ายครุภัณฑ์',
+        //   to: '/durable-goods/transfer/',
+        // },
         {
           title: 'ครุภัณฑ์ที่รออนุมัติ',
           to: '/durable-goods/request/',
