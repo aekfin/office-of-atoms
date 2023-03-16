@@ -1,8 +1,8 @@
 <template>
   <div id="durable-goods-request-detail-page">
-    <PageHeader :text="isCreate ? 'การยืม-คืน ครุภัณฑ์' : 'การแก้ไขการยืม-คืน ครุภัณฑ์'" hideTotal/>
+    <PageHeader :text="`อนุมัติการ${type}ครุภัณฑ์`" hideTotal/>
     <Loading v-if="isLoading"/>
-    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" isApprover backPath="/durable-goods/request/" @approve="onApprove" @reject="onReject"/>
+    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" isApprover backPath="/durable-goods/request/" :type="type" @approve="onApprove" @reject="onReject"/>
   </div>
 </template>
 
@@ -24,6 +24,9 @@
     computed: {
       isCreate () {
         return this.$route.params.request_id === 'create'
+      },
+      type () {
+        return this.$store.state.durableGoodTypes[this.item?.type || 'BORROW']
       },
     },
     mounted () {

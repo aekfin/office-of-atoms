@@ -24,7 +24,7 @@
       <v-container>
         <v-row>
           <v-col :cols="6">
-            <InputDatePicker :value.sync="form.dateBorrow" label="วันที่ยืมครุภัณฑ์ *" :rules="datetimeBorrowRules" required :disabled="viewMode"/>
+            <InputDatePicker :value.sync="form.dateBorrow" :label="`วันที่${type}ครุภัณฑ์ *`" :rules="datetimeBorrowRules" required :disabled="viewMode"/>
           </v-col>
           <!-- <v-col :cols="4">
             <InputDatePicker :value.sync="form.dateReturn" label="วันที่ต้องคืน ครุภัณฑ์ *" :rules="datetimeReturnRules" required :disabled="viewMode"/>
@@ -37,7 +37,7 @@
         </v-row>
       </v-container>
 
-      <h5 class="text-h5 mt-5"><b>เลือกครุภัณฑ์ที่ต้องการยืม</b></h5>
+      <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการ${type}` }}</b></h5>
       <v-container class="mt-2">
         <CategoryDurableGood :initForm="initCategoryForm" :disabled="viewMode" noRules @change="onChangeCategory"/>
         <v-row>
@@ -58,7 +58,7 @@
         <v-row v-else justify="end">
           <v-btn v-if="viewMode" large outlined :elevation="2" @click="$router.push(backPath)">ย้อนหลับ</v-btn>
           <v-btn v-else large plain @click="$router.push(backPath)">ย้อนหลับ</v-btn>
-          <v-btn v-if="!viewMode" class="ml-4" elevation="2" large color="success" @click="onSubmit">ยื่นขอเบิก</v-btn>
+          <v-btn v-if="!viewMode" class="ml-4" elevation="2" large color="success" @click="onSubmit">{{ `ยื่นขอ${type}` }}</v-btn>
         </v-row>
       </v-container>
     </v-form>
@@ -77,13 +77,14 @@
       viewMode: { type: Boolean },
       backPath: { type: String, default: '/durable-goods/borrow/' },
       cannotApprove: { type: Boolean },
+      type: { type: String, default: 'ยืม' },
     },
     data () {
       return {
         valid: true,
         form: null,
         datetimeBorrowRules: [
-          v => !!v || 'โปรดใส่วันที่ยืม',
+          v => !!v || `โปรดใส่วันที่${this.type}`,
         ],
         datetimeReturnRules: [
           v => !!v || 'โปรดใส่วันที่คืน',

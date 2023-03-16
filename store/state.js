@@ -35,6 +35,11 @@ export default () => ({
     'BORROWED': 'error',
     'RETURNED': 'success',
   },
+  durableGoodTypes: {
+    'BORROW': 'ยืม',
+    'RETURN': 'คืน',
+    'REQUISITION': 'เบิก',
+  },
   leftMenus: [
     {
       title: 'หนักหลัก',

@@ -1,8 +1,8 @@
 <template>
   <div id="durable-goods-withdraw-detail-page">
-    <PageHeader :text="isCreate ? 'การยืม - คืน ครุภัณฑ์' : 'การแก้ไขการยืม - คืน ครุภัณฑ์'" hideTotal/>
+    <PageHeader :text="isCreate ? 'การเบิกครุภัณฑ์' : 'การแก้ไขการเบิกครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
-    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" cannotApprove @submit="onSubmit"/>
+    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" type="เบิก" cannotApprove backPath="/durable-goods/withdraw/" @submit="onSubmit"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
   </div>
 </template>
