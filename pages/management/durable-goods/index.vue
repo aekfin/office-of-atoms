@@ -1,28 +1,14 @@
 <template>
   <div id="durable-goods-page">
     <PageHeader text="ค่าเริ่มต้นครุภัณฑ์" btnText="เพิ่มค่าเริ่มต้นครุภัณฑ์" createRoute="/management/durable-goods/create/" :total="total"/>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading" :total="total">
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
       <template #item.majorCategory="{ item }">
         <EquipmentColumn :item="item"/>
       </template>
       <template #item.organization.ouName="{ item }">
-        <v-menu open-on-hover top offset-y>
-          <template #activator="{ on, attrs }">
-            <v-btn v-bind="attrs" icon v-on="on">
-              <v-icon>mdi-information-outline</v-icon>
-            </v-btn>
-          </template>
-          <v-list class="goods-list">
-            <v-list-item>
-              <v-list-item-title>กอง : <b>{{ item.organization.ouName }}</b></v-list-item-title>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>กลุ่ม : <b>{{ item.department.departmentName }}</b></v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+        <OwnerColumn :item="item"/>
       </template>
       <template #item.status="{ item }">
         <v-chip :color="$store.state.durableGoodStatusColor[item.status]">{{ $store.state.durableGoodStatus[item.status] }}</v-chip>
@@ -41,6 +27,7 @@
       PageHeader: () => import('~/components/PageHeader.vue'),
       ActionIconList: () => import('~/components/ActionIconList.vue'),
       EquipmentColumn: () => import('~/components/EquipmentColumn.vue'),
+      OwnerColumn: () => import('~/components/OwnerColumn.vue'),
       Pagination: () => import('~/components/Pagination.vue'),
     },
     data () {
@@ -90,11 +77,5 @@
 
 <style lang="scss">
   #durable-goods-page {
-  }
-
-  .goods-list.v-list {
-    .v-list-item {
-      min-height: 36px;
-    }
   }
 </style>

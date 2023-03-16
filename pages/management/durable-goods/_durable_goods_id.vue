@@ -1,10 +1,11 @@
 <template>
   <div id="management-durable-goods-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นครุภัณฑ์' : 'การแก้ไขค่าเริ่มต้นครุภัณฑ์'" hideTotal/>
-    <v-form ref="form" v-model="valid" lazyValidation class="mt-4">
+    <Loading v-if="isLoading"/>
+    <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <CategoryDurableGood :cols="3" :disabled="!isCreate" :initForm="initCategoryForm" @change="({ form }) => categoryForm = form">
-          <template>
+          <template #default>
             <v-col v-if="!isCreate" :cols="4">
               <v-text-field v-model="form.number" name="code" label="เลขที่ครุภัณฑ์ *" required disabled/>
             </v-col>
@@ -35,10 +36,10 @@
             <div class="text-h5"><b>ผู้ครอบครอง</b></div>
           </v-col>
           <v-col :cols="6">
-            <SelectDropdown :value.sync="form.organizationId" label="กอง *" itemText="ouName" :rules="ouRules" required apiPath="Orgchart/getOrganizations"/>
+            <SelectDropdown :value.sync="form.organizationId" label="กอง *" itemText="ouName" :rules="ouRules" required :disabled="!isCreate" apiPath="Orgchart/getOrganizations"/>
           </v-col>
           <v-col :cols="6">
-            <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required apiPath="Orgchart/getDepartments"/>
+            <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required :disabled="!isCreate" apiPath="Orgchart/getDepartments"/>
           </v-col>
         </v-row>
       </v-container>
@@ -66,7 +67,7 @@
         </v-expansion-panel>
       </v-expansion-panels> -->
 
-      <v-container class="mt-2">
+      <v-container v-if="isCreate" class="mt-2">
         <h5 class="text-h5 mb-4"><b>รูปครุภัณฑ์</b></h5>
         <AttachFileBtn :value.sync="attachFiles" accept="image/*" @removeAttachment="onRemoveAttachment"/>
       </v-container>
@@ -91,6 +92,7 @@
     data () {
       return {
         valid: true,
+        isLoading: false,
         form: {
           name: '',
           year: (new Date()).getFullYear() + 543,
@@ -159,6 +161,7 @@
     methods: {
       async getData () {
         try {
+          this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/${this.$route.params.durable_goods_id}` })
           this.form = {
             ...data,
@@ -172,6 +175,7 @@
             brandId: data.brand.id,
             modelId: data.model.id,
           }
+          this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },

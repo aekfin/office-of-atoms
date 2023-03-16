@@ -115,6 +115,12 @@ button.v-btn.v-size--large {
   }
 }
 
+.goods-list.v-list {
+  .v-list-item {
+    min-height: 36px;
+  }
+}
+
 .v-menu__content {
   background-color: white;
 }
