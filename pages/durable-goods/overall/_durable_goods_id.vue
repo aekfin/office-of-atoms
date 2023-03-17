@@ -17,8 +17,15 @@
         <div class="text-h5 mt-5"><b>เลือกครุภัณฑ์</b></div>
         <v-container>
           <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
-            <v-expansion-panel v-for="(equipment, i) in form.equipments" :key="i">
-              <v-expansion-panel-header class="text-h6">ครุภัณฑ์ ชิ้นที่ {{ i + 1 }}.</v-expansion-panel-header>
+            <v-expansion-panel v-for="(equipment, i) in form.equipments" :key="i" accordion>
+              <v-expansion-panel-header v-if="isCreate" class="text-h6">
+                <div class="d-flex align-center">
+                  <div>ครุภัณฑ์ ชิ้นที่ {{ i + 1 }}.</div>
+                  <v-btn v-if="form.equipments.length > 1 && i === form.equipments.length - 1" class="ml-5" icon @click.stop="removeDurableGoods(i)">
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </div>
+              </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-container>
                   <CategoryDurableGood :cols="3" :disabled="!isCreate" :initForm="initCategoryForm" @change="res => form.equipments[i].categoryForm = res.form">
@@ -173,6 +180,9 @@
           }
         )
         this.formExpand = [ ...this.formExpand, this.formExpand.length ]
+      },
+      removeDurableGoods (i) {
+        this.form.equipments.splice(i, 1)
       },
       async getData () {
         try {
