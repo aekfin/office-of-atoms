@@ -1,7 +1,7 @@
 <template>
-  <div id="durable-goods-withdraw-page">
-    <PageHeader text="การเบิกครุภัณฑ์" btnText="เพิ่มการเบิกครุภัณฑ์" createRoute="/durable-goods/withdraw/create/" :total="total"/>
-    <DurableGoodsWithdrawTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
+  <div id="durable-goods-transfer-detail-page">
+    <PageHeader text="การโอนย้ายครุภัณฑ์" btnText="เพิ่มการโอนย้ายครุภัณฑ์" createRoute="/durable-goods/transfer/create/" :total="total"/>
+    <DurableGoodsTransferTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
     <Pagination/>
   </div>
 </template>
@@ -10,7 +10,7 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
-      DurableGoodsWithdrawTable: () => import('~/components/DurableGoodsWithdrawTable.vue'),
+      DurableGoodsTransferTable: () => import('~/components/DurableGoodsTransferTable.vue'),
       Pagination: () => import('~/components/Pagination.vue'),
     },
     data () {
@@ -33,14 +33,14 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getListRequestFilter', query: { ...this.$route.query, isOwner: true, types: 'REQUISITION' }, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getListRequestFilter', query: { ...this.$route.query, isOwner: true, types: 'TRANSFER' }, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'mdi-pencil', action: `/durable-goods/withdraw/${item.id}/` },
+          { type: 'link', icon: 'mdi-pencil', action: `/durable-goods/transfer/${item.id}/` },
           // { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
         ]
       },
@@ -49,6 +49,6 @@
 </script>
 
 <style lang="scss">
-  #durable-goods-withdraw-page {
+  #durable-goods-transfer-detail-page {
   }
 </style>
