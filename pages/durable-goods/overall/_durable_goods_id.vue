@@ -209,7 +209,10 @@
         const valid = this.$refs.form.validate()
         if (valid) {
           try {
-            const form = { ...this.form }
+            const form = {
+              ...this.form,
+              dateEntry: this.$fn.convertDateToString(this.form.dateEntry)
+            }
             const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/project/import', data: form })
             await Promise.all(
               data.map((item, i) => {

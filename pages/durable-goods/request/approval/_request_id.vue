@@ -2,7 +2,7 @@
   <div id="durable-goods-request-detail-page">
     <PageHeader :text="`อนุมัติการ${type}ครุภัณฑ์`" hideTotal/>
     <Loading v-if="isLoading"/>
-    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" isApprover backPath="/durable-goods/request/" :type="type" @approve="onApprove" @reject="onReject"/>
+    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" isApprover :backPath="backPath" :type="type" @approve="onApprove" @reject="onReject"/>
   </div>
 </template>
 
@@ -19,6 +19,12 @@
         isLoading: false,
         item: null,
         originalItems: null,
+        durableGoodRequestParams: {
+          'BORROW': '',
+          'RETURN': 'return',
+          'REQUISITION': 'withdraw',
+          'TRANSFER': 'transfer',
+        },
       }
     },
     computed: {
@@ -27,6 +33,9 @@
       },
       type () {
         return this.$store.state.durableGoodTypes[this.item?.type || 'BORROW']
+      },
+      backPath () {
+        return `/durable-goods/request/${this.durableGoodRequestParams[this.item?.type || 'BORROW']}`
       },
     },
     mounted () {

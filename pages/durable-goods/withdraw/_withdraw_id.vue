@@ -62,7 +62,7 @@
             this.dialog = true
           } else {
             await this.$store.dispatch('snackbar', { text: 'ยื่นขอเบิกวัสดุคงคลังสำเร็จ' })
-            this.$router.push('/durable-goods/borrow/')
+            this.$router.push('/durable-goods/withdraw/')
           }
         } catch (err) { return Promise.reject(err) }
       },

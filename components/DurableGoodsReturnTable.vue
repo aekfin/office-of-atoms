@@ -3,8 +3,8 @@
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.user_fk.thaiFristName="{ item }">{{ item.user_fk.thaiFristName }} {{ item.user_fk.thaiLastName }}</template>
-      <template #item.dateReturn="{ item }">
-        <div>{{ item.dateReturn ? $fn.displayDate(item.dateReturn) : '-' }}</div>
+      <template #item.dateBorrow="{ item }">
+        <div>{{ item.dateBorrow ? $fn.displayDate(item.dateBorrow) : '-' }}</div>
       </template>
       <template #item.dateApprove="{ item }">
         <div>{{ item.dateApprove ? $fn.displayDate(item.dateApprove) : '-' }}</div>
@@ -37,7 +37,7 @@
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ผู้ขอคืนครุภัณฑ์', value: 'user_fk.thaiFristName' },
-          { text: 'วันที่คืน', value: 'dateReturn', width: '140px', align: 'center' },
+          { text: 'วันที่คืน', value: 'dateBorrow', width: '140px', align: 'center' },
           { text: 'วันที่อนุมัติ', value: 'dateApprove', width: '140px', align: 'center' },
           { text: 'ครุภัณฑ์', value: 'equipment', width: '240px', align: 'center' },
           { text: 'สถานะการคืน', value: 'status', width: '160px', align: 'center' },

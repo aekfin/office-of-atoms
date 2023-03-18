@@ -43,6 +43,7 @@ export default () => ({
     'BORROW': 'ยืม',
     'RETURN': 'คืน',
     'REQUISITION': 'เบิก',
+    'TRANSFER': 'โอนย้าย',
   },
   leftMenus: [
     {
