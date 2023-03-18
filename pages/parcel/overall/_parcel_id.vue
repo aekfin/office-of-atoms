@@ -15,37 +15,39 @@
         </v-row>
         <h4 class="text-h5 mt-5"><b>เลือกวัสดุคงคลัง</b></h4>
         <v-container>
-          <v-row v-for="(parcel, i) in form.itemParcels" :key="i" class="mt-2" align="baseline">
-            <v-col cols="auto">
-              <div>{{ i + 1 }}.</div>
-            </v-col>
-            <v-col cols="4">
-              <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].typeId" itemValue="id" itemText="name" label="ประเภท *" apiPath="parcel/getListParcelType" :rules="typeRules" required/>
-              <v-text-field v-else v-model="form.itemParcels[i].type" label="ประเภท *" disabled/>
-            </v-col>
-            <v-col cols="6">
-              <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" apiPath="parcel/searchParcelMaster"
-                :query="getParcelQuery(form.itemParcels[i])" :rules="parcelRules" required :disabled="!form.itemParcels[i].typeId"/>
-              <v-text-field v-else v-model="form.itemParcels[i].parcelMasterName" label="วัสดุคงคลัง *" disabled/>
-            </v-col>
-            <v-col cols="1">
-              <v-btn v-if="form.itemParcels.length > 1 && isCreate" class="ml-2" icon @click="removeParcel(i)">
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </v-col>
-            <v-col cols="auto">
-              <v-spacer/>
-            </v-col>
-            <v-col cols="auto" class="pt-0">
-              <div class="hidden">{{ i + 1 }}.</div>
-            </v-col>
-            <v-col cols="4" class="pt-0">
-              <v-text-field v-model="form.itemParcels[i].price" class="pt-0" label="ราคา *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
-            </v-col>
-            <v-col cols="4" class="pt-0">
-              <v-text-field v-model="form.itemParcels[i].quantity" class="pt-0" label="จำนวน *" type="number" :rules="quantityRules" required :disabled="!isCreate"/>
-            </v-col>
-          </v-row>
+          <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
+            <v-expansion-panel v-for="(parcel, i) in form.itemParcels" :key="i" accordion>
+              <v-expansion-panel-header v-if="isCreate" class="text-h6">
+                <div class="d-flex align-center">
+                  <div>วัสดุคงคลัง ชิ้นที่ {{ i + 1 }}.</div>
+                  <v-btn v-if="form.itemParcels.length > 1 && i === form.itemParcels.length - 1" class="ml-5" icon @click.stop="removeParcel(i)">
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </div>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-container>
+                  <v-row>
+                    <v-col cols="4">
+                      <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].typeId" itemValue="id" itemText="name" label="ประเภท *" apiPath="parcel/getListParcelType" :rules="typeRules" required/>
+                      <v-text-field v-else v-model="form.itemParcels[i].type" label="ประเภท *" disabled/>
+                    </v-col>
+                    <v-col cols="6">
+                      <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" apiPath="parcel/searchParcelMaster"
+                        :query="getParcelQuery(form.itemParcels[i])" :rules="parcelRules" required :disabled="!form.itemParcels[i].typeId"/>
+                      <v-text-field v-else v-model="form.itemParcels[i].parcelMasterName" label="วัสดุคงคลัง *" disabled/>
+                    </v-col>
+                    <v-col cols="4">
+                      <v-text-field v-model="form.itemParcels[i].price" label="ราคา *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
+                    </v-col>
+                    <v-col cols="4">
+                      <v-text-field v-model="form.itemParcels[i].quantity" label="จำนวน *" type="number" :rules="quantityRules" required :disabled="!isCreate"/>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
           <v-row v-if="isCreate" class="mt-5">
             <v-btn block rounded outlined @click="addParcel()">เพิ่มวัสดุคงคลัง</v-btn>
           </v-row>
@@ -103,6 +105,7 @@
         dateEntryRules: [
           v => !!v || 'โปรดใส่วันที่รับเข้า',
         ],
+        formExpand: [0],
       }
     },
     computed: {
@@ -147,6 +150,7 @@
             quantity: ''
           }
         )
+        this.formExpand = [ ...this.formExpand, this.formExpand.length ]
       },
       removeParcel (i) {
         this.form.itemParcels.splice(i, 1)

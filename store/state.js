@@ -82,6 +82,10 @@ export default () => ({
       to: '/durable-goods/',
       children: [
         {
+          title: 'ครุภัณฑ์ทั้งหมด',
+          to: '/durable-goods/summary/',
+        },
+        {
           title: 'บริหารครุภัณฑ์',
           to: '/durable-goods/overall/',
         },
