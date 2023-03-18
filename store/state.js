@@ -22,6 +22,10 @@ export default () => ({
   approveRequest: null,
   approveRequestDepartment: null,
   approveEquipmentRequest: null,
+  approveEquipmentBORROW: null,
+  approveEquipmentRETURN: null,
+  approveEquipmentREQUISITION: null,
+  approveEquipmentTRANSFER: null,
   approveRequestTrigger: false,
   durableGoodStatus: {
     'NEW': 'ใหม่',
