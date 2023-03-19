@@ -114,7 +114,7 @@ export default () => ({
         },
         {
           title: 'จำหน่ายครุภัณฑ์',
-          to: '/durable-goods/distribute/',
+          to: '/durable-goods/sale/',
         },
         {
           title: 'ส่งซ่อมครุภัณฑ์',
@@ -122,7 +122,7 @@ export default () => ({
         },
         {
           title: 'รับบริจาคครุภัณฑ์',
-          to: '/durable-goods/distribute/',
+          to: '/durable-goods/sale/',
         },
       ]
     },

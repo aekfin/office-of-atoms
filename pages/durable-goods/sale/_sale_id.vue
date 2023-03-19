@@ -1,5 +1,5 @@
 <template>
-  <div id="durable-goods-distribute-detail-page">
+  <div id="durable-goods-sale-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มการจำหน่ายครุภัณฑ์' : 'การแก้ไขการจำหน่ายครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
 
@@ -7,7 +7,7 @@
       <v-container>
         <v-row>
           <v-col :cols="12" :md="6">
-            <InputDatePicker :value.sync="form.dateSale" label="วันที่จำหน่ายครุภัณฑ์ *" :rules="datetimeDistributeRules" required :disabled="!isCreate"/>
+            <InputDatePicker :value.sync="form.dateSale" label="วันที่จำหน่ายครุภัณฑ์ *" :rules="datetimesaleRules" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12">
             <v-textarea v-model="form.description" label="หมายเหตุ" :rows="4" :disabled="!isCreate"/>
@@ -35,7 +35,7 @@
 
       <v-container class="mt-8">
         <v-row justify="end">
-          <v-btn large plain @click="$router.push('/durable-goods/distribute/')">ย้อนหลับ</v-btn>
+          <v-btn large plain @click="$router.push('/durable-goods/sale/')">ย้อนหลับ</v-btn>
           <v-btn v-if="isCreate" class="ml-4" elevation="2" large color="success" @click="onSubmit">{{ `จำหน่ายครุภัณฑ์` }}</v-btn>
         </v-row>
       </v-container>
@@ -62,7 +62,7 @@
           itemId: null
         },
         isLoading: false,
-        datetimeDistributeRules: [
+        datetimesaleRules: [
           v => !!v || `โปรดใส่วันที่จำหน่าย`,
         ],
         datetimeReturnRules: [
@@ -83,7 +83,7 @@
     },
     computed: {
       isCreate () {
-        return this.$route.params.distribute_id === 'create'
+        return this.$route.params.sale_id === 'create'
       },
     },
     watch: {
@@ -119,7 +119,7 @@
             form.dateSale = this.$fn.convertDateToString(form.dateSale)
             const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/sale', data: form, query: this.$route.query, context: this })
             await this.$store.dispatch('snackbar', { text: 'จำหน่ายครุภัณฑ์สำเร็จ' })
-            this.$router.push('/durable-goods/distribute/')
+            this.$router.push('/durable-goods/sale/')
             return Promise.resolve(data)
           } catch (err) { return Promise.reject(err) }
         }
@@ -130,6 +130,6 @@
 </script>
 
 <style lang="scss">
-  #durable-goods-distribute-detail-page {
+  #durable-goods-sale-detail-page {
   }
 </style>
