@@ -111,7 +111,7 @@ export default () => ({
           durableGoodsBadge: true,
         },
         {
-          title: 'จำหน่ายออกครุภัณฑ์',
+          title: 'จำหน่ายครุภัณฑ์',
           to: '/durable-goods/distribute/',
         },
         {
