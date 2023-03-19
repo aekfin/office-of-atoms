@@ -2,7 +2,7 @@
   <div id="durable-goods-transfer-detail-page">
     <PageHeader :text="isCreate ? 'การโอนย้ายครุภัณฑ์' : 'การแก้ไขการโอนย้ายครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
-    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" type="โอนย้าย" cannotApprove backPath="/durable-goods/transfer/" @submit="onSubmit"/>
+    <DurableGoodsTransferForm v-else :item="item" :viewMode="!isCreate" type="โอนย้าย" cannotApprove backPath="/durable-goods/transfer/" @submit="onSubmit"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
   </div>
 </template>
@@ -11,7 +11,7 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
-      DurableGoodsBorrowForm: () => import('~/components/DurableGoodsBorrowForm.vue'),
+      DurableGoodsTransferForm: () => import('~/components/DurableGoodsTransferForm.vue'),
       Loading: () => import('~/components/Loading.vue'),
       ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
     },
@@ -45,7 +45,7 @@
       },
       getErrorText (description) {
         return description.includes('invalid with status')
-          ? 'ไม่สามารถขอโอนย้ายได้ เนื่องจากครุภัณฑ์ดังกล่าวอยู่ในระหว่างการรออนุมัติหรือถูกยืมไปแล้ว'
+          ? 'ไม่สามารถขอโอนย้ายได้ เนื่องจากครุภัณฑ์ดังกล่าวอยู่ในระหว่างการรออนุมัติหรือถูกยืมหรือถูกเบิกไปแล้ว'
           : description.includes(`this equipment can't Requisition owner is not treasury`)
             ? 'ไม่สามารถขอโอนย้ายได้ เนื่องจากครุภัณฑ์นี้ไม่ใช่ของกองคลัง'
             : 'ไม่สามารถขอโอนย้ายได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้'
@@ -53,9 +53,8 @@
       async onSubmit (form) {
         try{
           const formData = { ...form }
-          formData.dateBorrow = this.$fn.convertDateToString(formData.dateBorrow)
-          formData.itemIds = [formData.itemId]
-          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/requisition', data: formData })
+          formData.dateTransfer = this.$fn.convertDateToString(formData.dateBorrow)
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/transfer', data: formData })
           if (data.status.code == 400) {
             await this.$store.dispatch('snackbar', { text: `Error ${data.status.code}: ${data.status.description}`, props: { color: 'red', top: true } })
             this.errorText = this.getErrorText(data.status.description)

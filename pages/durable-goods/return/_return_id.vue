@@ -53,7 +53,7 @@
             this.errorText = data.status.description.includes('invalid with status') ? 'ไม่สามารถขอคืนได้ เนื่องจากครุภัณฑ์ดังกล่าวอยู่ในระหว่างการรออนุมัติหรือถูกคืนไปแล้ว' : 'ไม่สามารถขอคืนได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้'
             this.dialog = true
           } else {
-            await this.$store.dispatch('snackbar', { text: 'ยื่นขอเบิกวัสดุคงคลังสำเร็จ' })
+            await this.$store.dispatch('snackbar', { text: 'ยื่นขอคืนวัสดุคงคลังสำเร็จ' })
             this.$router.push('/durable-goods/borrow/return/')
           }
         } catch (err) { return Promise.reject(err) }

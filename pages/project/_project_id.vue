@@ -10,9 +10,9 @@
           </v-col>
           <v-col :cols="12" :md="4" class="d-flex align-center">
             <v-row class="flex-nowrap" align="baseline">
-              <v-text-field class="cost-field" v-model="budgetStart" label="งบประมาณต่ำสุด *" :rules="budgetStartRules" type="number"/>
+              <v-text-field v-model="budgetStart" class="cost-field" label="งบประมาณต่ำสุด *" :rules="budgetStartRules" type="number"/>
               <div class="mr-3 ml-3 text-h5">-</div>
-              <v-text-field class="cost-field" v-model="budgetEnd" label="งบประมาณสูงสุด *" :rules="budgetEndRules" type="number" :disabled="!budgetStart"/>
+              <v-text-field v-model="budgetEnd" class="cost-field" label="งบประมาณสูงสุด *" :rules="budgetEndRules" type="number" :disabled="!budgetStart"/>
             </v-row>
           </v-col>
           <v-col :cols="12" :md="6">
