@@ -8,11 +8,11 @@
           <!-- <v-col cols="auto">
             <UploadImage class="mt-4" :image.sync="form.image"/>
           </v-col> -->
-          <v-col :cols="8">
+          <v-col :cols="12" :md="8">
             <v-text-field v-model="form.companyNumber" name="code" label="รหัสผู้ขาย *" :rules="[codeRules, validCompanyNumber || 'รหัสผู้ขายซ้ำ']" required :loading="companyNumberLoading"
               @blur="checkCompanyNumber"/>
           </v-col>
-          <v-col :cols="4">
+          <v-col :cols="12" :md="4">
             <SelectDropdown :value.sync="form.companyType" :items="typeList" label="ประเภทผู้ขาย *" :rules="typeRules" required/>
           </v-col>
           <v-col :cols="12">
@@ -42,18 +42,18 @@
                   <div class="contract-persons">
                     <v-row>
                       <v-col class="d-flex">
-                        <div :cols="7" class="self-center mr-5">{{ i + 1 }}.</div>
+                        <div :md="7" class="self-center mr-5">{{ i + 1 }}.</div>
                         <v-text-field v-model="contact.name" label="ชื่อ - นามสกุล *" :rules="contactNameRules"/>
                       </v-col>
-                      <v-col :cols="5" class="d-flex">
+                      <v-col :md="5" class="d-flex">
                         <v-text-field v-model="contact.position" name="code" label="ตำแหน่ง *" :rules="contactPositionRules" required/>
                       </v-col>
                     </v-row>
                     <v-row>
-                      <v-col :cols="7">
+                      <v-col :md="7">
                         <v-text-field v-model="contact.email" class="pl-8" label="E-mail *" :rules="contactEmailRules"/>
                       </v-col>
-                      <v-col :cols="5">
+                      <v-col :md="5">
                         <v-text-field v-model="contact.phone" label="เบอร์โทรศัพท์ *" :rules="contactTelRules"/>
                       </v-col>
                     </v-row>
@@ -204,6 +204,12 @@
 
       .contract-persons {
         width: calc(100% - 60px);
+      }
+
+      @media only screen and (max-width: 426px) {
+        .contract-persons {
+          width: 100%;
+        }
       }
     }
   }

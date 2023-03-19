@@ -36,7 +36,7 @@
       <v-toolbar-title>
         <div class="title-header">
           <img src="~/assets/images/logo.png" alt="logo" width="48px">
-          <div>{{ title }}</div>
+          <div class="header-text">{{ title }}</div>
         </div>
       </v-toolbar-title>
       <v-spacer/>
@@ -210,6 +210,12 @@ export default {
       display: flex;
       align-items: center;
       gap: 16px;
+    }
+
+    @media only screen and (max-width: 426px) {
+      .header-text {
+        display: none;
+      }
     }
   }
 </style>

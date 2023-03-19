@@ -1,6 +1,6 @@
 <template>
   <div class="page-header">
-    <div class="d-flex justify-space-between">
+    <div class="header-wrapper">
       <h2 class="text-h4">
         <b>
           <slot>{{ text }}</slot>
@@ -115,6 +115,11 @@
 
 <style lang="scss">
   .page-header {
+    .header-wrapper {
+      display: flex;
+      justify-content: space-between;
+    }
+
     .filter-wrapper {
       display: flex;
       justify-content: space-between;
@@ -126,6 +131,13 @@
         align-items: center;
         flex-wrap: wrap;
         gap: 8px;
+      }
+    }
+
+    @media only screen and (max-width: 426px) {
+      .header-wrapper {
+        flex-flow: column;
+        gap: 12px;
       }
     }
   }

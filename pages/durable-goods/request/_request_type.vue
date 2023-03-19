@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-request-page">
-    <v-tabs class="tabs-underline mb-10" exact exactPath fixedTabs>
+    <v-tabs class="tabs-underline mb-10" exact exactPath fixedTabs showArrows>
       <v-tab :to="{ path: '/durable-goods/request/' }">
         <div>การยืม</div>
         <v-badge v-if="borrowCount" class="ml-2 mr-2" color="red" :content="borrowCount"/>

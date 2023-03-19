@@ -154,6 +154,10 @@ button.v-btn.v-size--large {
   padding-bottom: 7px !important;
 }
 
+.v-stepper:not(.v-stepper--vertical) .v-stepper__label {
+  display: block !important;
+}
+
 #default-layout {
   .theme--light.v-input--is-disabled input, .theme--light.v-input--is-disabled textarea {
     color: rgba(0, 0, 0, 0.55);

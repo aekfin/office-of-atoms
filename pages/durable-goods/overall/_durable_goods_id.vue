@@ -5,11 +5,11 @@
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <v-col :cols="8">
+          <v-col :cols="12" :md="8">
             <SelectDropdown v-if="isCreate" :value.sync="form.projectId" itemValue="id" itemText="projectName" label="โครงการ *" apiPath="Project/getListProject" :rules="projectRules" required :disabled="!isCreate"/>
             <v-text-field v-else-if="form.project" v-model="form.project.projectName" label="โครงการ *" disabled/>
           </v-col>
-          <v-col :cols="4">
+          <v-col :cols="12" :md="4">
             <InputDatePicker :value.sync="form.dateEntry" label="วันที่รับเข้า *" :rules="dateEntryRules" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
@@ -30,25 +30,25 @@
                 <v-container>
                   <CategoryDurableGood :cols="3" :disabled="!isCreate" :initForm="initCategoryForm" @change="res => form.equipments[i].categoryForm = res.form">
                     <template #default>
-                      <v-col v-if="!isCreate" :cols="4">
+                      <v-col v-if="!isCreate" :cols="12" :md="4">
                         <v-text-field v-model="form.equipments[i].number" name="code" label="เลขที่ครุภัณฑ์ *" required disabled/>
                       </v-col>
-                      <v-col :cols="isCreate ? 9 : 5">
+                      <v-col :cols="12" :md="isCreate ? 9 : 5">
                         <v-text-field v-model="form.equipments[i].name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required :disabled="!isCreate"/>
                       </v-col>
                     </template>
                   </CategoryDurableGood>
                   <v-row>
-                    <v-col :cols="4">
+                    <v-col :cols="6" :md="4">
                       <v-text-field v-model="form.equipments[i].price" label="ราคา *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
                     </v-col>
-                    <v-col :cols="2">
+                    <v-col :cols="6" :md="2">
                       <v-text-field v-model="form.equipments[i].year" label="ปี *" :rules="yearRules" type="number" required :disabled="!isCreate"/>
                     </v-col>
-                    <v-col :cols="3">
+                    <v-col :cols="6" :md="3">
                       <v-text-field v-model="form.equipments[i].classifier" label="หน่วย *" :rules="classifierRules" name="unit" required :disabled="!isCreate"/>
                     </v-col>
-                    <v-col :cols="3" class="depreciation">
+                    <v-col :cols="6" :md="3" class="depreciation">
                       <v-text-field v-model="form.equipments[i].depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%" :disabled="!isCreate"/>
                     </v-col>
                     <v-col :cols="12">

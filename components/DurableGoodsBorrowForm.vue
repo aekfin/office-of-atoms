@@ -23,7 +23,7 @@
     <v-form v-if="form" ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <v-col :cols="6">
+          <v-col :cols="12" :md="6">
             <InputDatePicker :value.sync="form.dateBorrow" :label="`วันที่${type}ครุภัณฑ์ *`" :rules="datetimeBorrowRules" required :disabled="viewMode"/>
           </v-col>
           <!-- <v-col :cols="4">

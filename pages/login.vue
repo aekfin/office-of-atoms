@@ -1,7 +1,7 @@
 <template>
   <div id="login-page">
     <v-card elevation="1">
-      <img class="logo" src="~/assets/images/logo.png" alt="logo" width="200px">
+      <img class="logo" src="~/assets/images/logo.png" alt="logo">
       <v-form ref="form" v-model="valid" lazyValidation>
         <v-container>
           <v-row :class="isError ? '' : 'mb-8'">
@@ -90,6 +90,19 @@
         top: 0;
         left: 50%;
         transform: translate(-50%, -45%);
+        width: 200px;
+      }
+    }
+
+    @media only screen and (max-width: 426px) {
+      .v-card {
+        width: 320px;
+        height: 420px;
+        padding: 96px 40px 40px 40px;
+
+        .logo {
+          width: 140px;
+        }
       }
     }
   }

@@ -10,39 +10,39 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col :cols="6">
+          <v-col :cols="12" :md="6">
             <v-text-field v-model="form.thaiFristName" label="ชื่อ *" :rules="fistNameThRules" required :disabled="disabled"/>
           </v-col>
-          <v-col :cols="6">
+          <v-col :cols="12" :md="6">
             <v-text-field v-model="form.thaiLastName" label="นามสกุล *" :rules="lastNameThRules" required :disabled="disabled"/>
           </v-col>
         </v-row>
         <v-row>
-          <v-col :cols="6">
+          <v-col :cols="12" :md="6">
             <v-text-field v-model="form.engFristName" label="ชื่อ (Eng) *" :rules="fistNameEnRules" required :disabled="disabled"/>
           </v-col>
-          <v-col :cols="6">
+          <v-col :cols="12" :md="6">
             <v-text-field v-model="form.engLastName" label="นามสกุล (Eng) *" :rules="lastNameEnRules" required :disabled="disabled"/>
           </v-col>
         </v-row>
         <v-row>
-          <v-col :cols="6">
+          <v-col :cols="12" :md="6">
             <SelectDropdown :value.sync="form.positionId" label="ตำแหน่ง *" :rules="positionRules" itemText="positionName" required apiPath="Orgchart/getPositions" :disabled="disabled" @loaded="positionList = $event"/>
           </v-col>
         </v-row>
         <v-row>
-          <v-col :cols="6">
+          <v-col :cols="12" :md="6">
             <SelectDropdown :value.sync="form.ouId" label="กอง *" itemText="ouName" :rules="ouRules" required apiPath="Orgchart/getOrganizations" :disabled="disabled"/>
           </v-col>
-          <v-col :cols="6">
+          <v-col :cols="12" :md="6">
             <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required apiPath="Orgchart/getDepartments" :disabled="disabled || disabledByPosition"/>
           </v-col>
         </v-row>
         <v-row>
-          <v-col :cols="6">
+          <v-col :cols="12" :md="6">
             <v-text-field v-model="form.username" label="E-Mail ผู้ใช้งาน *" :rules="usernameRules" name="email" required :disabled="disabled || !isCreate"/>
           </v-col>
-          <v-col :cols="6">
+          <v-col :cols="12" :md="6">
             <SelectDropdown :value.sync="form.roleName" :items="roleList" label="สิทธ์การใช้งาน *" :rules="roleRules" multiple required :disabled="disabled"/>
           </v-col>
           <!-- <v-col :cols="6">

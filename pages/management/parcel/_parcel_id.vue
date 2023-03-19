@@ -5,23 +5,23 @@
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <v-col :cols="4" alignSelf="center">
+          <v-col :cols="12" :md="4" alignSelf="center">
             <AutocompleteDropdown v-if="isCreate" :value.sync="form.typeId" itemValue="id" itemText="name" label="ประเภท *" :rules="typeRules" apiPath="parcel/getListParcelType"
               searchApiPath="parcel/getParcelType" required noFilter/>
             <v-text-field v-else v-model="form.type" label="ประเภท *" required disabled/>
           </v-col>
-          <v-col :cols="8">
+          <v-col :cols="12" :md="8">
             <v-text-field v-model="form.parcelName" label="ชื่อ *" :rules="nameRules" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
         <v-row>
-          <v-col v-if="isCreate" :cols="4">
+          <v-col v-if="isCreate" :cols="12" :md="4">
             <v-text-field v-model="form.price" label="ราคากลาง *" type="number" :rules="priceRules" required/>
           </v-col>
-          <v-col :cols="4">
+          <v-col :cols="12" :md="4">
             <v-text-field v-model="form.quantity" label="จำนวน *" type="number" :rules="quantityRules" required/>
           </v-col>
-          <v-col :cols="4">
+          <v-col :cols="12" :md="4">
             <v-text-field v-model="form.classifier" label="หน่วย *" name="unit" :rules="classifierRules" required :disabled="!isCreate"/>
           </v-col>
         </v-row>

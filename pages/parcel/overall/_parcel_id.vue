@@ -5,11 +5,11 @@
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <v-col :cols="8">
+          <v-col :cols="12" :md="8">
             <SelectDropdown v-if="isCreate" :value.sync="form.projectId" itemValue="id" itemText="projectName" label="โครงการ *" apiPath="Project/getListProject" :rules="projectRules" required :disabled="!isCreate"/>
             <v-text-field v-else v-model="form.projectName" label="โครงการ *" disabled/>
           </v-col>
-          <v-col :cols="4">
+          <v-col :cols="12" :md="4">
             <InputDatePicker :value.sync="form.dateEntry" label="วันที่รับเข้า *" :rules="dateEntryRules" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
@@ -28,19 +28,19 @@
               <v-expansion-panel-content>
                 <v-container>
                   <v-row>
-                    <v-col cols="4">
+                    <v-col :cols="12" md="4">
                       <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].typeId" itemValue="id" itemText="name" label="ประเภท *" apiPath="parcel/getListParcelType" :rules="typeRules" required/>
                       <v-text-field v-else v-model="form.itemParcels[i].type" label="ประเภท *" disabled/>
                     </v-col>
-                    <v-col cols="6">
+                    <v-col :cols="12" md="6">
                       <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" apiPath="parcel/searchParcelMaster"
                         :query="getParcelQuery(form.itemParcels[i])" :rules="parcelRules" required :disabled="!form.itemParcels[i].typeId"/>
                       <v-text-field v-else v-model="form.itemParcels[i].parcelMasterName" label="วัสดุคงคลัง *" disabled/>
                     </v-col>
-                    <v-col cols="4">
+                    <v-col :cols="12" md="4">
                       <v-text-field v-model="form.itemParcels[i].price" label="ราคา *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
                     </v-col>
-                    <v-col cols="4">
+                    <v-col :cols="12" md="4">
                       <v-text-field v-model="form.itemParcels[i].quantity" label="จำนวน *" type="number" :rules="quantityRules" required :disabled="!isCreate"/>
                     </v-col>
                   </v-row>

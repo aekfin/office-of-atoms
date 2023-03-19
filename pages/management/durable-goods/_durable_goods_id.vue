@@ -6,25 +6,25 @@
       <v-container>
         <CategoryDurableGood :cols="3" :disabled="!isCreate" :initForm="initCategoryForm" @change="({ form }) => categoryForm = form">
           <template #default>
-            <v-col v-if="!isCreate" :cols="4">
+            <v-col v-if="!isCreate" :cols="12" :md="4">
               <v-text-field v-model="form.number" name="code" label="เลขที่ครุภัณฑ์ *" required disabled/>
             </v-col>
-            <v-col :cols="isCreate ? 9 : 5">
+            <v-col :cols="12" :md="isCreate ? 9 : 5">
               <v-text-field v-model="form.name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required :disabled="!isCreate"/>
             </v-col>
           </template>
         </CategoryDurableGood>
         <v-row>
-          <v-col :cols="4">
+          <v-col :cols="12" :md="4">
             <v-text-field v-model="form.price" label="ราคากลาง *" type="number" :rules="priceRules" required/>
           </v-col>
-          <v-col :cols="2">
+          <v-col :cols="12" :md="2">
             <v-text-field v-model="form.year" label="ปี *" :rules="yearRules" type="number" required/>
           </v-col>
-          <v-col :cols="3">
+          <v-col :cols="12" :md="3">
             <v-text-field v-model="form.classifier" label="หน่วย *" :rules="classifierRules" name="unit" required/>
           </v-col>
-          <v-col :cols="3" class="depreciation">
+          <v-col :cols="12" :md="3" class="depreciation">
             <v-text-field v-model="form.depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%"/>
           </v-col>
           <v-col :cols="12">
@@ -35,10 +35,10 @@
           <v-col :cols="12">
             <div class="text-h5"><b>ผู้ครอบครอง</b></div>
           </v-col>
-          <v-col :cols="6">
+          <v-col :cols="12" :md="6">
             <SelectDropdown :value.sync="form.organizationId" label="กอง *" itemText="ouName" :rules="ouRules" required :disabled="!isCreate" apiPath="Orgchart/getOrganizations"/>
           </v-col>
-          <v-col :cols="6">
+          <v-col :cols="12" :md="6">
             <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required :disabled="!isCreate" apiPath="Orgchart/getDepartments"/>
           </v-col>
         </v-row>

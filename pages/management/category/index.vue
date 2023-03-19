@@ -1,6 +1,6 @@
 <template>
   <div id="category-list-page">
-    <v-tabs v-model="tabIndex" class="tabs-underline mb-10" fixedTabs>
+    <v-tabs v-model="tabIndex" class="tabs-underline mb-10" fixedTabs showArrows>
       <v-tab v-for="tab in tabs" :key="tab.text">{{ tab.text }}</v-tab>
     </v-tabs>
     <PageHeader :text="tabActive.text" :btnText="tabActive.btnText" :unit="tabActive.unit" :total="total" @create="createDialog = true"/>

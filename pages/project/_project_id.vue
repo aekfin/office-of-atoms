@@ -5,23 +5,23 @@
     <v-form v-else ref="form" v-model="valid" class="mt-4">
       <v-container>
         <v-row v-if="isCreate || editMode">
-          <v-col :cols="2">
+          <v-col :cols="12" :md="2">
             <v-text-field v-model="year" label="ปีงบประมาณ *" :rules="yearRules" type="number"/>
           </v-col>
-          <v-col :cols="4" class="d-flex align-center">
+          <v-col :cols="12" :md="4" class="d-flex align-center">
             <v-row class="flex-nowrap" align="baseline">
               <v-text-field class="cost-field" v-model="budgetStart" label="งบประมาณต่ำสุด *" :rules="budgetStartRules" type="number"/>
               <div class="mr-3 ml-3 text-h5">-</div>
               <v-text-field class="cost-field" v-model="budgetEnd" label="งบประมาณสูงสุด *" :rules="budgetEndRules" type="number" :disabled="!budgetStart"/>
             </v-row>
           </v-col>
-          <v-col :cols="6">
+          <v-col :cols="12" :md="6">
             <ProjectDropdown v-model="form.projectName" itemValue="projectName" itemText="projectName" label="โครงการ *" :apiPath="propjectApiPath" :query="projectQuery"
               :rules="projectRules" isProject required :disabled="!year || !budgetStart || !budgetEnd" @select="onSelectProject"/>
           </v-col>
         </v-row>
         <v-row v-else>
-          <v-col>
+          <v-col :cols="12" :md="10">
             <v-text-field v-model="form.projectName" label="โครงการ *" :rules="projectRules" required disabled/>
           </v-col>
           <v-col class="d-flex align-center" cols="auto">
@@ -29,19 +29,19 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col :cols="3">
+          <v-col :cols="12" :lg="3" :md="6">
             <v-text-field v-model="form.projectNumber" label="เลขที่โครงการ *" :rules="codeRules" :disabled="disabledInfo"/>
           </v-col>
-          <v-col :cols="3">
+          <v-col :cols="12" :lg="3" :md="6">
             <v-text-field v-model="form.contractNumber" label="เลขที่คุมสัญญา *" :rules="contractNumberRules" :disabled="disabledInfo"/>
           </v-col>
-          <v-col :cols="2">
+          <v-col :cols="12" :lg="2" :md="4">
             <InputDatePicker :value.sync="form.projectStartDate" label="วันเริ่มโครงการ *" :rules="datetimeStartRules" :disabled="disabledInfo"/>
           </v-col>
-          <v-col :cols="2">
+          <v-col :cols="12" :lg="2" :md="4">
             <InputDatePicker :value.sync="form.contractStartDate" label="วันเริ่มสัญญา *" :rules="datetimeCompanyStartRules" :disabled="disabledInfo"/>
           </v-col>
-          <v-col :cols="2">
+          <v-col :cols="12" :lg="2" :md="4">
             <InputDatePicker :value.sync="form.contractEndDate" label="วันสิ้นสัญญา *" :rules="datetimeCompanyEndRules" :disabled="disabledInfo"/>
           </v-col>
         </v-row>
@@ -59,12 +59,12 @@
                   <v-row class="mb-2">
                     <div class="text-lg font-bold">รายชื่อผู้ติดต่อ</div>
                   </v-row>
-                  <v-row v-for="(contact, i) in form.directors" :key="i" class="flex-nowrap pl-2 pr-3 mb-3" align="baseline">
+                  <v-row v-for="(contact, i) in form.directors" :key="i" class="pl-2 pr-3 mb-3" align="baseline">
                     <div class="prefix-wrapper mr-5">
                       <div class="mr-5">{{ i + 1 }}.</div>
                       <v-select v-model="contact.description" :items="companyPositionList" itemValue="id" itemText="name" label="ตำแหน่ง" :rules="contactPositionRules"/>
                     </div>
-                    <v-text-field v-model="contact.name" class="cpmpany-name" label="ชื่อ-นามสกุล" :rules="contactNameRules"/>
+                    <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล" :rules="contactNameRules"/>
                     <v-btn v-if="form.directors.length > 1" icon @click="removeContact(i)">
                       <v-icon>mdi-delete</v-icon>
                     </v-btn>
@@ -298,19 +298,35 @@
 <style lang="scss">
   #project-create-page {
     .row {
+      flex-wrap: nowrap;
+
       .prefix-wrapper {
         width: 40%;
         display: flex;
         align-items: baseline;
       }
 
-      .cpmpany-name {
+      .company-name {
         width: 60%;
       }
 
       .cost-field {
         input {
           text-align: center;
+        }
+      }
+    }
+
+    @media only screen and (max-width: 426px) {
+      .row{
+        flex-wrap: wrap;
+
+        .prefix-wrapper {
+          width: 100%;
+        }
+
+        .company-name {
+          width: 100%;
         }
       }
     }

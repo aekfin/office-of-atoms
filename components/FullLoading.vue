@@ -92,5 +92,17 @@
       transform-origin: 0 0; /* see note above */
     }
     .ldio-jbi2mj5x3qe div { box-sizing: content-box; }
+
+    @media only screen and (max-width: 426px) {
+      .ldio-jbi2mj5x3qe > div {
+        position: absolute;
+        top: 24px;
+        left: 24px;
+      }
+
+      .loading-text {
+        font-size: 32px;
+      }
+    }
   }
 </style>
