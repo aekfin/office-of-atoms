@@ -63,7 +63,7 @@
           </v-col>
         </v-row>
         <v-row :cols="12" justify="center" class="mt-0">
-          <v-icon class="text-h2" color="success">mdi-arrow-down-circle</v-icon>
+          <v-icon class="text-h2" color="secondary">mdi-arrow-down-circle</v-icon>
         </v-row>
         <v-row>
           <v-col :cols="12" class="pt-0 pb-0">
