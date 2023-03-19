@@ -1,0 +1,135 @@
+<template>
+  <div id="durable-goods-distribute-detail-page">
+    <PageHeader :text="isCreate ? 'การเพิ่มการจำหน่ายครุภัณฑ์' : 'การแก้ไขการจำหน่ายครุภัณฑ์'" hideTotal/>
+    <Loading v-if="isLoading"/>
+
+    <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
+      <v-container>
+        <v-row>
+          <v-col :cols="12" :md="6">
+            <InputDatePicker :value.sync="form.dateSale" label="วันที่จำหน่ายครุภัณฑ์ *" :rules="datetimeDistributeRules" required :disabled="!isCreate"/>
+          </v-col>
+          <v-col :cols="12">
+            <v-textarea v-model="form.description" label="หมายเหตุ" :rows="4" :disabled="!isCreate"/>
+          </v-col>
+        </v-row>
+      </v-container>
+
+      <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการจำหน่าย` }}</b></h5>
+      <v-container>
+        <CategoryDurableGood :initForm="initCategoryForm" noRules @change="onChangeCategory"/>
+        <v-row>
+          <v-col :cols="12">
+            <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" apiPath="equipment/getEquipmentsAndFilter"
+              :query="categoryForm" :disabled="!isCreate" @select="onSelectDurableGoods"/>
+            <v-text-field v-else v-model="form.name" label="ครุภัณฑ์ *" disabled/>
+          </v-col>
+          <v-col :cols="12" :md="4">
+            <v-text-field v-model="form.price" label="ราคาจำหน่าย *" type="number" :rules="priceRules" required/>
+          </v-col>
+          <v-col :cols="12" :md="8">
+            <v-text-field v-model="form.buyer" label="ผู้ซื้อ *" :rules="buyerRules" required/>
+          </v-col>
+        </v-row>
+      </v-container>
+
+      <v-container class="mt-8">
+        <v-row justify="end">
+          <v-btn large plain @click="$router.push('/durable-goods/distribute/')">ย้อนหลับ</v-btn>
+          <v-btn v-if="isCreate" class="ml-4" elevation="2" large color="success" @click="onSubmit">{{ `จำหน่ายครุภัณฑ์` }}</v-btn>
+        </v-row>
+      </v-container>
+    </v-form>
+  </div>
+</template>
+
+<script>
+  export default {
+    components: {
+      PageHeader: () => import('~/components/PageHeader.vue'),
+      Loading: () => import('~/components/Loading.vue'),
+      CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
+      SelectDropdown: () => import('~/components/SelectDropdown.vue'),
+    },
+    data () {
+      return {
+        valid: true,
+        form: {
+          dateSale: '',
+          description: '',
+          buyer: '',
+          price: '',
+          itemId: null
+        },
+        isLoading: false,
+        datetimeDistributeRules: [
+          v => !!v || `โปรดใส่วันที่จำหน่าย`,
+        ],
+        datetimeReturnRules: [
+          v => !!v || 'โปรดใส่วันที่คืน',
+        ],
+        durableGoodsRules: [
+          v => !!v || 'โปรดเลือกครุภัณฑ์',
+        ],
+        priceRules: [
+          v => !!v || 'โปรดใส่ราคาจำหน่าย',
+        ],
+        buyerRules: [
+          v => !!v || 'โปรดใส่ชื่อผู้ซื้อ',
+        ],
+        categoryForm: {},
+        initCategoryForm: {},
+      }
+    },
+    computed: {
+      isCreate () {
+        return this.$route.params.distribute_id === 'create'
+      },
+    },
+    watch: {
+      'item' () {
+        this.setForm()
+      }
+    },
+    mounted () {
+      this.setForm()
+    },
+    methods: {
+      setForm () {
+        this.form = {
+          dateSale: new Date(),
+          description: '',
+          buyer: '',
+          price: '',
+          itemId: null
+        }
+      },
+      onChangeCategory ({ form }) {
+        this.categoryForm = { ...form }
+        this.form.itemId = null
+      },
+      onSelectDurableGoods ({ item }) {
+        this.form.price = item.price
+      },
+      async onSubmit () {
+        const valid = this.$refs.form.validate()
+        if (valid) {
+          try {
+            const form = { ...this.form }
+            form.dateSale = this.$fn.convertDateToString(form.dateSale)
+            const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/sale', data: form, query: this.$route.query, context: this })
+            await this.$store.dispatch('snackbar', { text: 'จำหน่ายครุภัณฑ์สำเร็จ' })
+            this.$router.push('/durable-goods/distribute/')
+            return Promise.resolve(data)
+          } catch (err) { return Promise.reject(err) }
+        }
+
+      },
+    }
+  }
+</script>
+
+<style lang="scss">
+  #durable-goods-distribute-detail-page {
+  }
+</style>

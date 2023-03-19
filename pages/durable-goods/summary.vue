@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-summary-page">
-    <PageHeader text="ค่าเริ่มต้นครุภัณฑ์" btnText="เพิ่มค่าเริ่มต้นครุภัณฑ์" createRoute="/management/durable-goods/create/" :total="total"/>
+    <PageHeader text="ครุภัณฑ์ทั้งหมด" :total="total"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
@@ -13,9 +13,6 @@
       <template #item.status="{ item }">
         <v-chip :color="$store.state.durableGoodStatusColor[item.status]">{{ $store.state.durableGoodStatus[item.status] }}</v-chip>
       </template>
-      <template #item.action="{ item }">
-        <ActionIconList :list="getActionIconList(item)"/>
-      </template>
     </v-data-table>
     <Pagination/>
   </div>
@@ -25,7 +22,6 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
-      ActionIconList: () => import('~/components/ActionIconList.vue'),
       EquipmentColumn: () => import('~/components/EquipmentColumn.vue'),
       OwnerColumn: () => import('~/components/OwnerColumn.vue'),
       Pagination: () => import('~/components/Pagination.vue'),
@@ -64,12 +60,6 @@
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
-      getActionIconList (item) {
-        return [
-          { type: 'link', icon: 'mdi-pencil', action: `/management/durable-goods/${item.id}/` },
-          // { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
-        ]
-      }
     }
   }
 </script>

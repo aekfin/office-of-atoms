@@ -32,12 +32,14 @@ export default () => ({
     'RESERVE': 'รออนุมัติ',
     'BORROWED': 'ถูกยืม',
     'RETURNED': 'คืนแล้ว',
+    'SALE': 'จำหน่าย',
   },
   durableGoodStatusColor: {
     'NEW': 'primary',
     'RESERVE': 'warning',
     'BORROWED': 'error',
     'RETURNED': 'success',
+    'SALE': 'secondary',
   },
   durableGoodTypes: {
     'BORROW': 'ยืม',
@@ -118,19 +120,23 @@ export default () => ({
           title: 'ส่งซ่อมครุภัณฑ์',
           to: '/durable-goods/repair/',
         },
+        {
+          title: 'รับบริจาคครุภัณฑ์',
+          to: '/durable-goods/distribute/',
+        },
       ]
     },
     {
       title: 'ผู้ดูแลระบบ',
       to: '/management/',
       children: [
-        // {
-        //   title: 'บริหารขั้นตอนอนุมัติ',
-        //   to: '/management/approval/'
-        // },
         {
           title: 'บริหารบุคลากร',
           to: '/management/user/'
+        },
+        {
+          title: 'บริหารคู่สัญญา',
+          to: '/management/vendor/'
         },
         {
           title: 'ประเภทวัสดุคงคลัง',
@@ -147,10 +153,6 @@ export default () => ({
         {
           title: 'ค่าเริ่มต้นครุภัณฑ์',
           to: '/management/durable-goods/'
-        },
-        {
-          title: 'บริหารคู่สัญญา',
-          to: '/management/vendor/'
         },
         // {
         //   title: 'รายงานการใช้งานระบบ',

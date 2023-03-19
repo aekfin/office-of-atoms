@@ -70,7 +70,7 @@
             <b>{{ `ผู้ครอบครองใหม่` }}</b>
           </v-col>
           <v-col :cols="12" :md="6">
-            <SelectDropdown :value.sync="form.ouid" label="กอง *" itemText="ouName" :rules="ouRules" required apiPath="Orgchart/getOrganizations" :disabled="!form.itemId"/>
+            <SelectDropdown :value.sync="form.ouId" label="กอง *" itemText="ouName" :rules="ouRules" required apiPath="Orgchart/getOrganizations" :disabled="!form.itemId"/>
           </v-col>
           <v-col :cols="12" :md="6">
             <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required apiPath="Orgchart/getDepartments" :disabled="!form.itemId"/>
@@ -160,8 +160,8 @@
           item: this.item?.items?.[0] || null,
           organization: this.item?.items?.[0]?.equipment?.organizationMaster || {},
           department: this.item?.items?.[0]?.equipment?.departmentMaster || {},
-          ouid: null,
-          departmentId: null,
+          ouId: this.item?.transferto?.ouId || null,
+          departmentId: this.item?.transferto?.departmentId || null,
         }
         if (this.item) this.setCategoryForm()
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
