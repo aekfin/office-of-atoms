@@ -83,7 +83,7 @@
 
       <v-container class="mt-8">
         <v-row justify="end">
-          <v-btn large plain @click="$router.push('/durable-goods/overall/')">ย้อนหลับ</v-btn>
+          <v-btn large plain @click="$router.push('/durable-goods/overall/')">ย้อนกลับ</v-btn>
           <v-btn v-if="isCreate" elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
         </v-row>
       </v-container>

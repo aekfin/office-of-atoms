@@ -72,7 +72,7 @@
       </v-expansion-panels>
       <v-container class="mt-8">
         <v-row justify="end">
-          <v-btn large plain @click="$router.push('/management/vendor/')">ย้อนหลับ</v-btn>
+          <v-btn large plain @click="$router.push('/management/vendor/')">ย้อนกลับ</v-btn>
           <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
         </v-row>
       </v-container>

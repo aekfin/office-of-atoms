@@ -35,7 +35,7 @@
 
       <v-container class="mt-8">
         <v-row justify="end">
-          <v-btn large plain @click="$router.push('/durable-goods/sale/')">ย้อนหลับ</v-btn>
+          <v-btn large plain @click="$router.push('/durable-goods/sale/')">ย้อนกลับ</v-btn>
           <v-btn v-if="isCreate" class="ml-4" elevation="2" large color="success" @click="onSubmit">{{ `จำหน่ายครุภัณฑ์` }}</v-btn>
         </v-row>
       </v-container>
@@ -91,10 +91,22 @@
         this.setForm()
       }
     },
-    mounted () {
+    async mounted () {
+      if (!this.isCreate) await this.getData()
       this.setForm()
     },
     methods: {
+      async getData () {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/getEquipments/status/${this.$route.params.sale_id}`, query: this.$route.query })
+          this.item = data
+          this.isLoading = false
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      },
       setForm () {
         this.form = {
           dateSale: new Date(),

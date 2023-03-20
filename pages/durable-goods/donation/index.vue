@@ -1,6 +1,6 @@
 <template>
-  <div id="durable-goods-sale-detail-page">
-    <PageHeader text="จำหน่ายครุภัณฑ์" btnText="เพิ่มการจำหน่ายครุภัณฑ์" createRoute="/durable-goods/sale/create/" :total="total"/>
+  <div id="durable-goods-donation-page">
+    <PageHeader text="รับบริจาคครุภัณฑ์" btnText="เพิ่มรับบริจาคครุภัณฑ์" createRoute="/durable-goods/donation/create/" :total="total"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
@@ -44,7 +44,7 @@
           { text: 'ราคากลาง', value: 'price', align: 'center', width: '120px' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
           { text: 'สถานะ', value: 'status', align: 'center', width: '100px' },
-          // { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
+          { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
         ],
       }
     },
@@ -60,14 +60,14 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getEquipments/status', query: { ...this.$route.query, status: 'SALE' }, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getEquipments', query: this.$route.query, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
       getActionIconList (item) {
         return [
-          // { type: 'link', icon: 'mdi-pencil', action: `/durable-goods/sale/${item.id}/` },
+          { type: 'link', icon: 'mdi-pencil', action: `/management/durable-goods/${item.id}/` },
           // { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
         ]
       }
@@ -76,6 +76,6 @@
 </script>
 
 <style lang="scss">
-  #durable-goods-sale-detail-page {
+  #durable-goods-donation-page {
   }
 </style>

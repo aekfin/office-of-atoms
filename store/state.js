@@ -33,13 +33,17 @@ export default () => ({
     'BORROWED': 'ถูกยืม',
     'RETURNED': 'คืนแล้ว',
     'SALE': 'จำหน่าย',
+    'LOST': 'สูญหาย',
+    'REPAIR': 'ส่งซ่อม',
   },
   durableGoodStatusColor: {
     'NEW': 'primary',
     'RESERVE': 'warning',
     'BORROWED': 'error',
-    'RETURNED': 'success',
+    'RETURNED': 'primary',
     'SALE': 'secondary',
+    'LOST': 'secondary',
+    'REPAIR': 'secondary',
   },
   durableGoodTypes: {
     'BORROW': 'ยืม',
@@ -49,7 +53,7 @@ export default () => ({
   },
   leftMenus: [
     {
-      title: 'หนักหลัก',
+      title: 'หน้าหลัก',
       to: '/'
     },
     {
@@ -92,6 +96,10 @@ export default () => ({
           to: '/durable-goods/overall/',
         },
         {
+          title: 'รับบริจาคครุภัณฑ์',
+          to: '/durable-goods/donation/',
+        },
+        {
           title: 'ยืม - คืน ครุภัณฑ์',
           to: '/durable-goods/borrow/'
         },
@@ -119,10 +127,6 @@ export default () => ({
         {
           title: 'ส่งซ่อมครุภัณฑ์',
           to: '/durable-goods/repair/',
-        },
-        {
-          title: 'รับบริจาคครุภัณฑ์',
-          to: '/durable-goods/sale/',
         },
       ]
     },

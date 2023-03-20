@@ -80,13 +80,13 @@
 
       <v-container class="mt-8">
         <v-row v-if="isApprover" justify="end">
-          <v-btn large plain @click="$router.push(backPath)">ย้อนหลับ</v-btn>
+          <v-btn large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
           <v-btn v-if="!isReject" class="mr-4" elevation="2" large outlined color="error" @click="onReject">ไม่อนุมัติ</v-btn>
           <v-btn v-if="!isReject" elevation="2" large color="success" @click="onApprove">อนุมัติ</v-btn>
         </v-row>
         <v-row v-else justify="end">
-          <v-btn v-if="viewMode" large plain @click="$router.push(backPath)">ย้อนหลับ</v-btn>
-          <v-btn v-else large plain @click="$router.push(backPath)">ย้อนหลับ</v-btn>
+          <v-btn v-if="viewMode" large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
+          <v-btn v-else large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
           <v-btn v-if="!viewMode" class="ml-4" elevation="2" large color="success" @click="onSubmit">{{ `ยื่นขอ${type}` }}</v-btn>
         </v-row>
       </v-container>
