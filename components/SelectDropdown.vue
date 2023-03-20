@@ -16,7 +16,7 @@
       value: { type: [String, Number, Array], require: true },
       label: { type: String },
       itemValue: { type: String, default: 'id' },
-      itemText: { type: String, default: 'name' },
+      itemText: { type: [String, Function], default: 'name' },
       rules: { type: Array, default: () => [] },
       items: { type: Array, default: () => [] },
       apiPath: { type: String },

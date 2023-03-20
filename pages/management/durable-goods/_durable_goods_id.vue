@@ -213,7 +213,7 @@
           }
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/import', data: form })
           await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.categoryForm, id: data[0].id } })
-          await this.$store.dispatch('snackbar', { text: 'สร้างค่าเริ่มต้นครุภัณฑ์สำเร็จ' })
+          await this.$store.dispatch('snackbar', { text: 'เพิ่มค่าเริ่มต้นครุภัณฑ์สำเร็จ' })
           this.$router.push('/management/durable-goods/')
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
@@ -236,10 +236,5 @@
 
 <style lang="scss">
   #management-durable-goods-detail-page {
-    .deterioration, .depreciation {
-      input {
-        text-align: right;
-      }
-    }
   }
 </style>

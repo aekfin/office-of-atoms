@@ -1,15 +1,11 @@
 <template>
   <div id="durable-goods-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มครุภัณฑ์' : 'การแก้ไขครุภัณฑ์'" hideTotal/>
+    <PageHeader :text="isCreate ? 'การเพิ่มการรับบริจาคครุภัณฑ์' : 'การแก้ไขการรับบริจาคครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <v-col :cols="12" :md="8">
-            <SelectDropdown v-if="isCreate" :value.sync="form.projectId" itemValue="id" itemText="projectName" label="โครงการ *" apiPath="Project/getListProject" :rules="projectRules" required :disabled="!isCreate"/>
-            <v-text-field v-else-if="form.project" v-model="form.project.projectName" label="โครงการ *" disabled/>
-          </v-col>
-          <v-col :cols="12" :md="4">
+          <v-col :cols="12" :md="6">
             <InputDatePicker :value.sync="form.dateEntry" label="วันที่รับเข้า *" :rules="dateEntryRules" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
@@ -28,6 +24,14 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-container>
+                  <v-row>
+                    <v-col :cols="12" :md="6">
+                      <v-text-field v-model="form.equipments[i].donator" label="ผู้บริจาค *" :rules="donatorRules" required :disabled="!isCreate"/>
+                    </v-col>
+                    <v-col :cols="12" :md="6">
+                      <SelectDropdown :value.sync="form.equipments[i].userId" label="ผู้รับผิดชอบ *" :itemText="getName" :rules="userRules" required :disabled="!isCreate" apiPath="user/listUsers"/>
+                    </v-col>
+                  </v-row>
                   <CategoryDurableGood :cols="3" :disabled="!isCreate" :initForm="initCategoryForm" @change="res => form.equipments[i].categoryForm = res.form">
                     <template #default>
                       <v-col v-if="!isCreate" :cols="12" :md="4">
@@ -104,7 +108,6 @@
         isLoading: false,
         initCategoryForm: {},
         form: {
-          projectId: null,
           dateEntry: new Date(),
           equipments: [
             {
@@ -116,6 +119,8 @@
               classifier: '',
               categoryForm: {},
               attachFiles: [],
+              donator: '',
+              userId: null,
             }
           ],
           organizationId: null,
@@ -154,6 +159,12 @@
         dateEntryRules: [
           v => !!v || 'โปรดใส่วันที่รับเข้า',
         ],
+        donatorRules: [
+          v => !!v || 'โปรดใส่ผู้บริจาค',
+        ],
+        userRules: [
+          v => !!v || 'โปรดใส่ผู้รับผิดชอบ',
+        ],
         formExpand: [0],
       }
     },
@@ -163,7 +174,7 @@
       },
     },
     mounted () {
-      if (!this.isCreate) this.getData()
+      // if (!this.isCreate) this.getData()
     },
     methods: {
       addDurableGoods () {
@@ -177,6 +188,8 @@
             classifier: '',
             categoryForm: {},
             attachFiles: [],
+            donator: '',
+            userId: null,
           }
         )
         this.formExpand = [ ...this.formExpand, this.formExpand.length ]
@@ -205,6 +218,9 @@
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
+      getName (res) {
+        return `${res.thaiFristName} ${res.thaiLastName}`
+      },
       async onSubmit () {
         const valid = this.$refs.form.validate()
         if (valid) {
@@ -213,14 +229,14 @@
               ...this.form,
               dateEntry: this.$fn.convertDateToString(this.form.dateEntry)
             }
-            const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/project/import', data: form })
+            const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/import/donation', data: form })
             await Promise.all(
               data.map((item, i) => {
                 this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.form.equipments[i].categoryForm, id: item.id } })
               })
             )
-            await this.$store.dispatch('snackbar', { text: 'เพิ่มครุภัณฑ์สำเร็จ' })
-            this.$router.push('/durable-goods/overall/')
+            await this.$store.dispatch('snackbar', { text: 'เพิ่มการรับบริจาคครุภัณฑ์สำเร็จ' })
+            this.$router.push('/durable-goods/donation/')
             return Promise.resolve(data)
           } catch (err) { return Promise.reject(err) }
         }

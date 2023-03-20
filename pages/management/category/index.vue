@@ -88,6 +88,7 @@
     },
     watch: {
       'tabIndex' () {
+        this.$router.push({ query: {} })
         this.getList()
       },
       '$route.query' () {
