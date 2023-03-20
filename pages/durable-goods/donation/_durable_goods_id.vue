@@ -174,7 +174,7 @@
       },
     },
     mounted () {
-      // if (!this.isCreate) this.getData()
+      if (!this.isCreate) this.getData()
     },
     methods: {
       addDurableGoods () {
