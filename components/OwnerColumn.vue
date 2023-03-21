@@ -6,6 +6,9 @@
       </v-btn>
     </template>
     <v-list class="goods-list">
+      <v-list-item v-if="showTitle">
+        <v-list-item-title><b>ผู้ครอบครอง</b></v-list-item-title>
+      </v-list-item>
       <v-list-item>
         <v-list-item-title>กอง : <b>{{ item.organization.ouName }}</b></v-list-item-title>
       </v-list-item>
@@ -19,7 +22,8 @@
 <script>
   export default {
     props: {
-      item: { type: Object, required: true }
+      item: { type: Object, required: true },
+      showTitle: { type: Boolean },
     }
   }
 </script>

@@ -12,7 +12,7 @@
         <v-list-item inactive>
           <v-list-item-title><b class="mr-2">ตำแหน่ง :</b>{{ $store.state.userProfile?.positionMaster?.positionName }}</v-list-item-title>
         </v-list-item>
-        <v-list-item v-for="(item, index) in items" :key="index" link :to="item.to">
+        <v-list-item v-for="(item, index) in items" :key="index" @click="onClick(item)">
           <v-list-item-title>
             <v-icon v-if="item.icon" class="profile-icon mr-1" v-text="item.icon"/>
             <span>{{ item.title }}</span>
@@ -43,14 +43,16 @@
           {
             title: 'Logout',
             icon: 'mdi-logout',
-            to: '/login/'
+            to: '/login/',
+            external: true,
           },
         ]
       }
     },
     methods: {
-      onClick () {
-        console.log('AAA')
+      onClick (item) {
+        if (item.external) window.location = item.to
+        else this.$router.push(item.to)
       }
     },
   }

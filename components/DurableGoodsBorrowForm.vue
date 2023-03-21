@@ -2,7 +2,7 @@
   <div class="durable-goods-borrow-form">
     <v-stepper v-if="viewMode && item" v-model="step" class="mt-10 mb-10" altLabels>
       <v-stepper-header>
-        <v-stepper-step :step="1" color="success" complete>ยื่นเบิก</v-stepper-step>
+        <v-stepper-step :step="1" color="success" complete>{{ `ยื่นการ${type}` }}</v-stepper-step>
         <template v-for="flow in item.flows">
           <v-divider :key="flow.id"/>
           <v-stepper-step :key="flow.id" :step="flow.orderApprove + 1" :color="isColor(flow)" :complete="isComplete(flow)">

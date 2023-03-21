@@ -2,7 +2,6 @@ export default {
   data () {
     return {
       form: {
-        name: '',
         majorCategoryId: null,
         subCategoryId: null,
         typeId: null,
@@ -37,7 +36,6 @@ export default {
   methods: {
     resetForm () {
       this.form = {
-        name: '',
         majorCategoryId: null,
         subCategoryId: null,
         typeId: null,

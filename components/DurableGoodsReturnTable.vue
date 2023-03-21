@@ -12,6 +12,9 @@
       <template #item.equipment="{ item }">
         <span>{{ item.equipments[0].name }}</span>
       </template>
+      <template #item.organization.ouName="{ item }">
+        <OwnerColumn :item="item.equipments[0]"/>
+      </template>
       <template #item.status="{ item }">
         <v-chip :color="$store.state.approveStatusColor[item.status]">{{ $store.state.approveStatus[item.status] }}</v-chip>
       </template>
@@ -24,6 +27,9 @@
 
 <script>
   export default {
+    components: {
+      OwnerColumn: () => import('~/components/OwnerColumn.vue'),
+    },
     props: {
       items: { type: Array, required: true },
       getActionIconList: { type: Function, required: true },
@@ -37,10 +43,11 @@
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ผู้ขอคืนครุภัณฑ์', value: 'user_fk.thaiFristName' },
-          { text: 'วันที่คืน', value: 'dateBorrow', width: '140px', align: 'center' },
-          { text: 'วันที่อนุมัติ', value: 'dateApprove', width: '140px', align: 'center' },
-          { text: 'ครุภัณฑ์', value: 'equipment', width: '240px', align: 'center' },
-          { text: 'สถานะการคืน', value: 'status', width: '160px', align: 'center' },
+          { text: 'วันที่คืน', value: 'dateBorrow', width: '120px', align: 'center' },
+          { text: 'วันที่อนุมัติ', value: 'dateApprove', width: '120px', align: 'center' },
+          { text: 'ครุภัณฑ์', value: 'equipment', width: '220px', align: 'center' },
+          { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
+          { text: 'สถานะการคืน', value: 'status', width: '140px', align: 'center' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
       }
