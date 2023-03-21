@@ -2,7 +2,8 @@
   <div id="durable-goods-return-detail-page">
     <PageHeader :text="isCreate ? 'การคืนครุภัณฑ์' : 'การแก้ไขการคืนครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
-    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" cannotApprove type="คืน" backPath="/durable-goods/borrow/return/" @submit="onSubmit"/>
+    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" cannotApprove type="คืน" backPath="/durable-goods/borrow/return/"
+      :apiPath="'equipment/getEquipmentsAndFilter?status=BORROWED'" @submit="onSubmit"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
   </div>
 </template>

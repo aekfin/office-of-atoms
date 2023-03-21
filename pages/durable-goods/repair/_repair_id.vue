@@ -8,7 +8,7 @@
         <CategoryDurableGood :initForm="initCategoryForm" noRules :disabled="!isCreate" @change="onChangeCategory"/>
         <v-row>
           <v-col :cols="12">
-            <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" apiPath="equipment/getEquipmentsAndFilter"
+            <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipmentsAndFilter?status=NEW&status=RETURNED`"
               :query="categoryForm" :disabled="!isCreate"/>
             <v-text-field v-else v-model="form.itemName" label="ครุภัณฑ์ *" disabled/>
           </v-col>

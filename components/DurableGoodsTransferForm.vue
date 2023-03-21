@@ -43,7 +43,7 @@
         <v-row>
           <v-col>
             <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
-            <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" apiPath="equipment/getEquipmentsAndFilter"
+            <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipmentsAndFilter?status=NEW&status=RETURNED`"
               :query="categoryForm" :disabled="viewMode" @select="onSelectDurableGoods"/>
           </v-col>
         </v-row>

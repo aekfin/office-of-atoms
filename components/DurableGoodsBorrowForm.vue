@@ -43,7 +43,7 @@
         <v-row>
           <v-col>
             <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
-            <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" apiPath="equipment/getEquipmentsAndFilter"
+            <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="apiPath"
               :query="categoryForm" :disabled="viewMode"/>
           </v-col>
         </v-row>
@@ -78,6 +78,7 @@
       backPath: { type: String, default: '/durable-goods/borrow/' },
       cannotApprove: { type: Boolean },
       type: { type: String, default: 'ยืม' },
+      apiPath: { type: String, default: 'equipment/getEquipmentsAndFilter?status=NEW&status=RETURNED' },
     },
     data () {
       return {
