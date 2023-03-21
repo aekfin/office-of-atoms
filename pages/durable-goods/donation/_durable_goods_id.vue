@@ -29,7 +29,8 @@
                       <v-text-field v-model="form.equipments[i].donator" label="ผู้บริจาค *" :rules="donatorRules" required :disabled="!isCreate"/>
                     </v-col>
                     <v-col :cols="12" :md="6">
-                      <SelectDropdown :value.sync="form.equipments[i].userId" label="ผู้รับผิดชอบ *" :itemText="getName" :rules="userRules" required :disabled="!isCreate" apiPath="user/listUsers"/>
+                      <SelectDropdown :value.sync="form.equipments[i].userId" label="ผู้รับผิดชอบ *" :itemText="getName" :rules="userRules" required :disabled="!isCreate"
+                        :items="form.equipments[i].userList" apiPath="user/listUsers"/>
                     </v-col>
                   </v-row>
                   <CategoryDurableGood :cols="3" :disabled="!isCreate" :initForm="initCategoryForm" @change="res => form.equipments[i].categoryForm = res.form">
@@ -87,7 +88,7 @@
 
       <v-container class="mt-8">
         <v-row justify="end">
-          <v-btn large plain @click="$router.push('/durable-goods/overall/')">ย้อนกลับ</v-btn>
+          <v-btn large plain @click="$router.push('/durable-goods/donation/')">ย้อนกลับ</v-btn>
           <v-btn v-if="isCreate" elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
         </v-row>
       </v-container>
@@ -200,10 +201,17 @@
       async getData () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/project/${this.$route.params.durable_goods_id}` })
+          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/getEquipments/status/${this.$route.params.durable_goods_id}` })
           this.form = {
             ...data,
-            equipments: [{ ...data }],
+            equipments: [
+              {
+                ...data,
+                donator: data.equipmentDonation.donator,
+                userId: data.equipmentDonation.owner.id,
+                userList: [data.equipmentDonation.owner]
+              }
+            ],
             organizationId: data.organization.id,
             departmentId: data.department.id,
           }

@@ -29,10 +29,11 @@
                 <v-container>
                   <v-row>
                     <v-col :cols="12" md="4">
-                      <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].typeId" itemValue="id" itemText="name" label="ประเภท *" apiPath="parcel/getListParcelType" :rules="typeRules" required/>
+                      <AutocompleteDropdown v-if="isCreate" :value.sync="form.itemParcels[i].typeId" itemValue="id" itemText="name" label="ประเภท *" :rules="typeRules" apiPath="parcel/getListParcelType"
+                        searchApiPath="parcel/getParcelType" required noFilter/>
                       <v-text-field v-else v-model="form.itemParcels[i].type" label="ประเภท *" disabled/>
                     </v-col>
-                    <v-col :cols="12" md="6">
+                    <v-col :cols="12" md="8">
                       <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" apiPath="parcel/searchParcelMaster"
                         :query="getParcelQuery(form.itemParcels[i])" :rules="parcelRules" required :disabled="!form.itemParcels[i].typeId"/>
                       <v-text-field v-else v-model="form.itemParcels[i].parcelMasterName" label="วัสดุคงคลัง *" disabled/>
@@ -68,6 +69,7 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
+      AutocompleteDropdown: () => import('~/components/AutocompleteDropdown.vue'),
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       Loading: () => import('~/components/Loading.vue'),
     },

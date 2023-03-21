@@ -71,7 +71,7 @@
           const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { ...this.query, pageNo, pageSize: 7 } })
           if (data.content) {
             this.pagination = data
-            this.list = more ? [ ...this.list, ...data.content ] : data.content 
+            this.list = more || this.items.length ? [ ...this.items, ...this.list, ...data.content ] : data.content 
           } else {
             this.list = data
           }

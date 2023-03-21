@@ -3,7 +3,7 @@
     <v-autocomplete ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled || disabledOnload"
       :readonly="readonly" :loading="isLoading || isSearchLoading" :noFilter="noFilter" :hideNoData="isSearchLoading" :searchInput.sync="search" @change="onChange">
       <template #append-item>
-        <div v-if="!!pagination" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
+        <div v-if="!!pagination && !searchChanged" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
       </template>
     </v-autocomplete>
   </div>
@@ -33,6 +33,7 @@
       return {
         val: this.value,
         search: '',
+        searchChanged: '',
         list: this.items || [],
         pagination: null,
         isLoading: false,
@@ -57,10 +58,10 @@
       'items' (val) {
         this.list = val
       },
-      'search' () {
+      'search' (val) {
         clearTimeout(this.timeout)
         this.timeout = setTimeout(() => {
-          this.list = []
+          this.searchChanged = val
           this.onSearch()
         }, 1000)
       },
@@ -84,7 +85,7 @@
           const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { ...this.query, pageNo, pageSize: 7 } })
           if (data.content) {
             this.pagination = data
-            this.list = more ? [ ...this.list, ...data.content ] : data.content 
+            this.list = more || this.items.length ? [ ...this.items, ...this.list, ...data.content ] : data.content 
           } else {
             this.list = data
           }
