@@ -41,10 +41,21 @@
       <v-container class="mt-2">
         <CategoryDurableGood :initForm="initCategoryForm" :disabled="viewMode" noRules @change="onChangeCategory"/>
         <v-row>
-          <v-col>
+          <v-col :cols="12">
             <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
             <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="apiPath"
-              :query="categoryForm" :disabled="viewMode"/>
+              :query="categoryForm" :disabled="viewMode" @select="onSelectDurableGoods"/>
+          </v-col>
+        </v-row>
+        <v-row v-if="!hideOwner">
+          <v-col :cols="12" class="pb-0">
+            <b>{{ `ผู้ครอบครอง` }}</b>
+          </v-col>
+          <v-col :cols="12" :md="6">
+            <v-text-field v-model="form.organization.ouName" label="กอง" disabled/>
+          </v-col>
+          <v-col :cols="12" :md="6">
+            <v-text-field v-model="form.department.departmentName" label="กลุ่ม" disabled/>
           </v-col>
         </v-row>
       </v-container>
@@ -79,6 +90,7 @@
       cannotApprove: { type: Boolean },
       type: { type: String, default: 'ยืม' },
       apiPath: { type: String, default: 'equipment/getEquipmentsAndFilter?status=NEW&status=RETURNED' },
+      hideOwner: { type: Boolean },
     },
     data () {
       return {
@@ -123,7 +135,9 @@
           description: this.item?.description || '',
           dateBorrow: this.item?.dateBorrow || new Date(),
           itemId: this.item?.items?.[0]?.equipment?.id || null,
-          item: this.item?.items?.[0] || null
+          item: this.item?.items?.[0] || null,
+          organization: this.item?.items?.[0]?.equipment?.organizationMaster || {},
+          department: this.item?.items?.[0]?.equipment?.departmentMaster || {},
         }
         if (this.item) this.setCategoryForm()
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
@@ -154,6 +168,10 @@
       },
       isComplete (item) {
         return item?.status === 'APPROVE'
+      },
+      onSelectDurableGoods ({ item }) {
+        this.form.organization = item.organization
+        this.form.department = item.department
       },
       onSubmit () {
         const valid = this.$refs.form.validate()

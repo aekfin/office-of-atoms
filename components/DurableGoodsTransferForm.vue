@@ -62,11 +62,11 @@
             <v-text-field v-model="form.department.departmentName" label="กลุ่ม *" disabled/>
           </v-col>
         </v-row>
-        <v-row :cols="12" justify="center" class="mt-0">
+        <v-row :cols="12" justify="center">
           <v-icon class="text-h2" color="secondary">mdi-arrow-down-circle</v-icon>
         </v-row>
         <v-row>
-          <v-col :cols="12" class="pt-0 pb-0">
+          <v-col :cols="12" class="pb-0">
             <b>{{ `ผู้ครอบครองใหม่` }}</b>
           </v-col>
           <v-col :cols="12" :md="6">
