@@ -28,23 +28,23 @@
         tabIndex: 0,
         tabs: [
           {
-            text: 'หมวดหมู่',
-            btnText: 'เพิ่มหมวดหมู่',
+            text: 'หมวดหมู่พัสดุ',
+            btnText: 'เพิ่มหมวดหมู่พัสดุ',
             unit: 'หมวด',
             apiPath: 'equipment/category/getMejorCategorys',
             postApiPath: 'equipment/category/addMajorCategory'
           },
           {
-            text: 'หมวดหมู่ย่อย',
-            btnText: 'เพิ่มหมวดย่อย',
-            unit: 'หมวด',
+            text: 'ประเภทพัสดุ',
+            btnText: 'เพิ่มประเภทพัสดุ',
+            unit: 'ประเภท',
             apiPath: 'equipment/category/getSubCategorys',
             postApiPath: 'equipment/category/addSubCategory'
           },
           {
-            text: 'ประเภท',
-            btnText: 'เพิ่มประเภท',
-            unit: 'ประเภท',
+            text: 'รายการครุภัณฑ์',
+            btnText: 'เพิ่มรายการครุภัณฑ์',
+            unit: 'รายการ',
             apiPath: 'equipment/category/types',
             postApiPath: 'equipment/category/addType'
           },

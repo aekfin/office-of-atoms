@@ -49,23 +49,26 @@
             <v-expansion-panel-content>
               <v-container>
                 <v-row class="mt-0 mb-5">
-                  <v-col :cols="12" :md="5">
+                  <v-col :cols="12" :md="3">
                     <SelectDropdown v-if="!viewMode" :value.sync="form.pickUpItems[i].typeId" itemValue="id" itemText="name" label="ประเภท *" apiPath="parcel/getListParcelType" :rules="typeRules" required/>
                     <v-text-field v-else v-model="form.pickUpItems[i].type" label="ประเภท *" disabled/> 
                   </v-col>
-                  <v-col :cols="12" :md="7">
+                  <v-col :cols="12" :md="5">
                     <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].name" label="วัสดุคงคลัง *" disabled/>
                     <SelectDropdown v-else :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" :rules="parcelRules" apiPath="parcel/searchParcelMaster"
                       :query="getParcelQuery(form.pickUpItems[i])" :disabled="viewMode || !form.pickUpItems[i].typeId"/>
                   </v-col>
-                  <v-col v-if="viewMode" :cols="12" :md="5" class="pt-0">
-                    <v-text-field v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" required disabled/>
-                  </v-col>
-                  <v-col :cols="12" :md="viewMode ? 7 : 5" class="pt-0">
+                  <v-col v-if="viewMode" :cols="12" :md="4">
                     <div class="d-flex align-baseline">
-                      <v-text-field v-if="showQuantity(form.pickUpItems[i])" v-model="form.pickUpItems[i].quantity" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'"
+                      <v-text-field class="mr-5" v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" required disabled/>
+                      <div class="text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain || 0 }}</div>
+                    </div>
+                  </v-col>
+                  <v-col :cols="12" :md="4">
+                    <div class="d-flex align-baseline">
+                      <v-text-field v-if="showQuantity(form.pickUpItems[i])" class="mr-5" v-model="form.pickUpItems[i].quantity" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'"
                         :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity"/>
-                      <div v-if="showRemain" class="ml-5 text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain || 0 }}</div>
+                      <div v-if="!viewMode" class="text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain || 0 }}</div>
                     </div>
                   </v-col>
                 </v-row>
@@ -111,7 +114,6 @@
       return {
         valid: true,
         form: null,
-        remaining: 0,
         parcelRules: [
           v => !!v || 'โปรดเลือกวัสดุคงคลัง',
         ],
@@ -248,7 +250,7 @@
 
     .text-remaining {
       width: max-content;
-      min-width: 120px;
+      min-width: 100px;
     }
 
     @media (max-width: 768px) {

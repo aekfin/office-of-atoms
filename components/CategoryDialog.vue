@@ -10,9 +10,9 @@
       <v-card-text class="black--text pt-2">
         <div>
           <v-form ref="form" v-model="valid" lazyValidation>
-            <SelectDropdown v-if="tabIndex > 0" :value.sync="form.majorCategoryId" label="หมวดหมู่ *" apiPath="equipment/category/getMejorCategorys" :rules="categoryRule" required @select="onChangeCategory"/>
-            <SelectDropdown v-if="tabIndex > 1" :value.sync="form.subCategoryId" label="หมวดหมู่ย่อย *" :items="subCategoryItems" :rules="subcategoryRule" required :disabled="!form.majorCategoryId || isLoadingSubCategory" :forceLoading="isLoadingSubCategory" @select="onChangeSubCategory"/>
-            <SelectDropdown v-if="tabIndex > 2" :value.sync="form.typeId" label="ประเภท *" :items="typeItems" :rules="typeRule" required :disabled="!form.subCategoryId || isLoadingType" :forceLoading="isLoadingType" @select="onChangeType"/>
+            <SelectDropdown v-if="tabIndex > 0" :value.sync="form.majorCategoryId" label="หมวดหมู่พัสดุ *" apiPath="equipment/category/getMejorCategorys" :rules="categoryRule" required @select="onChangeCategory"/>
+            <SelectDropdown v-if="tabIndex > 1" :value.sync="form.subCategoryId" label="ประเภทพัสดุ *" :items="subCategoryItems" :rules="subcategoryRule" required :disabled="!form.majorCategoryId || isLoadingSubCategory" :forceLoading="isLoadingSubCategory" @select="onChangeSubCategory"/>
+            <SelectDropdown v-if="tabIndex > 2" :value.sync="form.typeId" label="รายการครุภัณฑ์ *" :items="typeItems" :rules="typeRule" required :disabled="!form.subCategoryId || isLoadingType" :forceLoading="isLoadingType" @select="onChangeType"/>
             <SelectDropdown v-if="tabIndex > 3" :value.sync="form.brandId" label="ยี่ห้อ *" :items="brandItems" :rules="brandRule" required :disabled="!form.typeId || isLoadingBrand" :forceLoading="isLoadingBrand" @select="onChangeBrand"/>
             <v-text-field v-model="form.name" :label="categoryName" :rules="categoryNameRule" required/>
           </v-form>

@@ -1,13 +1,13 @@
 <template>
   <v-row class="category-durable-good">
     <v-col :cols="12" :md="cols">
-      <SelectDropdown :value.sync="form.majorCategoryId" label="หมวดหมู่ *" apiPath="equipment/category/getMejorCategorys" :rules="!noRules && categoryRule || []" required :disabled="disabled" @select="onChangeCategory"/>
+      <SelectDropdown :value.sync="form.majorCategoryId" label="หมวดหมู่พัสดุ *" apiPath="equipment/category/getMejorCategorys" :rules="!noRules && categoryRule || []" required :disabled="disabled" @select="onChangeCategory"/>
     </v-col>
     <v-col :cols="12" :md="cols">
-      <SelectDropdown :value.sync="form.subCategoryId" label="หมวดหมู่ย่อย *" :items="subCategoryItems" :rules="!noRules && subcategoryRule || []" required :disabled="disabled || !form.majorCategoryId || isLoadingSubCategory" :forceLoading="isLoadingSubCategory" @select="onChangeSubCategory"/>
+      <SelectDropdown :value.sync="form.subCategoryId" label="ประเภทพัสดุ *" :items="subCategoryItems" :rules="!noRules && subcategoryRule || []" required :disabled="disabled || !form.majorCategoryId || isLoadingSubCategory" :forceLoading="isLoadingSubCategory" @select="onChangeSubCategory"/>
     </v-col>
     <v-col :cols="12" :md="cols">
-      <SelectDropdown :value.sync="form.typeId" label="ประเภท *" :items="typeItems" :rules="!noRules && typeRule || []" required :disabled="disabled || !form.subCategoryId || isLoadingType" :forceLoading="isLoadingType" @select="onChangeType"/>
+      <SelectDropdown :value.sync="form.typeId" label="รายการครุภัณฑ์ *" :items="typeItems" :rules="!noRules && typeRule || []" required :disabled="disabled || !form.subCategoryId || isLoadingType" :forceLoading="isLoadingType" @select="onChangeType"/>
     </v-col>
     <v-col :cols="12" :md="cols">
       <SelectDropdown :value.sync="form.brandId" label="ยี่ห้อ *" :items="brandItems" :rules="!noRules && brandRule || []" required :disabled="disabled || !form.typeId || isLoadingBrand" :forceLoading="isLoadingBrand" @select="onChangeBrand"/>

@@ -147,7 +147,7 @@ export default () => ({
           to: '/management/type-parcel/'
         },
         {
-          title: 'หมวดหมู่ครุภัณฑ์',
+          title: 'หมวดหมู่พัสดุ',
           to: '/management/category/'
         },
         {
