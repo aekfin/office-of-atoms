@@ -7,7 +7,9 @@
           <v-row :class="isError ? '' : 'mb-8'">
             <v-text-field v-model="form.username" name="email" :rules="usernameRules" label="E-Mail ผู้ใช้งาน" required outlined/>
             <v-text-field v-model="form.password" label="รหัสผ่าน" :type="seePassword ? 'text' : 'password'" :rules="passwordRules" required outlined class="mt-2">
-              <template #append><v-icon @click="seePassword = !seePassword" v-text="`mdi-eye${seePassword ? '-off' : ''}`"/></template>
+              <template #append>
+                <i class="material-icons pointer" @click="seePassword = !seePassword" v-text="seePassword ? 'password' : 'remove_red_eye'"/>
+              </template>
             </v-text-field>
             <v-alert v-if="isError" style="width: 100%;" dense outlined type="error">
               <strong>Email</strong> หรือ <strong>รหัสผ่าน </strong>ไม่ถูกต้อง

@@ -55,7 +55,7 @@
                     <v-text-field v-model="deteriorationList[i]" label="" type="number" :rules="deteriorationRules" suffix="%"/>
                   </div>
                   <v-btn v-if="deteriorationList.length > 1" class="ml-2 align-self-center" icon @click="removeDeterioration(i)">
-                    <v-icon>mdi-delete</v-icon>
+                    <i class="material-icons">delete</i>
                   </v-btn>
                 </div>
               </v-row>

@@ -59,7 +59,7 @@
                     </v-row>
                   </div>
                   <v-btn v-if="form.contractPersons.length > 1" class="ml-2" icon @click="removeContact(i)">
-                    <v-icon>mdi-delete</v-icon>
+                    <i class="material-icons">delete</i>
                   </v-btn>
                 </v-row>
               </v-container>

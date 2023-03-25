@@ -4,17 +4,17 @@
     <v-btn v-if="attachmentList.length <= limit" elevation="2" color="#546E7A" class="text-white" @click="attach">แนบไฟล์เพิ่มเติม</v-btn>
     <div v-for="(attachment, i) in attachmentList" :key="i" class="file mt-4">
       <a class="file-name-wrapper" :href="attachment.fileUrl" target="_blank">
-        <v-icon>mdi-download</v-icon>
+        <i class="material-icons">download</i>
         <div class="name ml-1">{{ attachment.filename }}</div>
       </a>
-      <v-icon class="ml-4" @click.stop="onDeleteAttachment(attachment)">mdi-close-circle</v-icon>
+      <i class="material-icons pointer ml-4" @click.stop="onDeleteAttachment(attachment)">close</i>
     </div>
     <div v-for="(file, i) in files" :key="i" class="file mt-4">
       <div class="file-name-wrapper">
-        <v-icon>mdi-file-outline</v-icon>
+        <i class="material-icons">upload_file</i>
         <div class="name ml-1">{{ file.name }}</div>
       </div>
-      <v-icon class="ml-4" @click.stop="onDelete(file)">mdi-close-circle</v-icon>
+      <i class="material-icons pointer ml-4" @click.stop="onDelete(file)">close</i>
     </div>
   </div>
 </template>

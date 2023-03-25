@@ -5,7 +5,7 @@
         <div class="profile-button" v-bind="attrs" v-on="on">
           <!-- <div class="profile-image mr-3" :style="`background-image: url(${require('~/assets/images/14992789.jpg')}`"/> -->
           <div v-if="user" class="profile-name mr-2">{{ user.thaiFristName }} {{ user.thaiLastName }}</div>
-          <v-icon class="profile-icon">mdi-chevron-down</v-icon>
+          <i class="material-icons">keyboard_arrow_down</i>
         </div>
       </template>
       <v-list>
@@ -13,8 +13,8 @@
           <v-list-item-title><b class="mr-2">ตำแหน่ง :</b>{{ $store.state.userProfile?.positionMaster?.positionName }}</v-list-item-title>
         </v-list-item>
         <v-list-item v-for="(item, index) in items" :key="index" @click="onClick(item)">
-          <v-list-item-title>
-            <v-icon v-if="item.icon" class="profile-icon mr-1" v-text="item.icon"/>
+          <v-list-item-title class="d-flex">
+            <i v-if="item.icon" class="material-icons profile-icon mr-2 text-black" v-text="item.icon"/>
             <span>{{ item.title }}</span>
           </v-list-item-title>
         </v-list-item>
@@ -37,12 +37,12 @@
         return [
           {
             title: 'Profile',
-            icon: 'mdi-account',
+            icon: 'account_circle',
             to: `/management/user/${this.user?.id}/`
           },
           {
             title: 'Logout',
-            icon: 'mdi-logout',
+            icon: 'logout',
             to: '/login/',
             external: true,
           },

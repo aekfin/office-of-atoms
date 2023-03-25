@@ -21,7 +21,7 @@
       </div>
       <div class="btn-wrapper">
         <v-btn elevation="2" large outlined @click="dialog = !dialog">
-          <v-icon>mdi-filter-outline</v-icon>
+          <i class="material-icons">filter_alt</i>
           <div>กรองข้อมูล</div>
         </v-btn>
       </div>
@@ -31,7 +31,7 @@
         <v-card-title>
           <div class="d-flex w-full justify-space-between">
             <h3 class="text-2xl font-bold">กรองข้อมูลด้วย</h3>
-            <v-btn icon @click="dialog = false"><v-icon>mdi-close</v-icon></v-btn>
+            <v-btn icon @click="dialog = false"><i class="material-icons">close</i></v-btn>
           </div>
         </v-card-title>
         <v-card-text>

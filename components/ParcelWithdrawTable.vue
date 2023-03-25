@@ -15,7 +15,7 @@
       <template #item.parcel="{ item }">
         <div class="d-flex align-center justify-center">
           <v-btn icon @click="openDialog(item)">
-            <v-icon>mdi-information-outline</v-icon>
+            <i class="material-icons">info_outline</i>
           </v-btn>
         </div>
       </template>
@@ -28,7 +28,7 @@
         <v-card-title class="text-h5 d-flex justify-space-between">
           <b>วัสดุคงคลัง</b>
           <v-btn icon @click="closeDialog">
-            <v-icon>mdi-close</v-icon>
+            <i class="material-icons">close</i>
           </v-btn>
         </v-card-title>
         <v-card-text class="black--text">

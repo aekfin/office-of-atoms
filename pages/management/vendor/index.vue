@@ -57,8 +57,8 @@
       },
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'mdi-pencil', action: `/management/vendor/${item.id}/` },
-          { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
+          { type: 'link', icon: 'edit', action: `/management/vendor/${item.id}/` },
+          { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
         ]
       },
     },

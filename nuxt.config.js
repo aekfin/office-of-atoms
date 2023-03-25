@@ -73,11 +73,7 @@ export default {
       }
     },
     treeShake: true,
-    defaultAssets: {
-      font: {
-        family: 'Sarabun'
-      }
-    }
+    defaultAssets: false
   },
 
   server: {

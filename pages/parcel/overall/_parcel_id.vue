@@ -21,7 +21,7 @@
                 <div class="d-flex align-center">
                   <div>วัสดุคงคลัง ชิ้นที่ {{ i + 1 }}.</div>
                   <v-btn v-if="form.itemParcels.length > 1 && i === form.itemParcels.length - 1" class="ml-5" icon @click.stop="removeParcel(i)">
-                    <v-icon>mdi-delete</v-icon>
+                    <i class="material-icons">delete</i>
                   </v-btn>
                 </div>
               </v-expansion-panel-header>

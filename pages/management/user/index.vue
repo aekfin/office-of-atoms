@@ -89,8 +89,8 @@
       },
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'mdi-pencil', action: `/management/user/${item.id}/` },
-          { type: 'confirm', icon: 'mdi-delete', action: () => { this.deleteUser(item) } },
+          { type: 'link', icon: 'edit', action: `/management/user/${item.id}/` },
+          { type: 'confirm', icon: 'delete', action: () => { this.deleteUser(item) } },
         ]
       }
     }

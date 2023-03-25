@@ -2,7 +2,7 @@
   <div class="upload-image">
     <div class="mt-8 image-uploader" :style="{ backgroundImage: `url('${previewImage}')` }" @click="onUploadImage">
       <div :class="`filter-upload${previewImage ? '' : ' is-show'}`">
-        <v-icon color="white">mdi-image</v-icon>
+        <i class="material-icons" style="color: white;">image</i>
         <div class="text-white text-lg">อัพโหลดรูปภาพ</div>
       </div>
     </div>

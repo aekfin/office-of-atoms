@@ -4,7 +4,7 @@
       <v-card-title class="text-h5 justify-space-between">
         <div>{{ title }}</div>
         <v-btn icon @click="val = false">
-          <v-icon>mdi-close</v-icon>
+          <i class="material-icons">close</i>
         </v-btn>
       </v-card-title>
       <v-card-text class="black--text pt-2 text-body-1">

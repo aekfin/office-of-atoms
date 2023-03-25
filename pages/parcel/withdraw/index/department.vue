@@ -39,8 +39,8 @@
       },
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'mdi-pencil', action: `/parcel/withdraw/department/${item.id}/` },
-          // { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
+          { type: 'link', icon: 'edit', action: `/parcel/withdraw/department/${item.id}/` },
+          // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
         ]
       },
     },

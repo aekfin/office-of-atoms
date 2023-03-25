@@ -2,7 +2,7 @@
   <v-menu class="equipment-column" open-on-hover top offset-y>
     <template #activator="{ on, attrs }">
       <v-btn v-bind="attrs" icon v-on="on">
-        <v-icon>mdi-information-outline</v-icon>
+        <i class="material-icons">info_outline</i>
       </v-btn>
     </template>
     <v-list class="goods-list">

@@ -113,7 +113,7 @@
       },
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'mdi-pencil', action: `/management/category/${item.id}/` },
+          { type: 'link', icon: 'edit', action: `/management/category/${item.id}/` },
         ]
       },
       async onCreate (form) {

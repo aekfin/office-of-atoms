@@ -42,7 +42,7 @@
       <v-spacer/>
       <v-btn icon @click="$router.push(parcelNotiCount ? `/parcel/request/${externalCount ? '' : 'department/'}` : 'durable-goods/request/')">
         <v-badge overlap color="red" icon :content="notiCount" :value="!!notiCount">
-          <v-icon>mdi-bell</v-icon>
+          <i class="material-icons">notifications</i>
         </v-badge>
       </v-btn>
       <ProfileNavBar/>

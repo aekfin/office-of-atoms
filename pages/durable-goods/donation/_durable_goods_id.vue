@@ -18,7 +18,7 @@
                 <div class="d-flex align-center">
                   <div>ครุภัณฑ์ ชิ้นที่ {{ i + 1 }}.</div>
                   <v-btn v-if="form.equipments.length > 1 && i === form.equipments.length - 1" class="ml-5" icon @click.stop="removeDurableGoods(i)">
-                    <v-icon>mdi-delete</v-icon>
+                    <i class="material-icons">delete</i>
                   </v-btn>
                 </div>
               </v-expansion-panel-header>

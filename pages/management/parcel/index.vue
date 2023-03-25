@@ -54,7 +54,7 @@
       },
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'mdi-pencil', action: `/management/parcel/${item.id}/` },
+          { type: 'link', icon: 'edit', action: `/management/parcel/${item.id}/` },
         ]
       }
     }

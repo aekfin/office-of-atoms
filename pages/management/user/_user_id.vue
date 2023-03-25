@@ -47,7 +47,9 @@
           </v-col>
           <!-- <v-col :cols="6">
             <v-text-field v-model="form.password" label="รหัสผ่าน *" :type="seePassword ? 'text' : 'password'" :rules="passwordRules" required :disabled="disabled">
-              <template #append><v-icon @click="seePassword = !seePassword" v-text="`mdi-eye${seePassword ? '-off' : ''}`"/></template>
+              <template #append>
+                <i class="material-icons pointer" @click="seePassword = !seePassword" v-text="seePassword ? 'password' : 'remove_red_eye'"/>
+              </template>
             </v-text-field>
           </v-col> -->
         </v-row>

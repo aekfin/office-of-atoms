@@ -66,7 +66,7 @@
                     </div>
                     <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล" :rules="contactNameRules"/>
                     <v-btn v-if="form.directors.length > 1" icon @click="removeContact(i)">
-                      <v-icon>mdi-delete</v-icon>
+                      <i class="material-icons">delete</i>
                     </v-btn>
                   </v-row>
                   <v-row v-if="form.directors.length < 15">

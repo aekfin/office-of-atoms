@@ -39,7 +39,7 @@
       },
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'mdi-pencil', action: `/parcel/request/department/${item.id}/` },
+          { type: 'link', icon: 'edit', action: `/parcel/request/department/${item.id}/` },
         ]
       },
     },

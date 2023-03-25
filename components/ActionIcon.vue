@@ -2,13 +2,13 @@
   <div class="action-icon">
     <NLink v-if="isLink" :to="item.action">
       <v-btn icon>
-        <v-icon v-text="item.icon || item.name"/>
+        <i class="material-icons" v-text="item.icon || item.name"/>
       </v-btn>
     </NLink>
     <v-menu v-else-if="isConfirm" offsetY nudgeLeft="100%" contentClass="action-icon-menu-class">
       <template #activator="{ on, attrs }">
         <v-btn icon v-bind="attrs" v-on="on">
-          <v-icon v-text="item.icon || item.name"/>
+          <i class="material-icons" v-text="item.icon || item.name"/>
         </v-btn>
       </template>
       <div>
@@ -20,7 +20,7 @@
       </div>
     </v-menu>
     <v-btn v-else icon @click="onConfirm">
-      <v-icon v-text="item.icon || item.name"/>
+      <i class="material-icons" v-text="item.icon || item.name"/>
     </v-btn>
   </div>
 </template>

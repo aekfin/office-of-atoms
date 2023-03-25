@@ -67,8 +67,8 @@
       },
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'mdi-pencil', action: `/management/durable-goods/${item.id}/` },
-          // { type: 'confirm', icon: 'mdi-delete', action: () => { console.log('Confirm') } },
+          { type: 'link', icon: 'edit', action: `/management/durable-goods/${item.id}/` },
+          // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
         ]
       }
     }
