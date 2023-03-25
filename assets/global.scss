@@ -4,7 +4,7 @@ $material-design-icons-font-directory-path: '~material-design-icons-iconfont/dis
 
 @font-face {
   font-family: 'Sarabun';
-  src: url('~/assets/fonts/Sarabun/Sarabun-Regular.ttf');
+  src: url('~/assets/fonts/Sarabun/Sarabun-Medium.ttf');
 }
 
 a {
@@ -13,6 +13,10 @@ a {
 
 .pointer {
   cursor: pointer;
+}
+
+.normal {
+  font-weight: normal !important;
 }
 
 .gap-5 {
@@ -116,6 +120,14 @@ button.v-btn.v-size--large {
 .deterioration, .depreciation {
   input {
     text-align: right;
+  }
+}
+
+.v-expansion-panel-header.v-expansion-panel-header--active {
+  .v-expansion-panel-header__icon {
+    .material-icons {
+      transform: rotate(180deg);
+    }
   }
 }
 

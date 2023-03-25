@@ -34,7 +34,12 @@
       </v-container>
       <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
         <v-expansion-panel>
-          <v-expansion-panel-header>ข้อมูลติดต่อ</v-expansion-panel-header>
+          <v-expansion-panel-header>
+            ข้อมูลติดต่อ
+            <template #actions>
+              <i class="material-icons">keyboard_arrow_down</i>
+            </template>
+          </v-expansion-panel-header>
           <v-expansion-panel-content>
             <div v-for="(contact, i) in form.contractPersons" :key="i">
               <v-container>

@@ -25,6 +25,9 @@
                     <i class="material-icons">delete</i>
                   </v-btn>
                 </div>
+                <template #actions>
+                  <i class="material-icons">keyboard_arrow_down</i>
+                </template>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-container>

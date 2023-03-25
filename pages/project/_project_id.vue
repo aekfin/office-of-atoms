@@ -48,7 +48,12 @@
       </v-container>
       <v-expansion-panels v-model="formExpand" class="form-expansion-panels mt-10" flat multiple>
         <v-expansion-panel>
-          <v-expansion-panel-header>เลือกบริษัทคู่สัญญา</v-expansion-panel-header>
+          <v-expansion-panel-header>
+            เลือกบริษัทคู่สัญญา
+            <template #actions>
+              <i class="material-icons">keyboard_arrow_down</i>
+            </template>
+          </v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-container>
               <v-row class="pl-3 pr-3">
@@ -78,15 +83,20 @@
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
-          <v-expansion-panel-header>แนบเอกสารเพิ่มเติม</v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-container>
-                <v-row>
-                  <AttachFileBtn :value.sync="attachFiles" :attachments="form.fileInfo" @removeAttachment="onRemoveAttachment"/>
-                </v-row>
-              </v-container>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
+          <v-expansion-panel-header>
+            แนบเอกสารเพิ่มเติม
+            <template #actions>
+              <i class="material-icons">keyboard_arrow_down</i>
+            </template>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-container>
+              <v-row>
+                <AttachFileBtn :value.sync="attachFiles" :attachments="form.fileInfo" @removeAttachment="onRemoveAttachment"/>
+              </v-row>
+            </v-container>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
       </v-expansion-panels>
       <v-container class="mt-8">
         <v-row justify="end">

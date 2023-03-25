@@ -8,6 +8,9 @@
               <v-expansion-panel>
                 <v-expansion-panel-header>
                   <div class="text-base">{{ menu.title }}</div>
+                  <template #actions>
+                    <i class="material-icons">keyboard_arrow_down</i>
+                  </template>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
                   <v-list-item v-for="child in menu.children" :key="child.title" :to=" child.to" router :exactPath="child.exactPath || false">
@@ -32,7 +35,9 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar color="#0288D1" clippedLeft fixed dark app>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer">
+        <i class="material-icons">menu</i>
+      </v-app-bar-nav-icon>
       <v-toolbar-title>
         <div class="title-header">
           <img src="~/assets/images/logo.png" alt="logo" width="48px">
