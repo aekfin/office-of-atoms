@@ -4,7 +4,16 @@ $material-design-icons-font-directory-path: '~material-design-icons-iconfont/dis
 
 @font-face {
   font-family: 'Sarabun';
-  src: url('~/assets/fonts/Sarabun/Sarabun-Medium.ttf');
+  font-style: normal;
+  font-weight: 400;
+  src: url('~/assets/fonts/Sarabun/Sarabun-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Sarabun';
+  font-style: bold;
+  font-weight: 700;
+  src: url('~/assets/fonts/Sarabun/Sarabun-Bold.ttf');
 }
 
 a {

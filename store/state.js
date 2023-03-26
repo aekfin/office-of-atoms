@@ -61,6 +61,10 @@ export default () => ({
       to: '/project/'
     },
     {
+      title: 'ตรวจนับครุภัณฑ์',
+      to: '/durable-goods/counting/'
+    },
+    {
       title: 'วัสดุคงคลัง',
       to: '/parcel/',
       children: [
@@ -103,10 +107,6 @@ export default () => ({
           title: 'ยืม - คืน ครุภัณฑ์',
           to: '/durable-goods/borrow/'
         },
-        // {
-        //   title: 'ตรวจนับครุภัณฑ์',
-        //   to: '/durable-goods/counting/'
-        // },
         {
           title: 'เบิกครุภัณฑ์',
           to: '/durable-goods/withdraw/',

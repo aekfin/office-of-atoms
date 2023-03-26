@@ -1,6 +1,6 @@
 <template>
   <div class="pagination mt-7">
-    <v-pagination v-model="page" :length="totalPages" @input="onInput"/>
+    <v-pagination v-model="page" :length="totalPages" nextIcon="keyboard_arrow_right" prevIcon="keyboard_arrow_left" @input="onInput"/>
   </div>
 </template>
 

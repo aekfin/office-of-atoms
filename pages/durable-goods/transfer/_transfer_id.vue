@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-transfer-detail-page">
-    <PageHeader :text="isCreate ? 'การโอนย้ายครุภัณฑ์' : 'การแก้ไขการโอนย้ายครุภัณฑ์'" hideTotal/>
+    <PageHeader :text="isCreate ? 'การเพิ่มการโอนย้ายครุภัณฑ์' : 'การแก้ไขการโอนย้ายครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
     <DurableGoodsTransferForm v-else :item="item" :viewMode="!isCreate" type="โอนย้าย" cannotApprove backPath="/durable-goods/transfer/" @submit="onSubmit"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>

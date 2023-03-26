@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-borrow-detail-page">
-    <PageHeader :text="isCreate ? 'การยืมครุภัณฑ์' : 'การแก้ไขการยืมครุภัณฑ์'" hideTotal/>
+    <PageHeader :text="isCreate ? 'การเพิ่มการยืมครุภัณฑ์' : 'การแก้ไขการยืมครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
     <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" cannotApprove @submit="onSubmit"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
