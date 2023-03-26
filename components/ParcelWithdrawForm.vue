@@ -2,10 +2,10 @@
   <div class="parcel-withdraw">
     <v-stepper v-if="viewMode && item" v-model="step" class="mt-10 mb-10" altLabels>
       <v-stepper-header>
-        <v-stepper-step :step="1" color="success" complete>ยื่นการเบิก</v-stepper-step>
+        <v-stepper-step :step="1" color="success" complete completeIcon="check" editIcon="edit">ยื่นการเบิก</v-stepper-step>
         <template v-for="flow in item.flows">
           <v-divider :key="flow.id"/>
-          <v-stepper-step :key="flow.id" :step="flow.orderApprove + 1" :color="isColor(flow)" :complete="isComplete(flow)">
+          <v-stepper-step :key="flow.id" :step="flow.orderApprove + 1" :color="isColor(flow)" :complete="isComplete(flow)" completeIcon="check" editIcon="edit">
             <v-tooltip bottom :disabled="!getApproverText(flow)">
               <template #activator="{ on, attrs }">
                 <div v-bind="attrs" class="text-center" v-on="on">
@@ -120,12 +120,16 @@
           quantity: 0,
           typeId: null,
           remain: 0,
+          datePickUp: new Date()
         },
         parcelRules: [
           v => !!v || 'โปรดเลือกวัสดุคงคลัง',
         ],
         typeRules: [
           v => !!v || 'โปรดเลือกประเภท',
+        ],
+        datetimeWithdrawRules: [
+          v => !!v || 'โปรดใส่วันที่เบิก',
         ],
         step: 1,
         formExpand: [0],

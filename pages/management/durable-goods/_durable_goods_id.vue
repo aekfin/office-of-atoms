@@ -31,17 +31,7 @@
             <v-textarea v-model="form.description" label="คำอธิบายเพิ่มเติม" :rows="4"/>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col :cols="12">
-            <div class="text-h5"><b>ผู้ครอบครอง</b></div>
-          </v-col>
-          <v-col :cols="12" :md="6">
-            <SelectDropdown :value.sync="form.organizationId" label="กอง *" itemText="ouName" :rules="ouRules" required :disabled="!isCreate" apiPath="Orgchart/getOrganizations"/>
-          </v-col>
-          <v-col :cols="12" :md="6">
-            <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required :disabled="!isCreate" apiPath="Orgchart/getDepartments"/>
-          </v-col>
-        </v-row>
+        <DurableGoodsOwner :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.userId" :disabled="!isCreate"/>
       </v-container>
       <!-- <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
         <v-expansion-panel>
@@ -87,6 +77,7 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
+      DurableGoodsOwner: () => import('~/components/DurableGoodsOwner.vue'),
       AttachFileBtn: () => import('~/components/AttachFileBtn.vue'),
     },
     data () {
@@ -102,6 +93,7 @@
           classifier: '',
           organizationId: null,
           departmentId: null,
+          userId: null,
         },
         categoryForm: {},
         initCategoryForm: {},
@@ -140,12 +132,6 @@
         priceRules: [
           v => !!v || v === 0 || 'โปรดใส่ราคากลาง',
         ],
-        ouRules: [
-          v => !!v || 'โปรดเลือกกอง',
-        ],
-        departmentRules: [
-          v => !!v || 'โปรดเลือกกลุ่ม',
-        ],
         attachFiles: [],
         removeFile: [],
       }
@@ -167,6 +153,7 @@
             ...data,
             organizationId: data.organization.id,
             departmentId: data.department.id,
+            userId: null,
           }
           this.initCategoryForm = {
             majorCategoryId: data.majorCategory.id,

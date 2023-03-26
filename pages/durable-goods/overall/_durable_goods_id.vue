@@ -71,17 +71,7 @@
           </v-row>
         </v-container>
 
-        <div class="text-h5"><b>ผู้ครอบครอง</b></div>
-        <v-container>
-          <v-row>
-            <v-col :cols="6">
-              <SelectDropdown :value.sync="form.organizationId" label="กอง *" itemText="ouName" :rules="ouRules" required apiPath="Orgchart/getOrganizations" :disabled="!isCreate"/>
-            </v-col>
-            <v-col :cols="6">
-              <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required apiPath="Orgchart/getDepartments" :disabled="!isCreate"/>
-            </v-col>
-          </v-row>
-        </v-container>
+        <DurableGoodsOwner class="mt-3" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.userId" :disabled="!isCreate"/>
       </v-container>
 
       <v-container class="mt-8">
@@ -123,6 +113,7 @@
           ],
           organizationId: null,
           departmentId: null,
+          userId: null,
         },
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อ',
@@ -196,6 +187,7 @@
             equipments: [{ ...data }],
             organizationId: data.organization.id,
             departmentId: data.department.id,
+            userId: null,
           }
           this.initCategoryForm = {
             majorCategoryId: data.majorCategory.id,
