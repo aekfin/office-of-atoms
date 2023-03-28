@@ -14,7 +14,7 @@
           :label="label"
           hint="รูปแบบ วัน-เดือน-ปี"
           persistentHint
-          prependIcon="mdi-calendar"
+          prependIcon="calendar_month"
           :disabled="disabled"
           :required="required"
           :rules="rules"
@@ -28,6 +28,8 @@
       <v-date-picker
         v-model="date"
         no-title
+        prev-icon="keyboard_arrow_left"
+        next-icon="keyboard_arrow_right"
         locale="th-TH"
         @input="menu = false"
       />

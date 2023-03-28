@@ -44,7 +44,7 @@
           { text: 'ราคาจำหน่าย', value: 'price', align: 'center', width: '140px' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
           { text: 'สถานะ', value: 'status', align: 'center', width: '100px' },
-          // { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
+          { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
         ],
       }
     },
@@ -67,7 +67,7 @@
       },
       getActionIconList (item) {
         return [
-          // { type: 'link', icon: 'edit', action: `/durable-goods/sale/${item.id}/` },
+          { type: 'link', icon: 'edit', action: `/durable-goods/sale/${item.id}/` },
           // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
         ]
       }

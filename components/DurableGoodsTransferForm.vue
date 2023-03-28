@@ -39,12 +39,12 @@
 
       <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการ${type}` }}</b></h5>
       <v-container class="mt-2">
-        <CategoryDurableGood :initForm="initCategoryForm" :disabled="viewMode" noRules @change="onChangeCategory"/>
+        <NumberDurableGood :propNumber="form.item && form.item.equipment.number || ''" :disabled="viewMode" @change="numberQuery = $event"/>
         <v-row>
           <v-col>
             <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
-            <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipmentsAndFilter?status=NEW&status=RETURNED`"
-              :query="categoryForm" :disabled="viewMode" @select="onSelectDurableGoods"/>
+            <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
+              :query="numberQuery" :disabled="viewMode" @select="onSelectDurableGoods"/>
           </v-col>
         </v-row>
       </v-container>
@@ -99,7 +99,7 @@
     components: {
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
-      CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
+      NumberDurableGood: () => import('~/components/NumberDurableGood.vue'),
     },
     props: {
       item: { type: Object },
@@ -128,8 +128,7 @@
           v => !!v || 'โปรดเลือกกลุ่ม',
         ],
         step: 1,
-        categoryForm: {},
-        initCategoryForm: {},
+        numberQuery: {},
       }
     },
     computed: {
@@ -146,42 +145,27 @@
     watch: {
       'item' () {
         this.setForm()
-      }
+      },
     },
     mounted () {
       this.setForm()
     },
     methods: {
       setForm () {
+        const data = this.item?.items?.[0]
         this.form = {
           description: this.item?.description || '',
           dateBorrow: this.item?.dateBorrow || new Date(),
-          itemId: this.item?.items?.[0]?.equipment?.id || null,
-          item: this.item?.items?.[0] || null,
-          organization: this.item?.items?.[0]?.equipment?.organizationMaster || {},
-          department: this.item?.items?.[0]?.equipment?.departmentMaster || {},
+          itemId: data?.equipment?.id || null,
+          item: data || null,
+          items: data && [data.equipment] || [],
+          organization: data?.equipment?.organizationMaster || {},
+          department: data?.equipment?.departmentMaster || {},
           ouId: this.item?.transferto?.ouId || null,
           departmentId: this.item?.transferto?.departmentId || null,
         }
-        if (this.item) this.setCategoryForm()
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
         this.step = index + 2
-      },
-      setCategoryForm () {
-        const data = this.item?.items?.[0]
-        this.initCategoryForm = {
-          majorCategoryId: data.majorCategory.id,
-          subCategoryId: data.subCategory.id,
-          typeId: data.type.id,
-          brandId: data.brand.id,
-          modelId: data.model.id,
-        }
-      },
-      onChangeCategory ({ form }) {
-        this.categoryForm = { ...form }
-        this.form.itemId = null
-        this.form.organization = this.item?.items?.[0]?.equipment?.organizationMaster || {}
-        this.form.department = this.item?.items?.[0]?.equipment?.departmentMaster || {}
       },
       getApproverText (flow) {
         return flow?.emails?.reduce((str, email, i) => `${str}${i > 0 ? ', ' : ''}${email}`, 'ผู้อนุมัติ : ') || false

@@ -5,12 +5,12 @@
 
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
-        <CategoryDurableGood :initForm="initCategoryForm" noRules :disabled="!isCreate" @change="onChangeCategory"/>
+        <NumberDurableGood :propNumber="form.item && form.item.number || ''" :disabled="!isCreate" @change="numberQuery = $event"/>
         <v-row>
           <v-col :cols="12">
-            <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipmentsAndFilter?status=NEW&status=RETURNED`"
-              :query="categoryForm" :disabled="!isCreate"/>
-            <v-text-field v-else v-model="form.itemName" label="ครุภัณฑ์ *" disabled/>
+            <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
+              :query="numberQuery" :disabled="!isCreate"/>
+            <v-text-field v-else-if="form.item" v-model="form.item.name" label="ครุภัณฑ์ *" disabled/>
           </v-col>
         </v-row>
       </v-container>
@@ -32,7 +32,7 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       Loading: () => import('~/components/Loading.vue'),
-      CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
+      NumberDurableGood: () => import('~/components/NumberDurableGood.vue'),
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
     },
@@ -56,8 +56,7 @@
         durableGoodsRules: [
           v => !!v || 'โปรดเลือกครุภัณฑ์',
         ],
-        categoryForm: {},
-        initCategoryForm: {},
+        numberQuery: {},
         errorText: 'ไม่สามารถขอส่งซ่อมได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้',
         dialog: false,
       }
@@ -82,13 +81,6 @@
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/getEquipments/status/${this.$route.params.repair_id}`, query: this.$route.query })
           this.item = data
-          this.initCategoryForm = {
-            majorCategoryId: data.majorCategory.id,
-            subCategoryId: data.subCategory.id,
-            typeId: data.type.id,
-            brandId: data.brand.id,
-            modelId: data.model.id,
-          }
           this.isLoading = false
           return Promise.resolve()
         } catch (err) {
@@ -96,14 +88,13 @@
         }
       },
       setForm () {
+        const data = this.item?.equipmentDonation
         this.form = {
-          itemId: null,
-          itemName: this.item?.name || null,
+          dateDonation: data?.dateDonation || null,
+          itemId: data?.equipment?.id || null,
+          item: data?.equipment || null,
+          description: data?.description || ''
         }
-      },
-      onChangeCategory ({ form }) {
-        this.categoryForm = { ...form }
-        this.form.itemId = null
       },
       async onRepair () {
         const valid = this.$refs.form.validate()

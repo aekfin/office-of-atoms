@@ -17,18 +17,18 @@
 
       <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการจำหน่าย` }}</b></h5>
       <v-container>
-        <CategoryDurableGood :initForm="initCategoryForm" noRules @change="onChangeCategory"/>
+        <NumberDurableGood :propNumber="form.item && form.item.number || ''" :disabled="!isCreate" @change="numberQuery = $event"/>
         <v-row>
           <v-col :cols="12">
-            <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipmentsAndFilter?status=NEW&status=RETURNED`"
-              :query="categoryForm" :disabled="!isCreate" @select="onSelectDurableGoods"/>
-            <v-text-field v-else v-model="form.name" label="ครุภัณฑ์ *" disabled/>
+            <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
+              :query="numberQuery" :disabled="!isCreate" @select="onSelectDurableGoods"/>
+            <v-text-field v-else-if="form.item" v-model="form.item.name" label="ครุภัณฑ์ *" disabled/>
           </v-col>
           <v-col :cols="12" :md="4">
-            <v-text-field v-model="form.price" label="ราคาจำหน่าย *" type="number" :rules="priceRules" required/>
+            <v-text-field v-model="form.price" label="ราคาจำหน่าย *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="8">
-            <v-text-field v-model="form.buyer" label="ผู้ซื้อ *" :rules="buyerRules" required/>
+            <v-text-field v-model="form.buyer" label="ผู้ซื้อ *" :rules="buyerRules" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
       </v-container>
@@ -48,7 +48,7 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       Loading: () => import('~/components/Loading.vue'),
-      CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
+      NumberDurableGood: () => import('~/components/NumberDurableGood.vue'),
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
     },
     data () {
@@ -77,8 +77,7 @@
         buyerRules: [
           v => !!v || 'โปรดใส่ชื่อผู้ซื้อ',
         ],
-        categoryForm: {},
-        initCategoryForm: {},
+        numberQuery: {},
       }
     },
     computed: {
@@ -108,17 +107,15 @@
         }
       },
       setForm () {
+        const data = this.item?.equipmentSale
         this.form = {
-          dateSale: new Date(),
-          description: '',
-          buyer: '',
-          price: '',
-          itemId: null
+          dateSale: data?.dateSale || new Date(),
+          description: data?.description || '',
+          buyer: data?.buyer || '',
+          price: data?.price || '',
+          itemId: data?.id || null,
+          item: data?.equipment || null,
         }
-      },
-      onChangeCategory ({ form }) {
-        this.categoryForm = { ...form }
-        this.form.itemId = null
       },
       onSelectDurableGoods ({ item }) {
         this.form.price = item.price
