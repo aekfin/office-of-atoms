@@ -76,7 +76,7 @@
           </v-row>
         </v-container>
 
-        <DurableGoodsOwner class="mt-3" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :disabled="!isCreate"/>
+        <DurableGoodsOwner class="mt-3" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :userList="form.ownerList" :disabled="!isCreate"/>
       </v-container>
 
       <v-container class="mt-8">
@@ -121,6 +121,7 @@
           organizationId: null,
           departmentId: null,
           ownerId: null,
+          ownerList: [],
         },
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อ',
@@ -203,13 +204,14 @@
               {
                 ...data,
                 donator: data.equipmentDonation.donator,
-                userId: data.equipmentDonation.owner.id,
-                userList: [data.equipmentDonation.owner]
+                userId: data.equipmentDonation.keeper.id,
+                userList: [data.equipmentDonation.keeper]
               }
             ],
             organizationId: data.organization.id,
             departmentId: data.department.id,
-            ownerId: null,
+            ownerId: data.owner?.id || null,
+            ownerList: data.owner && [data.owner] || [],
           }
           this.initCategoryForm = {
             majorCategoryId: data.majorCategory.id,
@@ -231,6 +233,7 @@
           try {
             const form = {
               ...this.form,
+              equipments: this.form.equipments.map(equipment => ({ ...equipment, ownerId: this.form.ownerId })),
               dateEntry: this.$fn.convertDateToString(this.form.dateEntry)
             }
             const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/import/donation', data: form })

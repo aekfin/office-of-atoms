@@ -31,7 +31,7 @@
             <v-textarea v-model="form.description" label="คำอธิบายเพิ่มเติม" :rows="4"/>
           </v-col>
         </v-row>
-        <DurableGoodsOwner :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.userId" :disabled="!isCreate"/>
+        <DurableGoodsOwner :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :disabled="!isCreate"/>
       </v-container>
       <!-- <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
         <v-expansion-panel>
@@ -93,7 +93,7 @@
           classifier: '',
           organizationId: null,
           departmentId: null,
-          userId: null,
+          ownerId: null,
         },
         categoryForm: {},
         initCategoryForm: {},
@@ -153,7 +153,8 @@
             ...data,
             organizationId: data.organization.id,
             departmentId: data.department.id,
-            userId: null,
+            ownerId: data.owner?.id || null,
+            ownerList: data.owner && [data.owner] || [],
           }
           this.initCategoryForm = {
             majorCategoryId: data.majorCategory.id,
@@ -195,6 +196,7 @@
                 description: this.form.description,
                 depreciation_rate: this.form.depreciation_rate,
                 classifier: this.form.classifier,
+                ownerId: this.form.ownerId,
               }
             ]
           }

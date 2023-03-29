@@ -71,7 +71,7 @@
           </v-row>
         </v-container>
 
-        <DurableGoodsOwner class="mt-3" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.userId" :disabled="!isCreate"/>
+        <DurableGoodsOwner class="mt-3" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :userList="form.ownerList" :disabled="!isCreate"/>
       </v-container>
 
       <v-container class="mt-8">
@@ -113,7 +113,8 @@
           ],
           organizationId: null,
           departmentId: null,
-          userId: null,
+          ownerId: null,
+          ownerList: [],
         },
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อ',
@@ -187,7 +188,8 @@
             equipments: [{ ...data }],
             organizationId: data.organization.id,
             departmentId: data.department.id,
-            userId: null,
+            ownerId: data.owner?.id || null,
+            ownerList: data.owner && [data.owner] || [],
           }
           this.initCategoryForm = {
             majorCategoryId: data.majorCategory.id,
@@ -206,6 +208,7 @@
           try {
             const form = {
               ...this.form,
+              equipments: this.form.equipments.map(equipment => ({ ...equipment, ownerId: this.form.ownerId })),
               dateEntry: this.$fn.convertDateToString(this.form.dateEntry)
             }
             const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/project/import', data: form })
