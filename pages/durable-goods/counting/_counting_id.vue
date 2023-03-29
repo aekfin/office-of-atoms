@@ -2,26 +2,29 @@
   <div id="durable-goods-counting-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มการตรวจนับครุภัณฑ์' : 'การแก้ไขการตรวจนับครุภัณฑ์'" hideTotal/>
     <v-form ref="form" v-model="valid" lazyValidation class="mt-10">
-      <v-autocomplete ref="search" v-model="form.number" label="เลขที่ครุภัณฑ์"/>
-      <div class="text-h5 mt-5 mb-5"><b>ตรวจนับครุภัณฑ์</b></div>
+      <v-autocomplete ref="search" v-model="form.number" label="ค้นหาด้วย เลขที่ครุภัณฑ์ / เลขที่สินทรัพย์ / เลขที่สินทรัพย์ อว."/>
+      <div class="text-h5 mt-5 mb-5"><b>ตารางตรวจนับครุภัณฑ์</b></div>
       <div class="goods-card-wrapper">
-        <v-card v-for="(item, i) in form.items" :key="i"  class="goods-card" elevation="2">
-          <div v-if="i > 0 && i === form.items.length - 1" class="close-wrapper">
-            <v-btn color="secondary" icon @click.stop="removeDurableGoods(i)">
-              <i class="material-icons">close</i>
-            </v-btn>
-          </div>
-          <v-card-text class="text-black">
-            <v-row align="center" class="mx-0">
-              <v-col :cols="8">
-                <div class="text-body">{{ item.name }}</div>
-              </v-col>
-              <v-col :cols="4" class="pr-8">
-                <SelectDropdown :value.sync="form.items[i].status" label="สถานะ" :disabled="!isCreate" :items="statusList"/>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
+        <v-data-table :headers="headers" :items="form.items" :itemsPerPage="Infinity" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
+          <template #item.majorCategory>
+            <!-- <EquipmentColumn :item="item"/> -->
+            <i class="material-icons">info_outline</i>
+          </template>
+          <template #item.organization>
+            <!-- <OwnerColumn :item="item"/> -->
+            <i class="material-icons">info_outline</i>
+          </template>
+          <template #item.status="{ index }">
+          <v-select v-model="form.items[index].status" :items="statusList" itemText="name" itemValue="id" appendIcon="keyboard_arrow_down">
+              <template #selection="{ item }">
+                <span class="d-flex justify-center" style="width: 100%;">{{ item.name }}</span>
+              </template>
+            </v-select>
+          </template>
+          <template #item.action="item">
+            <ActionIconList :list="getActionIconList(item)"/>
+          </template>
+        </v-data-table>
       </div>
       <v-container class="mt-10">
         <v-row justify="end">
@@ -37,14 +40,17 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
+      // EquipmentColumn: () => import('~/components/EquipmentColumn.vue'),
+      // OwnerColumn: () => import('~/components/OwnerColumn.vue'),
     },
     data () {
       return {
+        isLoading: false,
         valid: true,
         form: {
           number: null,
           items: [
-            { name: 'Aek', status: 1 },
+            { name: 'คอมพิวเตอร์ MC', status: 1 },
             { name: 'Dom', status: 1 },
             { name: 'Bob', status: 1 },
           ],
@@ -52,7 +58,14 @@
         statusList: [
           { id: 1, name: 'ปกติ' },
           { id: 2, name: 'ชำรุด' },
-        ]
+        ],
+        headers: [
+          { text: 'ชื่อครุภัณฑ์', value: 'name' },
+          { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
+          { text: 'ผู้ครอบครอง', value: 'organization', width: '120px', align: 'center' },
+          { text: 'สถานะ', value: 'status', width: '200px', align: 'center' },
+          { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
+        ],
       }
     },
     computed: {
@@ -68,6 +81,11 @@
       removeDurableGoods (i) {
         this.form.items.splice(i, 1)
       },
+      getActionIconList ({ index }) {
+        return [
+          { type: 'button', icon: 'delete', action: () => { this.removeDurableGoods(index) } },
+        ]
+      },
       onSubmit () {
       }
     },
@@ -78,32 +96,9 @@
   #durable-goods-counting-detail-page {
     .text-body {
       font-size: 1rem;
-    }
-
-
-    .goods-card-wrapper {
       display: flex;
-      flex-flow: column;
-      gap: 20px;
-
-      .goods-card {
-        position: relative;
-
-        .v-card__text {
-          padding-top: 24px;
-          padding-bottom: 12px;
-        }
-
-        .close-wrapper {
-          position: absolute;
-          top: 4px;
-          right: 8px;
-        }
-
-        &:last-child {
-          margin-bottom: 0px;
-        }
-      }
+      align-items: center;
+      gap: 8px
     }
   }
 </style>

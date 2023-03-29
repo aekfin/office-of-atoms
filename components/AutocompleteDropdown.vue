@@ -1,7 +1,7 @@
 <template>
   <div class="autocomplete-dropdown">
     <v-autocomplete ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled || disabledOnload"
-      :readonly="readonly" :loading="isLoading || isSearchLoading" :noFilter="noFilter" :hideNoData="isSearchLoading" :searchInput.sync="search" @change="onChange">
+      :readonly="readonly" :loading="isLoading || isSearchLoading" :noFilter="noFilter" :hideNoData="isSearchLoading" :searchInput.sync="search" appendIcon="keyboard_arrow_down" @change="onChange">
       <template #append-item>
         <div v-if="!!pagination && !searchChanged" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
       </template>

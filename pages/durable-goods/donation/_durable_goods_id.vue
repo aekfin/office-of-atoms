@@ -32,7 +32,7 @@
                       <v-text-field v-model="form.equipments[i].donator" label="ผู้บริจาค *" :rules="donatorRules" required :disabled="!isCreate"/>
                     </v-col>
                     <v-col :cols="12" :md="6">
-                      <SelectDropdown :value.sync="form.equipments[i].userId" label="ผู้รับผิดชอบ *" :itemText="getName" :rules="userRules" required :disabled="!isCreate"
+                      <SelectDropdown :value.sync="form.equipments[i].userId" label="ผู้รับผิดชอบ *" :itemText="$fn.getName" :rules="userRules" required :disabled="!isCreate"
                         :items="form.equipments[i].userList" apiPath="user/listUsers"/>
                     </v-col>
                   </v-row>
@@ -223,9 +223,6 @@
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
-      },
-      getName (res) {
-        return `${res.thaiFristName} ${res.thaiLastName}`
       },
       async onSubmit () {
         const valid = this.$refs.form.validate()

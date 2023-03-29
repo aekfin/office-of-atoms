@@ -10,7 +10,7 @@
       <SelectDropdown :value.sync="departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required :disabled="disabled" apiPath="Orgchart/getDepartments"/>
     </v-col>
     <v-col :cols="12" :md="4">
-      <SelectDropdown :value.sync="userId" label="บุคคล" :itemText="getName" required :disabled="!organizationId || !departmentId || disabled" :items="userList" apiPath="user/listUsers"
+      <SelectDropdown :value.sync="userId" label="บุคคล" :itemText="$fn.getName" required :disabled="!organizationId || !departmentId || disabled" :items="userList" apiPath="user/listUsers"
         :query="{ departmentId: departmentId, ouId: organizationId }"/>
     </v-col>
   </v-row>
@@ -63,11 +63,6 @@
         this.$emit('update:user', val)
       },
     },
-    methods: {
-      getName (res) {
-        return `${res.thaiFristName} ${res.thaiLastName}`
-      },
-    }
   }
 </script>
 

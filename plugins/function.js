@@ -18,6 +18,9 @@ const Fn = {
     const dateFormat = moment(date)
     return `${dateFormat.format('DD-MM')}-${dateFormat.year() + 543}`
   },
+  getName (account) {
+    return `${account.thaiFristName} ${account.thaiLastName}`
+  },
 }
 
 Vue.prototype.$fn = Fn
