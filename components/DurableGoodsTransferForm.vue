@@ -55,11 +55,14 @@
           <v-col :cols="12" class="pb-0">
             <b>{{ `ผู้ครอบครองเดิม` }}</b>
           </v-col>
-          <v-col :cols="12" :md="6">
+          <v-col :cols="12" :md="4">
             <v-text-field v-model="form.organization.ouName" label="กอง *" disabled/>
           </v-col>
-          <v-col :cols="12" :md="6">
+          <v-col :cols="12" :md="4">
             <v-text-field v-model="form.department.departmentName" label="กลุ่ม *" disabled/>
+          </v-col>
+          <v-col :cols="12" :md="4">
+            <v-text-field :value="$fn.isEmpty(form.owner) ? '' : $fn.getName(form.owner)" label="บุคคล" disabled/>
           </v-col>
         </v-row>
         <v-row :cols="12" justify="center">
@@ -161,6 +164,7 @@
           items: data && [data.equipment] || [],
           organization: data?.equipment?.organizationMaster || {},
           department: data?.equipment?.departmentMaster || {},
+          owner: data?.equipment?.owner || {},
           ouId: this.item?.transferto?.ouId || null,
           departmentId: this.item?.transferto?.departmentId || null,
         }
@@ -182,6 +186,7 @@
       onSelectDurableGoods ({ item }) {
         this.form.organization = item.organization
         this.form.department = item.department
+        this.form.owner = item.owner || {}
       },
       onSubmit () {
         const valid = this.$refs.form.validate()

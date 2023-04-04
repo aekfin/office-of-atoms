@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import moment from 'moment'
+import _ from 'lodash'
 
 const Fn = {
   getPrice (number) {
@@ -20,6 +21,9 @@ const Fn = {
   },
   getName (account) {
     return `${account.thaiFristName} ${account.thaiLastName}`
+  },
+  isEmpty (val) {
+    return _.isEmpty(val)
   },
 }
 

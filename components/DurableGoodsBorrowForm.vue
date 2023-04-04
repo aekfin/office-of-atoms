@@ -50,11 +50,14 @@
           <v-col :cols="12" class="pb-0">
             <b>{{ `ผู้ครอบครอง` }}</b>
           </v-col>
-          <v-col :cols="12" :md="6">
+          <v-col :cols="12" :md="4">
             <v-text-field v-model="form.organization.ouName" label="กอง" disabled/>
           </v-col>
-          <v-col :cols="12" :md="6">
+          <v-col :cols="12" :md="4">
             <v-text-field v-model="form.department.departmentName" label="กลุ่ม" disabled/>
+          </v-col>
+          <v-col :cols="12" :md="4">
+            <v-text-field :value="$fn.isEmpty(form.owner) ? '' : $fn.getName(form.owner)" label="บุคคล" disabled/>
           </v-col>
         </v-row>
       </v-container>
@@ -137,6 +140,7 @@
           item: this.item?.items?.[0] || null,
           organization: this.item?.items?.[0]?.equipment?.organizationMaster || {},
           department: this.item?.items?.[0]?.equipment?.departmentMaster || {},
+          owner: this.item?.items?.[0]?.equipment?.owner || {},
         }
         if (this.item) this.setCategoryForm()
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
@@ -171,6 +175,7 @@
       onSelectDurableGoods ({ item }) {
         this.form.organization = item.organization
         this.form.department = item.department
+        this.form.owner = item.owner || {}
       },
       onSubmit () {
         const valid = this.$refs.form.validate()
