@@ -73,10 +73,10 @@
             <b>{{ `ผู้ครอบครองใหม่` }}</b>
           </v-col>
           <v-col :cols="12" :md="6">
-            <SelectDropdown :value.sync="form.ouId" label="กอง *" itemText="ouName" :rules="ouRules" required apiPath="Orgchart/getOrganizations" :disabled="!form.itemId"/>
+            <SelectDropdown :value.sync="form.ouId" label="กอง *" itemText="ouName" :rules="ouRules" required apiPath="Orgchart/getOrganizations" :disabled="!form.itemId || viewMode"/>
           </v-col>
           <v-col :cols="12" :md="6">
-            <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required apiPath="Orgchart/getDepartments" :disabled="!form.itemId"/>
+            <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required apiPath="Orgchart/getDepartments" :disabled="!form.itemId || viewMode"/>
           </v-col>
         </v-row>
       </v-container>

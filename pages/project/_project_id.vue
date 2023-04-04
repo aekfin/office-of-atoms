@@ -45,6 +45,31 @@
             <InputDatePicker :value.sync="form.contractEndDate" label="วันสิ้นสัญญา *" :rules="datetimeCompanyEndRules" :disabled="disabledInfo"/>
           </v-col>
         </v-row>
+        <v-row>
+          <v-col :cols="12" :md="6">
+            <v-text-field v-model="form.desc1" label="วีธี รูปแบบงาน"/>
+          </v-col>
+          <v-col :cols="12" :md="6">
+            <v-text-field v-model="form.desc2" label="รายละเอียดงาน งวดงาน/เงิน"/>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :cols="12" :md="6">
+            <v-text-field v-model="form.desc3" label="รายละเอียดงานในแต่ล่ะงวด"/>
+          </v-col>
+          <v-col :cols="12" :md="6">
+            <v-text-field v-model="form.desc4" label="รายละเอียดรายการวัสดุ/ครุภัณฑ์ที่ต้องส่งมอบในแต่ละงวด"/>
+          </v-col>
+        </v-row>
+        <div class="text-h6"><b>หน่วยงานรับผิดชอบ</b></div>
+        <v-row>
+          <v-col :cols="12" :md="6">
+            <v-text-field v-model="form.ouId" label="กอง"/>
+          </v-col>
+          <v-col :cols="12" :md="6">
+            <v-text-field v-model="form.departmentId" label="กลุ่ม"/>
+          </v-col>
+        </v-row>
       </v-container>
       <v-expansion-panels v-model="formExpand" class="form-expansion-panels mt-10" flat multiple>
         <v-expansion-panel>
@@ -136,6 +161,12 @@
           contractEndDate: '',
           contractCompanyId: null,
           directors: [],
+          ouId: null,
+          departmentId: null,
+          desc1: '',
+          desc2: '',
+          desc3: '',
+          desc4: '',
         },
         attachFiles: [],
         removeFile: [],
