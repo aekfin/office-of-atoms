@@ -23,6 +23,7 @@
       query: { type: Object, default: () => ({}) },
       searchApiPath: { type: String },
       searchQuery: { type: Object, default: () => ({}) },
+      searchKey: { type: String, default: 'name' },
       required: { type: Boolean },
       disabled: { type: Boolean },
       readonly: { type: Boolean },
@@ -112,7 +113,7 @@
           try {
             this.isSearchLoading = true
             if (this.searchApiPath && this.search) {
-              const { data } = await this.$store.dispatch('http', { apiPath: this.searchApiPath, query: { ...this.searchQuery, name: this.search } })
+              const { data } = await this.$store.dispatch('http', { apiPath: this.searchApiPath, query: { ...this.searchQuery, [this.searchKey]: this.search } })
               this.list = data
             } else {
               await this.getList()
