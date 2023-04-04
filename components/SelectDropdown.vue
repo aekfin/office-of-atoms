@@ -38,7 +38,7 @@
     },
     computed: {
       isShowLoading () {
-        return this.pagination && this.pagination.last === false
+        return this.pagination && this.pagination.last === false && this.isLoading
       },
     },
     watch: {
