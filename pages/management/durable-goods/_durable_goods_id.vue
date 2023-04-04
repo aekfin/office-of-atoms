@@ -15,6 +15,12 @@
           </template>
         </CategoryDurableGood>
         <v-row>
+          <v-col :cols="12" :md="6">
+            <v-text-field v-model="form.assetNumber" label="เลขที่สินทรัพย์" :disabled="!isCreate"/>
+          </v-col>
+          <v-col :cols="12" :md="6">
+            <v-text-field v-model="form.assetNumberAorWor" label="เลขที่สินทรัพย์ อว." required :disabled="!isCreate"/>
+          </v-col>
           <v-col :cols="12" :md="4">
             <v-text-field v-model="form.price" label="ราคากลาง *" type="number" :rules="priceRules" required/>
           </v-col>
@@ -85,6 +91,8 @@
         valid: true,
         isLoading: false,
         form: {
+          assetNumber: '',
+          assetNumberAorWor: '',
           name: '',
           year: (new Date()).getFullYear() + 543,
           price: '',
@@ -190,6 +198,8 @@
             organizationId: this.form.organizationId,
             equipments: [
               {
+                assetNumber: this.form.assetNumber,
+                assetNumberAorWor: this.form.assetNumberAorWor,
                 name: this.form.name,
                 year: this.form.year,
                 price: this.form.price,

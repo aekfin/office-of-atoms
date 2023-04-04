@@ -39,14 +39,13 @@
 
       <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการ${type}` }}</b></h5>
       <v-container class="mt-2">
-        <CategoryDurableGood :initForm="initCategoryForm" :disabled="viewMode" noRules @change="onChangeCategory"/>
-        <v-row>
-          <v-col :cols="12">
+        <CategoryDurableGood :initForm="initCategoryForm" :disabled="viewMode" noRules @change="onChangeCategory">
+          <v-col :cols="12" :md="9">
             <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
             <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="apiPath"
               :query="categoryForm" :disabled="viewMode" @select="onSelectDurableGoods"/>
           </v-col>
-        </v-row>
+        </CategoryDurableGood>
         <v-row v-if="!hideOwner">
           <v-col :cols="12" class="pb-0">
             <b>{{ `ผู้ครอบครอง` }}</b>

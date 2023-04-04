@@ -25,7 +25,7 @@
   export default {
     mixins: [categoryMixins],
     props: {
-      cols: { type: Number, default: 4 },
+      cols: { type: Number, default: 3 },
       disabled: { type: Boolean },
       initForm: { type: Object },
       noRules: { type: Boolean },

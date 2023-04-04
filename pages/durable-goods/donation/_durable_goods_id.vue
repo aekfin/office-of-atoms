@@ -47,6 +47,12 @@
                     </template>
                   </CategoryDurableGood>
                   <v-row>
+                    <v-col :cols="12" :md="6">
+                      <v-text-field v-model="form.equipments[i].assetNumber" label="เลขที่สินทรัพย์" :disabled="!isCreate"/>
+                    </v-col>
+                    <v-col :cols="12" :md="6">
+                      <v-text-field v-model="form.equipments[i].assetNumberAorWor" label="เลขที่สินทรัพย์ อว." required :disabled="!isCreate"/>
+                    </v-col>
                     <v-col :cols="6" :md="4">
                       <v-text-field v-model="form.equipments[i].price" label="ราคา *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
                     </v-col>
@@ -106,6 +112,8 @@
           dateEntry: new Date(),
           equipments: [
             {
+              assetNumber: '',
+              assetNumberAorWor: '',
               name: '',
               year: (new Date()).getFullYear() + 543,
               price: '',
@@ -177,6 +185,8 @@
       addDurableGoods () {
         this.form.equipments.push(
           {
+            assetNumber: '',
+            assetNumberAorWor: '',
             name: '',
             year: (new Date()).getFullYear() + 543,
             price: '',
