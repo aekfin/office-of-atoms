@@ -5,14 +5,28 @@
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <v-col :cols="12" :md="8">
-            <SelectDropdown v-if="isCreate" :value.sync="form.projectId" itemValue="id" itemText="projectName" label="โครงการ *" apiPath="Project/getListProject" :rules="projectRules" required :disabled="!isCreate"/>
+          <v-col :cols="12" :md="6">
+            <SelectDropdown v-if="isCreate" :value.sync="form.projectId" itemValue="id" itemText="projectName" label="โครงการ *" apiPath="Project/getListProject" :rules="projectRules" required :disabled="!isCreate" @select="onSelectProject"/>
             <v-text-field v-else-if="form.project" v-model="form.project.projectName" label="โครงการ *" disabled/>
           </v-col>
-          <v-col :cols="12" :md="4">
-            <InputDatePicker :value.sync="form.dateEntry" label="วันที่รับเข้า *" :rules="dateEntryRules" required :disabled="!isCreate"/>
+          <v-col :cols="12" :md="3">
+            <v-text-field :value="form.project && form.project.contractNumber || ''" label="เลขที่คุมสัญญา" disabled/>
+          </v-col>
+          <v-col :cols="12" :md="3">
+            <v-text-field v-model="form.projectId" label="เลขที่จัดซื้อจัดจ้าง" :disabled="!isCreate"/>
+          </v-col>
+          <v-col :cols="12" :md="3">
+            <InputDatePicker :value.sync="form.dateEntry" label="วันที่กรรมการเห็นถูกต้องครบถ้วน *" :rules="dateEntryRules" required :disabled="!isCreate"/>
+          </v-col>
+          <v-col :cols="12" :md="3">
+            <InputDatePicker :value.sync="form.dateVerify" label="วันที่ตรวจรับ *" :rules="dateVerifyRules" required :disabled="!isCreate"/>
+          </v-col>
+          <v-col :cols="12" :md="3">
+            <InputDatePicker :value.sync="form.dateVerify" label="วันสิ้นสุดการรับประกัน *" :rules="dateVerifyRules" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
+
+        <DurableGoodsOwner class="mt-5" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :userList="form.ownerList" :disabled="!isCreate"/>
 
         <div class="text-h5 mt-5"><b>เลือกครุภัณฑ์</b></div>
         <v-container>
@@ -33,21 +47,15 @@
                 <v-container>
                   <CategoryDurableGood :cols="3" :disabled="!isCreate" :initForm="initCategoryForm" @change="res => form.equipments[i].categoryForm = res.form">
                     <template #default>
-                      <v-col v-if="!isCreate" :cols="12" :md="4">
-                        <v-text-field v-model="form.equipments[i].number" name="code" label="เลขที่ครุภัณฑ์ *" required disabled/>
-                      </v-col>
-                      <v-col :cols="12" :md="isCreate ? 9 : 5">
+                      <v-col :cols="12" :md="isCreate ? 6 : 9">
                         <v-text-field v-model="form.equipments[i].name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required :disabled="!isCreate"/>
+                      </v-col>
+                      <v-col v-if="isCreate" :cols="12" :md="3">
+                        <v-text-field v-model="form.equipments[i].quantity" name="quantity" label="จำนวน *" type="number" :rules="quantityRules" required/>
                       </v-col>
                     </template>
                   </CategoryDurableGood>
                   <v-row>
-                    <v-col :cols="12" :md="6">
-                      <v-text-field v-model="form.equipments[i].assetNumber" label="เลขที่สินทรัพย์" :disabled="!isCreate"/>
-                    </v-col>
-                    <v-col :cols="12" :md="6">
-                      <v-text-field v-model="form.equipments[i].assetNumberAorWor" label="เลขที่สินทรัพย์ อว." required :disabled="!isCreate"/>
-                    </v-col>
                     <v-col :cols="6" :md="4">
                       <v-text-field v-model="form.equipments[i].price" label="ราคา *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
                     </v-col>
@@ -60,14 +68,26 @@
                     <v-col :cols="6" :md="3" class="depreciation">
                       <v-text-field v-model="form.equipments[i].depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%" :disabled="!isCreate"/>
                     </v-col>
-                    <v-col :cols="12">
-                      <v-textarea v-model="form.equipments[i].description" label="คำอธิบายเพิ่มเติม" :rows="4" :disabled="!isCreate"/>
+                    <v-col :cols="12" class="pt-0">
+                      <v-textarea v-model="form.equipments[i].description" class="pt-0" label="คำอธิบายเพิ่มเติม" :rows="4" :disabled="!isCreate"/>
                     </v-col>
                   </v-row>
-                </v-container>
-                <v-container v-if="isCreate">
-                  <h5 class="text-h6 mb-4"><b>รูปครุภัณฑ์</b></h5>
-                  <AttachFileBtn :value.sync="form.equipments[i].attachFiles" accept="image/*"/>
+
+                  <div class="text-h6 mt-2"><b>รายละเอียดเฉพาะของครุภัณฑ์</b></div>
+                  <v-row>
+                    <v-col :cols="12" :md="4">
+                      <div class="d-flex align-center">
+                        <div v-if="isCreate" class="mr-4">1.</div>
+                        <v-text-field v-model="form.equipments[i].number" name="code" label="เลขที่ครุภัณฑ์ *" required disabled/>
+                      </div>
+                    </v-col>
+                    <v-col :cols="12" :md="4">
+                      <v-text-field v-model="form.equipments[i].assetNumber" label="เลขที่สินทรัพย์" :disabled="!isCreate"/>
+                    </v-col>
+                    <v-col :cols="12" :md="4">
+                      <v-text-field v-model="form.equipments[i].assetNumberAorWor" label="เลขที่สินทรัพย์ อว." required :disabled="!isCreate"/>
+                    </v-col>
+                  </v-row>
                 </v-container>
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -76,8 +96,6 @@
             <v-btn block rounded outlined @click="addDurableGoods()">เพิ่มครุภัณฑ์</v-btn>
           </v-row>
         </v-container>
-
-        <DurableGoodsOwner class="mt-3" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :userList="form.ownerList" :disabled="!isCreate"/>
       </v-container>
 
       <v-container class="mt-8">
@@ -105,6 +123,7 @@
         form: {
           projectId: null,
           dateEntry: new Date(),
+          dateVerify: '',
           equipments: [
             {
               assetNumber: '',
@@ -116,7 +135,7 @@
               depreciation_rate: '',
               classifier: '',
               categoryForm: {},
-              attachFiles: [],
+              quantity: 1,
             }
           ],
           organizationId: null,
@@ -157,6 +176,12 @@
         dateEntryRules: [
           v => !!v || 'โปรดใส่วันที่รับเข้า',
         ],
+        dateVerifyRules: [
+          v => !!v || 'โปรดใส่วันที่ตรวจรับ',
+        ],
+        quantityRules: [
+          v => !!v || 'โปรดใส่จำนวน',
+        ],
         formExpand: [0],
       }
     },
@@ -181,13 +206,16 @@
             depreciation_rate: '',
             classifier: '',
             categoryForm: {},
-            attachFiles: [],
+            quantity: 1,
           }
         )
         this.formExpand = [ ...this.formExpand, this.formExpand.length ]
       },
       removeDurableGoods (i) {
         this.form.equipments.splice(i, 1)
+      },
+      onSelectProject ({ item }) {
+        this.form.project = item
       },
       async getData () {
         try {

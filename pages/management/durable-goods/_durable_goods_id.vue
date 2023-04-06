@@ -33,8 +33,8 @@
           <v-col :cols="12" :md="3" class="depreciation">
             <v-text-field v-model="form.depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%"/>
           </v-col>
-          <v-col :cols="12">
-            <v-textarea v-model="form.description" label="คำอธิบายเพิ่มเติม" :rows="4"/>
+          <v-col :cols="12" class="pt-0">
+            <v-textarea v-model="form.description" class="pt-0" label="คำอธิบายเพิ่มเติม" :rows="4"/>
           </v-col>
         </v-row>
         <DurableGoodsOwner :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :disabled="!isCreate"/>

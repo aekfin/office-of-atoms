@@ -65,6 +65,10 @@ export default () => ({
       to: '/durable-goods/counting/'
     },
     {
+      title: 'ยืนยันการตรวจนับครุภัณฑ์',
+      to: '/durable-goods/verify-counting/'
+    },
+    {
       title: 'วัสดุคงคลัง',
       to: '/parcel/',
       children: [
