@@ -7,27 +7,26 @@
         <i class="material-icons" v-text="`error`"/>
         <b class="ml-2">ไม่พบครุภัณฑ์ "{{ errorText }}"</b>
       </div>
-      <div class="text-h5 mt-5 mb-5"><b>ตารางตรวจนับครุภัณฑ์</b></div>
+      <div class="text-h5 mt-10 mb-5"><b>ครุภัณฑ์ที่ตรวจนับแล้ว</b></div>
       <div class="goods-card-wrapper">
-        <v-data-table :headers="headers" :items="items" :itemsPerPage="Infinity" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
-          <template #item.majorCategory="{ item }">
-            <EquipmentColumn :item="item"/>
-          </template>
-          <template #item.organization="{ item }">
-            <OwnerColumn :item="item"/>
-          </template>
-          <template #item.status="{ index }">
-          <v-select v-model="items[index].status" :items="statusList" itemText="name" itemValue="id" appendIcon="keyboard_arrow_down">
-              <template #selection="{ item }">
-                <span class="d-flex justify-center" style="width: 100%;">{{ item.name }}</span>
-              </template>
-            </v-select>
-          </template>
-          <template #item.action="item">
-            <ActionIconList :list="getActionIconList(item)"/>
-          </template>
-        </v-data-table>
+        <div class="mb-3">ทั้งหมด {{ total || 0 }} รายการ</div>
+        <CountingDurableTable :items.sync="items" @changeStatus="onChangeStatus"/>
       </div>
+      <v-expansion-panels v-model="formExpand" class="form-expansion-panels mt-10" flat multiple accordion>
+        <v-expansion-panel accordion>
+          <v-expansion-panel-header>
+            <span>ครุภัณฑ์ที่รอตรวจนับทั้งหมด</span>
+            <template #actions>
+              <i class="material-icons">keyboard_arrow_down</i>
+            </template>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <div class="mb-3">ทั้งหมด {{ total || 0 }} รายการ</div>
+            <CountingDurableTable :items="waitingItems"/>
+            <!-- <Pagination/> -->
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
     </div>
   </div>
 </template>
@@ -36,43 +35,25 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
-      EquipmentColumn: () => import('~/components/EquipmentColumn.vue'),
-      OwnerColumn: () => import('~/components/OwnerColumn.vue'),
     },
     data () {
       return {
         isLoading: false,
         number: null,
         items: [],
-        headers: [
-          { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '128px', align: 'center' },
-          { text: 'ชื่อครุภัณฑ์', value: 'name' },
-          { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
-          { text: 'ผู้ครอบครอง', value: 'organization', width: '120px', align: 'center' },
-          { text: 'สถานะ', value: 'status', width: '200px', align: 'center' },
-          { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
-        ],
+        waitingItems: [],
+        total: 0,
         errorText: '',
+        formExpand: [0, 1],
       }
-    },
-    computed: {
-      statusList () {
-        const statusList = this.$store.state.durableGoodStatus
-        return Object.keys(statusList).map(key => ({ id: key, name: statusList[key] }))
-      },
     },
     async mounted () {
       await this.$nextTick()
       if (this.$refs.search) this.$refs.search.focus()
     },
     methods: {
-      removeDurableGoods (i) {
-        this.items.splice(i, 1)
-      },
-      getActionIconList ({ index }) {
-        return [
-          { type: 'button', icon: 'delete', action: () => { this.removeDurableGoods(index) } },
-        ]
+      async onChangeStatus (content) {
+        this.onSave(content)
       },
       async changeSearch (val) {
         try {
@@ -80,6 +61,7 @@
           if (data.content && data.content.length) {
             this.items = [...this.items, data.content[0]]
             this.errorText = ''
+            this.onSave(data.content[0])
           } else {
             this.errorText = this.number
           }
@@ -89,7 +71,8 @@
           return Promise.reject(err)
         }
       },
-      onSave () {
+      async onSave (content) {
+        await this.$store.dispatch('snackbar', { text: `ตรวจนับครุภัณฑ์เลขที่ "${content.number}" สำเร็จ` })
       }
     },
   }
@@ -97,6 +80,8 @@
 
 <style lang="scss">
   #durable-goods-counting-detail-page {
+    padding-bottom: 20px;
+
     .text-body {
       font-size: 1rem;
       display: flex;

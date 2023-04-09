@@ -40,7 +40,7 @@
           <v-expansion-panel v-for="(parcel, i) in form.pickUpItems" :key="i" accordion>
             <v-expansion-panel-header v-if="!viewMode" class="text-h6">
               <div class="d-flex align-center">
-                <div>วัสดุคงคลัง ชิ้นที่ {{ i + 1 }}.</div>
+                <div>วัสดุคงคลัง รายการที่ {{ i + 1 }}.</div>
                 <v-btn v-if="form.pickUpItems.length > 1 && i === form.pickUpItems.length - 1" class="ml-5" icon @click.stop="removeParcel(i)">
                   <i class="material-icons">delete</i>
                 </v-btn>

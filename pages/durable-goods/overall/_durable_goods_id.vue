@@ -34,7 +34,7 @@
             <v-expansion-panel v-for="(equipment, i) in form.equipments" :key="i" accordion>
               <v-expansion-panel-header v-if="isCreate" class="text-h6">
                 <div class="d-flex align-center">
-                  <div>ครุภัณฑ์ ชิ้นที่ {{ i + 1 }}.</div>
+                  <div>ครุภัณฑ์ รายการที่ {{ i + 1 }}.</div>
                   <v-btn v-if="form.equipments.length > 1 && i === form.equipments.length - 1" class="ml-5" icon @click.stop="removeDurableGoods(i)">
                     <i class="material-icons">delete</i>
                   </v-btn>

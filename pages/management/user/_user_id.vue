@@ -54,7 +54,7 @@
           </v-col> -->
         </v-row>
       </v-container>
-      <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
+      <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple accordion>
         <v-expansion-panel>
           <v-expansion-panel-header>
             ข้อมูลติดต่อ
