@@ -13,16 +13,16 @@
             <v-text-field :value="form.project && form.project.contractNumber || ''" label="เลขที่คุมสัญญา" disabled/>
           </v-col>
           <v-col :cols="12" :md="3">
-            <v-text-field v-model="form.projectId" label="เลขที่จัดซื้อจัดจ้าง" :disabled="!isCreate"/>
+            <v-text-field v-model="form.procurementNumber" label="เลขที่จัดซื้อจัดจ้าง" :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="3">
             <InputDatePicker :value.sync="form.dateEntry" label="วันที่กรรมการเห็นถูกต้องครบถ้วน *" :rules="dateEntryRules" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="3">
-            <InputDatePicker :value.sync="form.dateVerify" label="วันที่ตรวจรับ *" :rules="dateVerifyRules" required :disabled="!isCreate"/>
+            <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="3">
-            <InputDatePicker :value.sync="form.dateVerify" label="วันสิ้นสุดการรับประกัน *" :rules="dateVerifyRules" required :disabled="!isCreate"/>
+            <InputDatePicker :value.sync="form.warrantyEndDate" label="วันที่สิ้นสุดการรับประกัน *" :rules="warrantyEndDateRules" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
 
@@ -123,7 +123,8 @@
         form: {
           projectId: null,
           dateEntry: new Date(),
-          dateVerify: '',
+          inspectionDate: new Date(),
+          warrantyEndDate: new Date(),
           equipments: [
             {
               assetNumber: '',
@@ -176,8 +177,11 @@
         dateEntryRules: [
           v => !!v || 'โปรดใส่วันที่รับเข้า',
         ],
-        dateVerifyRules: [
+        inspectionDateRules: [
           v => !!v || 'โปรดใส่วันที่ตรวจรับ',
+        ],
+        warrantyEndDateRules: [
+          v => !!v || 'โปรดใส่วันที่สิ้นสุดการรับประกัน',
         ],
         quantityRules: [
           v => !!v || 'โปรดใส่จำนวน',
@@ -247,7 +251,9 @@
             const form = {
               ...this.form,
               equipments: this.form.equipments.map(equipment => ({ ...equipment, ownerId: this.form.ownerId })),
-              dateEntry: this.$fn.convertDateToString(this.form.dateEntry)
+              dateEntry: this.$fn.convertDateToString(this.form.dateEntry),
+              inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
+              warrantyEndDate: this.$fn.convertDateToString(this.form.warrantyEndDate),
             }
             const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/project/import', data: form })
             await Promise.all(

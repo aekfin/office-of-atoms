@@ -5,8 +5,11 @@
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <v-col :cols="12" :md="6">
+          <v-col :cols="12" :md="3">
             <InputDatePicker :value.sync="form.dateEntry" label="วันที่รับเข้า *" :rules="dateEntryRules" required :disabled="!isCreate"/>
+          </v-col>
+          <v-col :cols="12" :md="3">
+            <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
 
@@ -116,6 +119,7 @@
         initCategoryForm: {},
         form: {
           dateEntry: new Date(),
+          inspectionDate: new Date(),
           equipments: [
             {
               assetNumber: '',
@@ -250,7 +254,8 @@
             const form = {
               ...this.form,
               equipments: this.form.equipments.map(equipment => ({ ...equipment, ownerId: this.form.ownerId })),
-              dateEntry: this.$fn.convertDateToString(this.form.dateEntry)
+              dateEntry: this.$fn.convertDateToString(this.form.dateEntry),
+              inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
             }
             const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/import/donation', data: form })
             await Promise.all(

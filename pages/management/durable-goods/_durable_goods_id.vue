@@ -4,6 +4,9 @@
     <Loading v-if="isLoading"/>
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
+        <v-col :cols="12" :md="3">
+          <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate"/>
+        </v-col>
         <CategoryDurableGood :cols="3" :disabled="!isCreate" :initForm="initCategoryForm" @change="({ form }) => categoryForm = form">
           <template #default>
             <v-col v-if="!isCreate" :cols="12" :md="4">
@@ -102,6 +105,7 @@
           organizationId: null,
           departmentId: null,
           ownerId: null,
+          inspectionDate: new Date(),
         },
         categoryForm: {},
         initCategoryForm: {},
@@ -139,6 +143,9 @@
         ],
         priceRules: [
           v => !!v || v === 0 || 'โปรดใส่ราคากลาง',
+        ],
+        inspectionDateRules: [
+          v => !!v || 'โปรดใส่วันที่ตรวจรับ',
         ],
         attachFiles: [],
         removeFile: [],
@@ -196,6 +203,7 @@
           const form = {
             departmentId: this.form.departmentId,
             organizationId: this.form.organizationId,
+            inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
             equipments: [
               {
                 assetNumber: this.form.assetNumber,
@@ -221,7 +229,8 @@
         try {
           const form = {
             ...this.form,
-            ...this.categoryForm
+            ...this.categoryForm,
+            inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
           }
           const { data } = await this.$store.dispatch('http', { method: 'put', apiPath: 'equipment/Edit', data: form })
           await this.$store.dispatch('snackbar', { text: 'แก้ไขค่าเริ่มต้นครุภัณฑ์สำเร็จ' })

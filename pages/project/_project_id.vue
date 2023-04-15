@@ -47,27 +47,23 @@
         </v-row>
         <v-row>
           <v-col :cols="12" :md="6">
-            <v-text-field v-model="form.desc1" label="วีธี รูปแบบงาน"/>
+            <v-text-field v-model="form.type" label="วีธี รูปแบบงาน"/>
           </v-col>
           <v-col :cols="12" :md="6">
-            <v-text-field v-model="form.desc2" label="รายละเอียดงาน งวดงาน/เงิน"/>
+            <v-text-field v-model="form.detailedWorkMoney" label="รายละเอียดงาน งวดงาน/เงิน"/>
           </v-col>
         </v-row>
         <v-row>
           <v-col :cols="12" :md="6">
-            <v-text-field v-model="form.desc3" label="รายละเอียดงานในแต่ล่ะงวด"/>
+            <v-text-field v-model="form.detailedWork" label="รายละเอียดงานในแต่ล่ะงวด"/>
           </v-col>
           <v-col :cols="12" :md="6">
-            <v-text-field v-model="form.desc4" label="รายละเอียดรายการวัสดุ/ครุภัณฑ์ที่ต้องส่งมอบในแต่ละงวด"/>
+            <v-text-field v-model="form.detailsOfItems" label="รายละเอียดรายการวัสดุ/ครุภัณฑ์ที่ต้องส่งมอบในแต่ละงวด"/>
           </v-col>
         </v-row>
-        <div class="text-h6"><b>หน่วยงานรับผิดชอบ</b></div>
         <v-row>
           <v-col :cols="12" :md="6">
-            <v-text-field v-model="form.ouId" label="กอง"/>
-          </v-col>
-          <v-col :cols="12" :md="6">
-            <v-text-field v-model="form.departmentId" label="กลุ่ม"/>
+            <v-text-field v-model="form.responsibleAgency" label="หน่วยงานรับผิดชอบ"/>
           </v-col>
         </v-row>
       </v-container>
@@ -163,10 +159,10 @@
           directors: [],
           ouId: null,
           departmentId: null,
-          desc1: '',
-          desc2: '',
-          desc3: '',
-          desc4: '',
+          type: '',
+          detailedWorkMoney: '',
+          detailedWork: '',
+          detailsOfItems: '',
         },
         attachFiles: [],
         removeFile: [],
