@@ -66,7 +66,8 @@ export default () => ({
     },
     {
       title: 'ยืนยันการตรวจนับครุภัณฑ์',
-      to: '/durable-goods/verify-counting/'
+      to: '/durable-goods/verify-counting/',
+      checkTreasury: true,
     },
     {
       title: 'วัสดุคงคลัง',
@@ -75,6 +76,7 @@ export default () => ({
         {
           title: 'วัสดุคงคลังทั้งหมด',
           to: '/parcel/summary/',
+          checkTreasury: true,
         },
         {
           title: 'บริหารวัสดุคงคลัง',
@@ -98,6 +100,7 @@ export default () => ({
         {
           title: 'ครุภัณฑ์ทั้งหมด',
           to: '/durable-goods/summary/',
+          checkTreasury: true,
         },
         {
           title: 'บริหารครุภัณฑ์',
@@ -162,10 +165,6 @@ export default () => ({
           title: 'ค่าเริ่มต้นครุภัณฑ์',
           to: '/management/durable-goods/'
         },
-        // {
-        //   title: 'รายงานการใช้งานระบบ',
-        //   to: '/management/log/'
-        // }
       ]
     }
   ],

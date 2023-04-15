@@ -13,20 +13,22 @@
                   </template>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-list-item v-for="child in menu.children" :key="child.title" :to=" child.to" router :exactPath="child.exactPath || false">
-                    <v-list-item-content>
-                      <v-list-item-title>
-                        <span>{{ child.title }}</span>
-                        <v-badge v-if="child.parcelBadge && parcelNotiCount" class="ml-2 mr-2" color="red" :content="parcelNotiCount"/>
-                        <v-badge v-if="child.durableGoodsBadge && equipmentCount" class="ml-2 mr-2" color="red" :content="equipmentCount"/>
-                      </v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
+                  <template v-for="child in menu.children">
+                    <v-list-item v-if="showMenu(child)" :key="child.title" :to=" child.to" router :exactPath="child.exactPath || false">
+                      <v-list-item-content>
+                        <v-list-item-title>
+                          <span>{{ child.title }}</span>
+                          <v-badge v-if="child.parcelBadge && parcelNotiCount" class="ml-2 mr-2" color="red" :content="parcelNotiCount"/>
+                          <v-badge v-if="child.durableGoodsBadge && equipmentCount" class="ml-2 mr-2" color="red" :content="equipmentCount"/>
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
                 </v-expansion-panel-content>
               </v-expansion-panel>
             </v-expansion-panels>
           </v-list-item>
-          <v-list-item v-else :to=" menu.to" router>
+          <v-list-item v-else-if="showMenu(menu)" :to="menu.to" router>
             <v-list-item-content>
               <v-list-item-title>{{ menu.title }}</v-list-item-title>
             </v-list-item-content>
@@ -161,6 +163,9 @@ export default {
       } catch (err) {
         return Promise.reject(err)
       }
+    },
+    showMenu (menu) {
+      return !menu.checkTreasury || this.$store.getters.isTreasury
     },
     async checkRoute () {
       try {
