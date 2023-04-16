@@ -56,6 +56,9 @@
     },
     computed: {
       apiPath () {
+        return 'equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED'
+      },
+      checkedApiPath () {
         return 'equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED&status=WAIT_SALE'
       },
     },
@@ -69,7 +72,7 @@
       async getCheckedList (query = {}) {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { ...query, isCheck: true } })
+          const { data } = await this.$store.dispatch('http', { apiPath: this.checkedApiPath, query: { ...query, isCheck: true } })
           this.items = data.content
           this.pagination = data
           this.paginationIndex = data.pageable.pageSize * data.number
