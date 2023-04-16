@@ -8,12 +8,13 @@
       <template #item.organization="{ item }">
         <OwnerColumn :item="item"/>
       </template>
-      <template #item.status="{ index }">
-        <v-select v-model="items[index].status" :items="statusList" itemText="name" itemValue="id" appendIcon="keyboard_arrow_down" @change="$emit('changeStatus', items[index])">
-          <template #selection="{ item }">
-            <span class="d-flex justify-center" style="width: 100%;">{{ item.name }}</span>
+      <template #item.status="{ index, item }">
+        <v-select v-if="canEdit" v-model="items[index].status" :items="statusList" itemText="name" itemValue="id" appendIcon="keyboard_arrow_down" @change="$emit('changeStatus', items[index])">
+          <template #selection="res">
+            <span class="d-flex justify-center" style="width: 100%;">{{ res.item.name }}</span>
           </template>
         </v-select>
+        <v-chip v-else :color="$store.state.durableGoodStatusColor[item.status]">{{ $store.state.durableGoodStatus[item.status || 'NEW'] }}</v-chip>
       </template>
     </v-data-table>
   </div>
@@ -29,6 +30,7 @@
       items: { type: Array, required: true },
       isLoading: { type: Boolean },
       paginationIndex: { type: Number, default: 0 },
+      canEdit: { type: Boolean },
     },
     data () {
       return {
