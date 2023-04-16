@@ -45,7 +45,7 @@
           { text: 'หมวดหมู่', value: 'majorCategory', width: '160px', align: 'center' },
           { text: 'ราคากลาง', value: 'price', align: 'center', width: '120px' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
-          { text: 'สถานะ', value: 'status', align: 'center', width: '100px' },
+          { text: 'สถานะ', value: 'status', align: 'center', width: '120px' },
           { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
         ],
       }

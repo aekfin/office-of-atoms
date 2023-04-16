@@ -69,7 +69,7 @@
       async getCheckedList (query = {}) {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { ...query } })
+          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { ...query, isCheck: true } })
           this.items = data.content
           this.pagination = data
           this.paginationIndex = data.pageable.pageSize * data.number
