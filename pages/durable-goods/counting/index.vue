@@ -56,7 +56,7 @@
     },
     computed: {
       apiPath () {
-        return 'equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED'
+        return 'equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED&status=WAIT_SALE'
       },
     },
     async mounted () {
