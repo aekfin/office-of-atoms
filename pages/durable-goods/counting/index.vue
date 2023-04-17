@@ -10,7 +10,7 @@
       <div class="text-h5 mt-10 mb-5"><b>ครุภัณฑ์ที่ตรวจนับแล้ว</b></div>
       <div class="goods-card-wrapper">
         <div class="mb-3">ทั้งหมด {{ total || 0 }} รายการ</div>
-        <CountingDurableTable :items.sync="items" canEdit :paginationIndex="paginationIndex" @changeStatus="onChangeStatus"/>
+        <CountingDurableTable :items.sync="items" canEdit :paginationIndex="paginationIndex" :isLoading="isLoading" @changeStatus="onChangeStatus"/>
         <Pagination v-if="pagination" :pagination="pagination" :isState="false" @change="onChangePage"/>
       </div>
       <v-expansion-panels v-model="formExpand" class="form-expansion-panels mt-10" flat multiple accordion>
@@ -59,7 +59,7 @@
         return 'equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED'
       },
       checkedApiPath () {
-        return 'equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED&status=WAIT_SALE'
+        return 'equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED&status=WAIT_SALE&status=LOST'
       },
     },
     async mounted () {

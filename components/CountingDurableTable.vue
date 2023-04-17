@@ -46,8 +46,10 @@
     },
     computed: {
       statusList () {
+        const acceptStatusList = ['NEW', 'WAIT_SALE', 'LOST']
         const statusList = this.$store.state.durableGoodStatus
-        return Object.keys(statusList).map(key => ({ id: key, name: statusList[key] }))
+        const filteredStatusList = Object.keys(statusList).filter(key => acceptStatusList.includes(key))
+        return filteredStatusList.map(key => ({ id: key, name: statusList[key] }))
       },
     },
     methods: {
