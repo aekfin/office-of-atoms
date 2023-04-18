@@ -70,7 +70,10 @@
                     </v-col>
                   </v-row>
 
-                  <div class="text-h6 mt-2 mb-2"><b>รายละเอียดเฉพาะของครุภัณฑ์</b></div>
+                  <div class="text-h6 mt-2 mb-2 d-flex justify-space-between">
+                    <b>รายละเอียดเฉพาะของครุภัณฑ์</b>
+                    <v-btn class="mb-4" color="secondary" @click="getEquipmentNumber(form.equipments[i])">ดูเลขที่ครุครุภัณฑ์</v-btn>
+                  </div>
                   <v-row v-for="(detail, j) in form.equipments[i].detailList" :key="j">
                     <v-col :cols="12" :md="3">
                       <div class="d-flex align-center">
@@ -119,6 +122,7 @@
       return {
         valid: true,
         isLoading: false,
+        isNumberLoading: false,
         initCategoryForm: {},
         form: {
           projectId: null,
@@ -193,12 +197,12 @@
       if (!this.isCreate) this.getData()
     },
     methods: {
-      getDetail () {
+      getDetail (data = {}) {
         return {
-          number: '',
-          assetNumber: '',
-          assetNumberAorWor: '',
-          serialNumber: '',
+          number: data.number || '',
+          assetNumber: data.assetNumber || '',
+          assetNumberAorWor: data.assetNumberAorWor || '',
+          serialNumber: data.serialNumber || '',
         }
       },
       addDurableGoods () {
@@ -233,6 +237,24 @@
         } else {
           equipment.detailList = equipment.detailList.slice(0, quantity)
         }
+        this.getEquipmentNumber(equipment)
+      },
+      async getEquipmentNumber (equipment) {
+        try {
+          const ouId = this.form.organizationId
+          const quantity = equipment.quantity
+          if (ouId && quantity) {
+            this.isNumberLoading = true
+            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity } })
+            data?.forEach((number, i) => {
+              equipment.detailList[i].number = number
+            })
+            this.isNumberLoading = false
+          }
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
+        }
       },
       async getData () {
         try {
@@ -242,14 +264,7 @@
             ...data,
             equipments: [{
               ...data,
-              detailList: [
-                {
-                  number: data.number || '',
-                  assetNumber: data.assetNumber || '',
-                  assetNumberAorWor: data.assetNumberAorWor || '',
-                  serialNumber: data.serialNumber || '',
-                }
-              ]
+              detailList: [this.getDetail(data)]
             }],
             organizationId: data.organization.id,
             departmentId: data.department.id,
@@ -267,13 +282,21 @@
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
+      convertDetail (equipment) {
+        return {
+          equmentNumbers: equipment.detailList.map(detail => detail.number),
+          assetNumber: equipment.detailList.map(detail => detail.assetNumber),
+          assetNumberAorWor: equipment.detailList.map(detail => detail.assetNumberAorWor),
+          serialNumbers: equipment.detailList.map(detail => detail.serialNumber),
+        }
+      },
       async onSubmit () {
         const valid = this.$refs.form.validate()
         if (valid) {
           try {
             const form = {
               ...this.form,
-              equipments: this.form.equipments.map(equipment => ({ ...equipment, ownerId: this.form.ownerId })),
+              equipments: this.form.equipments.map(equipment => ({ ...equipment, ownerId: this.form.ownerId, ...this.convertDetail(equipment) })),
               dateEntry: this.$fn.convertDateToString(this.form.dateEntry),
               inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
             }
@@ -285,7 +308,8 @@
             )
             await this.$store.dispatch('snackbar', { text: 'เพิ่มครุภัณฑ์สำเร็จ' })
             this.$router.push('/durable-goods/overall/')
-            return Promise.resolve(data)
+            // return Promise.resolve(data)
+            return Promise.resolve()
           } catch (err) { return Promise.reject(err) }
         }
       },
