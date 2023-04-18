@@ -35,14 +35,19 @@
           <v-col :cols="12" :lg="3" :md="6">
             <v-text-field v-model="form.contractNumber" label="เลขที่คุมสัญญา *" :rules="contractNumberRules" :disabled="disabledInfo"/>
           </v-col>
-          <v-col :cols="12" :lg="2" :md="4">
+          <v-col :cols="12" :lg="3" :md="6">
             <InputDatePicker :value.sync="form.projectStartDate" label="วันเริ่มโครงการ *" :rules="datetimeStartRules" :disabled="disabledInfo"/>
           </v-col>
-          <v-col :cols="12" :lg="2" :md="4">
+          <v-col :cols="12" :lg="3" :md="6">
             <InputDatePicker :value.sync="form.contractStartDate" label="วันเริ่มสัญญา *" :rules="datetimeCompanyStartRules" :disabled="disabledInfo"/>
           </v-col>
-          <v-col :cols="12" :lg="2" :md="4">
+        </v-row>
+        <v-row>
+          <v-col :cols="12" :lg="3" :md="6">
             <InputDatePicker :value.sync="form.contractEndDate" label="วันสิ้นสัญญา *" :rules="datetimeCompanyEndRules" :disabled="disabledInfo"/>
+          </v-col>
+          <v-col :cols="12" :lg="3" :md="6">
+            <InputDatePicker :value.sync="form.warrantyEndDate" label="วันที่สิ้นสุดการรับประกัน *" :rules="warrantyEndDateRules" required :disabled="disabledInfo"/>
           </v-col>
         </v-row>
         <v-row>
@@ -155,6 +160,7 @@
           projectStartDate: '',
           contractStartDate: '',
           contractEndDate: '',
+          warrantyEndDate: '',
           contractCompanyId: null,
           directors: [],
           ouId: null,
@@ -204,6 +210,9 @@
         ],
         datetimeCompanyEndRules: [
           v => !!v || 'โปรดใส่วันสิ้นสัญญา',
+        ],
+        warrantyEndDateRules: [
+          v => !!v || 'โปรดใส่วันที่สิ้นสุดการรับประกัน',
         ],
         companyRules: [
           v => !!v || 'โปรดใส่บริษัทคู่สัญญา',

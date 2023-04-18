@@ -21,9 +21,6 @@
           <v-col :cols="12" :md="3">
             <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate"/>
           </v-col>
-          <v-col :cols="12" :md="3">
-            <InputDatePicker :value.sync="form.warrantyEndDate" label="วันที่สิ้นสุดการรับประกัน *" :rules="warrantyEndDateRules" required :disabled="!isCreate"/>
-          </v-col>
         </v-row>
 
         <DurableGoodsOwner class="mt-5" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :userList="form.ownerList" :disabled="!isCreate"/>
@@ -51,7 +48,7 @@
                         <v-text-field v-model="form.equipments[i].name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required :disabled="!isCreate"/>
                       </v-col>
                       <v-col v-if="isCreate" :cols="12" :md="3">
-                        <v-text-field v-model="form.equipments[i].quantity" name="quantity" label="จำนวน *" type="number" :rules="quantityRules" required/>
+                        <v-text-field v-model="form.equipments[i].quantity" name="quantity" label="จำนวน *" type="number" :rules="quantityRules" required @change="onQuantityChange(form.equipments[i])"/>
                       </v-col>
                     </template>
                   </CategoryDurableGood>
@@ -73,19 +70,22 @@
                     </v-col>
                   </v-row>
 
-                  <div class="text-h6 mt-2"><b>รายละเอียดเฉพาะของครุภัณฑ์</b></div>
-                  <v-row>
-                    <v-col :cols="12" :md="4">
+                  <div class="text-h6 mt-2 mb-2"><b>รายละเอียดเฉพาะของครุภัณฑ์</b></div>
+                  <v-row v-for="(detail, j) in form.equipments[i].detailList" :key="j">
+                    <v-col :cols="12" :md="3">
                       <div class="d-flex align-center">
-                        <div v-if="isCreate" class="mr-4">1.</div>
-                        <v-text-field v-model="form.equipments[i].number" name="code" label="เลขที่ครุภัณฑ์ *" required disabled/>
+                        <div v-if="isCreate" class="mr-4">{{ j + 1 }}.</div>
+                        <v-text-field v-model="detail.number" name="code" label="เลขที่ครุภัณฑ์ *" required disabled/>
                       </div>
                     </v-col>
-                    <v-col :cols="12" :md="4">
-                      <v-text-field v-model="form.equipments[i].assetNumber" label="เลขที่สินทรัพย์" :disabled="!isCreate"/>
+                    <v-col :cols="12" :md="3">
+                      <v-text-field v-model="detail.serialNumber" label="หมายเลขซีเรียล" :disabled="!isCreate || !form.organizationId"/>
                     </v-col>
-                    <v-col :cols="12" :md="4">
-                      <v-text-field v-model="form.equipments[i].assetNumberAorWor" label="เลขที่สินทรัพย์ อว." required :disabled="!isCreate"/>
+                    <v-col :cols="12" :md="3">
+                      <v-text-field v-model="detail.assetNumber" label="เลขที่สินทรัพย์" :disabled="!isCreate || !form.organizationId"/>
+                    </v-col>
+                    <v-col :cols="12" :md="3">
+                      <v-text-field v-model="detail.assetNumberAorWor" label="เลขที่สินทรัพย์ อว." required :disabled="!isCreate || !form.organizationId"/>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -124,11 +124,8 @@
           projectId: null,
           dateEntry: new Date(),
           inspectionDate: new Date(),
-          warrantyEndDate: new Date(),
           equipments: [
             {
-              assetNumber: '',
-              assetNumberAorWor: '',
               name: '',
               year: (new Date()).getFullYear() + 543,
               price: '',
@@ -137,6 +134,7 @@
               classifier: '',
               categoryForm: {},
               quantity: 1,
+              detailList: [this.getDetail()]
             }
           ],
           organizationId: null,
@@ -180,9 +178,6 @@
         inspectionDateRules: [
           v => !!v || 'โปรดใส่วันที่ตรวจรับ',
         ],
-        warrantyEndDateRules: [
-          v => !!v || 'โปรดใส่วันที่สิ้นสุดการรับประกัน',
-        ],
         quantityRules: [
           v => !!v || 'โปรดใส่จำนวน',
         ],
@@ -198,11 +193,17 @@
       if (!this.isCreate) this.getData()
     },
     methods: {
+      getDetail () {
+        return {
+          number: '',
+          assetNumber: '',
+          assetNumberAorWor: '',
+          serialNumber: '',
+        }
+      },
       addDurableGoods () {
         this.form.equipments.push(
           {
-            assetNumber: '',
-            assetNumberAorWor: '',
             name: '',
             year: (new Date()).getFullYear() + 543,
             price: '',
@@ -211,6 +212,7 @@
             classifier: '',
             categoryForm: {},
             quantity: 1,
+            detailList: [this.getDetail()]
           }
         )
         this.formExpand = [ ...this.formExpand, this.formExpand.length ]
@@ -221,13 +223,34 @@
       onSelectProject ({ item }) {
         this.form.project = item
       },
+      onQuantityChange (equipment) {
+        const quantity = equipment.quantity
+        const count = equipment.detailList.length
+        if (count < quantity) {
+          for (let i = count; i < equipment.quantity; i++) {
+            equipment.detailList.push(this.getDetail())
+          }
+        } else {
+          equipment.detailList = equipment.detailList.slice(0, quantity)
+        }
+      },
       async getData () {
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/project/${this.$route.params.durable_goods_id}` })
           this.form = {
             ...data,
-            equipments: [{ ...data }],
+            equipments: [{
+              ...data,
+              detailList: [
+                {
+                  number: data.number || '',
+                  assetNumber: data.assetNumber || '',
+                  assetNumberAorWor: data.assetNumberAorWor || '',
+                  serialNumber: data.serialNumber || '',
+                }
+              ]
+            }],
             organizationId: data.organization.id,
             departmentId: data.department.id,
             ownerId: data.owner?.id || null,
@@ -253,7 +276,6 @@
               equipments: this.form.equipments.map(equipment => ({ ...equipment, ownerId: this.form.ownerId })),
               dateEntry: this.$fn.convertDateToString(this.form.dateEntry),
               inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
-              warrantyEndDate: this.$fn.convertDateToString(this.form.warrantyEndDate),
             }
             const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/project/import', data: form })
             await Promise.all(
