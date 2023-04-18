@@ -2,7 +2,7 @@
   <div id="durable-goods-counting-detail-page">
     <PageHeader text="การตรวจนับครุภัณฑ์" hideTotal/>
     <div class="mt-10">
-      <v-text-field ref="search" v-model="number" label="ค้นหาด้วย เลขที่ครุภัณฑ์" @change="changeSearch"/>
+      <v-text-field ref="search" v-model="number" label="โปรดใส่ เลขที่ครุภัณฑ์" @change="changeSearch"/>
       <div v-if="errorText" class="d-flex aligns-center" style="color: red;">
         <i class="material-icons" v-text="`error`"/>
         <b class="ml-2">ไม่พบครุภัณฑ์ "{{ errorText }}"</b>

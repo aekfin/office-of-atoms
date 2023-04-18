@@ -1,27 +1,55 @@
 <template>
   <div id="durable-goods-verify-counting-detail-page">
-    <PageHeader text="ยืนยันการตรวจนับครุภัณฑ์"/>
+    <PageHeader text="ยืนยันการตรวจนับครุภัณฑ์" :total="total"/>
     <div class="mt-10">
-      <CountingDurableTable :items.sync="items" :isLoading="isLoading" @changeStatus="onChangeStatus"/>
+      <CountingDurableTable :items.sync="items" :paginationIndex="$store.state.paginationIndex || 0" :isLoading="isLoading" hasAction @approveCounting="onApproveCounting"/>
+      <Pagination/>
     </div>
   </div>
 </template>
 
 <script>
   export default {
+    components: {
+      PageHeader: () => import('~/components/PageHeader.vue'),
+      CountingDurableTable: () => import('~/components/CountingDurableTable.vue'),
+      Pagination: () => import('~/components/Pagination.vue'),
+    },
     data () {
       return {
         isLoading: false,
+        count: 0,
+        total: 0,
         items: [],
+        dialog: false,
       }
     },
-    methods: {
-      async onChangeStatus (content) {
-        this.onSave(content)
-      },
-      async onSave (content) {
-        await this.$store.dispatch('snackbar', { text: `ตรวจนับครุภัณฑ์เลขที่ "${content.number}" สำเร็จ` })
+    watch: {
+      '$route.query' () {
+        this.getList()
       }
+    },
+    mounted () {
+      this.getList()
+    },
+    methods: {
+      async getList () {
+        try {
+          this.isLoading = true
+          const apiPath = '/equipment/getEquipments/treasury?status=NEW&status=RETURNED&status=WAIT_SALE&status=LOST'
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath, query: { ...this.$route.query, isCheck: true }, context: this })
+          this.isLoading = false
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
+      async onApproveCounting (item) {
+        try {
+          const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/confirm', query: { id: item.id } })
+          await this.$store.dispatch('snackbar', { text: `ยืนยันการตรวจนับครุภัณฑ์เลขที่ "${item.number}" สำเร็จ` })
+          await this.getList()
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
     },
   }
 </script>

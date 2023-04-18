@@ -12,7 +12,7 @@
       </v-card-text>
       <v-card-actions v-if="!hideAction" class="justify-end">
         <v-btn color="grey" text @click="val = false">{{ closeText }}</v-btn>
-        <v-btn v-if="!hideSubmit" color="success" text @click="onConfirm">{{ confirmText }}</v-btn>
+        <v-btn v-if="!hideSubmit" color="success" @click="onConfirm">{{ confirmText }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog> 
