@@ -1,7 +1,7 @@
 <template>
   <div id="durable-goods-donation-page">
     <PageHeader text="การรับบริจาคครุภัณฑ์" btnText="เพิ่มการรับบริจาคครุภัณฑ์" createRoute="/durable-goods/donation/create/" :total="total"/>
-    <ExportReportButton/>
+    <ExportReportButton apiPath="report/donate" name="รายงานการรับบริจาคครุภัณฑ์"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>

@@ -19,6 +19,10 @@ const Fn = {
     const dateFormat = moment(date)
     return `${dateFormat.format('DD-MM')}-${dateFormat.year() + 543}`
   },
+  reportDate (date) {
+    const dateFormat = moment(date)
+    return `${dateFormat.format('DD-MM')}-${dateFormat.year() + 543}-${dateFormat.format('HH-mm')}`
+  },
   getName (account) {
     return `${account.thaiFristName} ${account.thaiLastName}`
   },

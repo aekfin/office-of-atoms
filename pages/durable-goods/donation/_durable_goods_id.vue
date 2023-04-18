@@ -47,7 +47,7 @@
                         <v-text-field v-model="form.equipments[i].name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required :disabled="!isCreate"/>
                       </v-col>
                       <v-col v-if="isCreate" :cols="12" :md="3">
-                        <v-text-field v-model="form.equipments[i].quantity" name="quantity" label="จำนวน *" type="number" :rules="quantityRules" required/>
+                        <v-text-field v-model="form.equipments[i].quantity" name="quantity" label="จำนวน *" type="number" :rules="quantityRules" required @change="onQuantityChange(form.equipments[i])"/>
                       </v-col>
                     </template>
                   </CategoryDurableGood>
@@ -69,19 +69,25 @@
                     </v-col>
                   </v-row>
 
-                  <div class="text-h6 mt-2"><b>รายละเอียดเฉพาะของครุภัณฑ์</b></div>
-                  <v-row>
-                    <v-col :cols="12" :md="4">
+                  <div class="text-h6 mt-2 mb-2 d-flex justify-space-between">
+                    <b>รายละเอียดเฉพาะของครุภัณฑ์</b>
+                    <v-btn class="mb-4" color="secondary" @click="getEquipmentNumber(form.equipments[i])">ดูเลขที่ครุครุภัณฑ์</v-btn>
+                  </div>
+                  <v-row v-for="(detail, j) in form.equipments[i].detailList" :key="j">
+                    <v-col :cols="12" :md="3">
                       <div class="d-flex align-center">
-                        <div v-if="isCreate" class="mr-4">1.</div>
-                        <v-text-field v-model="form.equipments[i].number" name="code" label="เลขที่ครุภัณฑ์ *" required disabled/>
+                        <div v-if="isCreate" class="mr-4">{{ j + 1 }}.</div>
+                        <v-text-field v-model="detail.number" name="code" label="เลขที่ครุภัณฑ์ *" required disabled/>
                       </div>
                     </v-col>
-                    <v-col :cols="12" :md="4">
-                      <v-text-field v-model="form.equipments[i].assetNumber" label="เลขที่สินทรัพย์" :disabled="!isCreate"/>
+                    <v-col :cols="12" :md="3">
+                      <v-text-field v-model="detail.serialNumber" label="หมายเลขซีเรียล" :disabled="!isCreate || !form.organizationId"/>
                     </v-col>
-                    <v-col :cols="12" :md="4">
-                      <v-text-field v-model="form.equipments[i].assetNumberAorWor" label="เลขที่สินทรัพย์ อว." required :disabled="!isCreate"/>
+                    <v-col :cols="12" :md="3">
+                      <v-text-field v-model="detail.assetNumber" label="เลขที่สินทรัพย์" :disabled="!isCreate || !form.organizationId"/>
+                    </v-col>
+                    <v-col :cols="12" :md="3">
+                      <v-text-field v-model="detail.assetNumberAorWor" label="เลขที่สินทรัพย์ อว." required :disabled="!isCreate || !form.organizationId"/>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -134,6 +140,7 @@
               donator: '',
               userId: null,
               quantity: 1,
+              detailList: [this.getDetail()]
             }
           ],
           organizationId: null,
@@ -180,6 +187,9 @@
         userRules: [
           v => !!v || 'โปรดใส่ผู้รับผิดชอบ',
         ],
+        inspectionDateRules: [
+          v => !!v || 'โปรดใส่วันที่ตรวจรับ',
+        ],
         quantityRules: [
           v => !!v || 'โปรดใส่จำนวน',
         ],
@@ -195,6 +205,14 @@
       if (!this.isCreate) this.getData()
     },
     methods: {
+      getDetail (data = {}) {
+        return {
+          number: data.number || '',
+          assetNumber: data.assetNumber || '',
+          assetNumberAorWor: data.assetNumberAorWor || '',
+          serialNumber: data.serialNumber || '',
+        }
+      },
       addDurableGoods () {
         this.form.equipments.push(
           {
@@ -210,12 +228,42 @@
             donator: '',
             userId: null,
             quantity: 1,
+            detailList: [this.getDetail()]
           }
         )
         this.formExpand = [ ...this.formExpand, this.formExpand.length ]
       },
       removeDurableGoods (i) {
         this.form.equipments.splice(i, 1)
+      },
+      onQuantityChange (equipment) {
+        const quantity = equipment.quantity
+        const count = equipment.detailList.length
+        if (count < quantity) {
+          for (let i = count; i < equipment.quantity; i++) {
+            equipment.detailList.push(this.getDetail())
+          }
+        } else {
+          equipment.detailList = equipment.detailList.slice(0, quantity)
+        }
+        this.getEquipmentNumber(equipment)
+      },
+      async getEquipmentNumber (equipment) {
+        try {
+          const ouId = this.form.organizationId
+          const quantity = equipment.quantity
+          if (ouId && quantity) {
+            this.isNumberLoading = true
+            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity } })
+            data?.forEach((number, i) => {
+              equipment.detailList[i].number = number
+            })
+            this.isNumberLoading = false
+          }
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
+        }
       },
       async getData () {
         try {
@@ -228,7 +276,8 @@
                 ...data,
                 donator: data.equipmentDonation.donator,
                 userId: data.equipmentDonation.keeper.id,
-                userList: [data.equipmentDonation.keeper]
+                userList: [data.equipmentDonation.keeper],
+                detailList: [this.getDetail(data)]
               }
             ],
             organizationId: data.organization.id,
@@ -247,13 +296,21 @@
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
+      convertDetail (equipment) {
+        return {
+          equmentNumbers: equipment.detailList.map(detail => detail.number),
+          assetNumber: equipment.detailList.map(detail => detail.assetNumber),
+          assetNumberAorWor: equipment.detailList.map(detail => detail.assetNumberAorWor),
+          serialNumbers: equipment.detailList.map(detail => detail.serialNumber),
+        }
+      },
       async onSubmit () {
         const valid = this.$refs.form.validate()
         if (valid) {
           try {
             const form = {
               ...this.form,
-              equipments: this.form.equipments.map(equipment => ({ ...equipment, ownerId: this.form.ownerId })),
+              equipments: this.form.equipments.map(equipment => ({ ...equipment, ownerId: this.form.ownerId, ...this.convertDetail(equipment) })),
               dateEntry: this.$fn.convertDateToString(this.form.dateEntry),
               inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
             }

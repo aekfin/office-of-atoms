@@ -13,12 +13,17 @@
     props: {
       apiPath: { type: String, required: true },
       text: { type: String, default: 'Export Report' },
+      name: { type: String, default: 'รายงาน' },
     },
     methods: {
       async onExportReport () {
         try {
-          const { data } = await this.$store.dispatch('http', { apiPath: 'report/donate' })
-          window.open(data, '_blank');
+          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath })
+          const a = document.createElement('a')
+          a.href = data
+          a.download = `${this.name}-${this.$fn.reportDate(new Date())}`
+          a.click()
+          // window.open(data, '_blank')
           return Promise.resolve()
         } catch (err) {
           return Promise.reject(err)
