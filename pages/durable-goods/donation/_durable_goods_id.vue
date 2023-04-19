@@ -71,7 +71,7 @@
 
                   <div class="text-h6 mt-2 mb-2 d-flex justify-space-between">
                     <b>รายละเอียดเฉพาะของครุภัณฑ์</b>
-                    <v-btn class="mb-4" color="secondary" @click="getEquipmentNumber(form.equipments[i])">ดูเลขที่ครุครุภัณฑ์</v-btn>
+                    <v-btn v-if="isCreate" class="mb-4" color="secondary" @click="getEquipmentNumber(form.equipments[i])">ดูเลขที่ครุครุภัณฑ์</v-btn>
                   </div>
                   <v-row v-for="(detail, j) in form.equipments[i].detailList" :key="j">
                     <v-col :cols="12" :md="3">
@@ -304,6 +304,10 @@
           serialNumbers: equipment.detailList.map(detail => detail.serialNumber),
         }
       },
+      getMapCategory (item) {
+        const equipment = this.form.equipments.find(equipment => equipment.name === item.name) || this.form.equipments[0]
+        return equipment.categoryForm
+      },
       async onSubmit () {
         const valid = this.$refs.form.validate()
         if (valid) {
@@ -316,8 +320,8 @@
             }
             const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/import/donation', data: form })
             await Promise.all(
-              data.map((item, i) => {
-                this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.form.equipments[i].categoryForm, id: item.id } })
+              data.map((item) => {
+                this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.getMapCategory(item), id: item.id } })
               })
             )
             await this.$store.dispatch('snackbar', { text: 'เพิ่มการรับบริจาคครุภัณฑ์สำเร็จ' })
