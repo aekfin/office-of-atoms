@@ -59,8 +59,7 @@
         return 'equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED'
       },
       checkedApiPath () {
-        return 'equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED&status=WAIT_SALE&status=LOST'
-        // return `equipment/getEquipments/statusAndDepartment?${this.$store.getters.durableGoodCountableQuery}`
+        return `equipment/getEquipments/statusAndDepartment?${this.$store.getters.durableGoodCountableQuery}`
       },
     },
     async mounted () {
