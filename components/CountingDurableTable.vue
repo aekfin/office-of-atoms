@@ -75,6 +75,14 @@
 
 <style lang="scss">
   .counting-durable-table {
+    .v-input.v-text-field {
+      padding-top: 4px;
 
+      .v-input__control {
+        .v-text-field__details {
+          display: none;
+        }
+      }
+    }
   }
 </style>
