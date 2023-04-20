@@ -46,16 +46,15 @@
         { text: 'ผู้ครอบครอง', value: 'organization', width: '120px', align: 'center' },
         { text: 'สถานะ', value: 'status', width: '200px', align: 'center' },
       ]
-      if (this.hasAction) headers.push({ text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' })
+      if (this.hasAction) headers.push({ text: 'การอนุมัติ', value: 'action', width: '100px', align: 'center' })
       return {
         headers
       }
     },
     computed: {
       statusList () {
-        const acceptStatusList = ['NEW', 'WAIT_SALE', 'LOST']
         const statusList = this.$store.state.durableGoodStatus
-        const filteredStatusList = Object.keys(statusList).filter(key => acceptStatusList.includes(key))
+        const filteredStatusList = Object.keys(statusList).filter(key => this.$store.state.durableGoodCountable.includes(key))
         return filteredStatusList.map(key => ({ id: key, name: statusList[key] }))
       },
     },

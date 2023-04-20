@@ -219,6 +219,7 @@
           }
         )
         this.formExpand = [ ...this.formExpand, this.formExpand.length ]
+        this.setNumberAllEquipments()
       },
       removeDurableGoods (i) {
         this.form.equipments.splice(i, 1)
@@ -226,11 +227,14 @@
       onSelectProject ({ item }) {
         this.form.project = item
       },
-      onOuChange ({ val }) {
-        this.form.organizationId = val
+      setNumberAllEquipments () {
         this.form.equipments.forEach(equipment => {
           this.getEquipmentNumber(equipment)
         })
+      },
+      onOuChange ({ val }) {
+        this.form.organizationId = val
+        this.setNumberAllEquipments()
       },
       onQuantityChange (equipment) {
         const quantity = equipment.quantity

@@ -4,5 +4,8 @@ export default {
   },
   isTreasury (state) {
     return state.userProfile?.isTreasury === 'true'
-  }
+  },
+  durableGoodCountableQuery (state) {
+    return state.durableGoodCountable.reduce((query, status, i) => `${query}${i > 0 ? '&': ''}status=${status}`, '')
+  },
 }
