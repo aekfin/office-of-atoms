@@ -13,7 +13,7 @@
           </v-col>
         </v-row>
 
-        <DurableGoodsOwner class="mt-5" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :userList="form.ownerList" :disabled="!isCreate"/>
+        <DurableGoodsOwner class="mt-5" :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :userList="form.ownerList" :disabled="!isCreate" @ouChange="onOuChange"/>
 
         <div class="text-h5 mt-5"><b>เลือกครุภัณฑ์</b></div>
         <v-container>
@@ -71,7 +71,6 @@
 
                   <div class="text-h6 mt-2 mb-2 d-flex justify-space-between">
                     <b>รายละเอียดเฉพาะของครุภัณฑ์</b>
-                    <v-btn v-if="isCreate" class="mb-4" color="secondary" @click="getEquipmentNumber(form.equipments[i])">ดูเลขที่ครุครุภัณฑ์</v-btn>
                   </div>
                   <v-row v-for="(detail, j) in form.equipments[i].detailList" :key="j">
                     <v-col :cols="12" :md="3">
@@ -235,6 +234,12 @@
       },
       removeDurableGoods (i) {
         this.form.equipments.splice(i, 1)
+      },
+      onOuChange ({ val }) {
+        this.form.organizationId = val
+        this.form.equipments.forEach(equipment => {
+          this.getEquipmentNumber(equipment)
+        })
       },
       onQuantityChange (equipment) {
         const quantity = equipment.quantity

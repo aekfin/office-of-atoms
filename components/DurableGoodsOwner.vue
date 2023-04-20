@@ -4,7 +4,7 @@
       <div class="text-h5"><b>ผู้ครอบครอง</b></div>
     </v-col>
     <v-col :cols="12" :md="4">
-      <SelectDropdown :value.sync="organizationId" label="กอง *" itemText="ouName" :rules="ouRules" required :disabled="disabled" apiPath="Orgchart/getOrganizations" @select="$emit('ouChange')"/>
+      <SelectDropdown :value.sync="organizationId" label="กอง *" itemText="ouName" :rules="ouRules" required :disabled="disabled" apiPath="Orgchart/getOrganizations" @select="$emit('ouChange', $event)"/>
     </v-col>
     <v-col :cols="12" :md="4">
       <SelectDropdown :value.sync="departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required :disabled="disabled" apiPath="Orgchart/getDepartments"/>
