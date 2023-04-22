@@ -13,6 +13,9 @@
       <template #item.status="{ item }">
         <v-chip :color="$store.state.durableGoodStatusColor[item.status]">{{ $store.state.durableGoodStatus[item.status] }}</v-chip>
       </template>
+      <template #item.action="{ item }">
+        <ActionIconList :list="getActionIconList(item)"/>
+      </template>
     </v-data-table>
     <Pagination/>
   </div>
@@ -40,6 +43,7 @@
           { text: 'ราคากลาง', value: 'price', align: 'center', width: '120px' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
           { text: 'สถานะ', value: 'status', align: 'center', width: '160px' },
+          { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
         ],
       }
     },
@@ -60,6 +64,12 @@
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
+      getActionIconList (item) {
+        return [
+          { type: 'link', icon: 'edit', action: `/durable-goods/summary/${item.id}/` },
+          // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
+        ]
+      }
     }
   }
 </script>

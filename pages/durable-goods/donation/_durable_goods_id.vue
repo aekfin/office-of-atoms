@@ -76,7 +76,7 @@
                     <v-col :cols="12" :md="3">
                       <div class="d-flex align-center">
                         <div v-if="isCreate" class="mr-4">{{ j + 1 }}.</div>
-                        <v-text-field v-model="detail.number" name="code" label="เลขที่ครุภัณฑ์ *" required disabled/>
+                        <v-text-field v-model="detail.number" name="code" label="เลขที่ครุภัณฑ์ *" required disabled :loading="isNumberLoading"/>
                       </div>
                     </v-col>
                     <v-col :cols="12" :md="3">
@@ -121,6 +121,7 @@
       return {
         valid: true,
         isLoading: false,
+        isNumberLoading: false,
         initCategoryForm: {},
         form: {
           dateEntry: new Date(),

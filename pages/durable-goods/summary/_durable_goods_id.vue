@@ -1,6 +1,6 @@
 <template>
-  <div id="management-durable-goods-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นครุภัณฑ์' : 'การแก้ไขค่าเริ่มต้นครุภัณฑ์'" hideTotal/>
+  <div id="summary-durable-goods-detail-page">
+    <PageHeader :text="isCreate ? 'การเพิ่มครุภัณฑ์' : 'การแก้ไขครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
@@ -67,7 +67,7 @@
 
       <v-container class="mt-8">
         <v-row justify="end">
-          <v-btn large plain @click="$router.push('/management/durable-goods/')">ย้อนกลับ</v-btn>
+          <v-btn large plain @click="$router.push('/durable-goods/summary/')">ย้อนกลับ</v-btn>
           <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
         </v-row>
       </v-container>
@@ -244,8 +244,8 @@
           }
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/import', data: form })
           await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.categoryForm, id: data[0].id } })
-          await this.$store.dispatch('snackbar', { text: 'เพิ่มค่าเริ่มต้นครุภัณฑ์สำเร็จ' })
-          this.$router.push('/management/durable-goods/')
+          await this.$store.dispatch('snackbar', { text: 'เพิ่มครุภัณฑ์สำเร็จ' })
+          this.$router.push('/durable-goods/summary/')
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
@@ -257,7 +257,7 @@
           //   inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
           // }
           // const { data } = await this.$store.dispatch('http', { method: 'put', apiPath: 'equipment/Edit', data: form })
-          await this.$store.dispatch('snackbar', { text: 'แก้ไขค่าเริ่มต้นครุภัณฑ์สำเร็จ' })
+          await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })
           await this.getData()
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
@@ -267,6 +267,6 @@
 </script>
 
 <style lang="scss">
-  #management-durable-goods-detail-page {
+  #summary-durable-goods-detail-page {
   }
 </style>
