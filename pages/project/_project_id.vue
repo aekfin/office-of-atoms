@@ -52,7 +52,7 @@
         </v-row>
         <v-row>
           <v-col :cols="12" :md="6">
-            <v-text-field v-model="form.type" label="วีธี รูปแบบงาน"/>
+            <SelectDropdown :value.sync="form.type" :items="typeList" itemValue="id" itemText="name" label="วีธี รูปแบบงาน" :rules="contactPositionRules"/>
           </v-col>
           <v-col :cols="12" :md="6">
             <v-text-field v-model="form.responsibleAgency" label="หน่วยงานรับผิดชอบ"/>
@@ -93,7 +93,7 @@
                   <v-row v-for="(contact, i) in form.directors" :key="i" class="pl-2 pr-3 mb-3" align="baseline">
                     <div class="prefix-wrapper">
                       <div class="mr-5">{{ i + 1 }}.</div>
-                      <v-select v-model="contact.description" :items="companyPositionList" itemValue="id" itemText="name" label="ตำแหน่ง *" :rules="contactPositionRules" appendIcon="keyboard_arrow_down"/>
+                      <SelectDropdown v-model="contact.description" :items="companyPositionList" itemValue="id" itemText="name" label="ตำแหน่ง *" :rules="contactPositionRules"/>
                     </div>
                     <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
                     <v-text-field v-model="contact.phone" class="phone" label="เบอร์โทรศัพท์"/>
@@ -214,11 +214,20 @@
           { id: 'กรรมการพิจารณาโครงการ', name: 'กรรมการพิจารณาโครงการ' },
           { id: 'กรรมการตรวจรับ', name: 'กรรมการตรวจรับ' },
         ],
-        years: [
-          { id: 1, name: '2022' },
-          { id: 2, name: '2021' },
-          { id: 3, name: '2020' },
-          { id: 4, name: '2019' }
+        typeList: [
+          { id: 'e-Bidding', name: 'e-Bidding' },
+          { id: 'e-market', name: 'e-market' },
+          { id: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีคัดเลือก', name: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีคัดเลือก' },
+          { id: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีประกวดแบบ', name: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีประกวดแบบ' },
+          { id: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีประกาศเชิญชวนทั่วไป', name: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีประกาศเชิญชวนทั่วไป' },
+          { id: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีเฉพาะเจาะจง', name: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีเฉพาะเจาะจง' },
+          { id: 'จ้างที่ปรึกษาโดยวิธีคัดเลือก', name: 'จ้างที่ปรึกษาโดยวิธีคัดเลือก' },
+          { id: 'จ้างที่ปรึกษาโดยวิธีประกาศเชิญชวนทั่วไป', name: 'จ้างที่ปรึกษาโดยวิธีประกาศเชิญชวนทั่วไป' },
+          { id: 'จ้างที่ปรึกษาโดยวิธีเฉพาะเจาะจง', name: 'จ้างที่ปรึกษาโดยวิธีเฉพาะเจาะจง' },
+          { id: 'วิธีคัดเลือก', name: 'วิธีคัดเลือก' },
+          { id: 'วิธีเฉพาะเจาะจง', name: 'วิธีเฉพาะเจาะจง' },
+          { id: 'วิธีเฉพาะเจาะจง(ข)', name: 'วิธีเฉพาะเจาะจง(ข)' },
+          { id: 'สอบราคา', name: 'สอบราคา' },
         ],
         yearRules: [
           v => !!v || 'โปรดใส่ปีงบประมาณ',
@@ -298,6 +307,7 @@
             projectStartDate: this.$fn.convertStringToDate(data.projectStartDate),
             contractStartDate: this.$fn.convertStringToDate(data.contractStartDate),
             contractEndDate: this.$fn.convertStringToDate(data.contractEndDate),
+            warrantyEndDate: this.$fn.convertStringToDate(data.warrantyEndDate),
           }
           this.isLoading = false
           return Promise.resolve()
@@ -332,6 +342,7 @@
         this.editMode = true
       },
       onSelectProject ({ val, item }) {
+        const getDate = date => date && date.setFullYear(date.getFullYear() - 543) || ''
         if (item) {
           this.form.projectName = item.projectName
           this.form.projectNumber = item.projectNumber
@@ -339,6 +350,9 @@
           this.form.projectStartDate = item.projectStartDate ? this.$fn.convertStringToDate(item.projectStartDate) : ''
           this.form.contractStartDate = item.contractStartDate ? this.$fn.convertStringToDate(item.contractStartDate) : ''
           this.form.contractEndDate = item.contractEndDate ? this.$fn.convertStringToDate(item.contractEndDate) : ''
+          getDate(this.form.projectStartDate)
+          getDate(this.form.contractStartDate)
+          getDate(this.form.contractEndDate)
         }
       },
       onRemoveAttachment (attach) {
@@ -368,6 +382,7 @@
             form.projectStartDate = this.$fn.convertDateToString(form.projectStartDate)
             form.contractStartDate = this.$fn.convertDateToString(form.contractStartDate)
             form.contractEndDate = this.$fn.convertDateToString(form.contractEndDate)
+            form.warrantyEndDate = this.$fn.convertDateToString(form.warrantyEndDate)
             if (!this.isCreate) this.setEditForm(form)
             const apiPath = this.isCreate ? 'Project/addProjectV2' : 'Project/updateProjectV2'
             const method = this.isCreate ? 'post' : 'put'
@@ -384,7 +399,7 @@
             return Promise.reject(err)
           }
         } else {
-          this.formExpand = [0, 1]
+          this.formExpand = [0, 1, 2]
         }
       }
     },

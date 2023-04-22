@@ -35,7 +35,7 @@
       </v-container>
 
       <h2 class="text-h5 mt-5"><b>เลือกวัสดุคงคลังที่ต้องการเบิก</b></h2>
-      <v-container>
+      <v-container class="pb-0">
         <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple accordion>
           <v-expansion-panel v-for="(parcel, i) in form.pickUpItems" :key="i" accordion>
             <v-expansion-panel-header v-if="!viewMode" class="text-h6">
@@ -63,14 +63,14 @@
                   <v-col v-if="viewMode" :cols="12" :md="4">
                     <div class="d-flex align-baseline">
                       <v-text-field v-model="form.pickUpItems[i].quantityFixed" class="mr-5" label="จำนวนเบิก *" required disabled/>
-                      <div class="text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain || 0 }}</div>
+                      <div v-if="canEdit" class="text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain || 0 }}</div>
                     </div>
                   </v-col>
                   <v-col :cols="12" :md="4">
                     <div class="d-flex align-baseline">
                       <v-text-field v-if="showQuantity(form.pickUpItems[i])" v-model="form.pickUpItems[i].quantity" class="mr-5" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'"
                         :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity"/>
-                      <div v-if="!viewMode" class="text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain || 0 }}</div>
+                      <!-- <div v-if="!viewMode" class="text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain || 0 }}</div> -->
                     </div>
                   </v-col>
                 </v-row>
@@ -276,6 +276,10 @@
     .text-remaining {
       width: max-content;
       min-width: 100px;
+    }
+
+    .v-expansion-panel-content__wrap {
+      padding-bottom: 0;
     }
 
     @media (max-width: 768px) {

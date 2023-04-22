@@ -58,10 +58,20 @@
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
+      async removeProject (item) {
+        try {
+          await this.$store.dispatch('http', { method: 'delete', apiPath: `Project/${item.id}` })
+          await this.$store.dispatch('snackbar', { text: 'ลบโครงการสำเร็จ' })
+          await this.getList()
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'edit', action: `/project/${item.id}/` },
-          { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
+          // { type: 'confirm', icon: 'delete', action: () => { this.removeProject(item) } },
         ]
       }
     }

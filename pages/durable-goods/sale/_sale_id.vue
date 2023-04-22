@@ -19,10 +19,13 @@
       <v-container>
         <NumberDurableGood :propNumber="form.item && form.item.number || ''" :disabled="!isCreate" @change="numberQuery = $event"/>
         <v-row>
-          <v-col :cols="12">
+          <v-col :cols="12" :md="8">
             <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
               :query="numberQuery" :disabled="!isCreate" @select="onSelectDurableGoods"/>
             <v-text-field v-else-if="form.item" v-model="form.item.name" label="ครุภัณฑ์ *" disabled/>
+          </v-col>
+          <v-col :cols="12" :md="4">
+            <SelectDropdown :value.sync="form.saleType" :items="saleList" itemValue="id" itemText="name" label="วิธีการจำหน่าย *" :rules="saleTypeRules" :disabled="!isCreate"/>            
           </v-col>
           <v-col :cols="12" :md="4">
             <v-text-field v-model="form.price" label="ราคาจำหน่าย *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
@@ -76,6 +79,17 @@
         ],
         buyerRules: [
           v => !!v || 'โปรดใส่ชื่อผู้ซื้อ',
+        ],
+        saleTypeRules: [
+          v => !!v || 'โปรดเลือกวิธีการจำหน่าย',
+        ],
+        saleList: [
+          { id: 'บริจาค', name: 'บริจาค' },
+          { id: 'ขาย', name: 'ขาย' },
+          { id: 'สูญหาย', name: 'สูญหาย' },
+          { id: 'เสื่อมสภาพ', name: 'เสื่อมสภาพ' },
+          { id: 'ทำลาย', name: 'ทำลาย' },
+          { id: 'อื่นๆ', name: 'อื่นๆ' },
         ],
         numberQuery: {},
       }
