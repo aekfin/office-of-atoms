@@ -42,19 +42,14 @@
             <SelectDropdown :value.sync="form.pickUpItems[i].typeId" itemValue="id" itemText="name" label="ประเภท *" apiPath="parcel/getListParcelType" :items="parcel.types"
               :rules="typeRules" required :disabled="viewMode" @select="onParcelTypeChange(form.pickUpItems[i])"/>
           </v-col>
-          <v-col :cols="12" :md="showQuantity(form.pickUpItems[i]) ? 4 : 5">
+          <v-col :cols="12" :md="showQuantity(form.pickUpItems[i]) ? 4 : 6">
             <SelectDropdown :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" :rules="parcelRules" apiPath="parcel/searchParcelMaster"
               :query="getParcelQuery(form.pickUpItems[i])" :items="parcel.items" :disabled="viewMode || !form.pickUpItems[i].typeId" @select="onParcelChange($event, form.pickUpItems[i])"/>
           </v-col>
-          <v-col v-if="viewMode" :cols="12" :md="showQuantity(form.pickUpItems[i]) ? 2 : 4">
+          <v-col :cols="12" :md="showQuantity(form.pickUpItems[i]) ? 5 : 3">
             <div class="d-flex align-baseline">
-              <v-text-field v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" required disabled/>
-            </div>
-          </v-col>
-          <v-col v-if="showQuantity(form.pickUpItems[i])" :cols="12" :md="3">
-            <div class="d-flex align-baseline">
-              <v-text-field v-model="form.pickUpItems[i].quantity" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'"
-                :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity"/>
+              <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" class="mr-5" required disabled/>
+              <v-text-field v-if="!viewMode || canEdit" v-model="form.pickUpItems[i].quantity" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'" :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity"/>
               <v-btn v-if="!viewMode && form.pickUpItems.length > 1 && i === form.pickUpItems.length - 1" icon class="ml-5" @click.stop="removeParcel(i)">
                 <i class="material-icons">delete</i>
               </v-btn>
@@ -211,7 +206,7 @@
         return item?.status === 'APPROVE'
       },
       showQuantity (item) {
-        return !this.viewMode || this.canChangeQuantity || item.numberOfApproved
+        return this.canChangeQuantity || item.numberOfApproved
       },
       onSave () {
         const valid = this.$refs.form.validate()
