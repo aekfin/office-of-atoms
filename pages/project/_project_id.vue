@@ -55,20 +55,20 @@
             <v-text-field v-model="form.type" label="วีธี รูปแบบงาน"/>
           </v-col>
           <v-col :cols="12" :md="6">
-            <v-text-field v-model="form.detailedWorkMoney" label="รายละเอียดงาน งวดงาน/เงิน"/>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col :cols="12" :md="6">
-            <v-text-field v-model="form.detailedWork" label="รายละเอียดงานในแต่ล่ะงวด"/>
-          </v-col>
-          <v-col :cols="12" :md="6">
-            <v-text-field v-model="form.detailsOfItems" label="รายละเอียดรายการวัสดุ/ครุภัณฑ์ที่ต้องส่งมอบในแต่ละงวด"/>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col :cols="12" :md="6">
             <v-text-field v-model="form.responsibleAgency" label="หน่วยงานรับผิดชอบ"/>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :cols="12" :md="6">
+            <v-textarea v-model="form.detailedWorkMoney" label="รายละเอียดงาน งวดงาน/เงิน"/>
+          </v-col>
+          <v-col :cols="12" :md="6">
+            <v-textarea v-model="form.detailedWork" label="รายละเอียดงานในแต่ล่ะงวด"/>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col :cols="12" :md="6">
+            <v-textarea v-model="form.detailsOfItems" label="รายละเอียดรายการวัสดุ/ครุภัณฑ์ที่ต้องส่งมอบในแต่ละงวด"/>
           </v-col>
         </v-row>
       </v-container>
@@ -91,16 +91,18 @@
                     <div class="text-lg font-bold">รายชื่อผู้ติดต่อ</div>
                   </v-row>
                   <v-row v-for="(contact, i) in form.directors" :key="i" class="pl-2 pr-3 mb-3" align="baseline">
-                    <div class="prefix-wrapper mr-5">
+                    <div class="prefix-wrapper">
                       <div class="mr-5">{{ i + 1 }}.</div>
-                      <v-select v-model="contact.description" :items="companyPositionList" itemValue="id" itemText="name" label="ตำแหน่ง" :rules="contactPositionRules"/>
+                      <v-select v-model="contact.description" :items="companyPositionList" itemValue="id" itemText="name" label="ตำแหน่ง *" :rules="contactPositionRules" appendIcon="keyboard_arrow_down"/>
                     </div>
-                    <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล" :rules="contactNameRules"/>
-                    <v-btn v-if="form.directors.length > 1" icon @click="removeContact(i)">
+                    <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
+                    <v-text-field v-model="contact.phone" class="phone" label="เบอร์โทรศัพท์"/>
+                    <v-text-field v-model="contact.email" class="email" label="E-Mail"/>
+                    <v-btn v-if="form.directors.length > 1" icon @click="removeCommittee(i)">
                       <i class="material-icons">delete</i>
                     </v-btn>
                   </v-row>
-                  <v-row v-if="form.directors.length < 15">
+                  <v-row v-if="form.directors.length < 15" class="mt-4">
                     <v-btn block rounded outlined @click="addContact">เพิ่มผู้ติดต่อ</v-btn>
                   </v-row>
                 </v-col>
@@ -108,6 +110,39 @@
             </v-container>
           </v-expansion-panel-content>
         </v-expansion-panel>
+
+        <v-expansion-panel>
+          <v-expansion-panel-header>
+            คณะกรรมการ
+            <template #actions>
+              <i class="material-icons">keyboard_arrow_down</i>
+            </template>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-container>
+              <v-row>
+                <v-col class="mt-2">
+                  <v-row v-for="(contact, i) in form.committee" :key="i" class="pl-2 pr-3 mb-3" align="baseline">
+                    <div class="prefix-wrapper">
+                      <div class="mr-5">{{ i + 1 }}.</div>
+                      <v-text-field v-model="contact.description" label="ตำแหน่ง *" :rules="contactPositionRules"/>
+                    </div>
+                    <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
+                    <v-text-field v-model="contact.phone" class="phone" label="เบอร์โทรศัพท์"/>
+                    <v-text-field v-model="contact.email" class="email" label="E-Mail"/>
+                    <v-btn v-if="form.committee.length > 1" icon @click="removeContact(i)">
+                      <i class="material-icons">delete</i>
+                    </v-btn>
+                  </v-row>
+                  <v-row class="mt-4">
+                    <v-btn block rounded outlined @click="addContact">เพิ่มกรรมการ</v-btn>
+                  </v-row>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+
         <v-expansion-panel>
           <v-expansion-panel-header>
             แนบเอกสารเพิ่มเติม
@@ -163,6 +198,7 @@
           warrantyEndDate: '',
           contractCompanyId: null,
           directors: [],
+          committee: [],
           ouId: null,
           departmentId: null,
           type: '',
@@ -172,7 +208,7 @@
         },
         attachFiles: [],
         removeFile: [],
-        formExpand: [0, 1],
+        formExpand: [0, 1, 2],
         companyPositionList: [
           { id: 'กรรมการร่าง TOR', name: 'กรรมการร่าง TOR' },
           { id: 'กรรมการพิจารณาโครงการ', name: 'กรรมการพิจารณาโครงการ' },
@@ -248,6 +284,7 @@
     },
     mounted () {
       if (!this.isCreate) this.getData()
+      else this.addCommittee()
     },
     methods: {
       async getData () {
@@ -268,20 +305,33 @@
       },
       addContact () {
         const newContact = {
-          description: null,
-          name: null,
+          description: '',
+          name: '',
+          email: '',
+          phone: '',
         }
         this.form.directors = [ ...this.form.directors, newContact ]
       },
       removeContact (i) {
         this.form.directors.splice(i, 1)
       },
+      addCommittee () {
+        const newContact = {
+          description: '',
+          name: '',
+          email: '',
+          phone: '',
+        }
+        this.form.committee = [ ...this.form.committee, newContact ]
+      },
+      removeCommittee (i) {
+        this.form.committee.splice(i, 1)
+      },
       onEditProject () {
         this.form.projectName = ''
         this.editMode = true
       },
       onSelectProject ({ val, item }) {
-        console.log(item)
         if (item) {
           this.form.projectName = item.projectName
           this.form.projectNumber = item.projectNumber
@@ -345,15 +395,24 @@
   #project-create-page {
     .row {
       flex-wrap: nowrap;
+      gap: 20px;
 
       .prefix-wrapper {
-        width: 40%;
+        width: 30%;
         display: flex;
         align-items: baseline;
       }
 
       .company-name {
-        width: 60%;
+        width: 40%;
+      }
+
+      .phone {
+        width: 15%
+      }
+
+      .email {
+        width: 20%
       }
 
       .cost-field {
@@ -367,11 +426,7 @@
       .row{
         flex-wrap: wrap;
 
-        .prefix-wrapper {
-          width: 100%;
-        }
-
-        .company-name {
+        .prefix-wrapper, .company-name, .phone, .email {
           width: 100%;
         }
       }
