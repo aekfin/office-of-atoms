@@ -36,48 +36,32 @@
 
       <h2 class="text-h5 mt-5"><b>เลือกวัสดุคงคลังที่ต้องการเบิก</b></h2>
       <v-container class="pb-0">
-        <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple accordion>
-          <v-expansion-panel v-for="(parcel, i) in form.pickUpItems" :key="i" accordion>
-            <v-expansion-panel-header v-if="!viewMode" class="text-h6">
-              <div class="d-flex align-center">
-                <div>วัสดุคงคลัง รายการที่ {{ i + 1 }}.</div>
-                <v-btn v-if="form.pickUpItems.length > 1 && i === form.pickUpItems.length - 1" class="ml-5" icon @click.stop="removeParcel(i)">
-                  <i class="material-icons">delete</i>
-                </v-btn>
-              </div>
-              <template #actions>
-                <i class="material-icons">keyboard_arrow_down</i>
-              </template>
-            </v-expansion-panel-header>
-            <v-expansion-panel-content>
-              <v-container>
-                <v-row class="mt-0 mb-5">
-                  <v-col :cols="12" :md="3">
-                    <SelectDropdown :value.sync="form.pickUpItems[i].typeId" itemValue="id" itemText="name" label="ประเภท *" apiPath="parcel/getListParcelType" :items="parcel.types"
-                      :rules="typeRules" required :disabled="viewMode" @select="onParcelTypeChange(form.pickUpItems[i])"/>
-                  </v-col>
-                  <v-col :cols="12" :md="5">
-                    <SelectDropdown :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" :rules="parcelRules" apiPath="parcel/searchParcelMaster"
-                      :query="getParcelQuery(form.pickUpItems[i])" :items="parcel.items" :disabled="viewMode || !form.pickUpItems[i].typeId" @select="onParcelChange($event, form.pickUpItems[i])"/>
-                  </v-col>
-                  <v-col v-if="viewMode" :cols="12" :md="4">
-                    <div class="d-flex align-baseline">
-                      <v-text-field v-model="form.pickUpItems[i].quantityFixed" class="mr-5" label="จำนวนเบิก *" required disabled/>
-                      <div v-if="canEdit" class="text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain || 0 }}</div>
-                    </div>
-                  </v-col>
-                  <v-col :cols="12" :md="4">
-                    <div class="d-flex align-baseline">
-                      <v-text-field v-if="showQuantity(form.pickUpItems[i])" v-model="form.pickUpItems[i].quantity" class="mr-5" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'"
-                        :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity"/>
-                      <!-- <div v-if="!viewMode" class="text-remaining">คงเหลือ : {{ form.pickUpItems[i].remain || 0 }}</div> -->
-                    </div>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-expansion-panels>
+        <v-row v-for="(parcel, i) in form.pickUpItems" :key="i" class="mt-0">
+          <v-col :cols="12" :md="3" class="d-flex align-baseline">
+            <div class="mr-3"><b>{{ i + 1 }}.</b></div>
+            <SelectDropdown :value.sync="form.pickUpItems[i].typeId" itemValue="id" itemText="name" label="ประเภท *" apiPath="parcel/getListParcelType" :items="parcel.types"
+              :rules="typeRules" required :disabled="viewMode" @select="onParcelTypeChange(form.pickUpItems[i])"/>
+          </v-col>
+          <v-col :cols="12" :md="showQuantity(form.pickUpItems[i]) ? 4 : 5">
+            <SelectDropdown :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" :rules="parcelRules" apiPath="parcel/searchParcelMaster"
+              :query="getParcelQuery(form.pickUpItems[i])" :items="parcel.items" :disabled="viewMode || !form.pickUpItems[i].typeId" @select="onParcelChange($event, form.pickUpItems[i])"/>
+          </v-col>
+          <v-col v-if="viewMode" :cols="12" :md="showQuantity(form.pickUpItems[i]) ? 2 : 4">
+            <div class="d-flex align-baseline">
+              <v-text-field v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" required disabled/>
+            </div>
+          </v-col>
+          <v-col v-if="showQuantity(form.pickUpItems[i])" :cols="12" :md="3">
+            <div class="d-flex align-baseline">
+              <v-text-field v-model="form.pickUpItems[i].quantity" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'"
+                :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity"/>
+              <v-btn v-if="!viewMode && form.pickUpItems.length > 1 && i === form.pickUpItems.length - 1" icon class="ml-5" @click.stop="removeParcel(i)">
+                <i class="material-icons">delete</i>
+              </v-btn>
+              <div v-if="canEdit" class="text-remaining ml-5">คงเหลือ : {{ form.pickUpItems[i].remain || 0 }}</div>
+            </div>
+          </v-col>
+        </v-row>
 
         <v-row v-if="!viewMode" class="mt-3 mb-4">
           <v-btn block rounded outlined @click="addParcel">เพิ่มวัสดุคงคลัง</v-btn>
@@ -132,7 +116,6 @@
           v => !!v || 'โปรดใส่วันที่เบิก',
         ],
         step: 1,
-        formExpand: [0],
       }
     },
     computed: {
@@ -202,7 +185,6 @@
             model: '',
           }
         )
-        this.formExpand = [ ...this.formExpand, this.formExpand.length ]
       },
       removeParcel (i) {
         this.form.pickUpItems.splice(i, 1)
