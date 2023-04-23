@@ -1,20 +1,42 @@
 <template>
-  <div class="attach-file-btn">
+  <div :class="`attach-file-btn${showImage ? ' show-image' : ''}`">
     <input v-show="false" ref="inputFile" type="file" :accept="accept" :multiple="multiple" @change="onChange">
-    <v-btn v-if="attachmentList.length <= limit" elevation="2" color="#546E7A" class="text-white" @click="attach">แนบไฟล์เพิ่มเติม</v-btn>
-    <div v-for="(attachment, i) in attachmentList" :key="i" class="file mt-4">
-      <a class="file-name-wrapper" :href="attachment.fileUrl" target="_blank">
-        <i class="material-icons">download</i>
-        <div class="name ml-1">{{ attachment.filename }}</div>
-      </a>
-      <i class="material-icons pointer ml-4" @click.stop="onDeleteAttachment(attachment)">close</i>
-    </div>
-    <div v-for="(file, i) in files" :key="i" class="file mt-4">
-      <div class="file-name-wrapper">
-        <i class="material-icons">upload_file</i>
-        <div class="name ml-1">{{ file.name }}</div>
+    <v-btn v-if="[...files, ...attachmentList].length < limit" elevation="2" color="#546E7A" class="text-white" @click="attach">แนบไฟล์เพิ่มเติม</v-btn>
+    <div class="attach-wrapper">
+      <div v-for="(attachment, i) in attachmentList" :key="i" class="attach mt-4">
+        <div v-if="showImage" class="img-wrapper">
+          <img :src="attachment.fileUrl" alt="image" class="img-preview">
+          <v-btn class="remove-btn" @click.stop="onDeleteAttachment(attachment)">
+            <i class="material-icons">close</i>
+          </v-btn>
+        </div>
+        <div v-else class="file">
+          <a class="file-name-wrapper" :href="attachment.fileUrl" target="_blank">
+            <i class="material-icons">download</i>
+            <div class="name ml-1">{{ attachment.filename }}</div>
+          </a>
+          <v-btn icon @click.stop="onDeleteAttachment(attachment)">
+            <i class="material-icons">close</i>
+          </v-btn>
+        </div>
       </div>
-      <i class="material-icons pointer ml-4" @click.stop="onDelete(file)">close</i>
+      <div v-for="(file, i) in files" :key="i" class="attach mt-4">
+        <div v-if="showImage" class="img-wrapper ">
+          <img :src="getImage(file)" alt="image" class="img-preview">
+          <v-btn class="remove-btn" @click.stop="onDelete(file)">
+            <i class="material-icons">close</i>
+          </v-btn>
+        </div>
+        <div v-else class="file">
+          <div class="file-name-wrapper">
+            <i class="material-icons">upload_file</i>
+            <div class="name ml-1">{{ file.name }}</div>
+          </div>
+          <v-btn icon @click.stop="onDelete(file)">
+            <i class="material-icons">close</i>
+          </v-btn>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -26,7 +48,8 @@
       attachments: { type: Array, default: () => [] },
       multiple: { type: Boolean, default: true },
       limit: { type: Number, default: Infinity },
-      accept: { type: String, default: '*' }
+      accept: { type: String, default: '*' },
+      showImage: { type: Boolean },
     },
     data () {
       return {
@@ -56,6 +79,9 @@
       },
       attach () {
         if (this.$refs.inputFile) this.$refs.inputFile.click()
+      },
+      getImage (file) {
+        return URL.createObjectURL(file)
       },
       onChange (e) {
         const files = e.target.files
@@ -102,6 +128,43 @@
 
       a.file-name-wrapper {
         color: inherit;
+      }
+    }
+
+    .img-wrapper {
+      position: relative;
+
+      .v-btn {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        
+        &.remove-btn {
+          border-radius: 50%;
+          padding: 0;
+          min-width: 28px;
+          min-height: 28px;
+          width: 28px;
+          height: 28px;
+
+          i {
+            font-size: 20px;
+          }
+        }
+      }
+
+      .img-preview {
+        max-width: 320px;
+        max-height: 240px;
+      }
+    }
+
+    &.show-image {
+      .attach-wrapper {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
       }
     }
   }
