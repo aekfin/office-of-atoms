@@ -239,6 +239,13 @@
           serialNumbers: this.form.detailList.map(detail => detail.serialNumber),
         }
       },
+      async deleteFiles () {
+        try {
+          await Promise.all(this.removeFiles.map(file => this.$axios({ method: 'delete', url: file })))
+          this.removeFiles = []
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
       async uploadFiles () {
         try {
           const files = [...this.uploadingImageFiles, ...this.uploadingFiles]
@@ -250,8 +257,6 @@
           await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/uploadFile', data })
           this.uploadingImageFiles = []
           this.uploadingFiles = []
-          this.removeFiles = []
-          await this.getData()
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
@@ -262,7 +267,11 @@
             if (this.isCreate) await this.onCreate()
             else await this.onEdit()
           }
-          if (!this.isCreate && (this.uploadingImageFiles.length || this.uploadingFiles.length)) await this.uploadFiles()
+          if (!this.isCreate) {
+            if (this.uploadingImageFiles.length || this.uploadingFiles.length) await this.uploadFiles()
+            if (this.removeFiles.length) await this.deleteFiles()
+            await this.getData()
+          }
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
