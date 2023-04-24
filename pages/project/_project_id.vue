@@ -93,12 +93,12 @@
                   <v-row v-for="(contact, i) in form.directors" :key="i" class="pl-2 pr-3 mb-3" align="baseline">
                     <div class="prefix-wrapper">
                       <div class="mr-5">{{ i + 1 }}.</div>
-                      <SelectDropdown v-model="contact.description" :items="companyPositionList" itemValue="id" itemText="name" label="ตำแหน่ง *" :rules="contactPositionRules"/>
+                      <SelectDropdown :value.sync="contact.description" :items="companyPositionList" itemValue="id" itemText="name" label="ตำแหน่ง *" :rules="contactPositionRules"/>
                     </div>
                     <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
-                    <v-text-field v-model="contact.phone" class="phone" label="เบอร์โทรศัพท์"/>
+                    <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์"/>
                     <v-text-field v-model="contact.email" class="email" label="E-Mail"/>
-                    <v-btn v-if="form.directors.length > 1" icon @click="removeCommittee(i)">
+                    <v-btn v-if="form.directors.length > 1" icon @click="removeContact(i)">
                       <i class="material-icons">delete</i>
                     </v-btn>
                   </v-row>
@@ -122,20 +122,20 @@
             <v-container>
               <v-row>
                 <v-col class="mt-2">
-                  <v-row v-for="(contact, i) in form.committee" :key="i" class="pl-2 pr-3 mb-3" align="baseline">
+                  <v-row v-for="(contact, i) in form.committees" :key="i" class="pl-2 pr-3 mb-3" align="baseline">
                     <div class="prefix-wrapper">
                       <div class="mr-5">{{ i + 1 }}.</div>
                       <v-text-field v-model="contact.description" label="ตำแหน่ง *" :rules="contactPositionRules"/>
                     </div>
                     <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
-                    <v-text-field v-model="contact.phone" class="phone" label="เบอร์โทรศัพท์"/>
+                    <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์"/>
                     <v-text-field v-model="contact.email" class="email" label="E-Mail"/>
-                    <v-btn v-if="form.committee.length > 1" icon @click="removeContact(i)">
+                    <v-btn v-if="form.committees.length > 1" icon @click="removeCommittee(i)">
                       <i class="material-icons">delete</i>
                     </v-btn>
                   </v-row>
                   <v-row class="mt-4">
-                    <v-btn block rounded outlined @click="addContact">เพิ่มกรรมการ</v-btn>
+                    <v-btn block rounded outlined @click="addCommittee">เพิ่มกรรมการ</v-btn>
                   </v-row>
                 </v-col>
               </v-row>
@@ -198,7 +198,7 @@
           warrantyEndDate: '',
           contractCompanyId: null,
           directors: [],
-          committee: [],
+          committees: [],
           ouId: null,
           departmentId: null,
           type: '',
@@ -307,7 +307,7 @@
             projectStartDate: this.$fn.convertStringToDate(data.projectStartDate),
             contractStartDate: this.$fn.convertStringToDate(data.contractStartDate),
             contractEndDate: this.$fn.convertStringToDate(data.contractEndDate),
-            warrantyEndDate: this.$fn.convertStringToDate(data.warrantyEndDate),
+            warrantyEndDate: data.warrantyEndDate ? this.$fn.convertStringToDate(data.warrantyEndDate) : '',
           }
           this.isLoading = false
           return Promise.resolve()
@@ -318,7 +318,7 @@
           description: '',
           name: '',
           email: '',
-          phone: '',
+          mobile: '',
         }
         this.form.directors = [ ...this.form.directors, newContact ]
       },
@@ -330,12 +330,12 @@
           description: '',
           name: '',
           email: '',
-          phone: '',
+          mobile: '',
         }
-        this.form.committee = [ ...this.form.committee, newContact ]
+        this.form.committees = [ ...this.form.committees, newContact ]
       },
       removeCommittee (i) {
-        this.form.committee.splice(i, 1)
+        this.form.committees.splice(i, 1)
       },
       onEditProject () {
         this.form.projectName = ''

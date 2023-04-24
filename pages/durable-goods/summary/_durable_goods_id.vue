@@ -61,7 +61,7 @@
       </v-container>
 
       <v-container>
-        <h5 class="text-h5 mt-5 mb-4"><b>รูปครุภัณฑ์</b></h5>
+        <h5 class="text-h5 mt-2 mb-4"><b>รูปครุภัณฑ์</b></h5>
         <AttachFileBtn :value.sync="uploadingImageFiles" :attachments="imageFiles" accept="image/gif, image/jpeg, image/png, image/webp" :limit="2" showImage :multiple="false" @removeAttachment="onRemoveFile"/>
         <h5 class="text-h5 mt-10 mb-4"><b>เอกสารครุภัณฑ์</b></h5>
         <AttachFileBtn :value.sync="uploadingFiles" :attachments="files" accept="*" :limit="2" :multiple="false" @removeAttachment="onRemoveFile"/>
