@@ -93,9 +93,9 @@ export default {
       return `ระบบบริหารจัดการวัสดุคงคลัง-ครุภัณฑ์ | ${this.$store.state?.role}`
     },
     leftMenus () {
-      return this.$store.getters.isAdmin
-        ? this.$store.state.leftMenus
-        : this.$store.state.leftMenus.filter(menu => menu.to !== '/management/')
+      let menus = this.$store.getters.isAdmin ? this.$store.state.leftMenus : this.$store.state.leftMenus.filter(menu => menu.to !== '/management/')
+      menus = this.$store.getters.isStaff ? menus : menus.filter(menu => menu.to !== '/durable-goods/counting/')
+      return menus
     },
     externalCount () {
       return this.$store.state.approveRequest?.totalElements || 0

@@ -75,7 +75,8 @@ export default () => ({
     },
     {
       title: 'ตรวจนับครุภัณฑ์',
-      to: '/durable-goods/counting/'
+      to: '/durable-goods/counting/',
+      counting: true,
     },
     {
       title: 'ยืนยันการตรวจนับครุภัณฑ์',

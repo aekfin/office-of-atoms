@@ -17,7 +17,7 @@
 
       <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการจำหน่าย` }}</b></h5>
       <v-container>
-        <NumberDurableGood :propNumber="form.item && form.item.number || ''" :disabled="!isCreate" @change="numberQuery = $event"/>
+        <NumberDurableGood :propNumber="propNumber" :propAssetNumber="propAssetNumber" :propAssetNumberAorWor="propAssetNumberAorWor" :disabled="!isCreate" @change="numberQuery = $event"/>
         <v-row>
           <v-col :cols="12" :md="8">
             <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
@@ -25,13 +25,13 @@
             <v-text-field v-else-if="form.item" v-model="form.item.name" label="ครุภัณฑ์ *" disabled/>
           </v-col>
           <v-col :cols="12" :md="4">
-            <SelectDropdown :value.sync="form.saleType" :items="saleList" itemValue="id" itemText="name" label="วิธีการจำหน่าย *" :rules="saleTypeRules" :disabled="!isCreate"/>            
+            <SelectDropdown :value.sync="form.distribution_method" :items="distributionList" itemValue="id" itemText="name" label="วิธีการจำหน่าย *" :rules="distributionTypeRules" :disabled="!isCreate"/>            
           </v-col>
           <v-col :cols="12" :md="4">
-            <v-text-field v-model="form.price" label="ราคาจำหน่าย *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
+            <v-text-field v-model="form.price" label="ราคาจำหน่าย" type="number" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="8">
-            <v-text-field v-model="form.buyer" label="ผู้ซื้อ *" :rules="buyerRules" required :disabled="!isCreate"/>
+            <v-text-field v-model="form.buyer" label="ผู้ซื้อ" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
       </v-container>
@@ -62,8 +62,10 @@
           description: '',
           buyer: '',
           price: '',
-          itemId: null
+          itemId: null,
+          distribution_method: '',
         },
+        item: null,
         isLoading: false,
         datetimesaleRules: [
           v => !!v || `โปรดใส่วันที่จำหน่าย`,
@@ -74,16 +76,10 @@
         durableGoodsRules: [
           v => !!v || 'โปรดเลือกครุภัณฑ์',
         ],
-        priceRules: [
-          v => !!v || 'โปรดใส่ราคาจำหน่าย',
-        ],
-        buyerRules: [
-          v => !!v || 'โปรดใส่ชื่อผู้ซื้อ',
-        ],
-        saleTypeRules: [
+        distributionTypeRules: [
           v => !!v || 'โปรดเลือกวิธีการจำหน่าย',
         ],
-        saleList: [
+        distributionList: [
           { id: 'บริจาค', name: 'บริจาค' },
           { id: 'ขาย', name: 'ขาย' },
           { id: 'สูญหาย', name: 'สูญหาย' },
@@ -97,6 +93,15 @@
     computed: {
       isCreate () {
         return this.$route.params.sale_id === 'create'
+      },
+      propNumber () {
+        return this.form.item && this.form.item.number || ''
+      },
+      propAssetNumberAorWor () {
+        return this.form.item && this.form.item.assetNumberAorWor || ''
+      },
+      propAssetNumber () {
+        return this.form.item && this.form.item.assetNumber || ''
       },
     },
     watch: {
@@ -121,14 +126,15 @@
         }
       },
       setForm () {
-        const data = this.item?.equipmentSale
+        const data = { ...this.item, ...this.item.equipmentSale }
         this.form = {
           dateSale: data?.dateSale || new Date(),
           description: data?.description || '',
           buyer: data?.buyer || '',
           price: data?.price || '',
+          distribution_method: data?.distribution_method || '',
           itemId: data?.id || null,
-          item: data?.equipment || null,
+          item: data || null,
         }
       },
       onSelectDurableGoods ({ item }) {
