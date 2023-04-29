@@ -1,5 +1,5 @@
 <template>
-  <div id="management-durable-goods-detail-page">
+  <div id="summary-durable-goods-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นครุภัณฑ์' : 'การแก้ไขค่าเริ่มต้นครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
@@ -60,14 +60,16 @@
         </v-row>
       </v-container>
 
-      <v-container>
-        <h5 class="text-h5 mt-5 mb-4"><b>รูปครุภัณฑ์</b></h5>
-        <AttachFileBtn :value.sync="attachFiles" accept="image/*" @removeAttachment="onRemoveAttachment"/>                                
+      <v-container v-if="!isCreate">
+        <h5 class="text-h5 mt-2 mb-4"><b>รูปครุภัณฑ์</b></h5>
+        <AttachFileBtn :value.sync="uploadingImageFiles" :attachments="imageFiles" accept="image/gif, image/jpeg, image/png, image/webp" :limit="2" showImage :multiple="false" @removeAttachment="onRemoveFile"/>
+        <h5 class="text-h5 mt-10 mb-4"><b>เอกสารครุภัณฑ์</b></h5>
+        <AttachFileBtn :value.sync="uploadingFiles" :attachments="files" accept="*" :limit="2" :multiple="false" @removeAttachment="onRemoveFile"/>
       </v-container>
 
       <v-container class="mt-8">
         <v-row justify="end">
-          <v-btn large plain @click="$router.push('/management/durable-goods/')">ย้อนกลับ</v-btn>
+          <v-btn large plain @click="$router.push('/durable-goods/summary/')">ย้อนกลับ</v-btn>
           <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
         </v-row>
       </v-container>
@@ -128,8 +130,14 @@
         inspectionDateRules: [
           v => !!v || 'โปรดใส่วันที่ตรวจรับ',
         ],
-        attachFiles: [],
-        removeFile: [],
+        quantityRules: [
+          v => v > 0 ||'โปรดใส่จำนวนครุภัณฑ์',
+        ],
+        uploadingImageFiles: [],
+        imageFiles: [],
+        uploadingFiles: [],
+        files: [],
+        removeFiles: [],
       }
     },
     computed: {
@@ -168,12 +176,30 @@
             brandId: data.brand.id,
             modelId: data.model.id,
           }
+          await this.getAttachments()
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
-      onRemoveAttachment (attach) {
-        this.removeFile.push(attach)
+      async getAttachments () {
+        try {
+          const { data: files } = await this.$store.dispatch('http', { apiPath: `equipment/getUploadFile/${this.$route.params.durable_goods_id}` })
+          const images = []
+          const others = []
+          files.forEach(file => {
+            if (['.gif', '.jfif', '.pjpeg', '.jpeg', '.pjp', 'jpg', '.png', '.webp'].some(type => file.filename.includes(type)) && images.length < 2) {
+              images.push(file)
+            } else {
+              others.push(file)
+            }
+          })
+          this.imageFiles = images
+          this.files = others
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
+      onRemoveFile (attach) {
+        this.removeFiles.push(attach)
       },
       onOuChange ({ val }) {
         this.form.organizationId = val
@@ -216,12 +242,41 @@
           serialNumbers: this.form.detailList.map(detail => detail.serialNumber),
         }
       },
-      onSubmit () {
-        const valid = this.$refs.form.validate()
-        if (valid) {
-          if (this.isCreate) this.onCreate()
-          else this.onEdit()
-        }
+      async deleteFiles () {
+        try {
+          await Promise.all(this.removeFiles.map(file => this.$axios({ method: 'delete', url: file })))
+          this.removeFiles = []
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
+      async uploadFiles () {
+        try {
+          const files = [...this.uploadingImageFiles, ...this.uploadingFiles]
+          let data = new FormData()
+          for (const file of files) {
+            data.append('file', file)
+          }
+          data.append('equipmentId', this.$route.params.durable_goods_id)
+          await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/uploadFile', data })
+          this.uploadingImageFiles = []
+          this.uploadingFiles = []
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
+      async onSubmit () {
+        try {
+          const valid = this.$refs.form.validate()
+          if (valid) {
+            if (this.isCreate) await this.onCreate()
+            else await this.onEdit()
+          }
+          if (!this.isCreate) {
+            if (this.uploadingImageFiles.length || this.uploadingFiles.length) await this.uploadFiles()
+            if (this.removeFiles.length) await this.deleteFiles()
+            await this.getData()
+          }
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
       },
       async onCreate () {
         try {
@@ -238,14 +293,19 @@
                 depreciation_rate: this.form.depreciation_rate,
                 classifier: this.form.classifier,
                 ownerId: this.form.ownerId,
+                quantity: this.form.quantity,
                 ...this.convertDetail()
               }
             ]
           }
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/import', data: form })
-          await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.categoryForm, id: data[0].id } })
-          await this.$store.dispatch('snackbar', { text: 'เพิ่มค่าเริ่มต้นครุภัณฑ์สำเร็จ' })
-          this.$router.push('/management/durable-goods/')
+          await Promise.all(
+            data.map((item) => {
+              this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.categoryForm, id: item.id } })
+            })
+          )
+          await this.$store.dispatch('snackbar', { text: 'เพิ่มครุภัณฑ์สำเร็จ' })
+          this.$router.push('/durable-goods/summary/')
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
@@ -257,8 +317,7 @@
           //   inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
           // }
           // const { data } = await this.$store.dispatch('http', { method: 'put', apiPath: 'equipment/Edit', data: form })
-          await this.$store.dispatch('snackbar', { text: 'แก้ไขค่าเริ่มต้นครุภัณฑ์สำเร็จ' })
-          await this.getData()
+          await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
@@ -267,6 +326,6 @@
 </script>
 
 <style lang="scss">
-  #management-durable-goods-detail-page {
+  #summary-durable-goods-detail-page {
   }
 </style>

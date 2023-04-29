@@ -1,6 +1,6 @@
 <template>
   <div id="summary-durable-goods-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มครุภัณฑ์' : 'การแก้ไขครุภัณฑ์'" hideTotal/>
+    <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นครุภัณฑ์' : 'การแก้ไขค่าเริ่มต้นครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
@@ -60,7 +60,7 @@
         </v-row>
       </v-container>
 
-      <v-container>
+      <v-container v-if="!isCreate">
         <h5 class="text-h5 mt-2 mb-4"><b>รูปครุภัณฑ์</b></h5>
         <AttachFileBtn :value.sync="uploadingImageFiles" :attachments="imageFiles" accept="image/gif, image/jpeg, image/png, image/webp" :limit="2" showImage :multiple="false" @removeAttachment="onRemoveFile"/>
         <h5 class="text-h5 mt-10 mb-4"><b>เอกสารครุภัณฑ์</b></h5>
@@ -129,6 +129,9 @@
         ],
         inspectionDateRules: [
           v => !!v || 'โปรดใส่วันที่ตรวจรับ',
+        ],
+        quantityRules: [
+          v => v > 0 ||'โปรดใส่จำนวนครุภัณฑ์',
         ],
         uploadingImageFiles: [],
         imageFiles: [],
@@ -290,6 +293,7 @@
                 depreciation_rate: this.form.depreciation_rate,
                 classifier: this.form.classifier,
                 ownerId: this.form.ownerId,
+                quantity: this.form.quantity,
                 ...this.convertDetail()
               }
             ]
