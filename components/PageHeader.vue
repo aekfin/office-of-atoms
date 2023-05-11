@@ -15,15 +15,14 @@
     </div>
     <div v-if="!hideTotal" class="mt-4">ทั้งหมด {{ total || 0 }} {{ unit }}</div>
     <div v-if="filters.length" class="filter-wrapper">
-      <div class="filter-results">
-        <div v-if="currentFilters.length">กรองโดย:</div>
-        <v-chip v-for="current in currentFilters" :key="current.param" close @click:close="onClearFilter(current)">{{ getFilterLabel(current) }}</v-chip>
-      </div>
+      <div></div>
       <div class="btn-wrapper">
-        <v-btn elevation="2" large outlined @click="dialog = !dialog">
-          <i class="material-icons">filter_alt</i>
-          <div>กรองข้อมูล</div>
-        </v-btn>
+        <v-badge :content="currentFilters.length" bordered overlap color="secondary" :value="!!currentFilters.length">
+          <v-btn elevation="2" large outlined @click="dialog = !dialog">
+            <i class="material-icons">filter_alt</i>
+            <div>กรองข้อมูล</div>
+          </v-btn>
+        </v-badge>
       </div>
     </div>
     <v-dialog v-model="dialog" width="800" contentClass="filter-dialog">
@@ -36,19 +35,22 @@
         </v-card-title>
         <v-card-text>
           <v-form ref="form" class="mt-5">
-            <v-container>
-              <v-row v-for="filter in filters" :key="filter.param">
-                <template v-if="form">
-                  <v-select v-model="form[filter.param]" :items="filter.options" itemValue="id" itemText="name" :label="filter.name"/>
-                </template>
+            <v-container class="pt-0 pb-0">
+              <v-row>
+                <v-col v-for="filter in filters" :key="filter.param" class="pt-0 pb-0" :cols="12" :md="filter.md || 6">
+                  <template v-if="form">
+                    <SelectDropdown :value.sync="form[filter.param]" :items="filter.options || []" :apiPath="filter.apiPath" itemValue="id" :itemText="filter.itemText || 'name'"
+                      :label="filter.name" clearable :query="{ pageSize: 999 }" @loaded="filter.options = $event"/>
+                  </template>
+                </v-col>
               </v-row>
             </v-container>
           </v-form>
         </v-card-text>
         <v-card-actions>
           <div class="d-flex justify-end w-full">
-            <v-btn plain @click="dialog = false">ยกเลิก</v-btn>
-            <v-btn depressed color="secondary" @click="onApply">นำมาใช้</v-btn>
+            <v-btn plain @click="onClear">ยกเลิก</v-btn>
+            <v-btn color="secondary" @click="onApply">นำมาใช้</v-btn>
           </div>
         </v-card-actions>
       </v-card>
@@ -58,6 +60,9 @@
 
 <script>
   export default {
+    component: {
+      SelectDropdown: () => import('~/components/SelectDropdown.vue'),
+    },
     props: {
       text: { type: String, required: true },
       btnText: { type: String },
@@ -76,11 +81,16 @@
     },
     computed: {
       currentFilters () {
-        return this.form ? Object.entries(this.form).map(([param, val]) => ({ param, val })).filter(form => form?.val) : []
+        return this.form ? Object.entries(this.form).map(([param, val]) => ({ param, val })).filter(form => this.$route.query?.[form?.param]) : []
       }
     },
-    mounted () {
-      this.setForm()
+    watch: {
+      '$route.query' () {
+        this.setForm()
+      },
+      'dialog' (val) {
+        this.setForm()
+      },
     },
     methods: {
       setValue (param) {
@@ -91,18 +101,9 @@
       setForm () {
         this.form = this.filters.reduce((form, filter) => ({ ...form, [filter.param]: this.setValue(filter.param) }), {})
       },
-      getFilterLabel (current) {
-        const filter = this.filters.find(filter => filter.param === current.param)
-        const val = filter.options.find(option => `${option.id}` === `${current.val}`)
-        return `${filter.name}: ${val.name}`
-      },
-      onClearFilter (current) {
-        const query = { ...this.$route.query }
-        if (query[current.param]) {
-          this.form[current.param] = null
-          delete query[current.param]
-        }
-        this.$router.push({ query })
+      onClear () {
+        this.$router.push({ query: {} })
+        this.dialog = false
       },
       onApply () {
         const query = Object.entries(this.form).reduce((form, [key, val]) => val ? { ...form, [key]: val } : form, {})
@@ -125,13 +126,6 @@
       justify-content: space-between;
       align-items: center;
       gap: 20px;
-
-      .filter-results {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
     }
 
     @media only screen and (max-width: 426px) {

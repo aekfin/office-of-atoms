@@ -1,7 +1,7 @@
 <template>
   <div class="select-dropdown">
     <v-select ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled || disabledOnload"
-      :readonly="readonly" :loading="forceLoading || isLoading" appendIcon="keyboard_arrow_down" @change="onChange">
+      :readonly="readonly" :loading="forceLoading || isLoading" appendIcon="keyboard_arrow_down" :clearable="clearable" clearIcon="highlight_remove" @change="onChange">
       <template #append-item>
         <div v-if="!!pagination" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
       </template>
@@ -25,6 +25,8 @@
       disabled: { type: Boolean },
       readonly: { type: Boolean },
       forceLoading: { type: Boolean },
+      clearable: { type: Boolean },
+      findNotInList: { type: Boolean },
     },
     data () {
       return {
@@ -68,7 +70,7 @@
         try {
           this.isLoading = true
           const pageNo = more ? this.pagination.number + 1 : 0
-          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { ...this.query, pageNo, pageSize: 7 } })
+          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { pageNo, pageSize: 7, ...this.query } })
           if (data.content) {
             this.pagination = data
             this.list = more || this.items.length ? [ ...this.items, ...this.list, ...data.content ] : data.content

@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-verify-counting-detail-page">
-    <PageHeader text="ยืนยันการตรวจนับครุภัณฑ์" :total="total"/>
+    <PageHeader text="ยืนยันการตรวจนับครุภัณฑ์" :total="total" :filters="filters"/>
     <div class="mt-10">
       <CountingDurableTable :items.sync="items" :paginationIndex="$store.state.paginationIndex || 0" :isLoading="isLoading" hasAction @approveCounting="onApproveCounting"/>
       <Pagination/>
@@ -23,6 +23,15 @@
         items: [],
         dialog: false,
       }
+    },
+    computed: {
+      filters () {
+        return [
+          { param: 'ouId', name: 'กอง', itemText: 'ouName', apiPath: 'Orgchart/getOrganizations' },
+          { param: 'departmentId', name: 'กลุ่ม', itemText: 'departmentName', apiPath: 'Orgchart/getDepartments' },
+          { param: 'ownerId', name: 'บุคคล', itemText: this.$fn.getName, apiPath: 'user/listUsers' },
+        ]
+      },
     },
     watch: {
       '$route.query' () {
