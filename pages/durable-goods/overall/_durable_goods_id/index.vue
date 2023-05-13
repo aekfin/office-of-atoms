@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มครุภัณฑ์' : 'การแก้ไขครุภัณฑ์'" hideTotal btnText="เพิ่มครุภัณฑ์ย่อย" :createRoute="createRoute"/>
+    <PageHeader :text="isCreate ? 'การเพิ่มครุภัณฑ์' : 'การแก้ไขครุภัณฑ์'" hideTotal :btnText="isCreate ? '' : 'ครุภัณฑ์ย่อย'" :createRoute="createRoute"/>
     <Loading v-if="isLoading"/>
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
