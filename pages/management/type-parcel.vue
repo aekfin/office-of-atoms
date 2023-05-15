@@ -3,10 +3,11 @@
     <PageHeader text="ประเภทวัสดุคงคลัง" btnText="เพิ่มประเภท" unit="ประเภท" :total="total" @create="openCreateDialog"/>
     <v-data-table :headers="typeHeaders" :items="items" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
+      <template #item.minimumStock="{ item }">{{ item.minimumStock || 0 }} ชิ้น</template>
     </v-data-table>
     <Pagination/>
 
-    <v-dialog v-if="createDialog" v-model="createDialog" width="720">
+    <v-dialog v-if="createDialog" v-model="createDialog" width="720" contentClass="type-parcel-dialog">
       <v-card>
         <v-card-title class="text-h5 justify-space-between">
           <div>เพิ่มประเภทวัสดุคงคลัง</div>
@@ -17,7 +18,14 @@
         <v-card-text class="black--text">
           <div class="mt-3">
             <v-form ref="form" v-model="valid" lazyValidation>
-              <v-text-field v-model="form.typeName[0]" label="ชื่อวัสดุคงคลัง *" :rules="typeNameRule" required/>
+              <v-row>
+                <v-col :cols="12" :md="9">
+                  <v-text-field v-model="form.typeName[0]" label="ชื่อวัสดุคงคลัง *" :rules="typeNameRule" required/>
+                </v-col>
+                <v-col :cols="12" :md="3">
+                  <v-text-field v-model="form.minimumStock" class="minimum-stock" label="ขั้นต่ำ *" :rules="minimumStockRule" suffix="ชิ้น" type="number" min="0" required/>
+                </v-col>
+              </v-row>
             </v-form>
           </div>
         </v-card-text>
@@ -46,12 +54,16 @@
         typeHeaders: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ชื่อประเภท', value: 'name' },
+          { text: 'ขั้นต่ำ', value: 'minimumStock', width: '100px', align: 'center' },
         ],
         createDialog: false,
         valid: true,
         form: null,
         typeNameRule: [
           v => !!v || 'โปรดใส่ชื่อวัสดุคงคลัง',
+        ],
+        minimumStockRule: [
+          v => !!v || v === 0 || 'โปรดใส่ขั้นต่ำสำหรับการแจ้งเตือน',
         ],
       }
     },
@@ -74,7 +86,8 @@
         this.form = {
           typeName: [
             ''
-          ]
+          ],
+          minimumStock: 0,
         }
       },
       async getList () {
