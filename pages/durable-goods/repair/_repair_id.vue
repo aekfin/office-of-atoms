@@ -5,7 +5,14 @@
 
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
+        <v-row>
+          <v-col :cols="12" :md="4">
+            <InputDatePicker :value.sync="form.dateRepair" label="วันที่ส่งซ่อม *" :rules="dateRepairRules" required :disabled="!isCreate"/>
+          </v-col>
+        </v-row>
+
         <NumberDurableGood :propNumber="form.item && form.item.number || ''" :disabled="!isCreate" @change="numberQuery = $event"/>
+
         <v-row>
           <v-col :cols="12">
             <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
@@ -13,6 +20,13 @@
             <v-text-field v-else-if="form.item" v-model="form.item.name" label="ครุภัณฑ์ *" disabled/>
           </v-col>
         </v-row>
+        <v-row>
+          <v-col :cols="12">
+            <v-textarea v-model="form.description" label="หมายเหตุ" :rows="4" :disabled="!isCreate"/>
+          </v-col>
+        </v-row>
+
+        <DurableGoodsOwner title="ผู้รับผิดชอบ" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.userRepairId" :disabled="!isCreate" onlyUser/>
       </v-container>
 
       <v-container class="mt-8">
@@ -31,6 +45,8 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
+      InputDatePicker: () => import('~/components/InputDatePicker.vue'),
+      DurableGoodsOwner: () => import('~/components/DurableGoodsOwner.vue'),
       Loading: () => import('~/components/Loading.vue'),
       NumberDurableGood: () => import('~/components/NumberDurableGood.vue'),
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
@@ -40,18 +56,16 @@
       return {
         valid: true,
         form: {
-          dateSale: '',
+          dateRepair: new Date(),
           description: '',
-          buyer: '',
-          price: '',
-          itemId: null
+          itemId: null,
+          userRepairId: '',
+          organizationId: '',
+          departmentId: '',
         },
         isLoading: false,
-        datetimerepairRules: [
+        dateRepairRules: [
           v => !!v || `โปรดใส่วันที่ส่งซ่อม`,
-        ],
-        datetimeReturnRules: [
-          v => !!v || 'โปรดใส่วันที่คืน',
         ],
         durableGoodsRules: [
           v => !!v || 'โปรดเลือกครุภัณฑ์',
@@ -73,7 +87,7 @@
     },
     async mounted () {
       if (!this.isCreate) await this.getData()
-      this.setForm()
+      // this.setForm()
     },
     methods: {
       async getData () {
@@ -111,7 +125,11 @@
         const valid = this.$refs.form.validate()
         if (valid) {
           try {
-            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/repair/${this.form.itemId}`, query: { ...this.$route.query }, context: this })
+            const form = {
+              ...this.form,
+              dateRepair: this.$fn.convertDateToString(this.form.dateRepair)
+            }
+            const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: `equipment/repair/`, query: { ...this.$route.query }, data: form })
             if (data.status?.code == 400) {
               this.errorText = data.status.description.includes('invalid with status') ? 'ไม่สามารถขอส่งซ่อมได้ เนื่องจากครุภัณฑ์ดังกล่าวอยู่ในระหว่างการรออนุมัติอยู่หรืออื่นๆอยู่' : 'ไม่สามารถขอส่งซ่อมได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้'
               this.dialog = true

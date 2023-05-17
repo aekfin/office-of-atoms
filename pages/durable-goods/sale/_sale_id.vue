@@ -126,7 +126,7 @@
         }
       },
       setForm () {
-        const data = { ...this.item, ...this.item.equipmentSale }
+        const data = this.item ? { ...this.item, ...this.item.equipmentSale } : {}
         this.form = {
           dateSale: data?.dateSale || new Date(),
           description: data?.description || '',

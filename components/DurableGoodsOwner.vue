@@ -1,17 +1,17 @@
 <template>
   <v-row class="durable-goods-owner">
     <v-col :cols="12">
-      <div class="text-h5"><b>ผู้ครอบครอง</b></div>
+      <div class="text-h5"><b>{{ title }}</b></div>
     </v-col>
     <v-col :cols="12" :md="4">
-      <SelectDropdown :value.sync="organizationId" label="กอง *" itemText="ouName" :rules="ouRules" required :disabled="disabled" apiPath="Orgchart/getOrganizations" @select="$emit('ouChange', $event)"/>
+      <SelectDropdown :value.sync="organizationId" :label="`กอง ${onlyUser ? '' : '*'}`" itemText="ouName" :rules="ouRules" required :disabled="disabled" apiPath="Orgchart/getOrganizations" @select="$emit('ouChange', $event)"/>
     </v-col>
     <v-col :cols="12" :md="4">
-      <SelectDropdown :value.sync="departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required :disabled="disabled" apiPath="Orgchart/getDepartments"/>
+      <SelectDropdown :value.sync="departmentId" :label="`กลุ่ม ${onlyUser ? '' : '*'}`" itemText="departmentName" :rules="departmentRules" required :disabled="disabled" apiPath="Orgchart/getDepartments"/>
     </v-col>
     <v-col :cols="12" :md="4">
-      <SelectDropdown :value.sync="userId" label="บุคคล" :itemText="$fn.getName" required :disabled="!organizationId || !departmentId || disabled" :items="userList" apiPath="user/listUsers"
-        :query="{ departmentId: departmentId, ouId: organizationId }"/>
+      <SelectDropdown :value.sync="userId" :label="`บุคคล ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" apiPath="user/listUsers"
+         :rules="userRules" :query="{ departmentId: departmentId, ouId: organizationId }"/>
     </v-col>
   </v-row>
 </template>
@@ -27,6 +27,8 @@
       user: { type: [Number, String], default: '' },
       userList: { type: Array, default: () => [] },
       disabled: { type: Boolean },
+      title: { type: String, default: 'ผู้ครอบครอง' },
+      onlyUser: { type: Boolean },
     },
     data () {
       return {
@@ -34,12 +36,20 @@
         departmentId: this.department,
         userId: this.user,
         ouRules: [
-          v => !!v || 'โปรดเลือกกอง',
+          v => this.onlyUser || !!v || 'โปรดเลือกกอง',
         ],
         departmentRules: [
-          v => !!v || 'โปรดเลือกกลุ่ม',
+          v => this.onlyUser || !!v || 'โปรดเลือกกลุ่ม',
+        ],
+        userRules: [
+          v => !this.onlyUser || !!v || 'โปรดเลือกบุคคล',
         ],
       }
+    },
+    computed: {
+      disabledUser () {
+        return (!this.onlyUser && (!this.organizationId || !this.departmentId)) || this.disabled
+      },
     },
     watch: {
       'organization' (val) {
