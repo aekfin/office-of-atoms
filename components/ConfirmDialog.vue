@@ -29,6 +29,7 @@
       closeText: { type: String, default: 'ยกเลิก' },
       confirmText: { type: String, default: 'ยืนยัน' },
       width: { type: String, default: '480' },
+      customConfirm: { type: Function },
     },
     data () {
       return {
@@ -45,8 +46,12 @@
     },
     methods: {
       onConfirm () {
-        this.$emit('submit')
-        this.val = false
+        if (this.customConfirm) {
+          this.customConfirm()
+        } else {
+          this.$emit('submit')
+          this.val = false
+        }
       },
     },
   }
