@@ -111,8 +111,8 @@
       },
       async onSearch () {
         const item = this.list.find(item => item[this.itemValue] == this.val)
-        const itemText = typeof this.itemText === 'function' && item ? this.itemText(item) : this.itemText
-        const isSameKeyword = item && (this.search === item[itemText])
+        const itemText = typeof this.itemText === 'function' && item ? this.itemText(item) : item[this.itemText]
+        const isSameKeyword = item && (this.search === itemText)
         if (this.apiPath && !this.isSearchLoading && !isSameKeyword) {
           try {
             this.isSearchLoading = true

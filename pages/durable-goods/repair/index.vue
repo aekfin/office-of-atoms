@@ -3,15 +3,12 @@
     <PageHeader text="ส่งซ่อมครุภัณฑ์" btnText="เพิ่มการส่งซ่อมครุภัณฑ์" createRoute="/durable-goods/repair/create/" :total="total"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
-      <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
+      <template #item.price="{ item }">{{ $fn.getPrice(item.equipments[0].price) }}</template>
       <template #item.majorCategory="{ item }">
-        <EquipmentColumn :item="item"/>
-      </template>
-      <template #item.organization.ouName="{ item }">
-        <OwnerColumn :item="item"/>
+        <EquipmentColumn :item="item.equipments[0]"/>
       </template>
       <template #item.status="{ item }">
-        <v-chip :color="$store.state.durableGoodStatusColor[item.status]">{{ $store.state.durableGoodStatus[item.status] }}</v-chip>
+        <v-chip :color="$store.state.durableGoodStatusColor[item.equipments[0].status]">{{ $store.state.durableGoodStatus[item.equipments[0].status] }}</v-chip>
       </template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
@@ -27,7 +24,6 @@
       PageHeader: () => import('~/components/PageHeader.vue'),
       ActionIconList: () => import('~/components/ActionIconList.vue'),
       EquipmentColumn: () => import('~/components/EquipmentColumn.vue'),
-      OwnerColumn: () => import('~/components/OwnerColumn.vue'),
       Pagination: () => import('~/components/Pagination.vue'),
     },
     data () {
@@ -38,11 +34,10 @@
         items: [],
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
-          { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
-          { text: 'ชื่อครุภัณฑ์', value: 'name' },
+          { text: 'เลขที่ครุภัณฑ์', value: 'equipments[0].number', width: '160px', align: 'center' },
+          { text: 'ชื่อครุภัณฑ์', value: 'equipments[0].name' },
           { text: 'หมวดหมู่', value: 'majorCategory', width: '160px', align: 'center' },
           { text: 'ราคากลาง', value: 'price', align: 'center', width: '120px' },
-          { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
           { text: 'สถานะ', value: 'status', align: 'center', width: '120px' },
           { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
         ],
@@ -60,7 +55,7 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getEquipments/status', query: { ...this.$route.query, status: 'REPAIR' }, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getListRequestFilter', query: { ...this.$route.query, types: 'REPAIR' }, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }

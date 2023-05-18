@@ -26,7 +26,8 @@
           </v-col>
         </v-row>
 
-        <DurableGoodsOwner title="ผู้รับผิดชอบ" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.userRepairId" :disabled="!isCreate" onlyUser/>
+        <DurableGoodsOwner title="ผู้รับผิดชอบ" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.userRepairId"
+          :disabled="!isCreate" onlyUser :userList="form.userList"/>
       </v-container>
 
       <v-container class="mt-8">
@@ -55,11 +56,13 @@
     data () {
       return {
         valid: true,
+        item: null,
         form: {
           dateRepair: new Date(),
           description: '',
           itemId: null,
           userRepairId: '',
+          userList: [],
           organizationId: '',
           departmentId: '',
         },
@@ -87,14 +90,15 @@
     },
     async mounted () {
       if (!this.isCreate) await this.getData()
-      // this.setForm()
+      this.setForm()
     },
     methods: {
       async getData () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/getEquipments/status/${this.$route.params.repair_id}`, query: this.$route.query })
-          this.item = data
+          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/getRequestDetail`, query: { id: this.$route.params.repair_id, ...this.$route.query } })
+          const { data: user } = await this.$store.dispatch('http', { apiPath: `user/getUser`, query: { id: data.user.id, ...this.$route.query } })
+          this.item = { ...data, user }
           this.isLoading = false
           return Promise.resolve()
         } catch (err) {
@@ -102,12 +106,16 @@
         }
       },
       setForm () {
-        const data = this.item?.equipmentDonation
+        const data = this.item
         this.form = {
-          dateDonation: data?.dateDonation || null,
-          itemId: data?.equipment?.id || null,
-          item: data?.equipment || null,
-          description: data?.description || ''
+          dateRepair: data?.dateBorrow ? this.$fn.convertStringToDate(data?.dateBorrow) : new Date(),
+          description: data?.description || '',
+          itemId: data?.items?.[0]?.equipment?.id || null,
+          item: data?.items?.[0]?.equipment || null,
+          userRepairId: data?.user?.id || '',
+          userList: data?.user ? [data?.user] : [],
+          organizationId: data?.user?.organizationMaster?.id || '',
+          departmentId: data?.user?.departmentMaster?.id || '',
         }
       },
       async onRepair () {

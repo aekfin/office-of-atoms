@@ -12,8 +12,8 @@
     <v-col :cols="12" :md="4">
       <!-- <SelectDropdown :value.sync="userId" :label="`บุคคล ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" apiPath="user/listUsers"
          :rules="userRules" :query="{ departmentId: departmentId, ouId: organizationId }"/> -->
-      <AutocompleteDropdown :value.sync="userId" :label="`บุคคล ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" :apiPath="userApiPath" :searchApiPath="userApiPath"
-        :rules="userRules" :query="userQuery" :searchQuery="userQuery" searchKey="email" noFilter>
+      <AutocompleteDropdown :value.sync="userId" :label="`บุคคล ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" :apiPath="userApiPath"
+        :searchApiPath="userApiPath" :rules="userRules" :query="userQuery" :searchQuery="userQuery" searchKey="email" noFilter>
         <template #item="{ item }">
           <div style="display: flex; align-items: center; gap: 8px;">
             <div>{{ $fn.getName(item) }}</div>
