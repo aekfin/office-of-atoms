@@ -2,6 +2,9 @@
   <div class="autocomplete-dropdown">
     <v-autocomplete ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled || disabledOnload"
       :readonly="readonly" :loading="isLoading || isSearchLoading" :noFilter="noFilter" :hideNoData="isSearchLoading" :searchInput.sync="search" appendIcon="keyboard_arrow_down" @change="onChange">
+      <template #item="{ item }">
+        <slot name="item" :item="item"/>
+      </template>
       <template #append-item>
         <div v-if="!!pagination && !searchChanged" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
       </template>
@@ -16,7 +19,7 @@
       value: { type: [String, Number, Array], require: true },
       label: { type: String },
       itemValue: { type: String, default: 'id' },
-      itemText: { type: String, default: 'name' },
+      itemText: { type: [String, Function], default: 'name' },
       rules: { type: Array, default: () => [] },
       items: { type: Array, default: () => [] },
       apiPath: { type: String },
@@ -108,13 +111,14 @@
       },
       async onSearch () {
         const item = this.list.find(item => item[this.itemValue] == this.val)
-        const isSameKeyword = item && (this.search === item[this.itemText])
+        const itemText = typeof this.itemText === 'function' && item ? this.itemText(item) : this.itemText
+        const isSameKeyword = item && (this.search === item[itemText])
         if (this.apiPath && !this.isSearchLoading && !isSameKeyword) {
           try {
             this.isSearchLoading = true
             if (this.searchApiPath && this.search) {
               const { data } = await this.$store.dispatch('http', { apiPath: this.searchApiPath, query: { ...this.searchQuery, [this.searchKey]: this.search } })
-              this.list = data
+              this.list = data.content || data
             } else {
               await this.getList()
             }

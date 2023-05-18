@@ -10,8 +10,17 @@
       <SelectDropdown :value.sync="departmentId" :label="`กลุ่ม ${onlyUser ? '' : '*'}`" itemText="departmentName" :rules="departmentRules" required :disabled="disabled" apiPath="Orgchart/getDepartments"/>
     </v-col>
     <v-col :cols="12" :md="4">
-      <SelectDropdown :value.sync="userId" :label="`บุคคล ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" apiPath="user/listUsers"
-         :rules="userRules" :query="{ departmentId: departmentId, ouId: organizationId }"/>
+      <!-- <SelectDropdown :value.sync="userId" :label="`บุคคล ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" apiPath="user/listUsers"
+         :rules="userRules" :query="{ departmentId: departmentId, ouId: organizationId }"/> -->
+      <AutocompleteDropdown :value.sync="userId" :label="`บุคคล ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" :apiPath="userApiPath" :searchApiPath="userApiPath"
+        :rules="userRules" :query="userQuery" :searchQuery="userQuery" searchKey="email" noFilter>
+        <template #item="{ item }">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div>{{ $fn.getName(item) }}</div>
+            <div style="color: grey; font-size: 12px;">({{ item.email }})</div>
+          </div>
+        </template>
+      </AutocompleteDropdown>
     </v-col>
   </v-row>
 </template>
@@ -20,6 +29,7 @@
   export default {
     components: {
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
+      AutocompleteDropdown: () => import('~/components/AutocompleteDropdown.vue'),
     },
     props: {
       organization: { type: [Number, String], default: '' },
@@ -49,6 +59,12 @@
     computed: {
       disabledUser () {
         return (!this.onlyUser && (!this.organizationId || !this.departmentId)) || this.disabled
+      },
+      userApiPath () {
+        return 'user/listUsers'
+      },
+      userQuery () {
+        return { departmentId: this.departmentId, ouId: this.organizationId }
       },
     },
     watch: {
