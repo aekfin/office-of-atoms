@@ -55,8 +55,9 @@
             <v-btn large plain @click="$router.push('/durable-goods/repair/')">ย้อนกลับ</v-btn>
             <v-btn v-if="isCreate" class="ml-4" elevation="2" large color="success" @click="onSubmit">{{ `ส่งซ่อมครุภัณฑ์` }}</v-btn>
             <template v-else-if="isApprover && !isReject">
-              <v-btn class="mr-4" elevation="2" large outlined color="error" @click="() => { onConfirm(false) }">ส่งซ่อมภายนอก</v-btn>
-              <v-btn elevation="2" large color="success" @click="onConfirm">ซ่อมสำเร็จ</v-btn>
+              <v-btn class="mr-4" elevation="2" large color="error" @click="() => { onConfirm('ซ่อมไม่ได้') }">ซ่อมไม่ได้</v-btn>
+              <v-btn class="mr-4" elevation="2" large outlined color="success" @click="() => { onConfirm('ส่งซ่อมภายนอก') }">ส่งซ่อมภายนอก</v-btn>
+              <v-btn elevation="2" large color="success" @click="() => { onConfirm('ซ่อมสำเร็จ') }">ซ่อมสำเร็จ</v-btn>
             </template>
           </v-row>
         </v-container>
@@ -64,11 +65,11 @@
     </template>
 
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
-    <ConfirmDialog :value.sync="confirmDialog" :title="`ยืนยันการ${isRepaired ? 'ซ่อมสำเร็จ' : 'ส่งซ่อมภายนอก'}`" :customConfirm="onRepair">
+    <ConfirmDialog :value.sync="confirmDialog" :title="`ยืนยันการ${repairedText}`" :customConfirm="onAction">
       <v-form ref="confirmForm" v-model="confirmValid" lazyValidation>
         <v-row>
           <v-col :cols="12">
-            <v-textarea v-model="reasonRepair" :label="`เหตุผล ${isRepaired ? '' : '*'}`" :rows="4" :rules="isRepaired ? [] : reasonRepairRules"/>
+            <v-textarea v-model="reasonRepair" label="เหตุผล *" :rows="4" :rules="reasonRepairRules"/>
           </v-col>
         </v-row>
       </v-form>
@@ -117,7 +118,7 @@
         errorText: 'ไม่สามารถขอส่งซ่อมได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้',
         dialog: false,
         confirmDialog: false,
-        isRepaired: true,
+        repairedText: '',
       }
     },
     computed: {
@@ -181,13 +182,18 @@
           departmentId: data?.user?.departmentMaster?.id || '',
         }
       },
-      onConfirm (isRepaired = true) {
+      onConfirm (repairedText = '') {
         const valid = this.$refs.form.validate()
         if (valid) {
           this.reasonRepair = ''
           this.confirmDialog = true
-          this.isRepaired = isRepaired
+          this.repairedText = repairedText
         }
+      },
+      onAction () {
+        if (this.repairedText === 'ซ่อมสำเร็จ') this.onRepair()
+        else if (this.repairedText === 'ส่งซ่อมภายนอก') this.onExternalResolve()
+        else this.onReject()
       },
       async onRepair () {
         const valid = this.$refs.confirmForm.validate()
@@ -206,7 +212,39 @@
           } catch (err) { return Promise.reject(err) }
         }
       },
+      async onReject () {
+        const valid = this.$refs.confirmForm.validate()
+        if (valid) {
+          try {
+            const query = {
+              id: this.item.id,
+              canRepair: false,
+              reasonRepair: this.reasonRepair,
+              updateStatus: 'DESTRUCTION',
+            }
+            const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/outSourceRepair', query: { ...this.$route.query, ...query } })
+            await this.$store.dispatch('snackbar', { text: 'ซ่อมครุภัณฑ์ไม่สำเร็จ' })
+            this.$router.push('/durable-goods/repair/')
+            return Promise.resolve(data)
+          } catch (err) { return Promise.reject(err) }
+        }
+      },
       async onExternalResolve () {
+        const valid = this.$refs.confirmForm.validate()
+        if (valid) {
+          try {
+            const query = {
+              id: this.item.id,
+              canRepair: true,
+              reasonRepair: this.reasonRepair,
+              updateStatus: 'REPAIR',
+            }
+            const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/outSourceRepair', query: { ...this.$route.query, ...query } })
+            await this.$store.dispatch('snackbar', { text: 'ส่งซ่อมครุภัณฑ์ภายนอกสำเร็จ' })
+            this.$router.push('/durable-goods/repair/')
+            return Promise.resolve(data)
+          } catch (err) { return Promise.reject(err) }
+        }
       },
       async onSubmit () {
         const valid = this.$refs.form.validate()
