@@ -12,7 +12,7 @@
       </v-card-text>
       <v-card-actions v-if="!hideAction" class="justify-end">
         <v-btn color="grey" text @click="val = false">{{ closeText }}</v-btn>
-        <v-btn v-if="!hideSubmit" color="success" @click="onConfirm">{{ confirmText }}</v-btn>
+        <v-btn v-if="!hideSubmit" color="success" :loading="buttonLoading" @click="onConfirm">{{ confirmText }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog> 
@@ -30,6 +30,7 @@
       confirmText: { type: String, default: 'ยืนยัน' },
       width: { type: String, default: '480' },
       customConfirm: { type: Function },
+      buttonLoading: { type: Boolean },
     },
     data () {
       return {
