@@ -144,7 +144,7 @@
           'สำเร็จ': 'success',
           'ไม่สำเร็จ': 'error',
           'รอซ่อมภายนอก': 'secondary',
-          'รออนุมัติ': 'warning',
+          'รอซ่อม': 'warning',
         },
       }
     },
@@ -199,7 +199,7 @@
       getRepairLabel (item) {
         if (item.status === 'PENDING') {
           if (item.remarks) return 'รอซ่อมภายนอก'
-          else return 'รออนุมัติ'
+          else return 'รอซ่อม'
         } else if (item.status === 'SUCCESS') {
           if (item.canRepair) return 'สำเร็จ'
           else return 'ไม่สำเร็จ'

@@ -44,7 +44,7 @@
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ผู้ขอส่งซ่อมครุภัณฑ์', value: 'user_fk.thaiFristName' },
           { text: 'วันที่ส่งซ่อม', value: 'dateBorrow', width: '120px', align: 'center' },
-          { text: 'วันที่อนุมัติ', value: 'dateApprove', width: '120px', align: 'center' },
+          { text: 'วันที่ซ่อม', value: 'dateApprove', width: '120px', align: 'center' },
           { text: 'ครุภัณฑ์', value: 'equipment', width: '200px', align: 'center' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
           { text: 'สถานะการซ่อม', value: 'status', align: 'center', width: '140px' },
@@ -54,7 +54,7 @@
           'สำเร็จ': 'success',
           'ไม่สำเร็จ': 'error',
           'รอซ่อมภายนอก': 'secondary',
-          'รออนุมัติ': 'warning',
+          'รอซ่อม': 'warning',
         },
       }
     },
@@ -69,7 +69,7 @@
       getRepairLabel (item) {
         if (item.status === 'PENDING') {
           if (item.remarks) return 'รอซ่อมภายนอก'
-          else return 'รออนุมัติ'
+          else return 'รอซ่อม'
         } else if (item.status === 'SUCCESS') {
           if (item.canRepair) return 'สำเร็จ'
           else return 'ไม่สำเร็จ'
