@@ -17,6 +17,10 @@
         <div>การโอนย้าย</div>
         <v-badge v-if="transferCount" class="ml-2 mr-2" color="red" :content="transferCount"/>
       </v-tab>
+      <v-tab :to="{ path: '/durable-goods/request/repair/' }">
+        <div>การส่งซ่อม</div>
+        <v-badge v-if="repairCount" class="ml-2 mr-2" color="red" :content="repairCount"/>
+      </v-tab>
     </v-tabs>
     <PageHeader :text="title" :total="total"/>
     <Component :is="typeComponentList" :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
@@ -33,6 +37,7 @@
       DurableGoodsReturnTable: () => import('~/components/DurableGoodsReturnTable.vue'),
       DurableGoodsWithdrawTable: () => import('~/components/DurableGoodsWithdrawTable.vue'),
       DurableGoodsTransferTable: () => import('~/components/DurableGoodsTransferTable.vue'),
+      DurableGoodsRepairTable: () => import('~/components/DurableGoodsRepairTable.vue'),
     },
     data () {
       return {
@@ -48,6 +53,7 @@
           'return': 'การคืน',
           'withdraw': 'การเบิก',
           'transfer': 'การโอนย้าย',
+          'repair': 'การส่งซ่อม',
         }
         return list[this.$route.params.request_type] || 'การยืม'
       },
@@ -56,6 +62,7 @@
           'return': 'Return',
           'withdraw': 'Withdraw',
           'transfer': 'Transfer',
+          'repair': 'Repair',
         }
         return `DurableGoods${list[this.$route.params.request_type] || 'Borrow'}Table`
       },
@@ -63,7 +70,8 @@
         const list = {
           'return': 'RETURN',
           'withdraw': 'REQUISITION',
-          'transfer': 'TRANSFER',          
+          'transfer': 'TRANSFER',
+          'repair': 'REPAIR',
         }
         return { types: list[this.$route.params.request_type] || 'BORROW' }
       },
@@ -84,6 +92,9 @@
       },
       transferCount () {
         return this.$store.state.approveEquipmentTRANSFER?.totalElements || 0
+      },
+      repairCount () {
+        return this.$store.state.approveEquipmentREPAIR?.totalElements || 0
       },
     },
     watch: {
@@ -125,13 +136,18 @@
             const { data: val } = await this.$store.dispatch('http', { apiPath: 'equipment/getListRequestFilter', query: { ...this.$route.query, types: 'TRANSFER' } })
             this.$store.commit('SET_STATE', { name: `approveEquipmentTRANSFER`, val })
           }
+          if (this.$store.state.approveEquipmentREPAIR === null) {
+            const { data: val } = await this.$store.dispatch('http', { apiPath: 'equipment/getListRequestFilter', query: { ...this.$route.query, types: 'REPAIR' } })
+            this.$store.commit('SET_STATE', { name: `approveEquipmentREPAIR`, val })
+          }
           this.isLoading = false
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
       getActionIconList (item) {
+        const action = this.$route.params.request_type === 'repair' ? `/durable-goods/repair/${item.id}/` : `/durable-goods/request/approval/${item.id}/`
         return [
-          { type: 'link', icon: 'edit', action: `/durable-goods/request/approval/${item.id}/` },
+          { type: 'link', icon: 'edit', action },
           // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
         ]
       },

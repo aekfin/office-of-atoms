@@ -26,6 +26,7 @@ export default () => ({
   approveEquipmentRETURN: null,
   approveEquipmentREQUISITION: null,
   approveEquipmentTRANSFER: null,
+  approveEquipmentREPAIR: null,
   approveRequestTrigger: false,
   durableGoodCountable: ['NEW', 'WAIT_SALE', 'LOST', 'ENDOW', 'DEPRECIATION', 'DESTRUCTION', 'OTHER'],
   durableGoodStatus: {

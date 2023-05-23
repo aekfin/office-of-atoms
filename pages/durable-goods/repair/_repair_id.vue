@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-repair-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มการส่งซ่อมครุภัณฑ์' : 'การแก้ไขการส่งซ่อมครุภัณฑ์'" hideTotal/>
+    <PageHeader :text="isCreate ? 'การเพิ่มการส่งซ่อมครุภัณฑ์' : 'จัดการการส่งซ่อมครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
     <template v-else>
       <v-stepper v-if="!isCreate && item" v-model="step" class="mt-10 mb-10" altLabels>
@@ -46,8 +46,15 @@
             </v-col>
           </v-row>
 
-          <DurableGoodsOwner title="ผู้รับผิดชอบ" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.userRepairId"
+          <DurableGoodsOwner v-if="isCreate" title="ผู้รับผิดชอบ" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.userRepairId"
             :disabled="!isCreate" onlyUser :userList="form.userList"/>
+
+          <v-row v-if="item">
+            <v-col>
+              <b class="mr-1" style="font-size: 18px;">สถานะการซ่อม : </b>
+              <v-chip :color="repairColor[getRepairLabel(item)]">{{ getRepairLabel(item) }}</v-chip>
+            </v-col>
+          </v-row>
 
           <v-row v-if="item && item.remarks">
             <v-col :cols="12">
@@ -61,14 +68,15 @@
 
         <v-container class="mt-8">
           <v-row justify="end">
-            <v-btn large plain @click="$router.push('/durable-goods/repair/')">ย้อนกลับ</v-btn>
+            <v-btn large plain @click="$router.push(isRequester || isCreate ? '/durable-goods/repair/' : '/durable-goods/request/repair/')">ย้อนกลับ</v-btn>
             <v-btn v-if="isCreate" class="ml-4" elevation="2" large color="success" @click="onSubmit">{{ `ส่งซ่อมครุภัณฑ์` }}</v-btn>
             <template v-else-if="isApprover">
               <v-btn class="mr-4" elevation="2" large color="error" @click="() => { onConfirm('ซ่อมไม่ได้') }">ซ่อมไม่ได้</v-btn>
               <v-btn elevation="2" large color="success" @click="() => { onConfirm('ซ่อมสำเร็จ') }">ซ่อมสำเร็จ</v-btn>
             </template>
             <template v-else-if="isRequester && isNotRepair">
-              <v-btn class="mr-4" elevation="2" large outlined color="error" @click="() => { onConfirm('ส่งซ่อมภายนอก') }">ส่งซ่อมภายนอก</v-btn>
+              <v-btn class="mr-4" elevation="2" large color="error" @click="() => { onConfirm('ไม่ส่งซ่อมภายนอก') }">ไม่ส่งซ่อมภายนอก</v-btn>
+              <v-btn class="mr-4" elevation="2" large color="success" @click="() => { onConfirm('ส่งซ่อมภายนอก') }">ส่งซ่อมภายนอก</v-btn>
             </template>
           </v-row>
         </v-container>
@@ -76,7 +84,8 @@
     </template>
 
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
-    <ConfirmDialog :value.sync="confirmDialog" :title="`ยืนยันการ${repairedText}`" :customConfirm="onAction" :buttonLoading="isFlowLoading">
+    <ConfirmDialog :value.sync="confirmDialog" :title="`ยืนยันการ${repairedText}`" :customConfirm="onAction" :buttonLoading="isFlowLoading"
+      :submitColor="submitColor" :confirmText="repairedText">
       <v-form ref="confirmForm" v-model="confirmValid" lazyValidation>
         <v-row>
           <v-col :cols="12">
@@ -131,6 +140,12 @@
         confirmDialog: false,
         repairedText: '',
         isFlowLoading: false,
+        repairColor: {
+          'สำเร็จ': 'success',
+          'ไม่สำเร็จ': 'error',
+          'รอซ่อมภายนอก': 'secondary',
+          'รออนุมัติ': 'warning',
+        },
       }
     },
     computed: {
@@ -150,10 +165,13 @@
         return this.item && this.item.status === 'REJECT'
       },
       isNotRepair () {
-        return this.item?.flows?.[0]?.canApprove === 'false' && this.item?.items?.[0]?.equipment?.status === 'REPAIR'
+        return this.item?.flows?.[0]?.canRepair === 'false' && this.item.status === 'PENDING'
       },
       requireReason () {
-        return ['ซ่อมไม่ได้', 'ส่งซ่อมภายนอก'].includes(this.repairedText)
+        return ['ซ่อมไม่ได้', 'ส่งซ่อมภายนอก', 'ไม่ส่งซ่อมภายนอก'].includes(this.repairedText)
+      },
+      submitColor () {
+        return ['ซ่อมไม่ได้', 'ไม่ส่งซ่อมภายนอก'].includes(this.repairedText) ? 'error' : 'success'
       },
     },
     watch: {
@@ -178,12 +196,20 @@
       isComplete (item) {
         return item?.status === 'APPROVE'
       },
+      getRepairLabel (item) {
+        if (item.status === 'PENDING') {
+          if (item.remarks) return 'รอซ่อมภายนอก'
+          else return 'รออนุมัติ'
+        } else if (item.status === 'SUCCESS') {
+          if (item.canRepair) return 'สำเร็จ'
+          else return 'ไม่สำเร็จ'
+        }
+      },
       async getData () {
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/getRequestDetail`, query: { id: this.$route.params.repair_id, ...this.$route.query } })
-          const { data: user } = await this.$store.dispatch('http', { apiPath: `user/getUser`, query: { id: data.user.id, ...this.$route.query } })
-          this.item = { ...data, user }
+          this.item = { ...data }
           this.isLoading = false
           return Promise.resolve()
         } catch (err) {
@@ -215,7 +241,10 @@
         this.isFlowLoading = true
         if (this.repairedText === 'ซ่อมสำเร็จ') await this.onRepair()
         else if (this.repairedText === 'ส่งซ่อมภายนอก') await this.onExternaRepair()
+        else if (this.repairedText === 'ไม่ส่งซ่อมภายนอก') await this.onExternalReject()
         else await this.onReject()
+        this.confirmDialog = false
+        await this.getData()
         this.isFlowLoading = false
       },
       async onRepair () {
@@ -229,7 +258,6 @@
             }
             const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/approve', query: { ...this.$route.query, ...query } })
             await this.$store.dispatch('snackbar', { text: 'ซ่อมครุภัณฑ์สำเร็จ' })
-            this.$router.push('/durable-goods/repair/')
             return Promise.resolve(data)
           } catch (err) { return Promise.reject(err) }
         }
@@ -245,7 +273,6 @@
             }
             const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/approve', query: { ...this.$route.query, ...query } })
             await this.$store.dispatch('snackbar', { text: 'ซ่อมครุภัณฑ์ไม่สำเร็จ' })
-            this.$router.push('/durable-goods/repair/')
             return Promise.resolve(data)
           } catch (err) { return Promise.reject(err) }
         }
@@ -261,7 +288,6 @@
             }
             const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/outSourceRepair', query: { ...this.$route.query, ...query } })
             await this.$store.dispatch('snackbar', { text: 'ส่งซ่อมครุภัณฑ์ภายนอกสำเร็จ' })
-            this.$router.push('/durable-goods/repair/')
             return Promise.resolve(data)
           } catch (err) { return Promise.reject(err) }
         }
@@ -277,8 +303,7 @@
               updateStatus: 'DEPRECIATION',
             }
             const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/outSourceRepair', query: { ...this.$route.query, ...query } })
-            await this.$store.dispatch('snackbar', { text: 'ส่งซ่อมครุภัณฑ์ภายนอกสำเร็จ' })
-            this.$router.push('/durable-goods/repair/')
+            await this.$store.dispatch('snackbar', { text: 'ไม่ส่งซ่อมครุภัณฑ์ภายนอกสำเร็จ' })
             return Promise.resolve(data)
           } catch (err) { return Promise.reject(err) }
         }
