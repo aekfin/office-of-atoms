@@ -84,12 +84,11 @@
     </template>
 
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
-    <ConfirmDialog :value.sync="confirmDialog" :title="`ยืนยันการ${repairedText}`" :customConfirm="onAction" :buttonLoading="isFlowLoading"
-      :submitColor="submitColor" :confirmText="repairedText">
+    <ConfirmDialog :value.sync="confirmDialog" :title="`ยืนยันการ${repairedText}`" :customConfirm="onAction" :submitColor="submitColor" :confirmText="repairedText">
       <v-form ref="confirmForm" v-model="confirmValid" lazyValidation>
         <v-row>
           <v-col :cols="12">
-            <v-textarea v-model="reasonRepair" :label="`เหตุผล ${requireReason ? '*' : ''}`" :rows="4" :rules="requireReason ? reasonRepairRules : []" :disabled="isFlowLoading"/>
+            <v-textarea v-model="reasonRepair" :label="`เหตุผล ${requireReason ? '*' : ''}`" :rows="4" :rules="requireReason ? reasonRepairRules : []"/>
           </v-col>
         </v-row>
       </v-form>
@@ -139,7 +138,6 @@
         dialog: false,
         confirmDialog: false,
         repairedText: '',
-        isFlowLoading: false,
         repairColor: {
           'สำเร็จ': 'success',
           'ไม่สำเร็จ': 'error',
@@ -165,7 +163,7 @@
         return this.item && this.item.status === 'REJECT'
       },
       isNotRepair () {
-        return this.item?.flows?.[0]?.canRepair === 'false' && this.item.status === 'PENDING'
+        return this.item?.canRepair === false && this.item?.status === 'PENDING'
       },
       requireReason () {
         return ['ซ่อมไม่ได้', 'ส่งซ่อมภายนอก', 'ไม่ส่งซ่อมภายนอก'].includes(this.repairedText)
@@ -238,14 +236,14 @@
         }
       },
       async onAction () {
-        this.isFlowLoading = true
+        this.isLoading = true
+        this.confirmDialog = false
         if (this.repairedText === 'ซ่อมสำเร็จ') await this.onRepair()
         else if (this.repairedText === 'ส่งซ่อมภายนอก') await this.onExternaRepair()
         else if (this.repairedText === 'ไม่ส่งซ่อมภายนอก') await this.onExternalReject()
         else await this.onReject()
-        this.confirmDialog = false
         await this.getData()
-        this.isFlowLoading = false
+        this.isLoading = false
       },
       async onRepair () {
         const valid = this.$refs.confirmForm.validate()

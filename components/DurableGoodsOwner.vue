@@ -15,7 +15,7 @@
       <AutocompleteDropdown :value.sync="userId" :label="`บุคคล ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" :apiPath="userApiPath"
         :searchApiPath="userApiPath" :rules="userRules" :query="userQuery" :searchQuery="userQuery" searchKey="email" noFilter>
         <template #item="{ item }">
-          <div style="display: flex; align-items: center; gap: 8px;">
+          <div v-if="item" style="display: flex; align-items: center; gap: 8px;">
             <div>{{ $fn.getName(item) }}</div>
             <div style="color: grey; font-size: 12px;">({{ item.email }})</div>
           </div>
