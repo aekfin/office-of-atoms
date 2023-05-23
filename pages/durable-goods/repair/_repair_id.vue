@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-repair-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มการส่งซ่อมครุภัณฑ์' : 'จัดการการส่งซ่อมครุภัณฑ์'" hideTotal/>
+    <PageHeader :text="isCreate ? 'การเพิ่มการส่งซ่อมครุภัณฑ์' : 'จัดการการซ่อมครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
     <template v-else>
       <v-stepper v-if="!isCreate && item" v-model="step" class="mt-10 mb-10" altLabels>

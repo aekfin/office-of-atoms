@@ -1,6 +1,7 @@
 <template>
   <div id="durable-goods-page">
     <PageHeader text="บริหารครุภัณฑ์" btnText="เพิ่มครุภัณฑ์" createRoute="/durable-goods/overall/create/" :total="total"/>
+    <ExportReportButton apiPath="report/depreciation" name="รายงานครุภัณฑ์"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
@@ -25,6 +26,7 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
+      ExportReportButton: () => import('~/components/ExportReportButton.vue'),
       EquipmentColumn: () => import('~/components/EquipmentColumn.vue'),
       OwnerColumn: () => import('~/components/OwnerColumn.vue'),
       Pagination: () => import('~/components/Pagination.vue'),
