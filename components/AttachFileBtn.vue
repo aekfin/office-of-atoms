@@ -5,13 +5,13 @@
     <div class="attach-wrapper">
       <div v-for="(attachment, i) in attachmentList" :key="i" class="attach mt-4">
         <div v-if="showImage" class="img-wrapper">
-          <img :src="attachment.fileUrl" alt="image" class="img-preview">
+          <img :src="getFileUrl(attachment.fileUrl)" alt="image" class="img-preview">
           <v-btn class="remove-btn" @click.stop="onDeleteAttachment(attachment)">
             <i class="material-icons">close</i>
           </v-btn>
         </div>
         <div v-else class="file">
-          <a class="file-name-wrapper" :href="attachment.fileUrl" target="_blank">
+          <a class="file-name-wrapper" :href="getFileUrl(attachment.fileUrl)" target="_blank">
             <i class="material-icons">download</i>
             <div class="name ml-1">{{ attachment.filename }}</div>
           </a>
@@ -68,6 +68,9 @@
         this.attachmentList = val
       },
     },
+    mounted () {
+      console.log(process.env.NODE_ENV === 'development ', location.host)
+    },
     methods: {
       onDelete (file) {
         this.files = this.files.filter(f => f.name !== file.name)
@@ -82,6 +85,10 @@
       },
       getImage (file) {
         return URL.createObjectURL(file)
+      },
+      getFileUrl (url) {
+        const domain = process.env.NODE_ENV === 'development' ? 'http://178.128.99.60:8081' : `${location.host}:8081`
+        return `${domain}${url}`
       },
       onChange (e) {
         const files = e.target.files
