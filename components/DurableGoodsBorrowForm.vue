@@ -23,12 +23,12 @@
     <v-form v-if="form" ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <v-col :cols="12" :md="6">
+          <v-col :cols="12" :md="4">
             <InputDatePicker :value.sync="form.dateBorrow" :label="`วันที่${type}ครุภัณฑ์ *`" :rules="datetimeBorrowRules" required :disabled="viewMode"/>
           </v-col>
-          <!-- <v-col :cols="4">
-            <InputDatePicker :value.sync="form.dateReturn" label="วันที่ต้องคืน ครุภัณฑ์ *" :rules="datetimeReturnRules" required :disabled="viewMode"/>
-          </v-col> -->
+          <v-col v-if="type === 'ยืม'" :cols="12" :md="4">
+            <InputDatePicker :value.sync="form.dueDate" label="วันที่ต้องคืนครุภัณฑ์ *" :rules="datetimeReturnRules" required :disabled="viewMode"/>
+          </v-col>
         </v-row>
         <v-row>
           <v-col :cols="12">
@@ -133,9 +133,15 @@
     },
     methods: {
       setForm () {
+        const getDueDate = () => {
+          const date = new Date()
+          date.setDate(date.getDate() + 7)
+          return date
+        }
         this.form = {
           description: this.item?.description || '',
           dateBorrow: this.item?.dateBorrow || new Date(),
+          dueDate: this.item?.dueDate || getDueDate(),
           itemId: this.item?.items?.[0]?.equipment?.id || null,
           item: this.item?.items?.[0] || null,
           organization: this.item?.items?.[0]?.equipment?.organizationMaster || {},

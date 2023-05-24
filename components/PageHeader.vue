@@ -6,8 +6,8 @@
           <slot>{{ text }}</slot>
         </b>
       </h2>
-      <slot v-if="btnText" name="btn">
-        <v-btn elevation="2" large color="success" @click="$emit('create')">
+      <slot name="btn">
+        <v-btn v-if="btnText" elevation="2" large color="success" @click="$emit('create')">
           <NLink v-if="createRoute" :to="createRoute" class="text-white">{{ btnText }}</NLink>
           <div v-else>{{ btnText }}</div>
         </v-btn>
