@@ -278,6 +278,8 @@
               ...data,
               detailList: [this.getDetail(data)]
             }],
+            dateEntry: data.dateEntry || '',
+            inspectionDate: data.inspectionDate || '',
             organizationId: data.organization.id,
             departmentId: data.department.id,
             ownerId: data.owner?.id || null,

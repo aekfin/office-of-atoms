@@ -93,7 +93,7 @@
                   <v-row v-for="(contact, i) in form.directors" :key="i" class="pl-2 pr-3 mb-3" align="baseline">
                     <div class="prefix-wrapper">
                       <div class="mr-5">{{ i + 1 }}.</div>
-                      <SelectDropdown :value.sync="contact.description" :items="companyPositionList" itemValue="id" itemText="name" label="ตำแหน่ง *" :rules="contactPositionRules"/>
+                      <v-text-field v-model="contact.description" label="ตำแหน่ง *" :rules="contactPositionRules"/>
                     </div>
                     <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
                     <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์"/>
@@ -125,7 +125,7 @@
                   <v-row v-for="(contact, i) in form.committees" :key="i" class="pl-2 pr-3 mb-3" align="baseline">
                     <div class="prefix-wrapper">
                       <div class="mr-5">{{ i + 1 }}.</div>
-                      <v-text-field v-model="contact.description" label="ตำแหน่ง *" :rules="contactPositionRules"/>
+                      <SelectDropdown :value.sync="contact.description" :items="companyPositionList" itemValue="id" itemText="name" label="ตำแหน่ง *" :rules="contactPositionRules"/>
                     </div>
                     <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
                     <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์"/>
