@@ -68,9 +68,6 @@
         this.attachmentList = val
       },
     },
-    mounted () {
-      console.log(process.env.NODE_ENV === 'development ', location.origin)
-    },
     methods: {
       onDelete (file) {
         this.files = this.files.filter(f => f.name !== file.name)

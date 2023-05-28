@@ -44,6 +44,10 @@
                   <b>เลขที่สินทรัพย์ อว.</b>
                   <div class="mt-2">{{ equipment.assetNumberAorWor || '-' }}</div>
                 </v-col>
+                <v-col :cols="12" :md="12">
+                  <b>เลขที่ อว.ย่อย</b>
+                  <div class="mt-2">{{ equipment.numberSubAorWor || '-' }}</div>
+                </v-col>
                 <v-col :cols="12" :md="3">
                   <b>หมวดหมู่พัสดุ</b>
                   <div class="mt-2">{{ equipment.equipmentxMajorCategory.majorCategory.name }}</div>
@@ -105,20 +109,23 @@
             <v-col :cols="12" :md="3">
               <v-text-field v-model="subEquipment.classifier" name="unit" label="หน่วย *" :rules="classifierRules" required/>
             </v-col>
-            <v-col :cols="12" :md="3">
+            <v-col :cols="12" md>
               <div class="d-flex align-center">
                 <v-text-field v-model="subEquipment.number" name="code" label="เลขที่ครุภัณฑ์ *" :rules="numberRules" :loading="isLoadingNumber" disabled/>
               </div>
             </v-col>
-            <v-col :cols="12" :md="3">
+            <v-col :cols="12" md>
               <v-text-field v-model="subEquipment.serialNumber" label="หมายเลขซีเรียล"/>
             </v-col>
-            <v-col :cols="12" :md="3">
+            <v-col :cols="12" md>
               <v-text-field v-model="subEquipment.assetNumber" label="เลขที่สินทรัพย์"/>
             </v-col>
-            <v-col :cols="12" :md="3">
+            <v-col :cols="12" md>
               <v-text-field v-model="subEquipment.assetNumberAorWor" label="เลขที่สินทรัพย์ อว."/>
             </v-col>
+          <v-col :cols="12" md>
+            <v-text-field v-model="subEquipment.numberSubAorWor" label="เลขที่ อว.ย่อย" required/>
+          </v-col>
           </v-row>
         </div>
         <v-row class="mt-5 mb-5">
@@ -169,6 +176,11 @@
       this.getSubEquipment()
     },
     methods: {
+      setSubEquipmentAutoFill () {
+        this.subEquipments.forEach(subEquipment => {
+          if (!subEquipment.assetNumber && this.equipment.assetNumber) subEquipment.assetNumber = this.equipment.assetNumber
+        })
+      },
       addSubEquipment () {
         this.subEquipments.push(
           {
@@ -178,9 +190,11 @@
             serialNumber: '',
             assetNumber: '',
             assetNumberAorWor: '',
+            numberSubAorWor: '',
           }
         )
         this.getSubEquipmentNumber()
+        this.setSubEquipmentAutoFill()
       },
       async getSubEquipment () {
         try {
@@ -189,6 +203,7 @@
           this.equipment = data.equipment
           this.subEquipments = data.subEquipmentModel
           if (!this.subEquipments.length) this.addSubEquipment()
+          this.setSubEquipmentAutoFill()
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
@@ -207,16 +222,19 @@
       },
       async onSubmit () {
         try {
-          const creates = this.subEquipments.filter(equipment => !equipment.id)
-          const edits = this.subEquipments.filter(equipment => equipment.id)
-          if (creates.length) {
-            const createData = { equipmentId: this.durableGoodsId, subEquipments: creates }
-            await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/importSubEquipment', data: createData })
+          const valid = this.$refs.form.validate()
+          if (valid) {
+            const creates = this.subEquipments.filter(equipment => !equipment.id)
+            const edits = this.subEquipments.filter(equipment => equipment.id)
+            if (creates.length) {
+              const createData = { equipmentId: this.durableGoodsId, subEquipments: creates }
+              await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/importSubEquipment', data: createData })
+            }
+            if (edits.length) {
+              await Promise.all(edits.map(edit => this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/editSubEquipment', data: edit })))
+            }
+            await this.getSubEquipment()
           }
-          if (edits.length) {
-            await Promise.all(edits.map(edit => this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/editSubEquipment', data: edit })))
-          }
-          await this.getSubEquipment()
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },

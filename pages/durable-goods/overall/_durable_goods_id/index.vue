@@ -10,10 +10,10 @@
             <v-text-field v-else-if="form.project" v-model="form.project.projectName" label="โครงการ *" disabled/>
           </v-col>
           <v-col :cols="12" :md="3">
-            <v-text-field :value="form.project && form.project.contractNumber || ''" label="เลขที่คุมสัญญา" disabled/>
+            <v-text-field :value="form.project && form.project.contractNumber || ''" label="เลขที่สั่งซื้อสั่งจ้าง/เลขที่สัญญา" disabled/>
           </v-col>
           <v-col :cols="12" :md="3">
-            <v-text-field v-model="form.procurementNumber" label="เลขที่จัดซื้อจัดจ้าง" :disabled="!isCreate"/>
+            <v-text-field v-model="form.procurementNumber" label="เลขที่คุมสัญญา" :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="3">
             <InputDatePicker :value.sync="form.dateEntry" label="วันที่กรรมการเห็นถูกต้องครบถ้วน *" :rules="dateEntryRules" required :disabled="!isCreate"/>
@@ -74,27 +74,30 @@
                     <b>รายละเอียดเฉพาะของครุภัณฑ์</b>
                   </div>
                   <v-row v-for="(detail, j) in form.equipments[i].detailList" :key="j">
-                    <v-col :cols="12" :md="3">
+                    <v-col :cols="12" md>
                       <div class="d-flex align-center">
                         <div v-if="isCreate" class="mr-4">{{ j + 1 }}.</div>
                         <v-text-field v-model="detail.number" name="code" label="เลขที่ครุภัณฑ์ *" required disabled :loading="isNumberLoading"/>
                       </div>
                     </v-col>
-                    <v-col :cols="12" :md="3">
+                    <v-col :cols="12" md>
                       <v-text-field v-model="detail.serialNumber" label="หมายเลขซีเรียล" :disabled="!isCreate || !form.organizationId"/>
                     </v-col>
-                    <v-col :cols="12" :md="3">
+                    <v-col :cols="12" md>
                       <v-text-field v-model="detail.assetNumber" label="เลขที่สินทรัพย์" :disabled="!isCreate || !form.organizationId"/>
                     </v-col>
-                    <v-col :cols="12" :md="3">
+                    <v-col :cols="12" md>
                       <v-text-field v-model="detail.assetNumberAorWor" label="เลขที่สินทรัพย์ อว." required :disabled="!isCreate || !form.organizationId"/>
+                    </v-col>
+                    <v-col :cols="12" md>
+                      <v-text-field v-model="detail.numberSubAorWor" label="เลขที่ อว.ย่อย" required :disabled="!isCreate || !form.organizationId"/>
                     </v-col>
                   </v-row>
                 </v-container>
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
-          <v-row v-if="isCreate" class="mt-5 mb-5">
+          <v-row v-if="isCreate" class="mb-5">
             <v-btn block rounded outlined @click="addDurableGoods()">เพิ่มครุภัณฑ์</v-btn>
           </v-row>
         </v-container>
@@ -205,6 +208,7 @@
           assetNumber: data.assetNumber || '',
           assetNumberAorWor: data.assetNumberAorWor || '',
           serialNumber: data.serialNumber || '',
+          numberSubAorWor: data.numberSubAorWor || '',
         }
       },
       addDurableGoods () {
@@ -302,6 +306,7 @@
           assetNumber: equipment.detailList.map(detail => detail.assetNumber),
           assetNumberAorWor: equipment.detailList.map(detail => detail.assetNumberAorWor),
           serialNumbers: equipment.detailList.map(detail => detail.serialNumber),
+          numberSubAorWor: equipment.detailList.map(detail => detail.numberSubAorWor),
         }
       },
       getMapCategory (item) {

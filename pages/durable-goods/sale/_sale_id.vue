@@ -6,7 +6,10 @@
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <v-col :cols="12" :md="6">
+          <v-col :cols="12" :md="2">
+            <v-text-field v-model="form.year" label="ปีงบประมาณ *" :rules="yearRules" type="number"/>
+          </v-col>
+          <v-col :cols="12" :md="4">
             <InputDatePicker :value.sync="form.dateSale" label="วันที่จำหน่ายครุภัณฑ์ *" :rules="datetimesaleRules" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12">
@@ -30,8 +33,11 @@
           <v-col :cols="12" :md="4">
             <v-text-field v-model="form.price" label="ราคาจำหน่าย" type="number" required :disabled="!isCreate"/>
           </v-col>
-          <v-col :cols="12" :md="8">
+          <v-col :cols="12" :md="4">
             <v-text-field v-model="form.buyer" label="ผู้ซื้อ" required :disabled="!isCreate"/>
+          </v-col>
+          <v-col :cols="12" :md="4">
+            <v-text-field v-model="form.bookNumber" label="เลขที่หนังสือ" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
       </v-container>
@@ -58,12 +64,14 @@
       return {
         valid: true,
         form: {
-          dateSale: '',
+          year: '',
+          dateSale: new Date(),
           description: '',
           buyer: '',
           price: '',
           itemId: null,
           distribution_method: '',
+          bookNumber: '',
         },
         item: null,
         isLoading: false,
@@ -78,6 +86,9 @@
         ],
         distributionTypeRules: [
           v => !!v || 'โปรดเลือกวิธีการจำหน่าย',
+        ],
+        yearRules: [
+          v => !!v || 'โปรดเลือกปีงบประมาณ',
         ],
         distributionList: [
           { id: 'บริจาค', name: 'บริจาค' },
@@ -128,6 +139,7 @@
       setForm () {
         const data = this.item ? { ...this.item, ...this.item.equipmentSale } : {}
         this.form = {
+          year: data?.year || (new Date()).getFullYear() + 543,
           dateSale: data?.dateSale || new Date(),
           description: data?.description || '',
           buyer: data?.buyer || '',
@@ -135,6 +147,7 @@
           distribution_method: data?.distribution_method || '',
           itemId: data?.id || null,
           item: data || null,
+          bookNumber: data?.bookNumber || '',
         }
       },
       onSelectDurableGoods ({ item }) {
