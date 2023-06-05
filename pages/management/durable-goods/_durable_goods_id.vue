@@ -72,7 +72,7 @@
 
       <v-container class="mt-8">
         <v-row justify="end">
-          <v-btn large plain @click="$router.push('/durable-goods/summary/')">ย้อนกลับ</v-btn>
+          <v-btn large plain @click="$router.push('/management/durable-goods/')">ย้อนกลับ</v-btn>
           <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
         </v-row>
       </v-container>
@@ -313,7 +313,7 @@
             })
           )
           await this.$store.dispatch('snackbar', { text: 'เพิ่มครุภัณฑ์สำเร็จ' })
-          this.$router.push('/durable-goods/summary/')
+          this.$router.push('/management/durable-goods/')
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },

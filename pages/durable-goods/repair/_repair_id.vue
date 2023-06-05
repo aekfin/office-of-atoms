@@ -36,8 +36,13 @@
           <v-row>
             <v-col :cols="12">
               <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
-                :query="numberQuery" :disabled="!isCreate"/>
+                :query="numberQuery" :disabled="!isCreate" @select="getWarranty"/>
               <v-text-field v-else-if="form.item" v-model="form.item.name" label="ครุภัณฑ์ *" disabled/>
+              <div>
+                <v-alert v-if="warranty === true" border="left" color="success" dark>ครุภัณฑ์ อยู่ในระยะประกัน</v-alert>
+                <v-alert v-else-if="warranty === false" border="left" color="error" dark>ครุภัณฑ์ ไม่อยู่ในระยะประกัน</v-alert>
+                <v-alert v-else-if="warranty && warranty !== null" color="secondary" border="left" dark>ครุภัณฑ์ ไม่ระบุระยะประกัน</v-alert>
+              </div>
             </v-col>
           </v-row>
           <v-row>
@@ -114,6 +119,7 @@
         step: 1,
         item: null,
         reasonRepair: '',
+        warranty: null,
         form: {
           dateRepair: new Date(),
           description: '',
@@ -208,6 +214,7 @@
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/getRequestDetail`, query: { id: this.$route.params.repair_id, ...this.$route.query } })
           this.item = { ...data }
+          await this.getWarranty({ item: this.item })
           this.isLoading = false
           return Promise.resolve()
         } catch (err) {
@@ -225,6 +232,15 @@
           userList: data?.user ? [data?.user] : [],
           organizationId: data?.user?.organizationMaster?.id || '',
           departmentId: data?.user?.departmentMaster?.id || '',
+        }
+      },
+      async getWarranty ({ item }) {
+        try {
+          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/project/Warranty/${item.id}`, query: this.$route.query })
+          this.warranty = data
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
         }
       },
       onConfirm (repairedText = '') {
