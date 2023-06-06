@@ -1,13 +1,13 @@
 <template>
   <v-row class="number-durable-good">
     <v-col :cols="12" :md="4">
-      <v-text-field v-model="number" label="เลขที่ครุภัณฑ์" :disabled="disabled"/>
+      <v-text-field v-model="number" label="เลขที่ครุภัณฑ์" :disabled="disabled" @input="changeQuery"/>
     </v-col>
     <v-col :cols="12" :md="4">
-      <v-text-field v-model="assetNumber" label="เลขที่สินทรัพย์" :disabled="disabled"/>
+      <v-text-field v-model="assetNumber" label="เลขที่สินทรัพย์" :disabled="disabled" @input="changeQuery"/>
     </v-col>
     <v-col :cols="12" :md="4">
-      <v-text-field v-model="assetNumberAorWor" label="เลขที่สินทรัพย์ อว." :disabled="disabled"/>
+      <v-text-field v-model="assetNumberAorWor" label="เลขที่สินทรัพย์ อว." :disabled="disabled" @input="changeQuery"/>
     </v-col>
   </v-row>
 </template>
@@ -38,17 +38,13 @@
       'propAssetNumberAorWor' (val) {
         this.assetNumberAorWor = val
       },
-      'number' () {
-        this.changeQuery()
-      },
-      'assetNumber' () {
-        this.changeQuery()
-      },
-      'assetNumberAorWor' () {
-        this.changeQuery()
-      }
     },
     methods: {
+      onlyUpdateFields (item) {
+        this.number = item.number
+        this.assetNumber = item.assetNumber
+        this.assetNumberAorWor = item.assetNumberAorWor
+      },
       changeQuery () {
         clearTimeout(this.timeout)
         this.timeout = setTimeout(() => {

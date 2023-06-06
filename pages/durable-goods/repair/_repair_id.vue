@@ -31,7 +31,7 @@
             </v-col>
           </v-row>
 
-          <NumberDurableGood :propNumber="form.item && form.item.number || ''" :disabled="!isCreate" @change="numberQuery = $event"/>
+          <NumberDurableGood ref="numberDurableGood" :propNumber="form.item && form.item.number || ''" :disabled="!isCreate" @change="numberQuery = $event"/>
 
           <v-row>
             <v-col :cols="12">
@@ -236,8 +236,9 @@
       },
       async getWarranty ({ item }) {
         try {
+          if (item && this.$refs.numberDurableGood) this.$refs.numberDurableGood.onlyUpdateFields(item)
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/project/Warranty/${item.id}`, query: this.$route.query })
-          this.warranty = data
+          this.warranty = data?.status?.code == 200 ? data?.data : ' '
           return Promise.resolve()
         } catch (err) {
           return Promise.reject(err)

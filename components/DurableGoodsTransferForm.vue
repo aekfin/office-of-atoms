@@ -39,7 +39,7 @@
 
       <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการ${type}` }}</b></h5>
       <v-container class="mt-2">
-        <NumberDurableGood :propNumber="form.item && form.item.equipment.number || ''" :disabled="viewMode" @change="numberQuery = $event"/>
+        <NumberDurableGood ref="numberDurableGood" :propNumber="form.item && form.item.equipment.number || ''" :disabled="viewMode" @change="numberQuery = $event"/>
         <v-row>
           <v-col>
             <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
@@ -187,6 +187,7 @@
         this.form.organization = item.organization
         this.form.department = item.department
         this.form.owner = item.owner || {}
+        if (item && this.$refs.numberDurableGood) this.$refs.numberDurableGood.onlyUpdateFields(item)
       },
       onSubmit () {
         const valid = this.$refs.form.validate()

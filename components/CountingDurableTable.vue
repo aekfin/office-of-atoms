@@ -8,13 +8,13 @@
       <template #item.organization="{ item }">
         <OwnerColumn :item="item"/>
       </template>
-      <template #item.status="{ index, item }">
-        <v-select v-if="canEdit && !item.isApprove" v-model="items[index].status" :items="statusList" itemText="name" itemValue="id" appendIcon="keyboard_arrow_down" @change="$emit('changeStatus', items[index])">
+      <template #item.status_counting="{ index, item }">
+        <v-select v-if="canEdit && !item.isApprove" v-model="items[index].status_counting" :items="statusList" itemText="name" itemValue="id" appendIcon="keyboard_arrow_down" @change="$emit('changeStatus', items[index])">
           <template #selection="res">
             <span class="d-flex justify-center" style="width: 100%;">{{ res.item.name }}</span>
           </template>
         </v-select>
-        <v-chip v-else :color="$store.state.durableGoodStatusColor[item.status]">{{ $store.state.durableGoodStatus[item.status || 'NEW'] }}</v-chip>
+        <div v-else>{{ item.status_counting || 'ยังไม่ตรวจนับ' }}</div>
       </template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
@@ -44,7 +44,7 @@
         { text: 'ชื่อครุภัณฑ์', value: 'name' },
         { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
         { text: 'ผู้ครอบครอง', value: 'organization', width: '120px', align: 'center' },
-        { text: 'สถานะ', value: 'status', width: '200px', align: 'center' },
+        { text: 'สถานะการตรวจนับ', value: 'status_counting', width: '220px', align: 'center' },
       ]
       if (this.hasAction) headers.push({ text: 'การอนุมัติ', value: 'action', width: '100px', align: 'center' })
       return {
@@ -53,9 +53,7 @@
     },
     computed: {
       statusList () {
-        const statusList = this.$store.state.durableGoodStatus
-        const filteredStatusList = Object.keys(statusList).filter(key => this.$store.state.durableGoodCountable.includes(key))
-        return filteredStatusList.map(key => ({ id: key, name: statusList[key] }))
+        return this.$store.state.durableGoodCountingStatus
       },
     },
     methods: {

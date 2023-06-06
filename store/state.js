@@ -28,7 +28,15 @@ export default () => ({
   approveEquipmentTRANSFER: null,
   approveEquipmentREPAIR: null,
   approveRequestTrigger: false,
-  durableGoodCountable: ['NEW', 'WAIT_SALE', 'LOST', 'ENDOW', 'DEPRECIATION', 'DESTRUCTION', 'OTHER'],
+  durableGoodCountable: ['NEW', 'RETURNED'],
+  durableGoodCountingStatus: [
+    { id: 'สภาพใช้งานได้', name: 'สภาพใช้งานได้' },
+    { id: 'สภาพใช้งานไม่ได้', name: 'สภาพใช้งานไม่ได้' },
+    { id: 'ชำรุดควรจำหน่าย', name: 'ชำรุดควรจำหน่าย' },
+    { id: 'โอนย้ายให้หน่วยงานอื่น', name: 'โอนย้ายให้หน่วยงานอื่น' },
+    { id: 'อยู่ระหว่างรอขาย', name: 'อยู่ระหว่างรอขาย' },
+    { id: 'อื่นๆ', name: 'อื่นๆ' },
+  ],
   durableGoodStatus: {
     'NEW': 'ใช้งานอยู่',
     'RESERVE': 'รออนุมัติ',

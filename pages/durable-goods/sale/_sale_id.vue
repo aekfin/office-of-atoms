@@ -7,7 +7,7 @@
       <v-container>
         <v-row>
           <v-col :cols="12" :md="2">
-            <v-text-field v-model="form.year" label="ปีงบประมาณ *" :rules="yearRules" type="number"/>
+            <v-text-field v-model="form.year" label="ปีงบประมาณ *" :rules="yearRules" type="number" :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="4">
             <InputDatePicker :value.sync="form.dateSale" label="วันที่จำหน่ายครุภัณฑ์ *" :rules="datetimesaleRules" required :disabled="!isCreate"/>
@@ -20,7 +20,7 @@
 
       <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการจำหน่าย` }}</b></h5>
       <v-container>
-        <NumberDurableGood :propNumber="propNumber" :propAssetNumber="propAssetNumber" :propAssetNumberAorWor="propAssetNumberAorWor" :disabled="!isCreate" @change="numberQuery = $event"/>
+        <NumberDurableGood ref="numberDurableGood" :propNumber="propNumber" :propAssetNumber="propAssetNumber" :propAssetNumberAorWor="propAssetNumberAorWor" :disabled="!isCreate" @change="numberQuery = $event"/>
         <v-row>
           <v-col :cols="12" :md="8">
             <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
@@ -152,6 +152,7 @@
       },
       onSelectDurableGoods ({ item }) {
         this.form.price = item.price
+        if (item && this.$refs.numberDurableGood) this.$refs.numberDurableGood.onlyUpdateFields(item)
       },
       async onSubmit () {
         const valid = this.$refs.form.validate()
