@@ -278,7 +278,7 @@
         return !this.form.projectName
       },
       propjectApiPath () {
-        return 'thirdParty/project-detail'
+        return 'thirdParty/project-detail-v2'
       },
       projectQuery () {
         return { year: this.year || 2563, budgetStart: this.budgetStart || 0, budgetEnd: this.budgetEnd || 0 }
