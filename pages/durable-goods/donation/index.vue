@@ -11,8 +11,8 @@
       <template #item.organization.ouName="{ item }">
         <OwnerColumn :item="item"/>
       </template>
-      <template #item.status="{ item }">
-        <v-chip :color="$store.state.durableGoodStatusColor[item.status]">{{ $store.state.durableGoodStatus[item.status] }}</v-chip>
+      <template #item.dateEntry="{ item }">
+        <div>{{ $fn.displayDate(item.dateEntry) }}</div>
       </template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
@@ -45,7 +45,7 @@
           { text: 'หมวดหมู่', value: 'majorCategory', width: '160px', align: 'center' },
           { text: 'ราคากลาง', value: 'price', align: 'center', width: '120px' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
-          { text: 'สถานะ', value: 'status', align: 'center', width: '120px' },
+          { text: 'วันที่รับเข้า', value: 'dateEntry', align: 'center', width: '140px' },
           { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
         ],
       }

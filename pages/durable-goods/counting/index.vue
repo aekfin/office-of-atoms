@@ -125,7 +125,7 @@
       },
       async onSave (content) {
         try {
-          await this.$store.dispatch('http', { apiPath: 'equipment/checkStock', query: { id: content.id, status: content.status } })
+          await this.$store.dispatch('http', { apiPath: 'equipment/checkStock', query: { id: content.id, status: content.status, status_counting: content.status_counting } })
           await this.$store.dispatch('snackbar', { text: `ตรวจนับครุภัณฑ์เลขที่ "${content.number}" สำเร็จ` })
           await Promise.all([
             this.getCheckedList(),
