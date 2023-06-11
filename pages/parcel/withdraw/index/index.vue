@@ -1,6 +1,7 @@
 <template>
   <div id="parcel-withdraw-page">
     <PageHeader text="การเบิกวัสดุคงคลัง (ภายนอกกลุ่ม)" btnText="เพิ่มการเบิกวัสดุคงคลัง" createRoute="/parcel/withdraw/create/" :total="total"/>
+    <ExportReportButton apiPath="report/pacelWithOu" name="รายงานเบิกจ่ายวัสดุคงคลังตามหน่วยงาน"/>
     <ParcelWithdrawTable :items="items" :getActionIconList="getActionIconList" :isLoading="isLoading"/>
     <Pagination/>
   </div>
@@ -10,6 +11,7 @@
   export default {
     components: {
       ParcelWithdrawTable: () => import('~/components/ParcelWithdrawTable.vue'),
+      ExportReportButton: () => import('~/components/ExportReportButton.vue'),
       PageHeader: () => import('~/components/PageHeader.vue'),
       Pagination: () => import('~/components/Pagination.vue'),
     },
