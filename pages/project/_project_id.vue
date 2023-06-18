@@ -29,17 +29,20 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col :cols="12" :lg="3" :md="6">
+          <v-col :cols="12" :lg="4" :md="6">
             <v-text-field v-model="form.projectNumber" label="เลขที่โครงการ *" :rules="codeRules" :disabled="disabledInfo"/>
           </v-col>
-          <v-col :cols="12" :lg="3" :md="6">
+          <v-col :cols="12" :lg="4" :md="6">
+            <v-text-field v-model="form.contractNumber" label="เลขที่ใบสั่งซื้อ/จ้าง หรือเลขที่สัญญา *" :rules="contractNumberRules" :disabled="disabledInfo"/>
+          </v-col>
+          <v-col :cols="12" :lg="4" :md="6">
             <v-text-field v-model="form.contractNumber" label="เลขที่คุมสัญญา *" :rules="contractNumberRules" :disabled="disabledInfo"/>
           </v-col>
-          <v-col :cols="12" :lg="3" :md="6">
+          <v-col :cols="12" :lg="4" :md="6">
             <InputDatePicker :value.sync="form.projectStartDate" label="วันเริ่มโครงการ *" :rules="datetimeStartRules" :disabled="disabledInfo"/>
           </v-col>
-          <v-col :cols="12" :lg="3" :md="6">
-            <InputDatePicker :value.sync="form.contractStartDate" label="วันเริ่มสัญญา *" :rules="datetimeCompanyStartRules" :disabled="disabledInfo"/>
+          <v-col :cols="12" :lg="4" :md="6">
+            <InputDatePicker :value.sync="form.contractStartDate" label="วันลงนามสัญญา *" :rules="datetimeCompanyStartRules" :disabled="disabledInfo"/>
           </v-col>
         </v-row>
         <v-row>
@@ -93,7 +96,7 @@
                   <v-row v-for="(contact, i) in form.directors" :key="i" class="pl-2 pr-3 mb-3" align="baseline">
                     <div class="prefix-wrapper">
                       <div class="mr-5">{{ i + 1 }}.</div>
-                      <v-text-field v-model="contact.description" label="ตำแหน่ง *" :rules="contactPositionRules"/>
+                      <v-text-field v-model="contact.description" label="ประเภทคณะกรรมการ *" :rules="contactPositionRules"/>
                     </div>
                     <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
                     <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์"/>
@@ -113,7 +116,7 @@
 
         <v-expansion-panel>
           <v-expansion-panel-header>
-            คณะกรรมการ
+            คณะกรรมการตรวจรับพัสดุ / ผู้ตรวจรับพัสดุ
             <template #actions>
               <i class="material-icons">keyboard_arrow_down</i>
             </template>
@@ -125,7 +128,7 @@
                   <v-row v-for="(contact, i) in form.committees" :key="i" class="pl-2 pr-3 mb-3" align="baseline">
                     <div class="prefix-wrapper">
                       <div class="mr-5">{{ i + 1 }}.</div>
-                      <SelectDropdown :value.sync="contact.description" :items="companyPositionList" itemValue="id" itemText="name" label="ตำแหน่ง *" :rules="contactPositionRules"/>
+                      <SelectDropdown :value.sync="contact.description" :items="companyPositionList" itemValue="id" itemText="name" label="ประเภทคณะกรรมการ *" :rules="contactPositionRules"/>
                     </div>
                     <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
                     <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์"/>
@@ -210,9 +213,10 @@
         removeFile: [],
         formExpand: [0, 1, 2],
         companyPositionList: [
-          { id: 'กรรมการร่าง TOR', name: 'กรรมการร่าง TOR' },
-          { id: 'กรรมการพิจารณาโครงการ', name: 'กรรมการพิจารณาโครงการ' },
-          { id: 'กรรมการตรวจรับ', name: 'กรรมการตรวจรับ' },
+          { id: 'ประธานกรรมการ', name: 'ประธานกรรมการ' },
+          { id: 'กรรมการ', name: 'กรรมการ' },
+          { id: 'กรรมการเลขานุการ', name: 'กรรมการเลขานุการ' },
+          { id: 'ผู้ช่วยกรรมการและเลขานุการ', name: 'ผู้ช่วยกรรมการและเลขานุการ' },
         ],
         typeList: [
           { id: 'e-Bidding', name: 'e-Bidding' },
@@ -245,13 +249,13 @@
           v => !!v || 'โปรดใส่เลขที่โครงการ',
         ],
         contractNumberRules: [
-          v => !!v || 'โปรดใส่เลขที่คุมสัญญา',
+          v => !!v || 'โปรดใส่เลขที่ใบสั่งซื้อ/จ้าง หรือเลขที่สัญญา',
         ],
         datetimeStartRules: [
           v => !!v || 'โปรดใส่วันเริ่มโครงการ',
         ],
         datetimeCompanyStartRules: [
-          v => !!v || 'โปรดใส่วันเริ่มสัญญา',
+          v => !!v || 'โปรดใส่วันลงนามสัญญา',
         ],
         datetimeCompanyEndRules: [
           v => !!v || 'โปรดใส่วันสิ้นสัญญา',
@@ -263,7 +267,7 @@
           v => !!v || 'โปรดใส่บริษัทคู่สัญญา',
         ],
         contactPositionRules: [
-          v => !!v || 'โปรดใส่ตำแหน่ง',
+          v => !!v || 'โปรดใส่ประเภทคณะกรรมการ',
         ],
         contactNameRules: [
           v => !!v || 'โปรดเลือกผู้ติดต่อ',

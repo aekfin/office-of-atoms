@@ -66,7 +66,7 @@
                       <v-text-field v-model="form.equipments[i].depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%" :disabled="!isCreate"/>
                     </v-col>
                     <v-col :cols="12" class="pt-0">
-                      <v-textarea v-model="form.equipments[i].description" class="pt-0" label="คำอธิบายเพิ่มเติม" :rows="4" :disabled="!isCreate"/>
+                      <v-textarea v-model="form.equipments[i].description" class="pt-0" label="คำอธิบายเพิ่มเติม / ข้อมูลการใช้งาน" :rows="4" :disabled="!isCreate"/>
                     </v-col>
                   </v-row>
 

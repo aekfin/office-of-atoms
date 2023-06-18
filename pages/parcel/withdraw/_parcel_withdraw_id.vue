@@ -1,6 +1,6 @@
 <template>
   <div id="parcel-withdraw-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มการเบิกวัสดุคงคลัง (ภายนอกกลุ่ม)' : 'การแก้ไขการเบิกวัสดุคงคลัง (ภายนอกกลุ่ม)'" hideTotal/>
+    <PageHeader :text="isCreate ? 'การเพิ่มการเบิกวัสดุคงคลัง' : 'การแก้ไขการเบิกวัสดุคงคลัง'" hideTotal/>
     <Loading v-if="isLoading"/>
     <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" cannotApprove @submit="onSubmit"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" text="ไม่สามารถขอเบิกได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้" hideSubmit closeText="รับทราบ"/>

@@ -1,7 +1,7 @@
 <template>
   <v-tabs class="parcel-request-tabs tabs-underline mb-10" exact exactPath>
     <v-tab :to="{ path: '/parcel/request/' }">
-      <div>ภายนอกกลุ่ม</div>
+      <div>เบิกวัสดุคงคลัง</div>
       <v-badge v-if="externalCount" class="ml-2 mr-2" color="red" :content="externalCount"/>
     </v-tab>
     <v-tab :to="{ path: '/parcel/request/department/' }">

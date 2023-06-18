@@ -51,7 +51,7 @@
             </v-col>
           </v-row>
 
-          <DurableGoodsOwner v-if="isCreate" title="ผู้รับผิดชอบ" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.userRepairId"
+          <DurableGoodsOwner v-if="isCreate" title="หน่วยงานรับซ่อม" :organization.sync="form.organizationId" :department.sync="form.departmentId" :user.sync="form.userRepairId"
             :disabled="!isCreate" onlyUser :userList="form.userList"/>
 
           <v-row v-if="item">
@@ -315,7 +315,7 @@
               id: this.item.id,
               canRepair: false,
               reasonRepair: this.reasonRepair,
-              updateStatus: 'DEPRECIATION',
+              updateStatus: 'WAIT_SALE',
             }
             const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/outSourceRepair', query: { ...this.$route.query, ...query } })
             await this.$store.dispatch('snackbar', { text: 'ไม่ส่งซ่อมครุภัณฑ์ภายนอกสำเร็จ' })

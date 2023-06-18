@@ -1,6 +1,6 @@
 <template>
   <div id="parcel-withdraw-page">
-    <PageHeader text="การเบิกวัสดุคงคลัง (ภายนอกกลุ่ม)" btnText="เพิ่มการเบิกวัสดุคงคลัง" createRoute="/parcel/withdraw/create/" :total="total"/>
+    <PageHeader text="การเบิกวัสดุคงคลัง" btnText="เพิ่มการเบิกวัสดุคงคลัง" createRoute="/parcel/withdraw/create/" :total="total"/>
     <ExportReportButton apiPath="report/pacelWithOu" name="รายงานเบิกจ่ายวัสดุคงคลังตามหน่วยงาน"/>
     <ParcelWithdrawTable :items="items" :getActionIconList="getActionIconList" :isLoading="isLoading"/>
     <Pagination/>

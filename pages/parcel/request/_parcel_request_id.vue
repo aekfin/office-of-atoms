@@ -1,6 +1,6 @@
 <template>
   <div id="parcel-request-detail-page">
-    <PageHeader :text="'อนุมัติการเบิกวัสดุคงคลัง (ภายนอกกลุ่ม)'" hideTotal/>
+    <PageHeader :text="'อนุมัติการเบิกวัสดุคงคลัง'" hideTotal/>
     <Loading v-if="isLoading"/>
     <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" backPath="/parcel/request/" @approve="onApprove" @reject="onReject"/>
   </div>

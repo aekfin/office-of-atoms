@@ -53,7 +53,7 @@
       <v-container>
         <v-row>
           <v-col :cols="12" class="pb-0">
-            <b>{{ `ผู้ครอบครองเดิม` }}</b>
+            <b>{{ `ผู้โอน` }}</b>
           </v-col>
           <v-col :cols="12" :md="4">
             <v-text-field v-model="form.organization.ouName" label="กอง *" disabled/>
@@ -70,7 +70,7 @@
         </v-row>
         <v-row>
           <v-col :cols="12" class="pb-0">
-            <b>{{ `ผู้ครอบครองใหม่` }}</b>
+            <b>{{ `ผู้รับโอน` }}</b>
           </v-col>
           <v-col :cols="12" :md="6">
             <SelectDropdown :value.sync="form.ouId" label="กอง *" itemText="ouName" :rules="ouRules" required apiPath="Orgchart/getOrganizations" :disabled="!form.itemId || viewMode"/>

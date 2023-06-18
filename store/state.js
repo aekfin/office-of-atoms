@@ -28,7 +28,7 @@ export default () => ({
   approveEquipmentTRANSFER: null,
   approveEquipmentREPAIR: null,
   approveRequestTrigger: false,
-  durableGoodCountable: ['NEW', 'RETURNED'],
+  durableGoodCountable: ['NEW', 'RETURNED', 'WAIT_SALE'],
   durableGoodCountingStatus: [
     { id: 'สภาพใช้งานได้', name: 'สภาพใช้งานได้' },
     { id: 'สภาพใช้งานไม่ได้', name: 'สภาพใช้งานไม่ได้' },
