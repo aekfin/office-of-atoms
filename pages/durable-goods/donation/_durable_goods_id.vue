@@ -79,16 +79,19 @@
                         <v-text-field v-model="detail.number" name="code" label="เลขที่ครุภัณฑ์ *" required disabled :loading="isNumberLoading"/>
                       </div>
                     </v-col>
-                    <v-col :cols="12" md>
+                    <v-col :cols="12" :md="3">
                       <v-text-field v-model="detail.serialNumber" label="หมายเลขซีเรียล" :disabled="!isCreate || !form.organizationId"/>
                     </v-col>
-                    <v-col :cols="12" md>
+                    <v-col :cols="12" :md="3">
                       <v-text-field v-model="detail.assetNumber" label="เลขที่สินทรัพย์" :disabled="!isCreate || !form.organizationId"/>
                     </v-col>
-                    <v-col :cols="12" md>
+                    <v-col :cols="12" :md="3">
+                      <v-text-field v-model="detail.assetSubNumber" label="เลขที่สินทรัพย์ย่อย" required :disabled="!isCreate || !form.organizationId"/>
+                    </v-col>
+                    <v-col :cols="12" :md="3">
                       <v-text-field v-model="detail.assetNumberAorWor" label="เลขที่สินทรัพย์ อว." required :disabled="!isCreate || !form.organizationId"/>
                     </v-col>
-                    <v-col :cols="12" md>
+                    <v-col :cols="12" :md="3">
                       <v-text-field v-model="detail.numberSubAorWor" label="เลขที่ อว.ย่อย" required :disabled="!isCreate || !form.organizationId"/>
                     </v-col>
                   </v-row>
@@ -133,6 +136,7 @@
             {
               assetNumber: '',
               assetNumberAorWor: '',
+              assetSubNumber: '',
               numberSubAorWor: '',
               name: '',
               year: (new Date()).getFullYear() + 543,
@@ -219,6 +223,7 @@
           assetNumberAorWor: data.assetNumberAorWor || '',
           serialNumber: data.serialNumber || '',
           numberSubAorWor: data.numberSubAorWor || '',
+          assetSubNumber: data.assetSubNumber || '',
         }
       },
       addDurableGoods () {
@@ -226,6 +231,7 @@
           {
             assetNumber: '',
             assetNumberAorWor: '',
+            assetSubNumber: '',
             numberSubAorWor: '',
             name: '',
             year: (new Date()).getFullYear() + 543,
@@ -322,6 +328,7 @@
           assetNumberAorWor: equipment.detailList.map(detail => detail.assetNumberAorWor),
           serialNumbers: equipment.detailList.map(detail => detail.serialNumber),
           numberSubAorWor: equipment.detailList.map(detail => detail.numberSubAorWor),
+          assetSubNumber: equipment.detailList.map(detail => detail.assetSubNumber),
         }
       },
       getMapCategory (item) {

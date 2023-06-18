@@ -41,10 +41,14 @@
                   <div class="mt-2">{{ equipment.assetNumber || '-' }}</div>
                 </v-col>
                 <v-col :cols="12" :md="3">
+                  <b>เลขที่สินทรัพย์ย่อย</b>
+                  <div class="mt-2">{{ equipment.assetSubNumber || '-' }}</div>
+                </v-col>
+                <v-col :cols="12" :md="3">
                   <b>เลขที่สินทรัพย์ อว.</b>
                   <div class="mt-2">{{ equipment.assetNumberAorWor || '-' }}</div>
                 </v-col>
-                <v-col :cols="12" :md="12">
+                <v-col :cols="12" :md="9">
                   <b>เลขที่ อว.ย่อย</b>
                   <div class="mt-2">{{ equipment.numberSubAorWor || '-' }}</div>
                 </v-col>
@@ -109,21 +113,24 @@
             <v-col :cols="12" :md="3">
               <v-text-field v-model="subEquipment.classifier" name="unit" label="หน่วย *" :rules="classifierRules" required/>
             </v-col>
-            <v-col :cols="12" md>
+            <v-col :cols="12" :md="3">
               <div class="d-flex align-center">
                 <v-text-field v-model="subEquipment.number" name="code" label="เลขที่ครุภัณฑ์ *" :rules="numberRules" :loading="isLoadingNumber" disabled/>
               </div>
             </v-col>
-            <v-col :cols="12" md>
+            <v-col :cols="12" :md="3">
               <v-text-field v-model="subEquipment.serialNumber" label="หมายเลขซีเรียล"/>
             </v-col>
-            <v-col :cols="12" md>
+            <v-col :cols="12" :md="3">
               <v-text-field v-model="subEquipment.assetNumber" label="เลขที่สินทรัพย์"/>
             </v-col>
-            <v-col :cols="12" md>
+            <v-col :cols="12" :md="3">
+              <v-text-field v-model="subEquipment.assetSubNumber" label="เลขที่สินทรัพย์ อว."/>
+            </v-col>
+            <v-col :cols="12" :md="3">
               <v-text-field v-model="subEquipment.assetNumberAorWor" label="เลขที่สินทรัพย์ อว."/>
             </v-col>
-          <v-col :cols="12" md>
+          <v-col :cols="12" :md="3">
             <v-text-field v-model="subEquipment.numberSubAorWor" label="เลขที่ อว.ย่อย" required/>
           </v-col>
           </v-row>
@@ -191,6 +198,7 @@
             assetNumber: '',
             assetNumberAorWor: '',
             numberSubAorWor: '',
+            assetSubNumber: '',
           }
         )
         this.getSubEquipmentNumber()
