@@ -21,9 +21,28 @@
           <v-col :cols="12" :md="3">
             <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate"/>
           </v-col>
+          <v-col :cols="12" :md="3">
+            <InputDatePicker :value.sync="form.dateReceivedBefore" label="วันที่ได้มา (ก่อนโอน)" :disabled="!isCreate"/>
+          </v-col>
+          <v-col :cols="12" :md="3">
+            <InputDatePicker :value.sync="form.dateReceivedAfter" label="วันที่ได้มา (หลังโอน)" :disabled="!isCreate"/>
+          </v-col>
+          <v-col :cols="12" :md="3">
+            <v-text-field v-model="form.valueBefore" label="มูลค่า (ก่อนโอน)" type="number" :disabled="!isCreate"/>
+          </v-col>
+          <v-col :cols="12" :md="3">
+            <v-text-field v-model="form.valueAfter" label="มูลค่า (หลังโอน)" type="number" :disabled="!isCreate"/>
+          </v-col>
+          <v-col :cols="12" :md="6">
+            <SelectDropdown :value.sync="form.registrationType" itemValue="id" itemText="name" :items="registrationList" label="ประเภททะเบียนครุภัณฑ์ *" :disabled="!isCreate"/>
+          </v-col>
         </v-row>
 
-        <DurableGoodsOwner class="mt-5" :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :userList="form.ownerList" :disabled="!isCreate" @ouChange="onOuChange"/>
+        <DurableGoodsOwner class="mt-5" :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :userList="form.ownerList" :disabled="!isCreate" @ouChange="onOuChange">
+          <v-col :cols="12">
+            <v-text-field v-model="form.location" label="สถานที่ติดตั้ง" :disabled="!isCreate"/>
+          </v-col>
+        </DurableGoodsOwner>
 
         <div class="text-h5 mt-5"><b>เลือกครุภัณฑ์</b></div>
         <v-container>
@@ -121,6 +140,7 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       Loading: () => import('~/components/Loading.vue'),
+      SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
     },
     data () {
@@ -150,6 +170,12 @@
           departmentId: null,
           ownerId: null,
           ownerList: [],
+          location: '',
+          dateReceivedBefore: '',
+          dateReceivedAfter: '',
+          valueBefore: '',
+          valueAfter: '',
+          registrationType: '1'
         },
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อ',
@@ -191,6 +217,10 @@
           v => !!v || 'โปรดใส่จำนวน',
         ],
         formExpand: [0],
+        registrationList: [
+          { id: '1', name: 'มาตราฐาน' },
+          { id: '2', name: 'ต่ำกว่าเกณฑ์' },
+        ],
       }
     },
     computed: {
@@ -292,6 +322,12 @@
             departmentId: data.department.id,
             ownerId: data.owner?.id || null,
             ownerList: data.owner && [data.owner] || [],
+            location: data.location || '',
+            dateReceivedBefore: data.dateReceivedBefore || '',
+            dateReceivedAfter: data.dateReceivedAfter || '',
+            valueBefore: data.valueBefore || '',
+            valueAfter: data.valueAfter || '',
+            registrationType: data.registrationType || '1'
           }
           this.initCategoryForm = {
             majorCategoryId: data.majorCategory.id,

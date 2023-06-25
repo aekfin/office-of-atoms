@@ -22,6 +22,7 @@
         </template>
       </AutocompleteDropdown>
     </v-col>
+    <slot/>
   </v-row>
 </template>
 
