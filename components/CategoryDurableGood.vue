@@ -1,7 +1,7 @@
 <template>
   <v-row class="category-durable-good">
     <v-col :cols="12" :md="cols">
-      <SelectDropdown :value.sync="form.majorCategoryId" :label="`หมวดหมู่พัสดุ ${noRules ? '' : '*'}`" apiPath="equipment/category/getMejorCategorys" :rules="!noRules && categoryRule || []" required :disabled="disabled" @select="onChangeCategory"/>
+      <SelectDropdown :value.sync="form.majorCategoryId" :label="`หมวดหมู่พัสดุ ${noRules ? '' : '*'}`" apiPath="equipment/category/getMejorCategorys?pageSize=1000" :rules="!noRules && categoryRule || []" required :disabled="disabled" @select="onChangeCategory"/>
     </v-col>
     <v-col :cols="12" :md="cols">
       <SelectDropdown :value.sync="form.subCategoryId" :label="`ประเภทพัสดุ ${noRules ? '' : '*'}`" :items="subCategoryItems" :rules="!noRules && subcategoryRule || []" required :disabled="disabled || !form.majorCategoryId || isLoadingSubCategory" :forceLoading="isLoadingSubCategory" @select="onChangeSubCategory"/>
@@ -31,7 +31,7 @@
       noRules: { type: Boolean },
     },
     watch: {
-      async 'initForm' () {
+      async 'initForm' (val, oldVal) {
         this.setForm()
       }
     },
