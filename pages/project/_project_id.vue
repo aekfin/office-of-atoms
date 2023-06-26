@@ -29,23 +29,23 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col :cols="12" :lg="4" :md="6">
+          <v-col :cols="12" :md="4">
             <v-text-field v-model="form.projectNumber" label="เลขที่โครงการ *" :rules="codeRules" :disabled="disabledInfo"/>
           </v-col>
-          <v-col :cols="12" :lg="4" :md="6">
+          <v-col :cols="12" :md="4">
             <v-text-field v-model="form.contractNumber" label="เลขที่ใบสั่งซื้อ/จ้าง หรือเลขที่สัญญา *" :rules="contractNumberRules" :disabled="disabledInfo"/>
           </v-col>
-          <v-col :cols="12" :lg="4" :md="6">
-            <v-text-field v-model="form.contractNumber" label="เลขที่คุมสัญญา *" :rules="contractNumberRules" :disabled="disabledInfo"/>
-          </v-col>
-          <v-col :cols="12" :lg="4" :md="6">
-            <InputDatePicker :value.sync="form.projectStartDate" label="วันเริ่มโครงการ *" :rules="datetimeStartRules" :disabled="disabledInfo"/>
-          </v-col>
-          <v-col :cols="12" :lg="4" :md="6">
-            <InputDatePicker :value.sync="form.contractStartDate" label="วันลงนามสัญญา *" :rules="datetimeCompanyStartRules" :disabled="disabledInfo"/>
+          <v-col :cols="12" :md="4">
+            <v-text-field v-model="form.contractControlNumber" label="เลขที่คุมสัญญา *" :rules="contractControlNumberRules" :disabled="disabledInfo"/>
           </v-col>
         </v-row>
         <v-row>
+          <v-col :cols="12" :lg="3" :md="6">
+            <InputDatePicker :value.sync="form.projectStartDate" label="วันเริ่มโครงการ *" :rules="datetimeStartRules" :disabled="disabledInfo"/>
+          </v-col>
+          <v-col :cols="12" :lg="3" :md="6">
+            <InputDatePicker :value.sync="form.contractStartDate" label="วันลงนามสัญญา *" :rules="datetimeCompanyStartRules" :disabled="disabledInfo"/>
+          </v-col>
           <v-col :cols="12" :lg="3" :md="6">
             <InputDatePicker :value.sync="form.contractEndDate" label="วันสิ้นสัญญา *" :rules="datetimeCompanyEndRules" :disabled="disabledInfo"/>
           </v-col>
@@ -54,11 +54,22 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col :cols="12" :md="6">
-            <SelectDropdown :value.sync="form.type" :items="typeList" itemValue="id" itemText="name" label="วีธี รูปแบบงาน" :rules="contactPositionRules"/>
+          <v-col :cols="12" :lg="4" :md="6">
+            <v-text-field v-model="form.budget" label="งบประมาณโครงการ *" type="number" :rules="budgetRules"/>
           </v-col>
+          <v-col :cols="12" :lg="4" :md="6">
+            <SelectDropdown :value.sync="form.format" :items="formatList" itemValue="id" itemText="name" label="รูปแบบ *" :rules="formatRules"/>
+          </v-col>
+          <v-col :cols="12" :lg="4" :md="6">
+            <SelectDropdown :value.sync="form.type" :items="typeList" itemValue="id" itemText="name" label="วีธี รูปแบบงาน *" :rules="contactPositionRules"/>
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col :cols="12" :md="6">
             <v-text-field v-model="form.responsibleAgency" label="หน่วยงานรับผิดชอบ"/>
+          </v-col>
+          <v-col :cols="12" :md="6">
+            <v-text-field v-model="form.responsibleMan" label="ชื่อผู้รับผิดชอบ"/>
           </v-col>
         </v-row>
         <v-row>
@@ -195,6 +206,7 @@
           projectName: '',
           projectNumber: '',
           contractNumber: '',
+          contractControlNumber: '',
           projectStartDate: '',
           contractStartDate: '',
           contractEndDate: '',
@@ -208,6 +220,9 @@
           detailedWorkMoney: '',
           detailedWork: '',
           detailsOfItems: '',
+          format: null,
+          budget: '',
+          responsibleMan : '',
         },
         attachFiles: [],
         removeFile: [],
@@ -233,6 +248,11 @@
           { id: 'วิธีเฉพาะเจาะจง(ข)', name: 'วิธีเฉพาะเจาะจง(ข)' },
           { id: 'สอบราคา', name: 'สอบราคา' },
         ],
+        formatList: [
+          { id: 'ซื้อ', name: 'ซื้อ' },
+          { id: 'จ้าง', name: 'จ้าง' },
+          { id: 'เช่า', name: 'เช่า' },
+        ],
         yearRules: [
           v => !!v || 'โปรดใส่ปีงบประมาณ',
         ],
@@ -242,6 +262,12 @@
         budgetEndRules: [
           v => isNaN(parseInt(v)) ? 'โปรดใส่งบประมาณสูงสุด' : parseInt(v) > parseInt(this.budgetStart) || 'ต้องมากกว่างบประมาณต่ำสุด',
         ],
+        budgetRules: [
+          v => !!v || 'โปรดใส่งบประมาณโครงการ',
+        ],
+        formatRules: [
+          v => !!v || 'โปรดใส่เลือกรูปแบบ',
+        ],
         projectRules: [
           v => !!v || 'โปรดเลือกโครงการ',
         ],
@@ -250,6 +276,9 @@
         ],
         contractNumberRules: [
           v => !!v || 'โปรดใส่เลขที่ใบสั่งซื้อ/จ้าง หรือเลขที่สัญญา',
+        ],
+        contractControlNumberRules: [
+          v => !!v || 'โปรดใส่เลขที่คุมสัญญา',
         ],
         datetimeStartRules: [
           v => !!v || 'โปรดใส่วันเริ่มโครงการ',
