@@ -2,7 +2,7 @@
   <div id="durable-goods-withdraw-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มการเบิกครุภัณฑ์' : 'การแก้ไขการเบิกครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
-    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" type="เบิก" cannotApprove backPath="/durable-goods/withdraw/" hideOwner @submit="onSubmit"/>
+    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" type="เบิก" cannotApprove backPath="/durable-goods/withdraw/" hideOwner isWithdraw @submit="onSubmit"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
   </div>
 </template>
@@ -11,7 +11,6 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
-      DurableGoodsBorrowForm: () => import('~/components/DurableGoodsBorrowForm.vue'),
       Loading: () => import('~/components/Loading.vue'),
       ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
     },
@@ -54,7 +53,7 @@
         try{
           const formData = { ...form }
           formData.dateBorrow = this.$fn.convertDateToString(formData.dateBorrow)
-          formData.itemIds = [formData.itemId]
+          formData.itemIds = form.selected.map(item => item.id)
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/requisition', data: formData })
           if (data.status.code == 400) {
             await this.$store.dispatch('snackbar', { text: `Error ${data.status.code}: ${data.status.description}`, props: { color: 'red', top: true } })

@@ -49,7 +49,7 @@
         </v-card-text>
         <v-card-actions>
           <div class="d-flex justify-end w-full">
-            <v-btn plain @click="onClear">ยกเลิก</v-btn>
+            <v-btn plain @click="onClear">ล้างข้อมูล</v-btn>
             <v-btn color="secondary" @click="onApply">นำมาใช้</v-btn>
           </div>
         </v-card-actions>
@@ -92,11 +92,14 @@
         this.setForm()
       },
     },
+    mounted () {
+      this.setForm()
+    },
     methods: {
       setValue (param) {
         const val = this.$route.query?.[param]
-        const convertArray = () => val.split(',').map(v => parseInt(v))
-        return val ? val.includes(',') ? convertArray() : parseInt(val) : null
+        const convertArray = () => val.split(',').map(v => v)
+        return val ? val.includes(',') ? convertArray() : val : null
       },
       setForm () {
         this.form = this.filters.reduce((form, filter) => ({ ...form, [filter.param]: this.setValue(filter.param) }), {})

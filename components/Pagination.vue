@@ -27,7 +27,7 @@
     methods: {
       onInput (val) {
         if (this.isState) {
-          this.$router.push({ query: { pageNo: val - 1 } })
+          this.$router.push({ query: { ...this.$route.query, pageNo: val - 1 } })
         }
         this.$emit('change', val - 1)
       },
