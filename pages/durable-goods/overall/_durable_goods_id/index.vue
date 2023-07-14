@@ -363,6 +363,8 @@
               equipments: this.form.equipments.map(equipment => ({ ...equipment, ownerId: this.form.ownerId, ...this.convertDetail(equipment) })),
               dateEntry: this.$fn.convertDateToString(this.form.dateEntry),
               inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
+              dateReceivedBefore: this.$fn.convertDateToString(this.form.dateReceivedBefore),
+              dateReceivedAfter: this.$fn.convertDateToString(this.form.dateReceivedAfter),
             }
             const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/project/import', data: form })
             await Promise.all(
