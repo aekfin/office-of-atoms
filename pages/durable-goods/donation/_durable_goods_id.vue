@@ -11,6 +11,9 @@
           <v-col :cols="12" :md="3">
             <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate"/>
           </v-col>
+          <v-col :cols="12" :md="6">
+            <v-text-field v-model="form.documentNumber" label="เลขที่เอกสาร" :disabled="!isCreate"/>
+          </v-col>
         </v-row>
 
         <DurableGoodsOwner class="mt-5" :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :userList="form.ownerList" :disabled="!isCreate" @ouChange="onOuChange"/>
@@ -148,13 +151,14 @@
               donator: '',
               userId: null,
               quantity: 1,
-              detailList: [this.getDetail()]
+              detailList: [this.getDetail()],
             }
           ],
           organizationId: null,
           departmentId: null,
           ownerId: null,
           ownerList: [],
+          documentNumber: '',
         },
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อ',

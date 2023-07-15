@@ -153,6 +153,7 @@ export default () => ({
         {
           title: 'จำหน่ายครุภัณฑ์',
           to: '/durable-goods/sale/',
+          checkTreasury: true,
         },
         {
           title: 'ส่งซ่อมครุภัณฑ์',
