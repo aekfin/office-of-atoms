@@ -18,7 +18,9 @@
     methods: {
       async onExportReport () {
         try {
-          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath })
+          const query = { ...this.$route.query }
+          delete query.pageNo
+          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query })
           const a = document.createElement('a')
           a.href = data
           a.download = `${this.name}-${this.$fn.reportDate(new Date())}`

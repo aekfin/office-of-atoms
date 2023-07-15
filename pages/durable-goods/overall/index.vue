@@ -1,23 +1,8 @@
 <template>
   <div id="durable-goods-page">
-    <PageHeader text="บริหารครุภัณฑ์" btnText="เพิ่มครุภัณฑ์" createRoute="/durable-goods/overall/create/" :total="total"/>
-    <ExportReportButton apiPath="report/depreciation" name="รายงานค่าเสื่อมครุภัณฑ์"/>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
-      <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
-      <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
-      <template #item.majorCategory="{ item }">
-        <EquipmentColumn :item="item"/>
-      </template>
-      <template #item.organization.ouName="{ item }">
-        <OwnerColumn :item="item"/>
-      </template>
-      <template #item.dateEntry="{ item }">
-        <div>{{ $fn.displayDate(item.dateEntry) }}</div>
-      </template>
-      <template #item.action="{ item }">
-        <ActionIconList :list="getActionIconList(item)"/>
-      </template>
-    </v-data-table>
+    <PageHeader text="บริหารครุภัณฑ์" btnText="เพิ่มครุภัณฑ์" createRoute="/durable-goods/overall/create/" :total="total" :filters="filters"/>
+    <ExportReportButton class="mt-4" apiPath="report/depreciation" name="รายงานค่าเสื่อมครุภัณฑ์"/>
+    <DurableGoodsTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
     <Pagination/>
   </div>
 </template>
@@ -27,26 +12,24 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       ExportReportButton: () => import('~/components/ExportReportButton.vue'),
-      EquipmentColumn: () => import('~/components/EquipmentColumn.vue'),
-      OwnerColumn: () => import('~/components/OwnerColumn.vue'),
       Pagination: () => import('~/components/Pagination.vue'),
     },
     data () {
       return {
-        headers: [
-          { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
-          { text: 'โครงการ', value: 'project.projectName' },
-          { text: 'ชื่อครุภัณฑ์', value: 'name', width: '180px' },
-          { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
-          { text: 'ราคา', value: 'price', align: 'center', width: '120px' },
-          { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
-          { text: 'วันที่รับเข้า', value: 'dateEntry', align: 'center', width: '140px' },
-          { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
-        ],
         isLoading: true,
         count: 0,
         total: 0,
         items: [],
+        filters: [
+          {
+            name: 'ประเภททะเบียนครุภัณฑ์',
+            param: 'registrationType',
+            options: [
+              { id: '1', name: 'มาตราฐาน' },
+              { id: '2', name: 'ต่ำกว่าเกณฑ์' },
+            ]
+          }
+        ],
       }
     },
     watch: {

@@ -39,7 +39,13 @@
 
       <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการ${type}` }}</b></h5>
       <v-container class="mt-2">
-        <CategoryDurableGood :initForm="initCategoryForm" :disabled="viewMode" noRules @change="onChangeCategory">
+        <div v-if="isWithdraw && !viewMode">
+          <v-col :cols="12" :md="12">
+            <SelectDropdown :value.sync="projectId" itemValue="id" itemText="projectName" label="เลือกโครงการ *" apiPath="Project/getListProject"  :rules="projectRules" @select="onSelectProject"/>
+          </v-col>
+          <WithdrawDurableGoodsTable v-if="projectId" :items="durableGoodsWithdraw" :isLoading="isWithdrawLoading" :selectList="selectedWithdraw"/>
+        </div>
+        <CategoryDurableGood v-else :initForm="initCategoryForm" :disabled="viewMode" noRules @change="onChangeCategory">
           <v-col :cols="12" :md="9">
             <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
             <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="apiPath"
@@ -84,6 +90,7 @@
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
       CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
+      WithdrawDurableGoodsTable: () => import('~/components/WithdrawDurableGoodsTable.vue'),
     },
     props: {
       item: { type: Object },
@@ -93,11 +100,13 @@
       type: { type: String, default: 'ยืม' },
       apiPath: { type: String, default: 'equipment/getEquipmentsAndFilter?status=NEW&status=RETURNED' },
       hideOwner: { type: Boolean },
+      isWithdraw: { type: Boolean },
     },
     data () {
       return {
         valid: true,
         form: null,
+        projectId: null,
         datetimeBorrowRules: [
           v => !!v || `โปรดใส่วันที่${this.type}`,
         ],
@@ -107,9 +116,15 @@
         durableGoodsRules: [
           v => !!v || 'โปรดเลือกครุภัณฑ์',
         ],
+        projectRules: [
+          v => !!v || 'โปรดเลือกโครงการ',
+        ],
         step: 1,
         categoryForm: {},
         initCategoryForm: {},
+        isWithdrawLoading: false,
+        durableGoodsWithdraw: [],
+        selectedWithdraw: [],
       }
     },
     computed: {
@@ -178,6 +193,16 @@
       isComplete (item) {
         return item?.status === 'APPROVE'
       },
+      async onSelectProject ({ val, item }) {
+        try {
+          this.isWithdrawLoading = true
+          const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/project/getEquipmentsByProjectId', query: { pageSize: 1000, projectId: val } })
+          this.durableGoodsWithdraw = data
+          this.selectedWithdraw = data.map(item => true)
+          this.isWithdrawLoading = false
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
       onSelectDurableGoods ({ item }) {
         this.form.organization = item.organization
         this.form.department = item.department
@@ -185,6 +210,9 @@
       },
       onSubmit () {
         const valid = this.$refs.form.validate()
+        if (this.isWithdraw) {
+          this.form.selected = this.durableGoodsWithdraw.filter((goods, i) => this.selectedWithdraw[i])
+        }
         if (valid) this.$emit('submit', this.form)
       },
       onApprove () {
