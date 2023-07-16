@@ -14,7 +14,7 @@
       </slot>
     </div>
     <div v-if="!hideTotal" class="mt-4">ทั้งหมด {{ total || 0 }} {{ unit }}</div>
-    <div v-if="filters.length" class="filter-wrapper">
+    <div v-if="filters.length" class="filter-wrapper mt-3">
       <div class="btn-wrapper">
         <v-badge :content="currentFilters.length" bordered overlap color="primary" :value="!!currentFilters.length">
           <v-btn elevation="2" outlined color="primary" @click="dialog = !dialog">
@@ -129,7 +129,7 @@
 
     .filter-wrapper {
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
       align-items: center;
       gap: 12px;
     }

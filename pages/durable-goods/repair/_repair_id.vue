@@ -331,7 +331,7 @@
               ...this.form,
               dateRepair: this.$fn.convertDateToString(this.form.dateRepair)
             }
-            const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: `equipment/repair/`, query: { ...this.$route.query }, data: form })
+            const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: `equipment/repair`, query: { ...this.$route.query }, data: form })
             if (data.status?.code == 400) {
               this.errorText = data.status.description.includes('invalid with status') ? 'ไม่สามารถขอส่งซ่อมได้ เนื่องจากครุภัณฑ์ดังกล่าวอยู่ในระหว่างการรออนุมัติอยู่หรืออื่นๆอยู่' : 'ไม่สามารถขอส่งซ่อมได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้'
               this.dialog = true

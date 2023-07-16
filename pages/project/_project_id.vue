@@ -107,7 +107,7 @@
                   <v-row v-for="(contact, i) in form.directors" :key="i" class="pl-2 pr-3 mb-3" align="baseline">
                     <div class="prefix-wrapper">
                       <div class="mr-5">{{ i + 1 }}.</div>
-                      <v-text-field v-model="contact.description" label="ประเภทคณะกรรมการ *" :rules="contactPositionRules"/>
+                      <v-text-field v-model="contact.description" label="ตำแหน่ง *" :rules="positionRules"/>
                     </div>
                     <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
                     <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์"/>
@@ -297,6 +297,9 @@
         ],
         contactPositionRules: [
           v => !!v || 'โปรดใส่ประเภทคณะกรรมการ',
+        ],
+        positionRules: [
+          v => !!v || 'โปรดใส่ตำแหน่ง',
         ],
         contactNameRules: [
           v => !!v || 'โปรดเลือกผู้ติดต่อ',

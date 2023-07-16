@@ -48,6 +48,9 @@
           </v-col>
         </v-row>
       </v-container>
+      <v-container v-if="!viewMode">
+        <WithdrawDurableGoodsTable :items="transferItems" :selectList="selectList"/>
+      </v-container>
 
       <div class="text-h5 mt-5 mb-2"><b>โอนย้ายผู้ครอบครอง</b></div>
       <v-container>
@@ -55,14 +58,11 @@
           <v-col :cols="12" class="pb-0">
             <b>{{ `ผู้โอน` }}</b>
           </v-col>
-          <v-col :cols="12" :md="4">
+          <v-col :cols="12" :md="6">
             <v-text-field v-model="form.organization.ouName" label="กอง *" disabled/>
           </v-col>
-          <v-col :cols="12" :md="4">
+          <v-col :cols="12" :md="6">
             <v-text-field v-model="form.department.departmentName" label="กลุ่ม *" disabled/>
-          </v-col>
-          <v-col :cols="12" :md="4">
-            <v-text-field :value="$fn.isEmpty(form.owner) ? '' : $fn.getName(form.owner)" label="บุคคล" disabled/>
           </v-col>
         </v-row>
         <v-row :cols="12" justify="center">
@@ -103,6 +103,7 @@
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
       NumberDurableGood: () => import('~/components/NumberDurableGood.vue'),
+      WithdrawDurableGoodsTable: () => import('~/components/WithdrawDurableGoodsTable.vue'),
     },
     props: {
       item: { type: Object },
@@ -132,6 +133,8 @@
         ],
         step: 1,
         numberQuery: {},
+        transferItems: [],
+        selectList: [],
       }
     },
     computed: {
@@ -184,14 +187,22 @@
         return item?.status === 'APPROVE'
       },
       onSelectDurableGoods ({ item }) {
-        this.form.organization = item.organization
-        this.form.department = item.department
-        this.form.owner = item.owner || {}
-        if (item && this.$refs.numberDurableGood) this.$refs.numberDurableGood.onlyUpdateFields(item)
+        if (item) {
+          this.form.organization = item.organization
+          this.form.department = item.department
+          this.form.owner = item.owner || {}
+          // if (item && this.$refs.numberDurableGood) this.$refs.numberDurableGood.onlyUpdateFields(item)
+          if (this.transferItems.every(goods => goods.id !== item.id)) {
+            this.transferItems.push(item)
+            this.selectList.push(true)
+          }
+        }
       },
       onSubmit () {
         const valid = this.$refs.form.validate()
-        if (valid) this.$emit('submit', this.form)
+        const form = { ...this.form, itemIds: this.transferItems.filter((goods, i) => this.selectList [i]).map(item => item.id)}
+        delete form.itemId
+        if (valid) this.$emit('submit', form)
       },
       onApprove () {
         const valid = this.$refs.form.validate()

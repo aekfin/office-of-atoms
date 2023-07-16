@@ -59,7 +59,7 @@
           <v-col :cols="12" :md="12">
             <SelectDropdown :value.sync="projectId" itemValue="id" itemText="projectName" label="เลือกโครงการ *" apiPath="Project/getListProject" :rules="projectRules" @select="onSelectProject"/>
           </v-col>
-          <WithdrawDurableGoodsTable v-if="projectId" :items="durableGoodsWithdraw" :isLoading="isWithdrawLoading" :selectList="selectedWithdraw"/>
+          <WithdrawDurableGoodsTable v-if="projectId" class="mt-6" :items="durableGoodsWithdraw" :isLoading="isWithdrawLoading" :selectList="selectedWithdraw"/>
         </div>
         <CategoryDurableGood v-else :initForm="initCategoryForm" :disabled="viewMode" noRules @change="onChangeCategory">
           <v-col :cols="12" :md="9">

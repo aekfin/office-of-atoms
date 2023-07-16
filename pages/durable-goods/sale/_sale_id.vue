@@ -9,8 +9,11 @@
           <v-col :cols="12" :md="2">
             <v-text-field v-model="form.year" label="ปีงบประมาณ *" :rules="yearRules" type="number" :disabled="!isCreate"/>
           </v-col>
-          <v-col :cols="12" :md="4">
+          <v-col :cols="12" :md="3">
             <InputDatePicker :value.sync="form.dateSale" label="วันที่จำหน่ายครุภัณฑ์ *" :rules="datetimesaleRules" required :disabled="!isCreate"/>
+          </v-col>
+          <v-col :cols="12" :md="3">
+            <InputDatePicker :value.sync="form.dateDocument" label="วันที่เอกสาร *" :rules="datetimeDocumentRules" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12">
             <v-textarea v-model="form.description" label="หมายเหตุ" :rows="4" :disabled="!isCreate"/>
@@ -66,6 +69,7 @@
         form: {
           year: '',
           dateSale: new Date(),
+          dateDocument: '',
           description: '',
           buyer: '',
           price: '',
@@ -77,6 +81,9 @@
         isLoading: false,
         datetimesaleRules: [
           v => !!v || `โปรดใส่วันที่จำหน่าย`,
+        ],
+        datetimeDocumentRules: [
+          v => !!v || `โปรดใส่วันที่เอกสาร`,
         ],
         datetimeReturnRules: [
           v => !!v || 'โปรดใส่วันที่คืน',
@@ -141,6 +148,7 @@
         this.form = {
           year: data?.year || (new Date()).getFullYear() + 543,
           dateSale: data?.dateSale || new Date(),
+          dateDocument: data?.dateDocument || '',
           description: data?.description || '',
           buyer: data?.buyer || '',
           price: data?.price || '',

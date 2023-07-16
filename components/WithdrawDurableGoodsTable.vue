@@ -1,5 +1,5 @@
 <template>
-  <v-data-table :headers="headers" :items="items" :itemsPerPage="1000" disableSort hideDefaultFooter class="withdraw-durable-goods-table elevation-1 mt-6" :loading="isLoading">
+  <v-data-table :headers="headers" :items="items" :itemsPerPage="1000" disableSort hideDefaultFooter class="withdraw-durable-goods-table elevation-1" :loading="isLoading">
     <template #item.selector="{ index }">
       <input v-model="selectList[index]" type="checkbox">
     </template>
