@@ -15,15 +15,15 @@
     </div>
     <div v-if="!hideTotal" class="mt-4">ทั้งหมด {{ total || 0 }} {{ unit }}</div>
     <div v-if="filters.length" class="filter-wrapper">
-      <div></div>
       <div class="btn-wrapper">
-        <v-badge :content="currentFilters.length" bordered overlap color="secondary" :value="!!currentFilters.length">
-          <v-btn elevation="2" large outlined @click="dialog = !dialog">
+        <v-badge :content="currentFilters.length" bordered overlap color="primary" :value="!!currentFilters.length">
+          <v-btn elevation="2" outlined color="primary" @click="dialog = !dialog">
             <i class="material-icons">filter_alt</i>
             <div>กรองข้อมูล</div>
           </v-btn>
         </v-badge>
       </div>
+      <ExportReportButton v-if="reportApiPath" :apiPath="reportApiPath" :name="reportName"/>
     </div>
     <v-dialog v-model="dialog" width="800" contentClass="filter-dialog">
       <v-card>
@@ -50,7 +50,7 @@
         <v-card-actions>
           <div class="d-flex justify-end w-full">
             <v-btn plain @click="onClear">ล้างข้อมูล</v-btn>
-            <v-btn color="secondary" @click="onApply">นำมาใช้</v-btn>
+            <v-btn color="primary" @click="onApply">นำมาใช้</v-btn>
           </div>
         </v-card-actions>
       </v-card>
@@ -62,6 +62,7 @@
   export default {
     component: {
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
+      ExportReportButton: () => import('~/components/ExportReportButton.vue'),
     },
     props: {
       text: { type: String, required: true },
@@ -71,6 +72,8 @@
       filters: { type: Array, default: () => [] },
       total: { type: Number },
       hideTotal: { type: Boolean },
+      reportApiPath: { type: String, default: '' },
+      reportName: { type: String, default: 'รายงาน' },
     },
     data () {
       return {
@@ -126,9 +129,9 @@
 
     .filter-wrapper {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
-      gap: 20px;
+      gap: 12px;
     }
 
     @media only screen and (max-width: 426px) {

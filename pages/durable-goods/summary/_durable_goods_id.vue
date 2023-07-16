@@ -9,7 +9,7 @@
             <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate"/>
           </v-col>
           <v-col v-if="!isCreate" :cols="12" :md="3">
-            <v-switch v-model="form.disable" label="เปิดให้ยืมได้" :trueValue="false" :falseValue="true"/>
+            <v-switch v-model="form.disable" label="สามารถยืมได้" :trueValue="'0'" :falseValue="'1'"/>
           </v-col>
         </v-row>
 
@@ -329,6 +329,7 @@
       async onEdit () {
         try {
           const form = {
+            id: this.form.id,
             disable: this.form.disable
           }
           await this.$store.dispatch('http', { method: 'put', apiPath: 'equipment/Edit', data: form })

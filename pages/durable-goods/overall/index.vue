@@ -1,7 +1,6 @@
 <template>
   <div id="durable-goods-page">
-    <PageHeader text="บริหารครุภัณฑ์" btnText="เพิ่มครุภัณฑ์" createRoute="/durable-goods/overall/create/" :total="total" :filters="filters"/>
-    <ExportReportButton class="mt-4" apiPath="report/depreciation" name="รายงานค่าเสื่อมครุภัณฑ์"/>
+    <PageHeader text="บริหารครุภัณฑ์" btnText="เพิ่มครุภัณฑ์" createRoute="/durable-goods/overall/create/" :total="total" :filters="filters" reportApiPath="report/depreciation" name="รายงานค่าเสื่อมครุภัณฑ์"/>
     <DurableGoodsTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
     <Pagination/>
   </div>
@@ -11,7 +10,6 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
-      ExportReportButton: () => import('~/components/ExportReportButton.vue'),
       Pagination: () => import('~/components/Pagination.vue'),
     },
     data () {

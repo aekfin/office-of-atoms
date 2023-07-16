@@ -37,11 +37,27 @@
         </v-row>
       </v-container>
 
+      <template v-if="!hideOwner">
+        <h5 class="text-h5 mt-5"><b>{{ `ผู้ครอบครอง` }}</b></h5>
+        <v-container>
+          <v-row>
+            <v-col :cols="12" :md="6">
+              <v-text-field v-if="viewMode" v-model="form.organization.ouName" label="กอง" disabled/>
+              <SelectDropdown v-else :value.sync="organizationId" apiPath="Orgchart/getOrganizations" itemValue="id" itemText="ouName" label="กอง" @select="onSelectOrganization"/>
+            </v-col>
+            <v-col :cols="12" :md="6">
+              <v-text-field v-if="viewMode" v-model="form.department.departmentName" label="กลุ่ม" disabled/>
+              <SelectDropdown v-else :value.sync="departmentId" apiPath="Orgchart/getDepartments" itemValue="id" itemText="departmentName" label="กลุ่ม" @select="onSelectDepartment"/>
+            </v-col>
+          </v-row>
+        </v-container>
+      </template>
+
       <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการ${type}` }}</b></h5>
       <v-container class="mt-2">
         <div v-if="isWithdraw && !viewMode">
           <v-col :cols="12" :md="12">
-            <SelectDropdown :value.sync="projectId" itemValue="id" itemText="projectName" label="เลือกโครงการ *" apiPath="Project/getListProject"  :rules="projectRules" @select="onSelectProject"/>
+            <SelectDropdown :value.sync="projectId" itemValue="id" itemText="projectName" label="เลือกโครงการ *" apiPath="Project/getListProject" :rules="projectRules" @select="onSelectProject"/>
           </v-col>
           <WithdrawDurableGoodsTable v-if="projectId" :items="durableGoodsWithdraw" :isLoading="isWithdrawLoading" :selectList="selectedWithdraw"/>
         </div>
@@ -49,23 +65,9 @@
           <v-col :cols="12" :md="9">
             <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
             <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="apiPath"
-              :query="categoryForm" :disabled="viewMode" @select="onSelectDurableGoods"/>
+              :query="{ ...categoryForm, ...ownerForm }" :disabled="viewMode"/>
           </v-col>
         </CategoryDurableGood>
-        <v-row v-if="!hideOwner">
-          <v-col :cols="12" class="pb-0">
-            <b>{{ `ผู้ครอบครอง` }}</b>
-          </v-col>
-          <v-col :cols="12" :md="4">
-            <v-text-field v-model="form.organization.ouName" label="กอง" disabled/>
-          </v-col>
-          <v-col :cols="12" :md="4">
-            <v-text-field v-model="form.department.departmentName" label="กลุ่ม" disabled/>
-          </v-col>
-          <v-col :cols="12" :md="4">
-            <v-text-field :value="$fn.isEmpty(form.owner) ? '' : $fn.getName(form.owner)" label="บุคคล" disabled/>
-          </v-col>
-        </v-row>
       </v-container>
 
       <v-container class="mt-8">
@@ -120,6 +122,9 @@
           v => !!v || 'โปรดเลือกโครงการ',
         ],
         step: 1,
+        organizationId: null,
+        departmentId: null,
+        ownerForm: {},
         categoryForm: {},
         initCategoryForm: {},
         isWithdrawLoading: false,
@@ -203,10 +208,11 @@
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
-      onSelectDurableGoods ({ item }) {
-        this.form.organization = item.organization
-        this.form.department = item.department
-        this.form.owner = item.owner || {}
+      onSelectOrganization ({ item }) {
+        this.ownerForm.organizationId = item.id
+      },
+      onSelectDepartment ({ item }) {
+        this.ownerForm.departmentId = item.id
       },
       onSubmit () {
         const valid = this.$refs.form.validate()
