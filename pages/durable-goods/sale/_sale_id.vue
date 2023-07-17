@@ -38,20 +38,20 @@
         <NumberDurableGood ref="numberDurableGood" :propNumber="propNumber" :propAssetNumber="propAssetNumber" :propAssetNumberAorWor="propAssetNumberAorWor" :disabled="!isCreate" @change="numberQuery = $event"/>
         <v-row>
           <v-col :cols="12" :md="8">
-            <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์" :rules="durableGoodsRules" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
+            <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
               :query="numberQuery" :disabled="!isCreate" @select="onSelectDurableGoods"/>
             <v-text-field v-else-if="form.item" v-model="form.item.name" label="ครุภัณฑ์ *" disabled/>
           </v-col>
         </v-row>
       </v-container>
-      <v-container v-if="!viewMode">
-        <WithdrawDurableGoodsTable :items="saleItems" :selectList="selectList"/>
+      <v-container v-if="isCreate">
+        <WithdrawDurableGoodsTable :items="saleItems" :selectList="selectList" isSale/>
       </v-container>
 
       <v-container class="mt-8">
         <v-row justify="end">
           <v-btn large plain @click="$router.push('/durable-goods/sale/')">ย้อนกลับ</v-btn>
-          <v-btn v-if="isCreate" class="ml-4" elevation="2" large color="success" @click="onSubmit">{{ `จำหน่ายครุภัณฑ์` }}</v-btn>
+          <v-btn v-if="isCreate" class="ml-4" elevation="2" large color="success" :disabled="!selectList.filter(e => e).length" @click="onSubmit">{{ `จำหน่ายครุภัณฑ์` }}</v-btn>
         </v-row>
       </v-container>
     </v-form>
@@ -94,9 +94,6 @@
         datetimeReturnRules: [
           v => !!v || 'โปรดใส่วันที่คืน',
         ],
-        durableGoodsRules: [
-          v => !!v || 'โปรดเลือกครุภัณฑ์',
-        ],
         distributionTypeRules: [
           v => !!v || 'โปรดเลือกวิธีการจำหน่าย',
         ],
@@ -134,7 +131,8 @@
       }
     },
     async mounted () {
-      if (!this.isCreate) await this.getData()
+      if (this.isCreate) this.getWaitSale()
+      else await this.getData()
       this.setForm()
     },
     methods: {
@@ -144,6 +142,16 @@
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/getEquipments/status/${this.$route.params.sale_id}`, query: this.$route.query })
           this.item = data
           this.isLoading = false
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      },
+      async getWaitSale () {
+        try {
+          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/wait-sale`, query: { ...this.$route.query, pageSize: 1000 } })
+          this.saleItems = data.content
+          this.selectList = this.saleItems.map(item => true)
           return Promise.resolve()
         } catch (err) {
           return Promise.reject(err)
@@ -166,7 +174,11 @@
       },
       onSelectDurableGoods ({ item }) {
         this.form.price = item.price
-        if (item && this.$refs.numberDurableGood) this.$refs.numberDurableGood.onlyUpdateFields(item)
+        // if (item && this.$refs.numberDurableGood) this.$refs.numberDurableGood.onlyUpdateFields(item)
+        if (this.saleItems.every(goods => goods.id !== item.id)) {
+          this.saleItems.push(item)
+          this.selectList.push(true)
+        }
       },
       async onSubmit () {
         const valid = this.$refs.form.validate()
@@ -174,13 +186,13 @@
           try {
             const form = { ...this.form }
             form.dateSale = this.$fn.convertDateToString(form.dateSale)
+            form.itemIds = this.saleItems.filter((goods, i) => this.selectList[i]).map(item => item.id)
             const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/sale', data: form, query: this.$route.query, context: this })
             await this.$store.dispatch('snackbar', { text: 'จำหน่ายครุภัณฑ์สำเร็จ' })
             this.$router.push('/durable-goods/sale/')
             return Promise.resolve(data)
           } catch (err) { return Promise.reject(err) }
         }
-
       },
     }
   }

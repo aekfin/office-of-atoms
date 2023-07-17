@@ -37,9 +37,9 @@
         { text: '', value: 'selector', width: '50px', align: 'center' },
         { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
         { text: 'ชื่อครุภัณฑ์', value: 'name' },
-        { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
-        { text: 'วันที่รับเข้า', value: 'dateEntry', align: 'center', width: '140px' },
       ]
+      headers.push({ text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' })
+      headers.push({ text: 'วันที่รับเข้า', value: 'dateEntry', align: 'center', width: '140px' })
       if (this.getActionIconList) headers.push({ text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' })
       return {
         headers,
