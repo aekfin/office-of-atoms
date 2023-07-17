@@ -165,7 +165,8 @@ export default {
       }
     },
     showMenu (menu) {
-      return !menu.checkTreasury || this.$store.getters.isTreasury
+      const isGroupAdmin = menu.to === '/durable-goods/summary/' && this.$store.state.userProfile?.positionMaster?.positionName === 'เเอดมินประจำกลุ่ม'
+      return isGroupAdmin || !menu.checkTreasury || this.$store.getters.isTreasury
     },
     async checkRoute () {
       try {

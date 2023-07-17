@@ -4,9 +4,14 @@
     <Loading v-if="isLoading"/>
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
-        <v-col :cols="12" :md="3">
-          <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate"/>
-        </v-col>
+        <v-row>
+          <v-col :cols="12" :md="3">
+            <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate"/>
+          </v-col>
+          <v-col v-if="!isCreate" :cols="12" :md="3">
+            <v-switch v-model="form.disable" label="สามารถยืมได้" :trueValue="'0'" :falseValue="'1'"/>
+          </v-col>
+        </v-row>
 
         <DurableGoodsOwner :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :disabled="!isCreate" @ouChange="onOuChange"/>
 
@@ -109,6 +114,7 @@
           inspectionDate: new Date(),
           quantity: 1,
           detailList: [this.getDetail()],
+          disable: false,
         },
         categoryForm: {},
         initCategoryForm: {},
@@ -178,7 +184,8 @@
             departmentId: data.department.id,
             ownerId: data.owner?.id || null,
             ownerList: data.owner && [data.owner] || [],
-            detailList: [this.getDetail(data)]
+            detailList: [this.getDetail(data)],
+            disable: data.disable || false,
           }
           this.initCategoryForm = {
             majorCategoryId: data.majorCategory.id,
@@ -324,12 +331,11 @@
       },
       async onEdit () {
         try {
-          // const form = {
-          //   ...this.form,
-          //   ...this.categoryForm,
-          //   inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
-          // }
-          // const { data } = await this.$store.dispatch('http', { method: 'put', apiPath: 'equipment/Edit', data: form })
+          const form = {
+            id: this.form.id,
+            disable: this.form.disable
+          }
+          await this.$store.dispatch('http', { method: 'put', apiPath: 'equipment/Edit', data: form })
           await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }

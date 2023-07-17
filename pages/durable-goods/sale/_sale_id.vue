@@ -18,18 +18,6 @@
           <v-col :cols="12">
             <v-textarea v-model="form.description" label="หมายเหตุ" :rows="4" :disabled="!isCreate"/>
           </v-col>
-        </v-row>
-      </v-container>
-
-      <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการจำหน่าย` }}</b></h5>
-      <v-container>
-        <NumberDurableGood ref="numberDurableGood" :propNumber="propNumber" :propAssetNumber="propAssetNumber" :propAssetNumberAorWor="propAssetNumberAorWor" :disabled="!isCreate" @change="numberQuery = $event"/>
-        <v-row>
-          <v-col :cols="12" :md="8">
-            <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
-              :query="numberQuery" :disabled="!isCreate" @select="onSelectDurableGoods"/>
-            <v-text-field v-else-if="form.item" v-model="form.item.name" label="ครุภัณฑ์ *" disabled/>
-          </v-col>
           <v-col :cols="12" :md="4">
             <SelectDropdown :value.sync="form.distribution_method" :items="distributionList" itemValue="id" itemText="name" label="วิธีการจำหน่าย *" :rules="distributionTypeRules" :disabled="!isCreate"/>            
           </v-col>
@@ -43,6 +31,21 @@
             <v-text-field v-model="form.bookNumber" label="เลขที่หนังสือ" required :disabled="!isCreate"/>
           </v-col>
         </v-row>
+      </v-container>
+
+      <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการจำหน่าย` }}</b></h5>
+      <v-container>
+        <NumberDurableGood ref="numberDurableGood" :propNumber="propNumber" :propAssetNumber="propAssetNumber" :propAssetNumberAorWor="propAssetNumberAorWor" :disabled="!isCreate" @change="numberQuery = $event"/>
+        <v-row>
+          <v-col :cols="12" :md="8">
+            <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์" :rules="durableGoodsRules" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
+              :query="numberQuery" :disabled="!isCreate" @select="onSelectDurableGoods"/>
+            <v-text-field v-else-if="form.item" v-model="form.item.name" label="ครุภัณฑ์ *" disabled/>
+          </v-col>
+        </v-row>
+      </v-container>
+      <v-container v-if="!viewMode">
+        <WithdrawDurableGoodsTable :items="saleItems" :selectList="selectList"/>
       </v-container>
 
       <v-container class="mt-8">
@@ -62,6 +65,7 @@
       Loading: () => import('~/components/Loading.vue'),
       NumberDurableGood: () => import('~/components/NumberDurableGood.vue'),
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
+      WithdrawDurableGoodsTable: () => import('~/components/WithdrawDurableGoodsTable.vue'),
     },
     data () {
       return {
@@ -79,6 +83,8 @@
         },
         item: null,
         isLoading: false,
+        saleItems: [],
+        selectList: [],
         datetimesaleRules: [
           v => !!v || `โปรดใส่วันที่จำหน่าย`,
         ],

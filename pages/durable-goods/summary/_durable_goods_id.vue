@@ -71,7 +71,7 @@
         </v-row>
       </v-container>
 
-      <v-container v-if="!isCreate">
+      <v-container v-if="!isCreate && !isGroupAdmin">
         <h5 class="text-h5 mt-2 mb-4"><b>รูปครุภัณฑ์</b></h5>
         <AttachFileBtn :value.sync="uploadingImageFiles" :attachments="imageFiles" accept="image/gif, image/jpeg, image/png, image/webp" :limit="2" showImage :multiple="false" @removeAttachment="onRemoveFile"/>
         <h5 class="text-h5 mt-10 mb-4"><b>เอกสารครุภัณฑ์</b></h5>
@@ -159,6 +159,9 @@
       },
       createRoute () {
         return { path: `/durable-goods/overall/${this.$route.params.durable_goods_id}/sub/create/`, query: { backPath: this.$route.path } }
+      },
+      isGroupAdmin () {
+        return this.$store.state.userProfile?.positionMaster?.positionName === 'เเอดมินประจำกลุ่ม'
       },
     },
     mounted () {
