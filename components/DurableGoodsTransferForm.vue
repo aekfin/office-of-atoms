@@ -81,6 +81,10 @@
         </v-row>
       </v-container>
 
+      <v-container v-if="viewMode">
+        <AttachFileBtn :value.sync="attachFiles" :attachments="files" accept="*" :multiple="false" :disabled="!isApprover" @removeAttachment="onRemoveFile"/>
+      </v-container>
+
       <v-container class="mt-8">
         <v-row v-if="isApprover" justify="end">
           <v-btn large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
@@ -104,6 +108,7 @@
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
       NumberDurableGood: () => import('~/components/NumberDurableGood.vue'),
       WithdrawDurableGoodsTable: () => import('~/components/WithdrawDurableGoodsTable.vue'),
+      AttachFileBtn: () => import('~/components/AttachFileBtn.vue'),
     },
     props: {
       item: { type: Object },
@@ -135,6 +140,9 @@
         numberQuery: {},
         transferItems: [],
         selectList: [],
+        attachFiles: [],
+        files: [],
+        removeFiles: [],
       }
     },
     computed: {
@@ -173,6 +181,7 @@
         }
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
         this.step = index + 2
+        this.files = this.item?.transferto?.transferFile || []
       },
       getApproverText (flow) {
         return flow?.emails?.reduce((str, email, i) => `${str}${i > 0 ? ', ' : ''}${email}`, 'ผู้อนุมัติ : ') || false
@@ -204,13 +213,39 @@
         delete form.itemId
         if (valid) this.$emit('submit', form)
       },
-      onApprove () {
-        const valid = this.$refs.form.validate()
-        if (valid) this.$emit('approve', this.currentFlow, this.form)
+      async onApprove () {
+        try {
+          const valid = this.$refs.form.validate()
+          if (valid) {
+            if (this.attachFiles.length) await this.uploadFiles()
+            this.$emit('approve', this.currentFlow, this.form)
+          }
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
       },
-      onReject () {
-        const valid = this.$refs.form.validate()
-        if (valid) this.$emit('reject', this.currentFlow, this.form)
+      async onReject () {
+        try {
+          const valid = this.$refs.form.validate()
+          if (valid) {
+            if (this.attachFiles.length) await this.uploadFiles()
+            this.$emit('reject', this.currentFlow, this.form)
+          }
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
+      onRemoveFile (attach) {
+        this.removeFiles.push(attach)
+      },
+      async uploadFiles () {
+        try {
+          let data = new FormData()
+          for (const file of this.attachFiles) {
+            data.append('file', file)
+          }
+          data.append('equipmentRequestId', this.item.id)
+          const res = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/transferDocument', data })
+          return Promise.resolve(res)
+        } catch (err) { return Promise.reject(err) }
       },
     }
   }

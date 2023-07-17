@@ -2,6 +2,7 @@
   <div id="durable-goods-request-detail-page">
     <PageHeader :text="`อนุมัติการ${type}ครุภัณฑ์`" hideTotal/>
     <Loading v-if="isLoading"/>
+    <DurableGoodsTransferForm v-else-if="type === 'โอนย้าย'" :item="item" :viewMode="!isCreate" isApprover :backPath="backPath" :type="type" @approve="onApprove" @reject="onReject"/>
     <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" isApprover :backPath="backPath" :type="type" @approve="onApprove" @reject="onReject"/>
   </div>
 </template>
@@ -13,6 +14,7 @@
       PageHeader: () => import('~/components/PageHeader.vue'),
       DurableGoodsBorrowForm: () => import('~/components/DurableGoodsBorrowForm.vue'),
       Loading: () => import('~/components/Loading.vue'),
+      DurableGoodsTransferForm: () => import('~/components/DurableGoodsTransferForm.vue'),
     },
     data () {
       return {

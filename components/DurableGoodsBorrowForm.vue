@@ -70,6 +70,10 @@
         </CategoryDurableGood>
       </v-container>
 
+      <v-container v-if="isApprover && isWithdraw">
+        <AttachFileBtn :value.sync="uploadingFiles" :attachments="files" accept="*" :multiple="false" @removeAttachment="onRemoveFile"/>
+      </v-container>
+
       <v-container class="mt-8">
         <v-row v-if="isApprover" justify="end">
           <v-btn large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
@@ -93,6 +97,7 @@
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
       CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
       WithdrawDurableGoodsTable: () => import('~/components/WithdrawDurableGoodsTable.vue'),
+      AttachFileBtn: () => import('~/components/AttachFileBtn.vue'),
     },
     props: {
       item: { type: Object },

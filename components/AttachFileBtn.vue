@@ -1,12 +1,12 @@
 <template>
   <div :class="`attach-file-btn${showImage ? ' show-image' : ''}`">
     <input v-show="false" ref="inputFile" type="file" :accept="accept" :multiple="multiple" @change="onChange">
-    <v-btn v-if="[...files, ...attachmentList].length < limit" elevation="2" color="#546E7A" class="text-white" @click="attach">แนบไฟล์เพิ่มเติม</v-btn>
+    <v-btn v-if="[...files, ...attachmentList].length < limit && !disabled" elevation="2" color="#546E7A" class="text-white" @click="attach">แนบไฟล์เพิ่มเติม</v-btn>
     <div class="attach-wrapper">
       <div v-for="(attachment, i) in attachmentList" :key="i" class="attach mt-4">
         <div v-if="showImage" class="img-wrapper">
           <img :src="getFileUrl(attachment.fileUrl)" alt="image" class="img-preview">
-          <v-btn class="remove-btn" @click.stop="onDeleteAttachment(attachment)">
+          <v-btn v-if="!disabled" class="remove-btn" @click.stop="onDeleteAttachment(attachment)">
             <i class="material-icons">close</i>
           </v-btn>
         </div>
@@ -15,7 +15,7 @@
             <i class="material-icons">download</i>
             <div class="name ml-1">{{ attachment.filename }}</div>
           </a>
-          <v-btn icon @click.stop="onDeleteAttachment(attachment)">
+          <v-btn v-if="!disabled" icon @click.stop="onDeleteAttachment(attachment)">
             <i class="material-icons">close</i>
           </v-btn>
         </div>
@@ -23,7 +23,7 @@
       <div v-for="(file, i) in files" :key="i" class="attach mt-4">
         <div v-if="showImage" class="img-wrapper ">
           <img :src="getImage(file)" alt="image" class="img-preview">
-          <v-btn class="remove-btn" @click.stop="onDelete(file)">
+          <v-btn v-if="!disabled" class="remove-btn" @click.stop="onDelete(file)">
             <i class="material-icons">close</i>
           </v-btn>
         </div>
@@ -32,7 +32,7 @@
             <i class="material-icons">upload_file</i>
             <div class="name ml-1">{{ file.name }}</div>
           </div>
-          <v-btn icon @click.stop="onDelete(file)">
+          <v-btn v-if="!disabled" icon @click.stop="onDelete(file)">
             <i class="material-icons">close</i>
           </v-btn>
         </div>
@@ -50,6 +50,7 @@
       limit: { type: Number, default: Infinity },
       accept: { type: String, default: '*' },
       showImage: { type: Boolean },
+      disabled: { type: Boolean },
     },
     data () {
       return {
@@ -115,6 +116,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      min-height: 52px;
       min-width: 25%;
       max-width: 100%;
 
