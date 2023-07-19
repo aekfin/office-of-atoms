@@ -53,8 +53,9 @@
         repairColor: {
           'สำเร็จ': 'success',
           'ไม่สำเร็จ': 'error',
-          'รอซ่อมภายนอก': 'secondary',
           'รอซ่อม': 'warning',
+          'รอซ่อมภายนอก': 'secondary',
+          'รอส่งซ่อมภายนอก': 'primary',
         },
       }
     },
@@ -68,10 +69,11 @@
       },
       getRepairLabel (item) {
         if (item.status === 'PENDING') {
-          if (item.remarks) return 'รอซ่อมภายนอก'
+          if (item.remarks) return 'รอส่งซ่อมภายนอก'
           else return 'รอซ่อม'
         } else if (item.status === 'SUCCESS') {
-          if (item.canRepair) return 'สำเร็จ'
+          if (item.stepRepair) return 'รอซ่อมภายนอก'
+          else if (item.canRepair) return 'สำเร็จ'
           else return 'ไม่สำเร็จ'
         }
       },

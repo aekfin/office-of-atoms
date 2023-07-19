@@ -79,9 +79,13 @@
               <v-btn class="mr-4" elevation="2" large color="error" @click="() => { onConfirm('ซ่อมไม่ได้') }">ซ่อมไม่ได้</v-btn>
               <v-btn elevation="2" large color="success" @click="() => { onConfirm('ซ่อมสำเร็จ') }">ซ่อมสำเร็จ</v-btn>
             </template>
-            <template v-else-if="isRequester && isNotRepair">
+            <template v-else-if="isRequester && getRepairLabel(item) === 'รอส่งซ่อมภายนอก'">
               <v-btn class="mr-4" elevation="2" large color="error" @click="() => { onConfirm('ไม่ส่งซ่อมภายนอก') }">ไม่ส่งซ่อมภายนอก</v-btn>
               <v-btn class="mr-4" elevation="2" large color="success" @click="() => { onConfirm('ส่งซ่อมภายนอก') }">ส่งซ่อมภายนอก</v-btn>
+            </template>
+            <template v-else-if="isRequester && getRepairLabel(item) === 'รอซ่อมภายนอก'">
+              <v-btn class="mr-4" elevation="2" large color="error" @click="() => { onConfirm('ไม่ส่งซ่อมภายนอก') }">ส่งซ่อมภายนอกไม่สำเร็จ</v-btn>
+              <v-btn class="mr-4" elevation="2" large color="success" @click="() => { onConfirm('ส่งซ่อมภายนอกสำเร็จ') }">ส่งซ่อมภายนอกสำเร็จ</v-btn>
             </template>
           </v-row>
         </v-container>
@@ -89,7 +93,7 @@
     </template>
 
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
-    <ConfirmDialog :value.sync="confirmDialog" :title="`ยืนยันการ${repairedText}`" :customConfirm="onAction" :submitColor="submitColor" :confirmText="repairedText">
+    <ConfirmDialog :value.sync="confirmDialog" :title="`ยืนยันการ${repairedText}`" :customConfirm="onAction" :submitColor="submitColor" :confirmText="repairedText" notCloseDialog>
       <v-form ref="confirmForm" v-model="confirmValid" lazyValidation>
         <v-row>
           <v-col :cols="12">
@@ -147,8 +151,9 @@
         repairColor: {
           'สำเร็จ': 'success',
           'ไม่สำเร็จ': 'error',
-          'รอซ่อมภายนอก': 'secondary',
           'รอซ่อม': 'warning',
+          'รอซ่อมภายนอก': 'secondary',
+          'รอส่งซ่อมภายนอก': 'primary',
         },
       }
     },
@@ -201,12 +206,15 @@
         return item?.status === 'APPROVE'
       },
       getRepairLabel (item) {
-        if (item.status === 'PENDING') {
-          if (item.remarks) return 'รอซ่อมภายนอก'
-          else return 'รอซ่อม'
-        } else if (item.status === 'SUCCESS') {
-          if (item.canRepair) return 'สำเร็จ'
-          else return 'ไม่สำเร็จ'
+        if (item) {
+          if (item.status === 'PENDING') {
+            if (item.remarks) return 'รอส่งซ่อมภายนอก'
+            else return 'รอซ่อม'
+          } else if (item.status === 'SUCCESS') {
+            if (item.stepRepair) return 'รอซ่อมภายนอก'
+            else if (item.canRepair) return 'สำเร็จ'
+            else return 'ไม่สำเร็จ'
+          }
         }
       },
       async getData () {
@@ -254,10 +262,10 @@
       },
       async onAction () {
         this.isLoading = true
-        this.confirmDialog = false
         if (this.repairedText === 'ซ่อมสำเร็จ') await this.onRepair()
         else if (this.repairedText === 'ส่งซ่อมภายนอก') await this.onExternaRepair()
         else if (this.repairedText === 'ไม่ส่งซ่อมภายนอก') await this.onExternalReject()
+        else if (this.repairedText === 'ส่งซ่อมภายนอกสำเร็จ') await this.onWaitingExternalRepair()
         else await this.onReject()
         await this.getData()
         this.isLoading = false
@@ -265,6 +273,7 @@
       async onRepair () {
         const valid = this.$refs.confirmForm.validate()
         if (valid) {
+          this.confirmDialog = false
           try {
             const query = {
               flowId: this.item.flows[0].id,
@@ -280,6 +289,7 @@
       async onReject () {
         const valid = this.$refs.confirmForm.validate()
         if (valid) {
+          this.confirmDialog = false
           try {
             const query = {
               flowId: this.item.flows[0].id,
@@ -295,11 +305,13 @@
       async onExternaRepair () {
         const valid = this.$refs.confirmForm.validate()
         if (valid) {
+          this.confirmDialog = false
           try {
             const query = {
               id: this.item.id,
               canRepair: true,
               reasonRepair: this.reasonRepair,
+              stepRepair: 'waiting_external',
             }
             const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/outSourceRepair', query: { ...this.$route.query, ...query } })
             await this.$store.dispatch('snackbar', { text: 'ส่งซ่อมครุภัณฑ์ภายนอกสำเร็จ' })
@@ -307,18 +319,37 @@
           } catch (err) { return Promise.reject(err) }
         }
       },
+      async onWaitingExternalRepair () {
+        const valid = this.$refs.confirmForm.validate()
+        if (valid) {
+          this.confirmDialog = false
+          try {
+            const query = {
+              id: this.item.id,
+              canRepair: true,
+              reasonRepair: this.reasonRepair,
+              stepRepair: '',
+            }
+            const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/outSourceRepair', query: { ...this.$route.query, ...query } })
+            await this.$store.dispatch('snackbar', { text: 'ซ่อมครุภัณฑ์สำเร็จ' })
+            return Promise.resolve(data)
+          } catch (err) { return Promise.reject(err) }
+        }
+      },
       async onExternalReject () {
         const valid = this.$refs.confirmForm.validate()
         if (valid) {
+          this.confirmDialog = false
           try {
             const query = {
               id: this.item.id,
               canRepair: false,
               reasonRepair: this.reasonRepair,
               updateStatus: 'WAIT_SALE',
+              stepRepair: '',
             }
             const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/outSourceRepair', query: { ...this.$route.query, ...query } })
-            await this.$store.dispatch('snackbar', { text: 'ไม่ส่งซ่อมครุภัณฑ์ภายนอกสำเร็จ' })
+            await this.$store.dispatch('snackbar', { text: 'ซ่อมครุภัณฑ์ไม่สำเร็จ' })
             return Promise.resolve(data)
           } catch (err) { return Promise.reject(err) }
         }

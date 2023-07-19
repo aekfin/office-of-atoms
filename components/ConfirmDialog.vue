@@ -32,6 +32,7 @@
       customConfirm: { type: Function },
       submitColor: { type: String, default: 'success' },
       buttonLoading: { type: Boolean },
+      notCloseDialog: { type: Boolean },
     },
     data () {
       return {
@@ -52,7 +53,7 @@
           this.customConfirm()
         } else {
           this.$emit('submit')
-          this.val = false
+          if (!this.notCloseDialog) this.val = false
         }
       },
     },
