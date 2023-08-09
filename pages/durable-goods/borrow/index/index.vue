@@ -1,7 +1,6 @@
 <template>
   <div id="durable-goods-borrow-page">
     <PageHeader text="การยืมครุภัณฑ์" btnText="เพิ่มการยืมครุภัณฑ์" createRoute="/durable-goods/borrow/create/" :total="total"/>
-    <ExportReportButton apiPath="report/borrowAndReturn" name="รายงานการยืมคืนครุภัณฑ์"/>
     <DurableGoodsBorrowTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
     <Pagination/>
   </div>
@@ -11,7 +10,6 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
-      ExportReportButton: () => import('~/components/ExportReportButton.vue'),
       DurableGoodsBorrowTable: () => import('~/components/DurableGoodsBorrowTable.vue'),
     },
     data () {

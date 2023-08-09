@@ -38,7 +38,6 @@
 <style lang="scss">
   .export-report-button {
     display: flex;
-    justify-content: flex-end;
 
     .v-btn {
       text-transform: none;

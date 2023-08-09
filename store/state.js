@@ -93,6 +93,10 @@ export default () => ({
       checkTreasury: true,
     },
     {
+      title: 'รายงานทั้งหมด',
+      to: '/report/',
+    },
+    {
       title: 'วัสดุคงคลัง',
       to: '/parcel/',
       children: [

@@ -25,7 +25,7 @@
             <v-text-field v-model="form.price" label="ราคาจำหน่าย" type="number" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="4">
-            <v-text-field v-model="form.buyer" label="ผู้ซื้อ" required :disabled="!isCreate"/>
+            <v-text-field v-model="form.buyer" label="ผู้ซื้อ / ผู้รับบริจาค" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="4">
             <v-text-field v-model="form.bookNumber" label="เลขที่หนังสือ" required :disabled="!isCreate"/>

@@ -1,7 +1,6 @@
 <template>
   <div id="parcel-page">
     <PageHeader text="บริหารวัสดุคงคลัง" btnText="เพิ่มวัสดุคงคลัง" createRoute="/parcel/overall/create/" :total="total"/>
-    <ExportReportButton apiPath="report/pacelAll" name="รายงานวัสดุคงคลัง"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.dateEntry="{ item }">
@@ -19,7 +18,6 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
-      ExportReportButton: () => import('~/components/ExportReportButton.vue'),
       Pagination: () => import('~/components/Pagination.vue'),
     },
     data () {
