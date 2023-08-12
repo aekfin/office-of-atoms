@@ -118,6 +118,11 @@ export default () => ({
           to: '/parcel/request/',
           parcelBadge: true,
         },
+        {
+          title: 'วัสดุคงคลังที่อนุมัติทั้งหมด',
+          to: '/parcel/all-request/',
+          checkTreasury: true,
+        },
       ]
     },
     {
@@ -153,6 +158,11 @@ export default () => ({
           title: 'ครุภัณฑ์ที่รออนุมัติ',
           to: '/durable-goods/request/',
           durableGoodsBadge: true,
+        },
+        {
+          title: 'ครุภัณฑ์ที่อนุมัติทั้งหมด',
+          to: '/durable-goods/all-request/',
+          checkTreasury: true,
         },
         {
           title: 'จำหน่ายครุภัณฑ์',
