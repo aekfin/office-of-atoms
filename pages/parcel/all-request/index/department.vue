@@ -32,13 +32,13 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/department/getListPickUp', query: this.$route.query, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/department/getListAllPickUp', query: this.$route.query, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
       getActionIconList (item) {
-        const action = { path: `/parcel/request/department/${item.id}/`, query: { from: 'all-request' } }
+        const action = { path: `/parcel/all-request/department/${item.id}/` }
         return [
           { type: 'link', icon: 'edit', action },
         ]

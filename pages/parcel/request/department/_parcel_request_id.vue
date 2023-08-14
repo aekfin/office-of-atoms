@@ -2,7 +2,7 @@
   <div id="parcel-request-detail-page">
     <PageHeader :text="'อนุมัติการเบิกวัสดุคงคลัง (ภายในกลุ่ม)'" hideTotal/>
     <Loading v-if="isLoading"/>
-    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" backPath="/parcel/request/department/" @approve="onApprove" @reject="onReject"/>
+    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" :backPath="backPath" @approve="onApprove" @reject="onReject"/>
   </div>
 </template>
 
@@ -24,6 +24,9 @@
     computed: {
       isCreate () {
         return this.$route.params.parcel_request_id === 'create'
+      },
+      backPath () {
+        return this.$route.path.includes('all-request') ? '/parcel/all-request/department/' : '/parcel/request/department/'
       },
     },
     mounted () {

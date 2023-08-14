@@ -11,7 +11,7 @@
             <v-text-field v-else v-model="form.type" label="ประเภท *" required disabled/>
           </v-col>
           <v-col :cols="12" :md="8">
-            <v-text-field v-model="form.parcelName" label="ชื่อ *" :rules="nameRules" required :disabled="!isCreate"/>
+            <v-text-field v-model="form.name" label="ชื่อ *" :rules="nameRules" required/>
           </v-col>
         </v-row>
         <v-row>
@@ -22,7 +22,7 @@
             <v-text-field v-model="form.quantity" label="จำนวน *" type="number" :rules="quantityRules" required/>
           </v-col>
           <v-col :cols="12" :md="4">
-            <v-text-field v-model="form.classifier" label="หน่วย *" name="unit" :rules="classifierRules" required :disabled="!isCreate"/>
+            <v-text-field v-model="form.classifier" label="หน่วย *" name="unit" :rules="classifierRules" required/>
           </v-col>
         </v-row>
       </v-container>
@@ -91,7 +91,6 @@
           const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getLogImportParcelMasterById', query: { ...this.$route.query, id: this.$route.params.parcel_id } })
           this.form = {
             ...data,
-            parcelName: data.name
           }
           this.isLoading = false
           return Promise.resolve()
@@ -101,10 +100,12 @@
         const valid = this.$refs.form.validate()
         try {
           if (valid) {
-            const apiPath = this.isCreate ? 'parcel/importMasterAndStock' : 'parcel/editQuatityLogImportParcelMasters'
-            const method = this.isCreate ? 'post' : 'put'
-            let form = this.isCreate ? { data: [{ ...this.form }] } : { editQuantity: this.form.quantity, parcelMasterId: this.form.id }
+            const apiPath = this.isCreate ? 'parcel/importMasterAndStock' : 'parcel/editParcelMasters'
+            const method = this.isCreate ? 'post' : 'patch'
+            this.form.parcelName = this.form.name
+            let form = this.isCreate ? { data: [{ ...this.form }] } : { ...this.form }
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
+            if (!this.isCreate) await this.$store.dispatch('http', { method: 'put', apiPath: 'parcel/editQuatityLogImportParcelMasters', data: { editQuantity: this.form.quantity, parcelMasterId: this.form.id } })
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างค่าเริ่มต้นวัสดุคงคลังสำเร็จ' : 'แก้ไขค่าเริ่มต้นวัสดุคงคลังสำเร็จ' })
             if (this.isCreate) this.$router.push('/management/parcel/')
             return Promise.resolve(data)

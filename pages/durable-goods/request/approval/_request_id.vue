@@ -37,7 +37,8 @@
         return this.$store.state.durableGoodTypes[this.item?.type || 'BORROW']
       },
       backPath () {
-        return `/durable-goods/request/${this.durableGoodRequestParams[this.item?.type || 'BORROW']}`
+        const request = this.$route.path.includes('all-request') ? 'all-request' : 'request'
+        return `/durable-goods/${request}/${this.durableGoodRequestParams[this.item?.type || 'BORROW']}`
       },
     },
     mounted () {

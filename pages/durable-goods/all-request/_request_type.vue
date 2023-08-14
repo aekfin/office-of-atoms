@@ -86,7 +86,7 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getListRequestFilter', query: { ...this.$route.query, ...this.apiPathQuery }, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getListAllRequestFilter', query: { ...this.$route.query, ...this.apiPathQuery }, context: this })
           const { types } = this.apiPathQuery
           this.$store.commit('SET_STATE', { name: `approveEquipment${types}`, val: data })
           this.isLoading = false
@@ -94,9 +94,8 @@
         } catch (err) { return Promise.reject(err) }
       },
       getActionIconList (item) {
-        const path = this.$route.params.request_type === 'repair' ? `/durable-goods/repair/${item.id}/` : `/durable-goods/request/approval/${item.id}/`
-        const query = { 'from': 'all-request' }
-        const action = { path, query }
+        const path = this.$route.params.request_type === 'repair' ? `/durable-goods/repair/${item.id}/` : `/durable-goods/all-request/approval/${item.id}/`
+        const action = { path }
         return [
           { type: 'link', icon: 'edit', action },
           // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
