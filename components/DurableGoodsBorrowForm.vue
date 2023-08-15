@@ -70,8 +70,8 @@
         </CategoryDurableGood>
       </v-container>
 
-      <v-container v-if="isApprover && isWithdraw">
-        <AttachFileBtn :value.sync="uploadingFiles" :attachments="files" accept="*" :multiple="false" @removeAttachment="onRemoveFile"/>
+      <v-container v-if="isApprover && isReturned">
+        <AttachFileBtn :value.sync="attachFiles" :attachments="files" accept="*" :multiple="false" @removeAttachment="onRemoveFile"/>
       </v-container>
 
       <v-container class="mt-8">
@@ -135,6 +135,9 @@
         isWithdrawLoading: false,
         durableGoodsWithdraw: [],
         selectedWithdraw: [],
+        attachFiles: [],
+        files: [],
+        removeFiles: [],
       }
     },
     computed: {
@@ -146,6 +149,9 @@
       },
       isReject () {
         return this.item && this.item.status === 'REJECT'
+      },
+      isReturned () {
+        return this.type === 'คืน'
       },
     },
     watch: {
@@ -176,6 +182,7 @@
         if (this.item) this.setCategoryForm()
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
         this.step = index + 2
+        this.files = this.item?.returnedFile?.returnedFile || []
       },
       setCategoryForm () {
         const data = this.item?.items?.[0]
@@ -226,13 +233,29 @@
         }
         if (valid) this.$emit('submit', this.form)
       },
-      onApprove () {
+      async onApprove () {
         const valid = this.$refs.form.validate()
+        if (this.attachFiles.length) await this.uploadFiles()
         if (valid) this.$emit('approve', this.currentFlow, this.form)
       },
-      onReject () {
+      async onReject () {
         const valid = this.$refs.form.validate()
+        if (this.attachFiles.length) await this.uploadFiles()
         if (valid) this.$emit('reject', this.currentFlow, this.form)
+      },
+      onRemoveFile (attach) {
+        this.removeFiles.push(attach)
+      },
+      async uploadFiles () {
+        try {
+          let data = new FormData()
+          for (const file of this.attachFiles) {
+            data.append('file', file)
+          }
+          data.append('equipmentRequestId', this.item.id)
+          const res = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/returnedDocument', data })
+          return Promise.resolve(res)
+        } catch (err) { return Promise.reject(err) }
       },
     }
   }
