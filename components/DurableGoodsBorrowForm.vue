@@ -70,8 +70,8 @@
         </CategoryDurableGood>
       </v-container>
 
-      <v-container v-if="isApprover && isReturned">
-        <AttachFileBtn :value.sync="attachFiles" :attachments="files" accept="*" :multiple="false" @removeAttachment="onRemoveFile"/>
+      <v-container v-if="isReturned">
+        <AttachFileBtn :value.sync="attachFiles" :attachments="files" accept="*" :multiple="false" :disabled="!isApprover" @removeAttachment="onRemoveFile"/>
       </v-container>
 
       <v-container class="mt-8">
@@ -182,7 +182,7 @@
         if (this.item) this.setCategoryForm()
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
         this.step = index + 2
-        this.files = this.item?.returnedFile?.returnedFile || []
+        this.files = this.item?.returnedFile?.files || []
       },
       setCategoryForm () {
         const data = this.item?.items?.[0]

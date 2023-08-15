@@ -6,9 +6,8 @@
       <v-container>
         <v-row>
           <v-col :cols="12" :md="4" alignSelf="center">
-            <AutocompleteDropdown v-if="isCreate" :value.sync="form.typeId" itemValue="id" itemText="name" label="ประเภท *" :rules="typeRules" apiPath="parcel/getListParcelType"
+            <AutocompleteDropdown :value.sync="form.typeId" :items="defaultItems" itemValue="id" itemText="name" label="ประเภท *" :rules="typeRules" apiPath="parcel/getListParcelType"
               searchApiPath="parcel/getParcelType" required noFilter/>
-            <v-text-field v-else v-model="form.type" label="ประเภท *" required disabled/>
           </v-col>
           <v-col :cols="12" :md="8">
             <v-text-field v-model="form.name" label="ชื่อ *" :rules="nameRules" required/>
@@ -53,6 +52,7 @@
           quantity: 0,
           price: '',
         },
+        defaultItems: [],
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อ',
         ],
@@ -94,6 +94,7 @@
             id: data.masterId,
             parcelMasterId: data.id,
           }
+          this.defaultItems = [{ id: data.typeId, name: data.type }]
           this.isLoading = false
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }

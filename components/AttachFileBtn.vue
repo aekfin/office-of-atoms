@@ -117,12 +117,11 @@
       align-items: center;
       justify-content: space-between;
       min-height: 52px;
-      min-width: 25%;
-      max-width: 100%;
+      min-width: 240px;
+      max-width: 600px;
 
       .file-name-wrapper {
         display: flex;
-        max-width: calc(100% - 40px);
 
         .name {
           min-width: 180px;

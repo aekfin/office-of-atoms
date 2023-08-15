@@ -48,6 +48,8 @@
         <WithdrawDurableGoodsTable :items="saleItems" :selectList="selectList" isSale/>
       </v-container>
 
+      <AttachFileBtn accept="*" :multiple="false"/>
+
       <v-container class="mt-8">
         <v-row justify="end">
           <v-btn large plain @click="$router.push('/durable-goods/sale/')">ย้อนกลับ</v-btn>
@@ -66,6 +68,7 @@
       NumberDurableGood: () => import('~/components/NumberDurableGood.vue'),
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       WithdrawDurableGoodsTable: () => import('~/components/WithdrawDurableGoodsTable.vue'),
+      AttachFileBtn: () => import('~/components/AttachFileBtn.vue'),
     },
     data () {
       return {
