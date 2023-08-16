@@ -47,7 +47,7 @@
         headers,
         sourceList: {
           'REPAIR': 'การส่งซ่อม',
-          'COUNTING': 'การตรวจนับ',
+          'CHECK_STOCK': 'การตรวจนับ',
         },
       }
     },
