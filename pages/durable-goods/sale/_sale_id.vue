@@ -48,7 +48,7 @@
         <WithdrawDurableGoodsTable :items="saleItems" :selectList="selectList" isSale/>
       </v-container>
 
-      <AttachFileBtn accept="*" :multiple="false"/>
+      <AttachFileBtn class="mt-8" accept="*" :multiple="false"/>
 
       <v-container class="mt-8">
         <v-row justify="end">
