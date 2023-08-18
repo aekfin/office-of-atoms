@@ -4,7 +4,17 @@
     <Loading v-if="isLoading && !project"/>
     <v-form v-else ref="form" v-model="valid" class="mt-4">
       <v-container>
-        <v-row v-if="isCreate || editMode">
+        <v-row>
+          <v-col :cols="12">
+            <v-btn color="secondary" @click="manualMode = !manualMode">{{ manualMode ? 'เลือกจากรายชื่อโครงการ' : 'กรอกชื่อโครงการด้วยตัวเอง' }}</v-btn>
+          </v-col>
+        </v-row>
+        <v-row v-if="manualMode">
+          <v-col :cols="12" :md="10">
+            <v-text-field v-model="form.projectName" label="โครงการ *" :rules="projectUserRules" required/>
+          </v-col>
+        </v-row>
+        <v-row v-else-if="isCreate || editMode">
           <v-col :cols="12" :md="2">
             <v-text-field v-model="year" label="ปีงบประมาณ *" :rules="yearRules" type="number"/>
           </v-col>
@@ -22,7 +32,7 @@
         </v-row>
         <v-row v-else>
           <v-col :cols="12" :md="10">
-            <v-text-field v-model="form.projectName" label="โครงการ *" :rules="projectRules" required disabled/>
+            <v-text-field v-model="form.projectName" label="โครงการ *" :rules="projectUserRules" required disabled/>
           </v-col>
           <v-col class="d-flex align-center" cols="auto">
             <v-btn block outlined @click="onEditProject">เลือกโครงการอื่น</v-btn>
@@ -197,6 +207,7 @@
       return {
         valid: true,
         isLoading: false,
+        manualMode: false,
         editMode: false,
         project: null,
         year: '2563',
@@ -270,6 +281,9 @@
         ],
         projectRules: [
           v => !!v || 'โปรดเลือกโครงการ',
+        ],
+        projectUserRules: [
+          v => !!v || 'โปรดใส่โครงการ',
         ],
         codeRules: [
           v => !!v || 'โปรดใส่เลขที่โครงการ',
