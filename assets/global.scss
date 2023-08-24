@@ -78,12 +78,12 @@ button.v-btn.v-size--large {
   color: #222831 !important;
 }
 
-.v-data-table-header {
+.v-data-table-header, .v-data-table--fixed-header {
   tr {
     th[role=columnheader] {
       font-size: 1rem !important;
       color: white !important;
-      background-color: #424242;
+      background-color: #424242 !important;
 
       &:first-child {
         border-top-left-radius: 4px;
