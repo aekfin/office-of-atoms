@@ -4,6 +4,9 @@
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.price || 0) }}</template>
+      <template #item.action="{ item }">
+        <ActionIconList :list="getActionIconList(item)"/>
+      </template>
     </v-data-table>
     <Pagination/>
   </div>
@@ -26,6 +29,7 @@
           { text: 'ประเภท', value: 'type', width: '160px', align: 'center' },
           { text: 'หน่วย', value: 'classifier', align: 'center', width: '120px' },
           { text: 'จำนวน', value: 'quantity', align: 'center', width: '140px' },
+          { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
         items: [],
       }
@@ -49,7 +53,7 @@
       },
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'edit', action: `/management/parcel/${item.id}/` },
+          { type: 'link', icon: 'edit', action: `/parcel/summary/${item.id}/` },
         ]
       }
     }

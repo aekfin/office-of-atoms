@@ -155,7 +155,7 @@
                 types: [type],
                 items: [{ id: item.parcelMasterId, name: item.name }],
                 quantityFixed: item.quantity,
-                quantity: item.numberOfApproved || item.quantit
+                quantity: item.numberOfApproved || item.quantity
               }
             })
             : [
