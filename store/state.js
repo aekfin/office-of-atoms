@@ -180,6 +180,10 @@ export default () => ({
       to: '/management/',
       children: [
         {
+          title: 'บริหารกอง / กลุ่ม',
+          to: '/management/organization/'
+        },
+        {
           title: 'บริหารบุคลากร',
           to: '/management/user/'
         },
