@@ -9,6 +9,9 @@
       <template #item.dateApprove="{ item }">
         <div>{{ item.dateApprove ? $fn.displayDate(item.dateApprove) : '-' }}</div>
       </template>
+      <template #item.equipmentNumber="{ item }">
+        <span>{{ item.equipments[0].number }}</span>
+      </template>
       <template #item.equipment="{ item }">
         <span>{{ item.equipments[0].name }}</span>
       </template>
@@ -45,7 +48,8 @@
           { text: 'ผู้ขอส่งซ่อมครุภัณฑ์', value: 'user_fk.thaiFristName' },
           { text: 'วันที่ส่งซ่อม', value: 'dateBorrow', width: '120px', align: 'center' },
           { text: 'วันที่ซ่อม', value: 'dateApprove', width: '120px', align: 'center' },
-          { text: 'ครุภัณฑ์', value: 'equipment', width: '200px', align: 'center' },
+          { text: 'เลขที่ครุภัณฑ์', value: 'equipmentNumber', width: '150px', align: 'center' },
+          { text: 'ครุภัณฑ์', value: 'equipment', width: '160px', align: 'center' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
           { text: 'สถานะการซ่อม', value: 'status', align: 'center', width: '140px' },
           { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },

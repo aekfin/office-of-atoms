@@ -37,6 +37,7 @@
       const headers = [
         { text: '', value: 'selector', width: '50px', align: 'center' },
         { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
+        { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
         { text: 'ชื่อครุภัณฑ์', value: 'name' },
         { text: 'ที่มา', value: 'typeOfSource', width: '140px', align: 'center' },
       ]

@@ -2,7 +2,7 @@
   <div id="durable-goods-return-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มการคืนครุภัณฑ์' : 'การแก้ไขการคืนครุภัณฑ์'" hideTotal/>
     <Loading v-if="isLoading"/>
-    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" cannotApprove type="คืน" backPath="/durable-goods/borrow/return/"
+    <DurableGoodsBorrowForm v-else v-show="!isReturnLoading" ref="borrowForm" :item="item" :viewMode="!isCreate" cannotApprove type="คืน" backPath="/durable-goods/borrow/return/"
       :apiPath="'equipment/getEquipmentsAndFilter?status=BORROWED'" @submit="onSubmit"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
   </div>
@@ -19,6 +19,7 @@
     data () {
       return {
         isLoading: false,
+        isReturnLoading: false,
         item: null,
         dialog: false,
         errorText: 'ไม่สามารถขอคืนได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้',
@@ -28,9 +29,13 @@
       isCreate () {
         return this.$route.params.return_id === 'create'
       },
+      equipmentId () {
+        return this.$route.query.equipmentId
+      },
     },
     mounted () {
       if (!this.isCreate) this.getData()
+      else if (this.equipmentId) this.autoSelectReturn()
     },
     methods: {
       async getData () {
@@ -42,6 +47,25 @@
           return Promise.resolve()
         } catch (err) {
           return Promise.reject(err)
+        }
+      },
+      async autoSelectReturn () {
+        try {
+          this.isReturnLoading = true
+          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/${this.equipmentId}` })
+          this.setForm(data)
+          this.isReturnLoading = false
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      },
+      async setForm (data) {
+        await this.$nextTick()
+        const borrowForm = this.$refs.borrowForm
+        if (borrowForm) {
+          borrowForm.form.itemId = data.id
+          borrowForm.equipmentList = [data]
         }
       },
       async onSubmit (form) {

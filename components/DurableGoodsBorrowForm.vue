@@ -64,7 +64,7 @@
         <CategoryDurableGood v-else :initForm="initCategoryForm" :disabled="viewMode" noRules @change="onChangeCategory">
           <v-col :cols="12" :md="9">
             <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
-            <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="apiPath"
+            <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
               :query="{ ...categoryForm, ...ownerForm }" :disabled="viewMode"/>
           </v-col>
         </CategoryDurableGood>
@@ -138,6 +138,7 @@
         attachFiles: [],
         files: [],
         removeFiles: [],
+        equipmentList: [],
       }
     },
     computed: {

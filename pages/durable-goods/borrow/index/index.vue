@@ -38,9 +38,13 @@
         } catch (err) { return Promise.reject(err) }
       },
       getActionIconList (item) {
+        const equipment = item?.equipments?.[0]
+        const equipmentId = equipment?.id
+        const query = equipmentId ? { equipmentId } : {}
+        const returned = equipment.status === 'BORROWED' ? { type: 'link', icon: 'assignment_returned', action: { path: `/durable-goods/return/create/`, query } } : {}
         return [
           { type: 'link', icon: 'edit', action: `/durable-goods/borrow/${item.id}/` },
-          // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
+          returned,
         ]
       },
     },
