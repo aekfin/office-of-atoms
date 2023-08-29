@@ -293,11 +293,11 @@
           if (valid) {
             if (this.isCreate) await this.onCreate()
             else await this.onEdit()
-          }
-          if (!this.isCreate) {
-            if (this.uploadingImageFiles.length || this.uploadingFiles.length) await this.uploadFiles()
-            if (this.removeFiles.length) await this.deleteFiles()
-            await this.getData()
+            if (!this.isCreate) {
+              if (this.uploadingImageFiles.length || this.uploadingFiles.length) await this.uploadFiles()
+              if (this.removeFiles.length) await this.deleteFiles()
+              await this.getData()
+            }
           }
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
@@ -333,7 +333,9 @@
         try {
           const form = {
             id: this.form.id,
-            disable: this.form.disable
+            disable: this.form.disable,
+            name: this.form.name,
+            ...this.categoryForm
           }
           await this.$store.dispatch('http', { method: 'put', apiPath: 'equipment/Edit', data: form })
           await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })

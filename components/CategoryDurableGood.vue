@@ -68,7 +68,7 @@
         this.typeItems = [this.initCategory.type]
         this.brandItems = [this.initCategory.brand]
         this.modelItems = [this.initCategory.model]
-        console.log(this.form)
+        this.$emit('change', { form: this.form })
       },
     }
   }
