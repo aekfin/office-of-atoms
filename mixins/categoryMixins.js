@@ -23,6 +23,7 @@ export default {
       modelRule: [
         v => !!v || 'โปรดเลือกรุ่น',
       ],
+      majorCategoryItems: [],
       subCategoryItems: [],
       typeItems: [],
       brandItems: [],

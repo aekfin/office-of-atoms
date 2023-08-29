@@ -16,10 +16,10 @@
         <DurableGoodsOwner :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :disabled="!isCreate" @ouChange="onOuChange"/>
 
         <div class="text-h5 mt-5 mb-2"><b>เลือกครุภัณฑ์</b></div>
-        <CategoryDurableGood :cols="3" :disabled="!isCreate" :initForm="initCategoryForm" @change="({ form }) => categoryForm = form">
+        <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="({ form }) => categoryForm = form">
           <template #default>
             <v-col :cols="12" :md="isCreate ? 6 : 9">
-              <v-text-field v-model="form.name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required :disabled="!isCreate"/>
+              <v-text-field v-model="form.name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required/>
             </v-col>
             <v-col v-if="isCreate" :cols="12" :md="3">
               <v-text-field v-model="form.quantity" name="quantity" label="จำนวน *" type="number" :rules="quantityRules" required @change="onQuantityChange"/>
@@ -118,7 +118,7 @@
           disable: false,
         },
         categoryForm: {},
-        initCategoryForm: {},
+        initCategory: {},
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อ',
         ],
@@ -191,12 +191,12 @@
             detailList: [this.getDetail(data)],
             disable: data.disable || false,
           }
-          this.initCategoryForm = {
-            majorCategoryId: data.majorCategory.id,
-            subCategoryId: data.subCategory.id,
-            typeId: data.type.id,
-            brandId: data.brand.id,
-            modelId: data.model.id,
+          this.initCategory = {
+            majorCategory: data.majorCategory,
+            subCategory: data.subCategory,
+            type: data.type,
+            brand: data.brand,
+            model: data.model,
           }
           await this.getAttachments()
           this.isLoading = false
