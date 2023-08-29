@@ -32,6 +32,7 @@
       isLoading: { type: Boolean },
       getActionIconList: { type: Function },
       selectList: { type: Array },
+      isSale: { type: Boolean },
     },
     data () {
       const headers = [
@@ -39,8 +40,8 @@
         { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
         { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
         { text: 'ชื่อครุภัณฑ์', value: 'name' },
-        { text: 'ที่มา', value: 'typeOfSource', width: '140px', align: 'center' },
       ]
+      if (this.isSale) headers.push({ text: 'ที่มา', value: 'typeOfSource', width: '140px', align: 'center' })
       headers.push({ text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' })
       headers.push({ text: 'วันที่รับเข้า', value: 'dateEntry', align: 'center', width: '140px' })
       if (this.getActionIconList) headers.push({ text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' })

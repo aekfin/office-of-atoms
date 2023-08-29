@@ -50,6 +50,7 @@
             <div class="d-flex align-baseline">
               <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" class="mr-5" required disabled/>
               <v-text-field v-if="!viewMode || canEdit" v-model="form.pickUpItems[i].quantity" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'" :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity"/>
+              <v-text-field v-if="viewMode && !canEdit && form.pickUpItems[i].numberOfApproved !== undefined" v-model="form.pickUpItems[i].numberOfApproved" label="จำนวนจ่าย" disabled/>
               <v-btn v-if="!viewMode && form.pickUpItems.length > 1 && i === form.pickUpItems.length - 1" icon class="ml-5" @click.stop="removeParcel(i)">
                 <i class="material-icons">delete</i>
               </v-btn>
@@ -155,7 +156,8 @@
                 types: [type],
                 items: [{ id: item.parcelMasterId, name: item.name }],
                 quantityFixed: item.quantity,
-                quantity: item.numberOfApproved || item.quantity
+                quantity: item.numberOfApproved || item.quantity,
+                numberOfApproved: item.numberOfApproved,
               }
             })
             : [
