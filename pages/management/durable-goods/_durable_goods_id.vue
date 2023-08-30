@@ -16,10 +16,10 @@
         <DurableGoodsOwner :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :disabled="!isCreate" @ouChange="onOuChange"/>
 
         <div class="text-h5 mt-5 mb-2"><b>เลือกครุภัณฑ์</b></div>
-        <CategoryDurableGood :cols="3" :disabled="!isCreate" :initForm="initCategoryForm" @change="({ form }) => categoryForm = form">
+        <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="({ form }) => categoryForm = form">
           <template #default>
             <v-col :cols="12" :md="isCreate ? 6 : 9">
-              <v-text-field v-model="form.name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required :disabled="!isCreate"/>
+              <v-text-field v-model="form.name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required/>
             </v-col>
             <v-col v-if="isCreate" :cols="12" :md="3">
               <v-text-field v-model="form.quantity" name="quantity" label="จำนวน *" type="number" :rules="quantityRules" required @change="onQuantityChange"/>
@@ -28,19 +28,19 @@
         </CategoryDurableGood>
         <v-row>
           <v-col :cols="12" :md="4">
-            <v-text-field v-model="form.price" label="ราคากลาง *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
+            <v-text-field v-model="form.price" label="ราคากลาง *" type="number" :rules="priceRules" required/>
           </v-col>
           <v-col :cols="12" :md="2">
-            <v-text-field v-model="form.year" label="ปี *" :rules="yearRules" type="number" required :disabled="!isCreate"/>
+            <v-text-field v-model="form.year" label="ปี *" :rules="yearRules" type="number" required/>
           </v-col>
           <v-col :cols="12" :md="3">
-            <v-text-field v-model="form.classifier" label="หน่วย *" :rules="classifierRules" name="unit" required :disabled="!isCreate"/>
+            <v-text-field v-model="form.classifier" label="หน่วย *" :rules="classifierRules" name="unit" required/>
           </v-col>
           <v-col :cols="12" :md="3" class="depreciation">
-            <v-text-field v-model="form.depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%" :disabled="!isCreate"/>
+            <v-text-field v-model="form.depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%"/>
           </v-col>
           <v-col :cols="12" class="pt-0">
-            <v-textarea v-model="form.description" class="pt-0" label="คำอธิบายเพิ่มเติม" :rows="4" :disabled="!isCreate"/>
+            <v-textarea v-model="form.description" class="pt-0" label="คำอธิบายเพิ่มเติม" :rows="4"/>
           </v-col>
         </v-row>
         <div class="text-h6 mt-2 mb-2 d-flex justify-space-between">
@@ -117,7 +117,7 @@
           disable: false,
         },
         categoryForm: {},
-        initCategoryForm: {},
+        initCategory: {},
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อ',
         ],
@@ -187,12 +187,12 @@
             detailList: [this.getDetail(data)],
             disable: data.disable || false,
           }
-          this.initCategoryForm = {
-            majorCategoryId: data.majorCategory.id,
-            subCategoryId: data.subCategory.id,
-            typeId: data.type.id,
-            brandId: data.brand.id,
-            modelId: data.model.id,
+          this.initCategory = {
+            majorCategory: data.majorCategory,
+            subCategory: data.subCategory,
+            type: data.type,
+            brand: data.brand,
+            model: data.model,
           }
           await this.getAttachments()
           this.isLoading = false
@@ -289,11 +289,11 @@
           if (valid) {
             if (this.isCreate) await this.onCreate()
             else await this.onEdit()
-          }
-          if (!this.isCreate) {
-            if (this.uploadingImageFiles.length || this.uploadingFiles.length) await this.uploadFiles()
-            if (this.removeFiles.length) await this.deleteFiles()
-            await this.getData()
+            if (!this.isCreate) {
+              if (this.uploadingImageFiles.length || this.uploadingFiles.length) await this.uploadFiles()
+              if (this.removeFiles.length) await this.deleteFiles()
+              await this.getData()
+            }
           }
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
@@ -331,9 +331,10 @@
       },
       async onEdit () {
         try {
+          console.log(this.form)
           const form = {
-            id: this.form.id,
-            disable: this.form.disable
+            ...this.form,
+            ...this.categoryForm
           }
           await this.$store.dispatch('http', { method: 'put', apiPath: 'equipment/Edit', data: form })
           await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })

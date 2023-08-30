@@ -28,19 +28,19 @@
         </CategoryDurableGood>
         <v-row>
           <v-col :cols="12" :md="4">
-            <v-text-field v-model="form.price" label="ราคากลาง *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
+            <v-text-field v-model="form.price" label="ราคากลาง *" type="number" :rules="priceRules" required/>
           </v-col>
           <v-col :cols="12" :md="2">
-            <v-text-field v-model="form.year" label="ปี *" :rules="yearRules" type="number" required :disabled="!isCreate"/>
+            <v-text-field v-model="form.year" label="ปี *" :rules="yearRules" type="number" required/>
           </v-col>
           <v-col :cols="12" :md="3">
-            <v-text-field v-model="form.classifier" label="หน่วย *" :rules="classifierRules" name="unit" required :disabled="!isCreate"/>
+            <v-text-field v-model="form.classifier" label="หน่วย *" :rules="classifierRules" name="unit" required/>
           </v-col>
           <v-col :cols="12" :md="3" class="depreciation">
-            <v-text-field v-model="form.depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%" :disabled="!isCreate"/>
+            <v-text-field v-model="form.depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%"/>
           </v-col>
           <v-col :cols="12" class="pt-0">
-            <v-textarea v-model="form.description" class="pt-0" label="คำอธิบายเพิ่มเติม" :rows="4" :disabled="!isCreate"/>
+            <v-textarea v-model="form.description" class="pt-0" label="คำอธิบายเพิ่มเติม" :rows="4"/>
           </v-col>
         </v-row>
         <div class="text-h6 mt-2 mb-2 d-flex justify-space-between">
@@ -331,10 +331,9 @@
       },
       async onEdit () {
         try {
+          console.log(this.form)
           const form = {
-            id: this.form.id,
-            disable: this.form.disable,
-            name: this.form.name,
+            ...this.form,
             ...this.categoryForm
           }
           await this.$store.dispatch('http', { method: 'put', apiPath: 'equipment/Edit', data: form })
