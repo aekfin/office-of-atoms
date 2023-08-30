@@ -61,10 +61,10 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-container>
-                  <CategoryDurableGood :cols="3" :disabled="!isCreate" :initForm="initCategoryForm" @change="res => form.equipments[i].categoryForm = res.form">
+                  <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="res => form.equipments[i].categoryForm = res.form">
                     <template #default>
                       <v-col :cols="12" :md="isCreate ? 6 : 9">
-                        <v-text-field v-model="form.equipments[i].name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required :disabled="!isCreate"/>
+                        <v-text-field v-model="form.equipments[i].name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required/>
                       </v-col>
                       <v-col v-if="isCreate" :cols="12" :md="3">
                         <v-text-field v-model="form.equipments[i].quantity" name="quantity" label="จำนวน *" type="number" :rules="quantityRules" required @change="onQuantityChange(form.equipments[i])"/>
@@ -148,7 +148,7 @@
         valid: true,
         isLoading: false,
         isNumberLoading: false,
-        initCategoryForm: {},
+        initCategory: {},
         form: {
           projectId: null,
           dateEntry: new Date(),
@@ -329,12 +329,12 @@
             valueAfter: data.valueAfter || '',
             registrationType: data.registrationType || '1'
           }
-          this.initCategoryForm = {
-            majorCategoryId: data.majorCategory.id,
-            subCategoryId: data.subCategory.id,
-            typeId: data.type.id,
-            brandId: data.brand.id,
-            modelId: data.model.id,
+          this.initCategory = {
+            majorCategory: data.majorCategory,
+            subCategory: data.subCategory,
+            type: data.type,
+            brand: data.brand,
+            model: data.model,
           }
           this.isLoading = false
           return Promise.resolve(data)
