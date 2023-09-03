@@ -73,19 +73,19 @@
                   </CategoryDurableGood>
                   <v-row>
                     <v-col :cols="6" :md="4">
-                      <v-text-field v-model="form.equipments[i].price" label="ราคา *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
+                      <v-text-field v-model="form.equipments[i].price" label="ราคา *" type="number" :rules="priceRules" required/>
                     </v-col>
                     <v-col :cols="6" :md="2">
-                      <v-text-field v-model="form.equipments[i].year" label="ปี *" :rules="yearRules" type="number" required :disabled="!isCreate"/>
+                      <v-text-field v-model="form.equipments[i].year" label="ปี *" :rules="yearRules" type="number" required/>
                     </v-col>
                     <v-col :cols="6" :md="3">
-                      <v-text-field v-model="form.equipments[i].classifier" label="หน่วย *" :rules="classifierRules" name="unit" required :disabled="!isCreate"/>
+                      <v-text-field v-model="form.equipments[i].classifier" label="หน่วย *" :rules="classifierRules" name="unit" required/>
                     </v-col>
                     <v-col :cols="6" :md="3" class="depreciation">
-                      <v-text-field v-model="form.equipments[i].depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%" :disabled="!isCreate"/>
+                      <v-text-field v-model="form.equipments[i].depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%"/>
                     </v-col>
                     <v-col :cols="12" class="pt-0">
-                      <v-textarea v-model="form.equipments[i].description" class="pt-0" label="คำอธิบายเพิ่มเติม / ข้อมูลการใช้งาน" :rows="4" :disabled="!isCreate"/>
+                      <v-textarea v-model="form.equipments[i].description" class="pt-0" label="คำอธิบายเพิ่มเติม / ข้อมูลการใช้งาน" :rows="4"/>
                     </v-col>
                   </v-row>
 
@@ -128,7 +128,7 @@
       <v-container class="mt-8">
         <v-row justify="end">
           <v-btn large plain @click="$router.push('/durable-goods/overall/')">ย้อนกลับ</v-btn>
-          <v-btn v-if="isCreate" elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
+          <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
         </v-row>
       </v-container>
     </v-form>
@@ -357,26 +357,41 @@
       async onSubmit () {
         const valid = this.$refs.form.validate()
         if (valid) {
-          try {
-            const form = {
-              ...this.form,
-              equipments: this.form.equipments.map(equipment => ({ ...equipment, ownerId: this.form.ownerId, ...this.convertDetail(equipment) })),
-              dateEntry: this.$fn.convertDateToString(this.form.dateEntry),
-              inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
-              dateReceivedBefore: this.$fn.convertDateToString(this.form.dateReceivedBefore),
-              dateReceivedAfter: this.$fn.convertDateToString(this.form.dateReceivedAfter),
-            }
-            const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/project/import', data: form })
-            await Promise.all(
-              data.map((item, i) => {
-                this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.getMapCategory(item), id: item.id } })
-              })
-            )
-            await this.$store.dispatch('snackbar', { text: 'เพิ่มครุภัณฑ์สำเร็จ' })
-            this.$router.push('/durable-goods/overall/')
-            return Promise.resolve()
-          } catch (err) { return Promise.reject(err) }
+          if (this.isCreate) await this.onCreate()
+          else await this.onEdit()
         }
+      },
+      async onCreate () {
+        try {
+          const form = {
+            ...this.form,
+            equipments: this.form.equipments.map(equipment => ({ ...equipment, ownerId: this.form.ownerId, ...this.convertDetail(equipment) })),
+            dateEntry: this.$fn.convertDateToString(this.form.dateEntry),
+            inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
+            dateReceivedBefore: this.$fn.convertDateToString(this.form.dateReceivedBefore),
+            dateReceivedAfter: this.$fn.convertDateToString(this.form.dateReceivedAfter),
+          }
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/project/import', data: form })
+          await Promise.all(
+            data.map((item, i) => {
+              this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.getMapCategory(item), id: item.id } })
+            })
+          )
+          await this.$store.dispatch('snackbar', { text: 'เพิ่มครุภัณฑ์สำเร็จ' })
+          this.$router.push('/durable-goods/overall/')
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
+      async onEdit () {
+        try {
+          const equipment = this.form?.equipments?.[0] || {}
+          const categoryForm = equipment?.categoryForm || {}
+          const form = { ...equipment, ...categoryForm }
+          await this.$store.dispatch('http', { method: 'put', apiPath: 'equipment/Edit', data: form })
+          await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })
+          await this.getData()
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
       },
     }
   }

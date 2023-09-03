@@ -331,7 +331,6 @@
       },
       async onEdit () {
         try {
-          console.log(this.form)
           const form = {
             ...this.form,
             ...this.categoryForm
