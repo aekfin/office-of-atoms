@@ -20,13 +20,23 @@
         items: [],
         filters: [
           {
+            type: 'textField',
+            name: 'ชื่อครุภัณฑ์',
+            param: 'projectName',
+          },
+          {
+            type: 'textField',
+            name: 'ชื่อโครงการ',
+            param: 'equipmentName',
+          },
+          {
             name: 'ประเภททะเบียนครุภัณฑ์',
             param: 'registrationType',
             options: [
               { id: '1', name: 'มาตราฐาน' },
               { id: '2', name: 'ต่ำกว่าเกณฑ์' },
             ]
-          }
+          },
         ],
       }
     },
