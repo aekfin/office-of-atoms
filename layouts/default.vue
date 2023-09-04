@@ -152,9 +152,9 @@ export default {
     async getNoti () {
       try {
         const [{ data: approveRequest }, { data: approveRequestDepartment }, { data: approveEquipmentRequest }] = await Promise.all([
-          this.$store.dispatch('http', { apiPath: 'parcel/getListPickUp', query: this.$route.query, context: this }),
-          this.$store.dispatch('http', { apiPath: 'parcel/department/getListPickUp', query: this.$route.query, context: this }),
-          this.$store.dispatch('http', { apiPath: 'equipment/getListRequest', query: { ...this.$route.query,  }, context: this }),
+          this.$store.dispatch('http', { apiPath: 'parcel/getListPickUp', context: this }),
+          this.$store.dispatch('http', { apiPath: 'parcel/department/getListPickUp', context: this }),
+          this.$store.dispatch('http', { apiPath: 'equipment/getListRequest', context: this }),
         ])
         this.$store.commit('SET_STATE', { name: 'approveRequest', val: approveRequest })
         this.$store.commit('SET_STATE', { name: 'approveRequestDepartment', val: approveRequestDepartment })

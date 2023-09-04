@@ -103,7 +103,7 @@
       setValue (param) {
         const val = this.$route.query?.[param]
         const convertArray = () => val.split(',').map(v => v)
-        return val ? val.includes(',') ? convertArray() : val : null
+        return val ? val.includes(',') ? convertArray() : parseInt(val) || val : null
       },
       setForm () {
         this.form = this.filters.reduce((form, filter) => ({ ...form, [filter.param]: this.setValue(filter.param) }), {})
@@ -113,7 +113,6 @@
         this.dialog = false
       },
       onApply () {
-        console.log(this.form)
         const query = Object.entries(this.form).reduce((form, [key, val]) => val ? { ...form, [key]: val } : form, {})
         this.$router.push({ query })
         this.dialog = false

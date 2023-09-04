@@ -1,6 +1,6 @@
 <template>
   <div id="report-page">
-    <PageHeader text="รายงานทั้งหมด" hideTotal/>
+    <PageHeader text="รายงานทั้งหมด" hideTotal :filters="filters"/>
     <v-container class="mt-10">
       <v-row>
         <v-col :col="12" :md="4">
@@ -30,6 +30,12 @@
           <ExportReportButton apiPath="report/pacelWithOu" name="รายงานเบิกจ่ายวัสดุคงคลังตามหน่วยงาน"/>
         </v-col>
       </v-row>
+      <v-row class="mt-10">
+        <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายงานการรอคืนหลักประกัน</b></h4>
+          <ExportReportButton apiPath="report/project" name="รายงานการรอคืนหลักประกัน"/>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -39,6 +45,29 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       ExportReportButton: () => import('~/components/ExportReportButton.vue'),
+    },
+    data () {
+      return {
+        filters: [
+          {
+            name: 'กลุ่ม',
+            param: 'ouId',
+            apiPath: 'Orgchart/getOrganizations',
+            itemText: 'ouName',
+          },
+          {
+            name: 'กอง',
+            param: 'departmentId',
+            apiPath: 'Orgchart/getDepartments',
+            itemText: 'departmentName',
+          },
+          {
+            type: 'textField',
+            name: 'ปี',
+            param: 'year',
+          },
+        ],
+      }
     },
   }
 </script>
