@@ -29,6 +29,10 @@ const Fn = {
   isEmpty (val) {
     return _.isEmpty(val)
   },
+  getFileUrl (url) {
+    const domain = process.env.NODE_ENV === 'development' ? 'http://178.128.99.60:8081' : `${location.origin}:8081`
+    return `${domain}${url}`
+  },
 }
 
 Vue.prototype.$fn = Fn

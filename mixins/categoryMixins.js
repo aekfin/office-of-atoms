@@ -43,6 +43,11 @@ export default {
         brandId: null,
         modelId: null,
       }
+      this.majorCategoryItems = []
+      this.subCategoryItems = []
+      this.typeItems = []
+      this.brandItems = []
+      this.modelItems = []
     },
     resetOnCategory () {
       this.form.subCategoryId = null
@@ -119,6 +124,7 @@ export default {
     async onChangeModel ({ val, reset = true }) {
       try {
         this.$emit('change', { form: this.form, trigger: 'model', val })
+        this.$emit('changeModel', { val })
         return Promise.resolve()
       } catch (err) { return Promise.reject(err) }
     },

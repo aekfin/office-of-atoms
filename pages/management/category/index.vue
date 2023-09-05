@@ -3,7 +3,7 @@
     <v-tabs v-model="tabIndex" class="tabs-underline mb-10" fixedTabs showArrows>
       <v-tab v-for="tab in tabs" :key="tab.text">{{ tab.text }}</v-tab>
     </v-tabs>
-    <PageHeader :text="tabActive.text" :btnText="tabActive.btnText" :unit="tabActive.unit" :total="total" @create="createDialog = true"/>
+    <PageHeader :text="tabActive.text" :btnText="`เพิ่ม${tabActive.btnText}`" :unit="tabActive.unit" :total="total" @create="createDialog = true"/>
     <v-data-table :headers="categoryHeaders" :items="items" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.action="{ item }">
@@ -11,7 +11,7 @@
       </template>
     </v-data-table>
     <Pagination/>
-    <CategoryDialog :dialog.sync="createDialog" :tabActive="tabActive" :tabIndex="tabIndex" @create="onCreate"/>
+    <CategoryDialog :dialog.sync="createDialog" :tabActive="tabActive" :tabIndex="tabIndex" :editItem="editItem" @create="onCreate" @edit="onEdit"/>
   </div>
 </template>
 
@@ -29,40 +29,41 @@
         tabs: [
           {
             text: 'หมวดหมู่พัสดุ',
-            btnText: 'เพิ่มหมวดหมู่พัสดุ',
+            btnText: 'หมวดหมู่พัสดุ',
             unit: 'หมวด',
             apiPath: 'equipment/category/getMejorCategorys',
             postApiPath: 'equipment/category/addMajorCategory'
           },
           {
             text: 'ประเภทพัสดุ',
-            btnText: 'เพิ่มประเภทพัสดุ',
+            btnText: 'ประเภทพัสดุ',
             unit: 'ประเภท',
             apiPath: 'equipment/category/getSubCategorys',
             postApiPath: 'equipment/category/addSubCategory'
           },
           {
             text: 'รายการครุภัณฑ์',
-            btnText: 'เพิ่มรายการครุภัณฑ์',
+            btnText: 'รายการครุภัณฑ์',
             unit: 'รายการ',
             apiPath: 'equipment/category/types',
             postApiPath: 'equipment/category/addType'
           },
           {
             text: 'ยี่ห้อ',
-            btnText: 'เพิ่มยี่ห้อ',
+            btnText: 'ยี่ห้อ',
             unit: 'ยี่ห้อ',
             apiPath: 'equipment/category/brands',
             postApiPath: 'equipment/category/addBrand'
           },
           {
             text: 'รุ่น',
-            btnText: 'เพิ่มรุ่น',
+            btnText: 'รุ่น',
             unit: 'รุ่น',
             apiPath: 'equipment/category/models',
             postApiPath: 'equipment/category/addModel'
           },
         ],
+        editItem: null,
         isLoading: true,
         total: 0,
         count: 0,
@@ -83,6 +84,7 @@
         if (this.tabIndex > 2) headers.push({ text: `ชื่อ${this.tabs[2].text}`, value: 'type.name', width: '200px' })
         if (this.tabIndex > 1) headers.push({ text: `ชื่อ${this.tabs[1].text}`, value: 'subCategory.name', width: '200px' })
         if (this.tabIndex > 0) headers.push({ text: `ชื่อ${this.tabs[0].text}`, value: 'majorCategory.name', width: '200px' })
+        if (this.tabIndex > 3) headers.push({ text: `เครื่องมือ`, value: 'action', width: '100px' })
         return headers
       },
     },
@@ -93,6 +95,9 @@
       },
       '$route.query' () {
         this.getList()
+      },
+      'createDialog' (val) {
+        if (!val) this.editItem = null
       },
     },
     mounted () {
@@ -112,18 +117,48 @@
         } catch (err) { return Promise.reject(err) }
       },
       getActionIconList (item) {
+        const action = () => {
+          this.editItem = item
+          this.createDialog = true
+        } 
         return [
-          { type: 'link', icon: 'edit', action: `/management/category/${item.id}/` },
+          { type: 'button', icon: 'edit', action },
         ]
       },
-      async onCreate (form) {
+      async onCreate ({ form, uploadingFiles, removeFiles }) {
         try {
           const apiPath = this.tabActive.postApiPath
-          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath, data: { ...form, names: [form.name] }, query: this.$route.query })
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath, data: { brandId: form.brandId, names: [form.name] }, query: this.$route.query })
+          await this.onFileImage({ id: data?.[0]?.id, uploadingFiles, removeFiles })
           this.createDialog = false
           await this.getList()
-          await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างค่าเริ่มต้นวัสดุคงคลังสำเร็จ' : 'แก้ไขค่าเริ่มต้นวัสดุคงคลังสำเร็จ' })
+          await this.$store.dispatch('snackbar', { text: `สร้าง${this.tabActive.text}สำเร็จ` })
           return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
+      async onEdit ({ form, uploadingFiles, removeFiles }) {
+        try {
+          await this.onFileImage({ id: form?.modelId, uploadingFiles, removeFiles })
+          this.createDialog = false
+          await this.$store.dispatch('snackbar', { text: `แก้ไข${this.tabActive.text}สำเร็จ` })
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
+      async onFileImage ({ id, uploadingFiles, removeFiles }) {
+        try {
+          if (uploadingFiles?.length) {
+            const files = uploadingFiles
+            let data = new FormData()
+            for (const file of files) {
+              data.append('file', file)
+            }
+            data.append('modelId', id)
+            await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/uploadFileModel', data })
+          }
+          if (removeFiles?.length) {
+            await Promise.all(removeFiles.map(file => this.$axios({ method: 'delete', url: file })))
+          }
+          return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
     }

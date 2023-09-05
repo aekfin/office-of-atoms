@@ -1,7 +1,7 @@
 <template>
   <div :class="`attach-file-btn${showImage ? ' show-image' : ''}`">
     <input v-show="false" ref="inputFile" type="file" :accept="accept" :multiple="multiple" @change="onChange">
-    <v-btn v-if="[...files, ...attachmentList].length < limit && !disabled" elevation="2" color="#546E7A" class="text-white" @click="attach">แนบไฟล์เพิ่มเติม</v-btn>
+    <v-btn v-if="[...files, ...attachmentList].length < limit && !disabled" elevation="2" color="#546E7A" class="text-white" @click="attach">{{ btnLabel }}</v-btn>
     <div class="attach-wrapper">
       <div v-for="(attachment, i) in attachmentList" :key="i" class="attach mt-4">
         <div v-if="showImage" class="img-wrapper">
@@ -51,6 +51,7 @@
       accept: { type: String, default: '*' },
       showImage: { type: Boolean },
       disabled: { type: Boolean },
+      btnLabel: { type: String, default: 'แนบไฟล์เพิ่มเติม' },
     },
     data () {
       return {

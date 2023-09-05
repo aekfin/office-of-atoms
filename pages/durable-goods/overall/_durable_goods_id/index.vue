@@ -61,7 +61,7 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-container>
-                  <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="res => form.equipments[i].categoryForm = res.form">
+                  <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="res => form.equipments[i].categoryForm = res.form" @changeModel="onChangeModel">
                     <template #default>
                       <v-col :cols="12" :md="isCreate ? 6 : 9">
                         <v-text-field v-model="form.equipments[i].name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required/>
@@ -86,6 +86,9 @@
                     </v-col>
                     <v-col :cols="12" class="pt-0">
                       <v-textarea v-model="form.equipments[i].description" class="pt-0" label="คำอธิบายเพิ่มเติม / ข้อมูลการใช้งาน" :rows="4"/>
+                    </v-col>
+                    <v-col :cols="12" class="pt-0 mb-5">
+                      <img v-for="img in modelImages" :key="img.fileUrl" class="img-preview" :src="$fn.getFileUrl(img.fileUrl)" alt="modelImage">
                     </v-col>
                   </v-row>
 
@@ -149,6 +152,7 @@
         isLoading: false,
         isNumberLoading: false,
         initCategory: {},
+        modelImages: [],
         form: {
           projectId: null,
           dateEntry: new Date(),
@@ -306,6 +310,15 @@
           return Promise.reject(err)
         }
       },
+      onChangeModel ({ val }) {
+        if (val) this.getModelImage(val)
+      },
+      async getModelImage (id) {
+        try {
+          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/category/model/${id}` })
+          this.modelImages = data.fileInfo
+        } catch (err) { return Promise.reject(err) }
+      },
       async getData () {
         try {
           this.isLoading = true
@@ -336,6 +349,7 @@
             brand: data.brand,
             model: data.model,
           }
+          await this.getModelImage(data.model.id)
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
@@ -399,5 +413,9 @@
 
 <style lang="scss">
   #durable-goods-detail-page {
+    .img-preview {
+      max-width: 320px;
+      max-height: 240px;
+    }
   }
 </style>
