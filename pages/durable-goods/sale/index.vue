@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-sale-detail-page">
-    <PageHeader text="จำหน่ายครุภัณฑ์" btnText="เพิ่มการจำหน่ายครุภัณฑ์" createRoute="/durable-goods/sale/create/" :total="total"/>
+    <PageHeader text="จำหน่ายครุภัณฑ์" btnText="เพิ่มการจำหน่ายครุภัณฑ์" createRoute="/durable-goods/sale/create/" :total="total" :filters="filters"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.equipmentSale.price) }}</template>
@@ -46,6 +46,30 @@
           { text: 'สถานะ', value: 'status', align: 'center', width: '120px' },
           { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
         ],
+        filters: [
+          {
+            type: 'textField',
+            name: 'เลขที่ครุภัณฑ์',
+            param: 'equipmentNumber',
+          },
+          {
+            type: 'textField',
+            name: 'ชื่อครุภัณฑ์',
+            param: 'equipmentName',
+          },
+          {
+            name: 'กลุ่ม',
+            param: 'ouId',
+            apiPath: 'Orgchart/getOrganizations',
+            itemText: 'ouName',
+          },
+          {
+            name: 'กอง',
+            param: 'departmentId',
+            apiPath: 'Orgchart/getDepartments',
+            itemText: 'departmentName',
+          },
+        ],
       }
     },
     watch: {
@@ -65,10 +89,18 @@
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
+      async deleteSale (itemIds) {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/un-sale', data: { itemIds } })
+          await this.getList()
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'edit', action: `/durable-goods/sale/${item.id}/` },
-          // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
+          { type: 'confirm', icon: 'delete', action: () => { this.deleteSale([item.id]) } },
         ]
       }
     }

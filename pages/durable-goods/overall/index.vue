@@ -21,13 +21,25 @@
         filters: [
           {
             type: 'textField',
-            name: 'ชื่อครุภัณฑ์',
+            name: 'ชื่อโครงการ',
             param: 'projectName',
           },
           {
             type: 'textField',
-            name: 'ชื่อโครงการ',
+            name: 'ชื่อครุภัณฑ์',
             param: 'equipmentName',
+          },
+          {
+            name: 'กลุ่ม',
+            param: 'ouId',
+            apiPath: 'Orgchart/getOrganizations',
+            itemText: 'ouName',
+          },
+          {
+            name: 'กอง',
+            param: 'departmentId',
+            apiPath: 'Orgchart/getDepartments',
+            itemText: 'departmentName',
           },
           {
             name: 'ประเภททะเบียนครุภัณฑ์',
