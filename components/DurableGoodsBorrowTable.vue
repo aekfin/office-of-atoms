@@ -6,6 +6,9 @@
       <template #item.dateBorrow="{ item }">
         <div>{{ item.dateBorrow ? $fn.displayDate(item.dateBorrow) : '-' }}</div>
       </template>
+      <template #item.dueDate="{ item }">
+        <div>{{ item.dueDate ? $fn.displayDate(item.dueDate) : '-' }}</div>
+      </template>
       <template #item.dateApprove="{ item }">
         <div>{{ item.dateApprove ? $fn.displayDate(item.dateApprove) : '-' }}</div>
       </template>
@@ -44,8 +47,9 @@
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ผู้ขอยืมครุภัณฑ์', value: 'user_fk.thaiFristName' },
           { text: 'วันที่ยืม', value: 'dateBorrow', width: '120px', align: 'center' },
+          { text: 'วันที่คืน', value: 'dueDate', width: '120px', align: 'center' },
           { text: 'วันที่อนุมัติ', value: 'dateApprove', width: '120px', align: 'center' },
-          { text: 'ครุภัณฑ์', value: 'equipment', width: '220px', align: 'center' },
+          { text: 'ครุภัณฑ์', value: 'equipment', width: '200px', align: 'center' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
           { text: 'สถานะการยืม', value: 'status', width: '140px', align: 'center' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
