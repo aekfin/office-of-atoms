@@ -108,7 +108,7 @@
             this.form.parcelName = this.form.name
             let form = this.isCreate ? { data: [{ ...this.form }] } : { ...this.form }
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
-            if (!this.isCreate) await this.$store.dispatch('http', { method: 'put', apiPath: 'parcel/editQuatityLogImportParcelMasters', data: { editQuantity: this.form.quantity, parcelMasterId: this.form.parcelMasterId } })
+            if (!this.isCreate) await this.$store.dispatch('http', { method: 'patch', apiPath: 'parcel/editQuatityLogImportParcelMasters', data: { editQuantity: this.form.quantity, parcelMasterId: this.form.parcelMasterId } })
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างค่าเริ่มต้นวัสดุคงคลังสำเร็จ' : 'แก้ไขค่าเริ่มต้นวัสดุคงคลังสำเร็จ' })
             if (this.isCreate) this.$router.push('/management/parcel/')
             return Promise.resolve(data)

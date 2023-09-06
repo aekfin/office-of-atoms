@@ -29,13 +29,13 @@
       isCreate () {
         return this.$route.params.return_id === 'create'
       },
-      equipmentId () {
-        return this.$route.query.equipmentId
+      borrowId () {
+        return this.$route.query.borrowId
       },
     },
     mounted () {
       if (!this.isCreate) this.getData()
-      else if (this.equipmentId) this.autoSelectReturn()
+      else if (this.borrowId) this.autoSelectReturn()
     },
     methods: {
       async getData () {
@@ -52,7 +52,7 @@
       async autoSelectReturn () {
         try {
           this.isReturnLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/${this.equipmentId}` })
+          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/getRequestDetail`, query: { id: this.borrowId } })
           this.setForm(data)
           this.isReturnLoading = false
           return Promise.resolve()
@@ -62,10 +62,16 @@
       },
       async setForm (data) {
         await this.$nextTick()
+        const equipment = data.items[0].equipment
         const borrowForm = this.$refs.borrowForm
         if (borrowForm) {
-          borrowForm.form.itemId = data.id
-          borrowForm.equipmentList = [data]
+          borrowForm.organizationId = equipment.organizationMaster.id
+          borrowForm.departmentId = equipment.departmentMaster.id
+          borrowForm.form.itemId = equipment.id
+          borrowForm.setCategoryForm(data.items[0])
+          borrowForm.categoryKey = !borrowForm.categoryKey
+          borrowForm.equipmentList = [equipment]
+          borrowForm.form.itemId = equipment.id
         }
       },
       async onSubmit (form) {

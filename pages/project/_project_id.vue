@@ -435,7 +435,7 @@
             form.warrantyEndDate = this.$fn.convertDateToString(form.warrantyEndDate)
             if (!this.isCreate) this.setEditForm(form)
             const apiPath = this.isCreate ? 'Project/addProjectV2' : 'Project/updateProjectV2'
-            const method = this.isCreate ? 'post' : 'put'
+            const method = this.isCreate ? 'post' : 'patch'
             const res = await this.$store.dispatch('http', { method, apiPath, data: form })
             if (this.attachFiles.length) await this.uploadFiles(res.data.id)
             this.attachFiles = []

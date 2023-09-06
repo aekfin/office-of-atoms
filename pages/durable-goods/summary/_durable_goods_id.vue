@@ -335,7 +335,7 @@
             ...this.form,
             ...this.categoryForm
           }
-          await this.$store.dispatch('http', { method: 'put', apiPath: 'equipment/Edit', data: form })
+          await this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/Edit', data: form })
           await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }

@@ -401,7 +401,7 @@
           const equipment = this.form?.equipments?.[0] || {}
           const categoryForm = equipment?.categoryForm || {}
           const form = { ...equipment, ...categoryForm }
-          await this.$store.dispatch('http', { method: 'put', apiPath: 'equipment/Edit', data: form })
+          await this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/Edit', data: form })
           await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })
           await this.getData()
           return Promise.resolve()

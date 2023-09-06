@@ -61,7 +61,7 @@
           </v-col>
           <WithdrawDurableGoodsTable v-if="projectId" class="mt-6" :items="durableGoodsWithdraw" :isLoading="isWithdrawLoading" :selectList="selectedWithdraw"/>
         </div>
-        <CategoryDurableGood v-else :initForm="initCategoryForm" :disabled="viewMode" noRules @change="onChangeCategory">
+        <CategoryDurableGood v-else :key="categoryKey" :initCategory="initCategoryForm" :disabled="viewMode" noRules @change="onChangeCategory">
           <v-col :cols="12" :md="9">
             <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
             <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
@@ -139,6 +139,7 @@
         files: [],
         removeFiles: [],
         equipmentList: [],
+        categoryKey: false,
       }
     },
     computed: {
@@ -185,19 +186,14 @@
         this.step = index + 2
         this.files = this.item?.returnedFile?.files || []
       },
-      setCategoryForm () {
-        const data = this.item?.items?.[0]
-        this.initCategoryForm = {
-          majorCategoryId: data.majorCategory.id,
-          subCategoryId: data.subCategory.id,
-          typeId: data.type.id,
-          brandId: data.brand.id,
-          modelId: data.model.id,
-        }
+      setCategoryForm (category) {
+        this.initCategoryForm = category || this.item?.items?.[0]
       },
-      onChangeCategory ({ form }) {
-        this.categoryForm = { ...form }
-        this.form.itemId = null
+      onChangeCategory ({ form, trigger }) {
+        if (trigger) {
+          this.categoryForm = { ...form }
+          this.form.itemId = null
+        }
       },
       getApproverText (flow) {
         return flow?.emails?.reduce((str, email, i) => `${str}${i > 0 ? ', ' : ''}${email}`, 'ผู้อนุมัติ : ') || false
