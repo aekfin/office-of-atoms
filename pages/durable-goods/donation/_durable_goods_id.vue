@@ -108,6 +108,8 @@
           <v-row v-if="isCreate" class="mt-5 mb-5">
             <v-btn block rounded outlined @click="addDurableGoods()">เพิ่มครุภัณฑ์</v-btn>
           </v-row>
+
+          <AttachmentDurableGoods v-if="!isCreate" ref="attachmentDurableGoods"/>
         </v-container>
       </v-container>
 
@@ -128,6 +130,7 @@
       Loading: () => import('~/components/Loading.vue'),
       DurableGoodsOwner: () => import('~/components/DurableGoodsOwner.vue'),
       CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
+      AttachmentDurableGoods: () => import('~/components/AttachmentDurableGoods.vue'),
     },
     data () {
       return {
@@ -385,6 +388,7 @@
           const categoryForm = equipment?.categoryForm || {}
           const form = { ...equipment, ...categoryForm }
           await this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/Edit', data: form })
+          if (this.$refs.attachmentDurableGoods) await this.$refs.attachmentDurableGoods.upload()
           await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })
           await this.getData()
           return Promise.resolve()

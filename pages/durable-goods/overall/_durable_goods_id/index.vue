@@ -93,6 +93,8 @@
                       </h4>
                       <img v-for="img in modelImages" :key="img.fileUrl" class="img-preview" :src="$fn.getFileUrl(img.fileUrl)" alt="modelImage">
                     </v-col>
+
+                    <AttachmentDurableGoods v-if="isCreate" ref="attachmentCreateDurableGoods" :isCreate="isCreate" class="mb-10"/>
                   </v-row>
 
                   <div class="text-h6 mt-2 mb-2 d-flex justify-space-between">
@@ -128,8 +130,11 @@
           <v-row v-if="isCreate" class="mb-5">
             <v-btn block rounded outlined @click="addDurableGoods()">เพิ่มครุภัณฑ์</v-btn>
           </v-row>
+          
+          <AttachmentDurableGoods v-if="!isCreate" ref="attachmentDurableGoods"/>
         </v-container>
       </v-container>
+
 
       <v-container class="mt-8">
         <v-row justify="end">
@@ -148,6 +153,7 @@
       Loading: () => import('~/components/Loading.vue'),
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
+      AttachmentDurableGoods: () => import('~/components/AttachmentDurableGoods.vue'),
     },
     data () {
       return {
@@ -405,6 +411,7 @@
           const categoryForm = equipment?.categoryForm || {}
           const form = { ...equipment, ...categoryForm }
           await this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/Edit', data: form })
+          if (this.$refs.attachmentDurableGoods) await this.$refs.attachmentDurableGoods.upload()
           await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })
           await this.getData()
           return Promise.resolve()
