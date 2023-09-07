@@ -1,0 +1,89 @@
+<template>
+  <div class="attachment-durable-goods">
+    <Loading v-if="isLoading"/>
+    <v-container v-else>
+      <h5 class="text-h5 mt-2 mb-4"><b>รูปครุภัณฑ์</b></h5>
+      <AttachFileBtn :value.sync="uploadingImageFiles" :attachments="imageFiles" accept="image/gif, image/jpeg, image/png, image/webp" :limit="2" showImage :multiple="false" @removeAttachment="onRemoveFile"/>
+      <h5 class="text-h5 mt-10 mb-4"><b>เอกสารครุภัณฑ์</b></h5>
+      <AttachFileBtn :value.sync="uploadingFiles" :attachments="files" accept="*" :limit="2" :multiple="false" @removeAttachment="onRemoveFile"/>
+    </v-container>
+  </div>
+</template>
+
+<script>
+  export default {
+    components: {
+      Loading: () => import('~/components/Loading.vue'),
+      AttachFileBtn: () => import('~/components/AttachFileBtn.vue'),
+    },
+    data () {
+      return {
+        uploadingImageFiles: [],
+        imageFiles: [],
+        uploadingFiles: [],
+        files: [],
+        removeFiles: [],
+        isLoading: true,
+      }
+    },
+    mounted () {
+      this.getAttachments()
+    },
+    methods: {
+      async getAttachments () {
+        try {
+          this.isLoading = true
+          const { data: files } = await this.$store.dispatch('http', { apiPath: `equipment/getUploadFile/${this.$route.params.durable_goods_id}` })
+          const images = []
+          const others = []
+          files.forEach(file => {
+            if (['.gif', '.jfif', '.pjpeg', '.jpeg', '.pjp', 'jpg', '.png', '.webp'].some(type => file.filename.includes(type)) && images.length < 2) {
+              images.push(file)
+            } else {
+              others.push(file)
+            }
+          })
+          this.imageFiles = images
+          this.files = others
+          this.isLoading = false
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
+      onRemoveFile (attach) {
+        this.removeFiles.push(attach)
+      },
+      async deleteFiles () {
+        try {
+          await Promise.all(this.removeFiles.map(file => this.$axios({ method: 'delete', url: file })))
+          this.removeFiles = []
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
+      async uploadFiles () {
+        try {
+          const files = [...this.uploadingImageFiles, ...this.uploadingFiles]
+          let data = new FormData()
+          for (const file of files) {
+            data.append('file', file)
+          }
+          data.append('equipmentId', this.$route.params.durable_goods_id)
+          await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/uploadFile', data })
+          this.uploadingImageFiles = []
+          this.uploadingFiles = []
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
+      async upload () {
+        try {
+          if (this.uploadingImageFiles.length || this.uploadingFiles.length) await this.uploadFiles()
+          if (this.removeFiles.length) await this.deleteFiles()
+        } catch (err) { return Promise.reject(err) }
+      },
+    },
+  }
+</script>
+
+<style lang="scss">
+  .attachment-durable-goods {
+  }
+</style>

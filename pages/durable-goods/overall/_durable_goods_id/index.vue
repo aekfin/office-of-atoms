@@ -87,7 +87,10 @@
                     <v-col :cols="12" class="pt-0">
                       <v-textarea v-model="form.equipments[i].description" class="pt-0" label="คำอธิบายเพิ่มเติม / ข้อมูลการใช้งาน" :rows="4"/>
                     </v-col>
-                    <v-col :cols="12" class="pt-0 mb-5">
+                    <v-col v-if="modelImages.length" :cols="12" class="pt-0 mb-5">
+                      <h4 class="text-h6 mt-2 mb-2 d-flex justify-space-between">
+                        <b>รูปจากรุ่นของครุภัณฑ์</b>
+                      </h4>
                       <img v-for="img in modelImages" :key="img.fileUrl" class="img-preview" :src="$fn.getFileUrl(img.fileUrl)" alt="modelImage">
                     </v-col>
                   </v-row>

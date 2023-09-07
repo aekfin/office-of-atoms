@@ -71,12 +71,7 @@
         </v-row>
       </v-container>
 
-      <v-container v-if="!isCreate && !isGroupAdmin">
-        <h5 class="text-h5 mt-2 mb-4"><b>รูปครุภัณฑ์</b></h5>
-        <AttachFileBtn :value.sync="uploadingImageFiles" :attachments="imageFiles" accept="image/gif, image/jpeg, image/png, image/webp" :limit="2" showImage :multiple="false" @removeAttachment="onRemoveFile"/>
-        <h5 class="text-h5 mt-10 mb-4"><b>เอกสารครุภัณฑ์</b></h5>
-        <AttachFileBtn :value.sync="uploadingFiles" :attachments="files" accept="*" :limit="2" :multiple="false" @removeAttachment="onRemoveFile"/>
-      </v-container>
+      <AttachmentDurableGoods v-if="!isCreate && !isGroupAdmin" ref="attachmentDurableGoods"/>
 
       <v-container class="mt-8">
         <v-row justify="end">
@@ -94,7 +89,7 @@
       PageHeader: () => import('~/components/PageHeader.vue'),
       CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
       DurableGoodsOwner: () => import('~/components/DurableGoodsOwner.vue'),
-      AttachFileBtn: () => import('~/components/AttachFileBtn.vue'),
+      AttachmentDurableGoods: () => import('~/components/AttachmentDurableGoods.vue'),
     },
     data () {
       return {
@@ -146,11 +141,6 @@
         quantityRules: [
           v => v > 0 ||'โปรดใส่จำนวนครุภัณฑ์',
         ],
-        uploadingImageFiles: [],
-        imageFiles: [],
-        uploadingFiles: [],
-        files: [],
-        removeFiles: [],
       }
     },
     computed: {
@@ -198,30 +188,9 @@
             brand: data.brand,
             model: data.model,
           }
-          await this.getAttachments()
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
-      },
-      async getAttachments () {
-        try {
-          const { data: files } = await this.$store.dispatch('http', { apiPath: `equipment/getUploadFile/${this.$route.params.durable_goods_id}` })
-          const images = []
-          const others = []
-          files.forEach(file => {
-            if (['.gif', '.jfif', '.pjpeg', '.jpeg', '.pjp', 'jpg', '.png', '.webp'].some(type => file.filename.includes(type)) && images.length < 2) {
-              images.push(file)
-            } else {
-              others.push(file)
-            }
-          })
-          this.imageFiles = images
-          this.files = others
-          return Promise.resolve()
-        } catch (err) { return Promise.reject(err) }
-      },
-      onRemoveFile (attach) {
-        this.removeFiles.push(attach)
       },
       onOuChange ({ val }) {
         this.form.organizationId = val
@@ -266,27 +235,6 @@
           assetSubNumber: this.form.detailList.map(detail => detail.assetSubNumber),
         }
       },
-      async deleteFiles () {
-        try {
-          await Promise.all(this.removeFiles.map(file => this.$axios({ method: 'delete', url: file })))
-          this.removeFiles = []
-          return Promise.resolve()
-        } catch (err) { return Promise.reject(err) }
-      },
-      async uploadFiles () {
-        try {
-          const files = [...this.uploadingImageFiles, ...this.uploadingFiles]
-          let data = new FormData()
-          for (const file of files) {
-            data.append('file', file)
-          }
-          data.append('equipmentId', this.$route.params.durable_goods_id)
-          await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/uploadFile', data })
-          this.uploadingImageFiles = []
-          this.uploadingFiles = []
-          return Promise.resolve()
-        } catch (err) { return Promise.reject(err) }
-      },
       async onSubmit () {
         try {
           const valid = this.$refs.form.validate()
@@ -294,8 +242,7 @@
             if (this.isCreate) await this.onCreate()
             else await this.onEdit()
             if (!this.isCreate) {
-              if (this.uploadingImageFiles.length || this.uploadingFiles.length) await this.uploadFiles()
-              if (this.removeFiles.length) await this.deleteFiles()
+              if (this.$refs.attachmentDurableGoods) await this.$refs.attachmentDurableGoods.upload()
               await this.getData()
             }
           }
