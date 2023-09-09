@@ -42,7 +42,7 @@
                     <v-text-field v-if="filter.type === 'textField'" :label="filter.name" v-model="form[filter.param]"/>
                     <div v-else-if="filter.type === 'space'"/>
                     <SelectDropdown v-else :value.sync="form[filter.param]" :items="filter.options || []" :apiPath="filter.apiPath" itemValue="id" :itemText="filter.itemText || 'name'"
-                      :label="filter.name" clearable :query="{ pageSize: 999 }" @loaded="filter.options = $event"/>
+                      :lazy="!isCurrentFilters(filter)" :label="filter.name" clearable :query="{ pageSize: 999 }" @loaded="filter.options = $event"/>
                   </template>
                 </v-col>
               </v-row>
@@ -101,6 +101,9 @@
       this.setForm()
     },
     methods: {
+      isCurrentFilters (filter) {
+        return this.currentFilters.some(f => f.param === filter.param)
+      },
       setValue (param) {
         const val = this.$route.query?.[param]
         const convertArray = () => val.split(',').map(v => v)

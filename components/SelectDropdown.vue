@@ -1,9 +1,12 @@
 <template>
   <div class="select-dropdown">
     <v-select ref="selector" v-model="val" :items="list" :itemValue="itemValue" :itemText="itemText" :label="label" :rules="rules" :required="required" :disabled="disabled || disabledOnload"
-      :readonly="readonly" :loading="forceLoading || isLoading" appendIcon="keyboard_arrow_down" :clearable="clearable" clearIcon="highlight_remove" @change="onChange">
+      :readonly="readonly" :loading="forceLoading || isLoading" appendIcon="keyboard_arrow_down" :clearable="clearable" clearIcon="highlight_remove" @change="onChange" @click="onClick">
       <template #append-item>
         <div v-if="!!pagination" v-show="isShowLoading" id="bottom-of-scroll" v-intersect="onIntersect" class="pt-5 pb-5 text-center">Loading...</div>
+      </template>
+      <template v-if="lazy" #no-data>
+        <div class="text-center pt-2 pb-2">Loading...</div>
       </template>
     </v-select>
   </div>
@@ -27,6 +30,7 @@
       forceLoading: { type: Boolean },
       clearable: { type: Boolean },
       findNotInList: { type: Boolean },
+      lazy: { type: Boolean },
     },
     data () {
       return {
@@ -63,7 +67,7 @@
       },
     },
     mounted () {
-      if (this.apiPath) this.getList()
+      if (this.apiPath && !this.lazy) this.getList()
     },
     methods: {
       async getList (more = false) {
@@ -88,6 +92,9 @@
         if (this.pagination && isIntersecting && this.pagination.last === false && !this.isLoading) {
           this.getList(true)
         }
+      },
+      onClick () {
+        if (this.apiPath && this.lazy) this.getList()
       },
       onChange (val) {
         const item = this.list.find(item => item[this.itemValue] == val)
