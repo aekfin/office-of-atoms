@@ -67,6 +67,16 @@ export default () => ({
     'DESTRUCTION': 'secondary',
     'OTHER': 'warning',
   },
+  durableGoodSelectable: {
+    'NEW': 'ใช้งานอยู่',
+    'RESERVE': 'รออนุมัติ',
+    'BORROWED': 'ถูกยืม',
+    'RETURNED': 'ใช้งานอยู่',
+    'WAIT_SALE': 'รอจำหน่าย',
+    'SALE': 'จำหน่าย',
+    'REPAIR': 'ส่งซ่อม',
+    'DONATE': 'รับบริจาค',
+  },
   durableGoodTypes: {
     'BORROW': 'ยืม',
     'RETURN': 'คืน',

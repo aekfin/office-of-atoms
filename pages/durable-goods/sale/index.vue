@@ -49,13 +49,23 @@
         filters: [
           {
             type: 'textField',
+            name: 'ชื่อครุภัณฑ์',
+            param: 'equipmentName',
+          },
+          {
+            type: 'textField',
             name: 'เลขที่ครุภัณฑ์',
             param: 'equipmentNumber',
           },
           {
             type: 'textField',
-            name: 'ชื่อครุภัณฑ์',
-            param: 'equipmentName',
+            name: 'เลขที่สินทรัพย์',
+            param: 'assetNumber',
+          },
+          {
+            type: 'textField',
+            name: 'เลขที่สินทรัพย์ อว.',
+            param: 'assetNumberAorWor',
           },
           {
             name: 'กลุ่ม',

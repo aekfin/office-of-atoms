@@ -30,6 +30,54 @@
             param: 'equipmentName',
           },
           {
+            type: 'textField',
+            name: 'เลขที่ครุภัณฑ์',
+            param: 'equipmentNumber',
+          },
+          {
+            type: 'textField',
+            name: 'เลขที่สินทรัพย์',
+            param: 'assetNumber',
+          },
+          {
+            type: 'textField',
+            name: 'เลขที่สินทรัพย์ อว.',
+            param: 'assetNumberAorWor',
+          },
+          {
+            type: 'space',
+          },
+          {
+            name: 'หมวดหมู่พัสดุ',
+            param: 'majorCategoryId',
+            apiPath: 'equipment/category/getMejorCategorys',
+          },
+          {
+            name: 'ประเภทพัสดุ',
+            param: 'subCategoryId',
+            apiPath: 'equipment/category/getSubCategorys',
+          },
+          {
+            name: 'รายการครุภัณฑ์',
+            param: 'typeId',
+            apiPath: 'equipment/category/types',
+          },
+          {
+            name: 'ยี่ห้อ',
+            param: 'brandId',
+            apiPath: 'equipment/category/brands',
+          },
+          {
+            name: 'รุ่น',
+            param: 'modelId',
+            apiPath: 'equipment/category/models',
+          },
+          {
+            name: 'สถานะ',
+            param: 'status',
+            options: this.$store.getters.durableGoodSelectableOptions,
+          },
+          {
             name: 'กลุ่ม',
             param: 'ouId',
             apiPath: 'Orgchart/getOrganizations',
