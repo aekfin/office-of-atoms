@@ -32,7 +32,8 @@
       const headers = [
         { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
         { text: 'โครงการ', value: 'project.projectName' },
-        { text: 'ชื่อครุภัณฑ์', value: 'name', width: '180px' },
+        { text: 'เลขที่ครุภัณฑ์', value: 'number', align: 'center', width: '120px' },
+        { text: 'ชื่อครุภัณฑ์', value: 'name', align: 'center', width: '160px' },
         { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
         { text: 'ราคา', value: 'price', align: 'center', width: '120px' },
         { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },

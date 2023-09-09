@@ -80,6 +80,23 @@
         try {
           if (this.uploadingImageFiles.length || this.uploadingFiles.length) await this.uploadFiles()
           if (this.removeFiles.length) await this.deleteFiles()
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
+      async uploadCreate (idList = []) {
+        try {
+          if (this.uploadingImageFiles.length || this.uploadingFiles.length) {
+            const files = [...this.uploadingImageFiles, ...this.uploadingFiles]
+            let data = new FormData()
+            for (const file of files) {
+              data.append('file', file)
+            }
+            data.append('equipmentIds', idList.join(','))
+            await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/uploadFileMultiEquipment', data })
+            this.uploadingImageFiles = []
+            this.uploadingFiles = []
+          }
+          return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
     },

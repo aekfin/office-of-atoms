@@ -400,6 +400,7 @@
               this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.getMapCategory(item), id: item.id } })
             })
           )
+          if (this.$refs.attachmentCreateDurableGoods?.[0]) await this.$refs.attachmentCreateDurableGoods[0].uploadCreate(data.map(item => item.id))
           await this.$store.dispatch('snackbar', { text: 'เพิ่มครุภัณฑ์สำเร็จ' })
           this.$router.push('/durable-goods/overall/')
           return Promise.resolve()

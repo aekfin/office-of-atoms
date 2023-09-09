@@ -13,7 +13,7 @@ const Fn = {
     return moment(date).format('YYYY-MM-DD HH:mm:ss')
   },
   convertStringToDate (date) {
-    return new Date(date)
+    return date ? new Date(date) : ''
   },
   displayDate (date) {
     const dateFormat = moment(date)
