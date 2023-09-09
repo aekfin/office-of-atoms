@@ -73,6 +73,8 @@
                     <v-col :cols="12" class="pt-0 mb-5">
                       <img v-for="img in modelImages" :key="img.fileUrl" class="img-preview" :src="$fn.getFileUrl(img.fileUrl)" alt="modelImage">
                     </v-col>
+
+                    <AttachmentDurableGoods v-if="isCreate" ref="attachmentCreateDurableGoods" :isCreate="isCreate" class="mb-10"/>
                   </v-row>
 
                   <div class="text-h6 mt-2 mb-2 d-flex justify-space-between">
@@ -377,6 +379,7 @@
               this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.getMapCategory(item), id: item.id } })
             })
           )
+          if (this.$refs.attachmentCreateDurableGoods?.[0]) await this.$refs.attachmentCreateDurableGoods[0].uploadCreate(data.map(item => item.id))
           await this.$store.dispatch('snackbar', { text: 'เพิ่มการรับบริจาคครุภัณฑ์สำเร็จ' })
           this.$router.push('/durable-goods/donation/')
           return Promise.resolve(data)
