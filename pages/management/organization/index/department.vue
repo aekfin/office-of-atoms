@@ -8,6 +8,8 @@
       </template>
     </v-data-table>
 
+    <ConfirmDialog :value.sync="errorDialog" title="แจ้งเตือน" text="ไม่สามารถลบกลุ่มได้ เนื่องจากมีการใช้กลุ่มนี้ไปแล้ว" hideSubmit closeText="รับทราบ"/>
+
     <v-dialog v-model="dialog" width="720" contentClass="type-parcel-dialog">
       <v-card>
         <v-card-title class="text-h5 justify-space-between">
@@ -41,10 +43,12 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
+      ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
     },
     data () {
       return {
         isLoading: true,
+        errorDialog: false,
         count: 0,
         total: 0,
         items: [],
@@ -91,6 +95,7 @@
       getActionIconList (item) {
         return [
           { type: 'btn', icon: 'edit', action: () => { this.onEdit(item) } },
+          { type: 'confirm', icon: 'delete', action: () => { this.onDelete(item) } },
         ]
       },
       onCreate () {
@@ -102,6 +107,17 @@
         this.isCreate = false
         this.form = { id: item.id, name: item.departmentName }
         this.dialog = true
+      },
+      async onDelete (item) {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', { method: 'delete', apiPath: 'Orgchart/deleteDepartment', query: { departmentId: item.id } })
+          if (data?.status?.code == 400) this.errorDialog = true
+          await this.getList()
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
+        }
       },
       async onSubmit () {
         const valid = this.$refs.form.validate()
