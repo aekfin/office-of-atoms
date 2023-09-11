@@ -1,6 +1,9 @@
 <template>
   <div id="durable-goods-repair-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มการส่งซ่อมครุภัณฑ์' : 'จัดการการซ่อมครุภัณฑ์'" hideTotal/>
+    <div v-if="item && getRepairLabel(item) === 'รอส่งซ่อมภายนอก'" class="d-flex justify-end">
+      <ExportReportButton apiPath="equipment/outSourceRepairDocument" name="เอกสารประกอบการส่งซ่อมภายนอก" text="เอกสารประกอบการส่งซ่อมภายนอก" :query="{ id: $route.params.repair_id }"/>
+    </div>
     <Loading v-if="isLoading"/>
     <template v-else>
       <v-stepper v-if="!isCreate && item" v-model="step" class="mt-10 mb-10" altLabels>
@@ -55,7 +58,7 @@
             :disabled="!isCreate" onlyUser :userList="form.userList"/>
 
           <v-row v-if="item">
-            <v-col>
+            <v-col :cols="12">
               <b class="mr-1" style="font-size: 18px;">สถานะการซ่อม : </b>
               <v-chip :color="repairColor[getRepairLabel(item)]">{{ getRepairLabel(item) }}</v-chip>
             </v-col>

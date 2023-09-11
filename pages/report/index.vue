@@ -18,6 +18,12 @@
       </v-row>
       <v-row class="mt-10">
         <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายงานครุภัณฑ์ชนGFMIS</b></h4>
+          <ExportReportButton apiPath="report/equipment" name="รายงานครุภัณฑ์ชนGFMIS"/>
+        </v-col>
+      </v-row>
+      <v-row class="mt-10">
+        <v-col :col="12" :md="4">
           <h4 class="text-xl mb-2"><b>รายงานการจำหน่ายครุภัณฑ์</b></h4>
           <ExportReportButton apiPath="report/sale" name="รายงานการจำหน่ายครุภัณฑ์"/>
         </v-col>
@@ -50,6 +56,60 @@
       return {
         filters: [
           {
+            type: 'textField',
+            name: 'ปี',
+            param: 'year',
+          },
+          {
+            type: 'space',
+          },
+          {
+            type: 'textField',
+            name: 'เลขที่ครุภัณฑ์',
+            param: 'equipmentNumber',
+          },
+          {
+            type: 'textField',
+            name: 'เลขที่สินทรัพย์',
+            param: 'assetNumber',
+          },
+          {
+            type: 'textField',
+            name: 'เลขที่สินทรัพย์ อว.',
+            param: 'assetNumberAorWor',
+          },
+          {
+            type: 'space',
+          },
+          {
+            name: 'หมวดหมู่พัสดุ',
+            param: 'majorCategoryId',
+            apiPath: 'equipment/category/getMejorCategorys',
+          },
+          {
+            name: 'ประเภทพัสดุ',
+            param: 'subCategoryId',
+            apiPath: 'equipment/category/getSubCategorys',
+          },
+          {
+            name: 'รายการครุภัณฑ์',
+            param: 'typeId',
+            apiPath: 'equipment/category/types',
+          },
+          {
+            name: 'ยี่ห้อ',
+            param: 'brandId',
+            apiPath: 'equipment/category/brands',
+          },
+          {
+            name: 'รุ่น',
+            param: 'modelId',
+            apiPath: 'equipment/category/models',
+          },
+          {
+            type: 'space',
+          },
+          {
             name: 'กลุ่ม',
             param: 'ouId',
             apiPath: 'Orgchart/getOrganizations',
@@ -60,11 +120,6 @@
             param: 'departmentId',
             apiPath: 'Orgchart/getDepartments',
             itemText: 'departmentName',
-          },
-          {
-            type: 'textField',
-            name: 'ปี',
-            param: 'year',
           },
         ],
       }
