@@ -24,8 +24,9 @@
       CategoryDialog: () => import('~/components/CategoryDialog.vue'),
     },
     data () {
+      const tabIndex = this.$route.query?.tabIndex ? parseInt(this.$route.query?.tabIndex) : 0
       return {
-        tabIndex: 0,
+        tabIndex,
         tabs: [
           {
             text: 'หมวดหมู่พัสดุ',
@@ -89,9 +90,8 @@
       },
     },
     watch: {
-      'tabIndex' () {
-        this.$router.push({ query: {} })
-        this.getList()
+      'tabIndex' (val) {
+        this.$router.push({ query: { tabIndex: val } })
       },
       '$route.query' () {
         this.getList()
