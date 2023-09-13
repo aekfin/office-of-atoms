@@ -23,7 +23,7 @@
           </v-btn>
         </v-badge>
       </div>
-      <ExportReportButton v-if="reportApiPath" :apiPath="reportApiPath" :name="reportName"/>
+      <ExportReportButton v-if="reportApiPath" :apiPath="reportApiPath" :name="reportName" :text="exportText"/>
     </div>
     <v-dialog v-model="dialog" width="800" contentClass="filter-dialog">
       <v-card>
@@ -40,7 +40,7 @@
                 <v-col v-for="filter in filters" :key="filter.param" class="pt-0 pb-0" :cols="12" :md="filter.md || 6">
                   <template v-if="form">
                     <v-text-field v-if="filter.type === 'textField'" :label="filter.name" v-model="form[filter.param]"/>
-                    <v-switch v-if="filter.type === 'switch'" :label="filter.name" v-model="form[filter.param]"/>
+                    <v-switch v-else-if="filter.type === 'switch'" :label="filter.name" v-model="form[filter.param]"/>
                     <div v-else-if="filter.type === 'space'"/>
                     <SelectDropdown v-else :value.sync="form[filter.param]" :items="filter.options || []" :apiPath="filter.apiPath" itemValue="id" :itemText="filter.itemText || 'name'"
                       :lazy="!isCurrentFilters(filter)" :label="filter.name" clearable :query="{ pageSize: 999 }" @loaded="filter.options = $event"/>
@@ -77,6 +77,7 @@
       hideTotal: { type: Boolean },
       reportApiPath: { type: String, default: '' },
       reportName: { type: String, default: 'รายงาน' },
+      exportText: { type: String },
     },
     data () {
       return {

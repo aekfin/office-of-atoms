@@ -1,6 +1,9 @@
 <template>
   <div id="durable-goods-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มครุภัณฑ์' : 'การแก้ไขครุภัณฑ์'" hideTotal :btnText="isCreate ? '' : 'ครุภัณฑ์ย่อย'" :createRoute="createRoute"/>
+    <div v-if="!isCreate" class="d-flex justify-end mt-3">
+      <ExportReportButton apiPath="report/equipment-detail" :query="{ equipmentNumber: form.number }" name="รายงานทะเบียนคุมทรัพย์สิน" text="รายงานทะเบียนคุมทรัพย์สิน"/>
+    </div>
     <Loading v-if="isLoading"/>
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
@@ -153,6 +156,7 @@
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
       AttachmentDurableGoods: () => import('~/components/AttachmentDurableGoods.vue'),
+      ExportReportButton: () => import('~/components/ExportReportButton.vue'),
     },
     data () {
       return {
