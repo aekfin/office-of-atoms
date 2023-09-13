@@ -15,7 +15,6 @@
       query: { type: Object, default: () => {} },
       text: { type: String, default: 'Export Report' },
       name: { type: String, default: 'รายงาน' },
-      requireYear: { type: Boolean },
     },
     methods: {
       async onExportReport () {

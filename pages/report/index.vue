@@ -21,12 +21,16 @@
           <h4 class="text-xl mb-2"><b>รายงานครุภัณฑ์ชนGFMIS</b></h4>
           <ExportReportButton apiPath="report/equipment" name="รายงานครุภัณฑ์ชนGFMIS"/>
         </v-col>
-      </v-row>
-      <v-row class="mt-10">
+        <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายงานทะเบียนคุมทรัพย์สิน</b></h4>
+          <ExportReportButton apiPath="report/equipment-detail" name="รายงานทะเบียนคุมทรัพย์สิน"/>
+        </v-col>
         <v-col :col="12" :md="4">
           <h4 class="text-xl mb-2"><b>รายงานการจำหน่ายครุภัณฑ์</b></h4>
           <ExportReportButton apiPath="report/sale" name="รายงานการจำหน่ายครุภัณฑ์"/>
         </v-col>
+      </v-row>
+      <v-row class="mt-10">
         <v-col :col="12" :md="4">
           <h4 class="text-xl mb-2"><b>รายงานวัสดุคงคลัง</b></h4>
           <ExportReportButton apiPath="report/pacelAll" name="รายงานวัสดุคงคลัง"/>
@@ -35,8 +39,6 @@
           <h4 class="text-xl mb-2"><b>รายงานเบิกจ่ายวัสดุคงคลังตามหน่วยงาน</b></h4>
           <ExportReportButton apiPath="report/pacelWithOu" name="รายงานเบิกจ่ายวัสดุคงคลังตามหน่วยงาน"/>
         </v-col>
-      </v-row>
-      <v-row class="mt-10">
         <v-col :col="12" :md="4">
           <h4 class="text-xl mb-2"><b>รายงานการรอคืนหลักประกัน</b></h4>
           <ExportReportButton apiPath="report/project" name="รายงานการรอคืนหลักประกัน"/>

@@ -210,7 +210,7 @@
           const quantity = this.form.quantity
           if (ouId && quantity) {
             this.isNumberLoading = true
-            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity } })
+            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: 1 } })
             data?.forEach((number, i) => {
               this.form.detailList[i].number = number
             })

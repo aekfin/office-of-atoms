@@ -1,6 +1,9 @@
 <template>
   <div id="durable-goods-withdraw-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มการเบิกครุภัณฑ์' : 'การแก้ไขการเบิกครุภัณฑ์'" hideTotal/>
+    <div class="d-flex justify-end mt-3">
+      <ExportReportButton apiPath="equipment/requisitionDocument" name="เอกสารประกอบการเบิกครุภัณฑ์" text="เอกสารประกอบการเบิกครุภัณฑ์" :query="{ equipmentRequestId: $route.params.withdraw_id }"/>
+    </div>
     <Loading v-if="isLoading"/>
     <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" type="เบิก" cannotApprove backPath="/durable-goods/withdraw/" hideOwner isWithdraw @submit="onSubmit"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
@@ -11,6 +14,7 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
+      ExportReportButton: () => import('~/components/ExportReportButton.vue'),
       Loading: () => import('~/components/Loading.vue'),
       ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
     },

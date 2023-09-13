@@ -73,8 +73,6 @@
                     <v-col :cols="12" class="pt-0 mb-5">
                       <img v-for="img in modelImages" :key="img.fileUrl" class="img-preview" :src="$fn.getFileUrl(img.fileUrl)" alt="modelImage">
                     </v-col>
-
-                    <AttachmentDurableGoods v-if="isCreate" ref="attachmentCreateDurableGoods" :isCreate="isCreate" class="mb-10"/>
                   </v-row>
 
                   <div class="text-h6 mt-2 mb-2 d-flex justify-space-between">
@@ -111,6 +109,7 @@
             <v-btn block rounded outlined @click="addDurableGoods()">เพิ่มครุภัณฑ์</v-btn>
           </v-row>
 
+          <AttachmentDurableGoods v-if="isCreate" ref="attachmentCreateDurableGoods" :isCreate="isCreate"/>
           <AttachmentDurableGoods v-if="!isCreate" ref="attachmentDurableGoods"/>
         </v-container>
       </v-container>
@@ -292,7 +291,7 @@
           const quantity = equipment.quantity
           if (ouId && quantity) {
             this.isNumberLoading = true
-            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity } })
+            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: 1 } })
             data?.forEach((number, i) => {
               equipment.detailList[i].number = number
             })
@@ -379,7 +378,7 @@
               this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.getMapCategory(item), id: item.id } })
             })
           )
-          if (this.$refs.attachmentCreateDurableGoods?.[0]) await this.$refs.attachmentCreateDurableGoods[0].uploadCreate(data.map(item => item.id))
+          if (this.$refs.attachmentCreateDurableGoods) await this.$refs.attachmentCreateDurableGoods.uploadCreate(data.map(item => item.id))
           await this.$store.dispatch('snackbar', { text: 'เพิ่มการรับบริจาคครุภัณฑ์สำเร็จ' })
           this.$router.push('/durable-goods/donation/')
           return Promise.resolve(data)
