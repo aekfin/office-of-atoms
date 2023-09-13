@@ -3,7 +3,7 @@
     <PageHeader text="จำหน่ายครุภัณฑ์" btnText="เพิ่มการจำหน่ายครุภัณฑ์" createRoute="/durable-goods/sale/create/" :total="total" :filters="filters"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
-      <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
+      <template #item.price="{ item }">{{ $fn.getPrice(item.equipmentSale.price || item.price) }}</template>
       <template #item.majorCategory="{ item }">
         <EquipmentColumn :item="item"/>
       </template>

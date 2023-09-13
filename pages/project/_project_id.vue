@@ -4,6 +4,14 @@
     <Loading v-if="isLoading && !project"/>
     <v-form v-else ref="form" v-model="valid" class="mt-4">
       <v-container>
+        <v-row justify="end">
+          <span v-if="!isCreate && project">
+            <b v-if="project.depositRefunds" class="success--text">คืนเงินประกันแล้ว</b>
+            <span v-else>
+              <v-btn color="primary" @click="onDepositRefund">คืนเงินประกัน</v-btn>
+            </span>
+          </span>
+        </v-row>
         <v-row>
           <v-col :cols="12">
             <v-btn color="secondary" @click="manualMode = !manualMode">{{ manualMode ? 'เลือกจากรายชื่อโครงการ' : 'กรอกชื่อโครงการด้วยตัวเอง' }}</v-btn>
@@ -423,6 +431,14 @@
         delete form.contractCompany
         delete form.fileInfo
         form.removeFile = this.removeFile
+      },
+      async onDepositRefund () {
+        try {
+          await this.$store.dispatch('http', { apiPath: 'Project/deposit-refunds', query: { projectId: this.$route.params.project_id } })
+          await this.$store.dispatch('snackbar', { text: 'คืนเงินประกันสำเร็จ' })
+          await this.getData()
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
       },
       async onSubmit () {
         const valid = this.$refs.form.validate()

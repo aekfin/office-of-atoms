@@ -1,6 +1,6 @@
 <template>
   <div id="project-page">
-    <PageHeader text="โครงการ" btnText="เพิ่มโครงการ" createRoute="/project/create/" :total="total" unit="โครงการ"/>
+    <PageHeader text="โครงการ" btnText="เพิ่มโครงการ" createRoute="/project/create/" :total="total" :filters="filters" unit="โครงการ"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.projectStartDate="{ item }">
@@ -39,6 +39,13 @@
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
         items: [],
+        filters: [
+          {
+            type: 'switch',
+            name: 'ใกล้หมดระยะประกัน',
+            param: 'expiringSoon',
+          },
+        ],
       }
     },
     watch: {

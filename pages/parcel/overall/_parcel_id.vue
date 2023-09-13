@@ -32,20 +32,18 @@
                 <v-container>
                   <v-row>
                     <v-col :cols="12" md="4">
-                      <AutocompleteDropdown v-if="isCreate" :value.sync="form.itemParcels[i].typeId" itemValue="id" itemText="name" label="ประเภท *" :rules="typeRules" apiPath="parcel/getListParcelType"
-                        searchApiPath="parcel/getParcelType" required noFilter/>
-                      <v-text-field v-else v-model="form.itemParcels[i].type" label="ประเภท *" disabled/>
+                      <AutocompleteDropdown :value.sync="form.itemParcels[i].typeId" :items="typeList" itemValue="id" itemText="name" label="ประเภท *" :rules="typeRules" apiPath="parcel/getListParcelType"
+                        searchApiPath="parcel/getParcelType" required noFilter @select="onSelectType(i)"/>
                     </v-col>
-                    <v-col :cols="12" md="8">
-                      <SelectDropdown v-if="isCreate" :value.sync="form.itemParcels[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" apiPath="parcel/searchParcelMaster"
+                    <v-col :cols="12" md="8" :key="form.itemParcels[i].typeId">
+                      <SelectDropdown :value.sync="form.itemParcels[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" :items="parcelItems" apiPath="parcel/searchParcelMaster"
                         :query="getParcelQuery(form.itemParcels[i])" :rules="parcelRules" required :disabled="!form.itemParcels[i].typeId"/>
-                      <v-text-field v-else v-model="form.itemParcels[i].parcelMasterName" label="วัสดุคงคลัง *" disabled/>
                     </v-col>
                     <v-col :cols="12" md="4">
-                      <v-text-field v-model="form.itemParcels[i].price" label="ราคา *" type="number" :rules="priceRules" required :disabled="!isCreate"/>
+                      <v-text-field v-model="form.itemParcels[i].price" label="ราคา *" type="number" :rules="priceRules" required/>
                     </v-col>
                     <v-col :cols="12" md="4">
-                      <v-text-field v-model="form.itemParcels[i].quantity" label="จำนวน *" type="number" :rules="quantityRules" required :disabled="!isCreate"/>
+                      <v-text-field v-model="form.itemParcels[i].quantity" label="จำนวน *" type="number" :rules="quantityRules" required/>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -60,7 +58,7 @@
       <v-container class="mt-8">
         <v-row justify="end">
           <v-btn large plain @click="$router.push('/parcel/overall/')">ย้อนกลับ</v-btn>
-          <v-btn v-if="isCreate" elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
+          <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
         </v-row>
       </v-container>
     </v-form>
@@ -92,6 +90,8 @@
             }
           ],
         },
+        typeList: [],
+        parcelItems: [],
         projectRules: [
           v => !!v || 'โปรดเลือกโครงการ',
         ],
@@ -127,12 +127,14 @@
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: 'parcel/getParcelProject', query: { id: this.$route.params.parcel_id } })
           this.form = {
+            id: data.id,
             projectId: data.id,
             projectName: data.projectName,
             dateEntry: data.dateEntry || new Date(),
             itemParcels: [
               {
-                parcelMasterId: null,
+                typeId: data.typeId,
+                parcelMasterId: data.parcelMasterId,
                 parcelMasterName: data.parcelMasterName,
                 price: data.price,
                 quantity: data.quantity,
@@ -140,6 +142,8 @@
               }
             ],
           }
+          this.typeList = [{ id: data.typeId, name: data.type }]
+          this.parcelItems = [{ id: data.parcelMasterId, name: data.parcelMasterName }]
           this.isLoading = false
           return Promise.resolve()
         } catch (err) {
@@ -163,19 +167,31 @@
       getParcelQuery (parcel) {
         return parcel?.typeId ? { typeId: parcel.typeId } : {}
       },
+      onSelectType (i) {
+        this.form.itemParcels[i].parcelMasterId = null
+        this.parcelItems = []
+      },
       async onSubmit () {
         const valid = this.$refs.form.validate()
         if (valid) {
           try {
-            const apiPath = this.isCreate ? 'parcel/import' : ''
+            const apiPath = this.isCreate ? 'parcel/import' : 'parcel/editParcelProject'
             const method = this.isCreate ? 'post' : 'patch'
-            const form = {
+            const createForm = {
               ...this.form,
               dateEntry: this.$fn.convertDateToString(this.form.dateEntry)
             }
+            const editForm = {
+              id: this.form.id,
+              parcelMasterId: this.form.itemParcels[0].parcelMasterId,
+              price: this.form.itemParcels[0].price,
+              quantity: this.form.itemParcels[0].quantity
+            }
+            const form = this.isCreate ? createForm : editForm
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างโครงการ-วัสดุคงคลังสำเร็จ' : 'แก้ไขประเภทสร้างโครงการ-วัสดุคงคลังสำเร็จ' })
             if (this.isCreate) this.$router.push('/parcel/overall/')
+            else this.getData()
             return Promise.resolve(data)
           } catch (err) { return Promise.reject(err) }
         } else {
