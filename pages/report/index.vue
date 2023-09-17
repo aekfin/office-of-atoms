@@ -46,8 +46,8 @@
       </v-row>
       <v-row class="mt-10">
         <v-col :col="12" :md="4">
-          <h4 class="text-xl mb-2"><b>รายงานสรุปผลจัดซื้อจัดจ้าง</b></h4>
-          <ExportReportButton apiPath="report/procurementSummary" name="รายงานสรุปผลจัดซื้อจัดจ้าง"/>
+          <h4 class="text-xl mb-2"><b>รายงานสถิติการจัดซื้อจัดจ้าง</b></h4>
+          <ExportReportButton apiPath="report/procurementSummary" name="รายงานสถิติการจัดซื้อจัดจ้าง"/>
         </v-col>
       </v-row>
     </v-container>

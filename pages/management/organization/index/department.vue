@@ -113,6 +113,7 @@
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { method: 'delete', apiPath: 'Orgchart/deleteDepartment', query: { departmentId: item.id } })
           if (data?.status?.code == 400) this.errorDialog = true
+          else await this.$store.dispatch('snackbar', { text: 'ลบกลุ่มสำเร็จ' })
           await this.getList()
           return Promise.resolve()
         } catch (err) {

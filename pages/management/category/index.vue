@@ -3,7 +3,7 @@
     <v-tabs v-model="tabIndex" class="tabs-underline mb-10" fixedTabs showArrows>
       <v-tab v-for="tab in tabs" :key="tab.text">{{ tab.text }}</v-tab>
     </v-tabs>
-    <PageHeader :text="tabActive.text" :btnText="`เพิ่ม${tabActive.btnText}`" :unit="tabActive.unit" :total="total" @create="createDialog = true"/>
+    <PageHeader :text="tabActive.text" :btnText="`เพิ่ม${tabActive.btnText}`" :unit="tabActive.unit" :total="total" :filters="filters" @create="createDialog = true"/>
     <v-data-table :headers="categoryHeaders" :items="items" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.action="{ item }">
@@ -88,6 +88,15 @@
         if (this.tabIndex > 3) headers.push({ text: `เครื่องมือ`, value: 'action', width: '100px' })
         return headers
       },
+      filters () {
+        const filters = []
+        // const filters = [{ type: 'textField', name: 'ชื่อหมวดหมู่พัสดุ', param: 'majorCategoryName' }]
+        // if (this.tabIndex > 0) filters.push({ type: 'textField', name: 'ชื่อประเภทพัสดุ', param: 'subCategoryName' })
+        // if (this.tabIndex > 1) filters.push({ type: 'textField', name: 'ชื่อรายการครุภัณฑ์', param: 'typeName' })
+        // if (this.tabIndex > 2) filters.push({ type: 'textField', name: 'ชื่อยี่ห้อ', param: 'brandName' })
+        // if (this.tabIndex > 3) filters.push({ type: 'textField', name: 'ชื่อรุ่น', param: 'modelName' })
+        return filters
+      },
     },
     watch: {
       'tabIndex' (val) {
@@ -128,7 +137,7 @@
       async onCreate ({ form, uploadingFiles, removeFiles }) {
         try {
           const apiPath = this.tabActive.postApiPath
-          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath, data: { brandId: form.brandId, names: [form.name] }, query: this.$route.query })
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath, data: { ...form, names: [form.name] }, query: this.$route.query })
           await this.onFileImage({ id: data?.[0]?.id, uploadingFiles, removeFiles })
           this.createDialog = false
           await this.getList()

@@ -14,6 +14,7 @@
       </template>
     </v-data-table>
     <Pagination/>
+    <ConfirmDialog :value.sync="errorDialog" title="แจ้งเตือน" text="ไม่สามารถลบโครงการได้ เนื่องจากมีการใช้โครงการนี้ไปแล้ว" hideSubmit closeText="รับทราบ"/>
   </div>
 </template>
 
@@ -23,6 +24,7 @@
       PageHeader: () => import('~/components/PageHeader.vue'),
       ActionIconList: () => import('~/components/ActionIconList.vue'),
       Pagination: () => import('~/components/Pagination.vue'),
+      ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
     },
     data () {
       return {
@@ -67,8 +69,9 @@
       },
       async removeProject (item) {
         try {
-          await this.$store.dispatch('http', { method: 'delete', apiPath: `Project/${item.id}` })
-          await this.$store.dispatch('snackbar', { text: 'ลบโครงการสำเร็จ' })
+          const { data } = await this.$store.dispatch('http', { method: 'delete', apiPath: `Project/${item.id}` })
+          if (data?.status?.code == 400) this.errorDialog = true
+          else await this.$store.dispatch('snackbar', { text: 'ลบโครงการสำเร็จ' })
           await this.getList()
           return Promise.resolve()
         } catch (err) {

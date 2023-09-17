@@ -46,7 +46,9 @@
             param: 'assetNumberAorWor',
           },
           {
-            type: 'space',
+            type: 'textField',
+            name: 'เลขที่สั่งซื้อสั่งจ้าง/เลขที่สัญญา',
+            param: 'contractNumber',
           },
           {
             name: 'หมวดหมู่พัสดุ',

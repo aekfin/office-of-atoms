@@ -8,6 +8,7 @@
       </template>
     </v-data-table>
     <Pagination/>
+    <ConfirmDialog :value.sync="errorDialog" title="แจ้งเตือน" text="ไม่สามารถลบบุคลากรได้ เนื่องจากมีการใช้บุคลากรนี้ไปแล้ว" hideSubmit closeText="รับทราบ"/>
   </div>
 </template>
 
@@ -17,6 +18,7 @@
       PageHeader: () => import('~/components/PageHeader.vue'),
       ActionIconList: () => import('~/components/ActionIconList.vue'),
       Pagination: () => import('~/components/Pagination.vue'),
+      ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
     },
     data () {
       return {
@@ -82,7 +84,8 @@
       async deleteUser (item) {
         try {
             const { data } = await this.$store.dispatch('http', { method: 'delete', apiPath: `user/${item.id}` })
-            await this.$store.dispatch('snackbar', { text: 'ลบบุคลากรสำเร็จ' })
+            if (data?.status?.code == 400) this.errorDialog = true
+            else await this.$store.dispatch('snackbar', { text: 'ลบบุคลากรสำเร็จ' })
             await this.getList()
             return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
