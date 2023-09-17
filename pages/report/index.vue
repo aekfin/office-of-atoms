@@ -49,6 +49,14 @@
           <h4 class="text-xl mb-2"><b>รายงานสถิติการจัดซื้อจัดจ้าง</b></h4>
           <ExportReportButton apiPath="report/procurementSummary" name="รายงานสถิติการจัดซื้อจัดจ้าง"/>
         </v-col>
+        <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายงานโครงการจัดซื้อจัดจ้างที่ยังไม่เสร็จสิ้น</b></h4>
+          <ExportReportButton apiPath="report/procurementSummary-non-complete" name="รายงานโครงการจัดซื้อจัดจ้างที่ยังไม่เสร็จสิ้น"/>
+        </v-col>
+        <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายงานตรวจนับวัสดุคงคลัง</b></h4>
+          <ExportReportButton apiPath="report/pacelVerificationReport" name="รายงานตรวจนับวัสดุคงคลัง"/>
+        </v-col>
       </v-row>
     </v-container>
   </div>
