@@ -25,10 +25,10 @@
             <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="3">
-            <InputDatePicker :value.sync="form.dateReceivedBefore" label="วันที่ได้มา (ก่อนโอน)" :disabled="!isCreate"/>
+            <InputDatePicker :value.sync="form.dateReceivedBefore" label="วันที่ได้มา (ก่อนโอน) *" :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="3">
-            <InputDatePicker :value.sync="form.dateReceivedAfter" label="วันที่ได้มา (หลังโอน)" :disabled="!isCreate"/>
+            <InputDatePicker :value.sync="form.dateReceivedAfter" label="วันที่ได้มา (หลังโอน) *" :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="3">
             <v-text-field v-model="form.valueBefore" label="มูลค่า (ก่อนโอน)" type="number" :disabled="!isCreate"/>
