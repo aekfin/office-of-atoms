@@ -1,6 +1,6 @@
 <template>
-  <div class="export-report-button" @click="onExportReport">
-    <v-btn color="secondary" outlined elevation="2">
+  <div class="export-report-button">
+    <v-btn color="secondary" outlined elevation="2" @click="onExportReport">
       <slot>
         <div>{{ text }}</div>
       </slot>

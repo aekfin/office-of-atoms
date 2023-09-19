@@ -63,6 +63,10 @@
           <h4 class="text-xl mb-2"><b>รายงานติดตามสถานะการดำเนินการโครงการ</b></h4>
           <ExportReportButton apiPath="report/procurementSummary" name="รายงานติดตามสถานะการดำเนินการโครงการ"/>
         </v-col>
+        <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายงานโครงการที่ได้รับการจัดซื้อจัดจ้าง</b></h4>
+          <ExportReportButton apiPath="report/procurementSummary" name="รายงานโครงการที่ได้รับการจัดซื้อจัดจ้าง"/>
+        </v-col>
       </v-row>
     </v-container>
   </div>

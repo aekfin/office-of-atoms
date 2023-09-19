@@ -225,7 +225,8 @@
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/getRequestDetail`, query: { id: this.$route.params.repair_id, ...this.$route.query } })
           this.item = { ...data }
-          await this.getWarranty({ item: this.item })
+          const item = this.item.items?.[0]?.equipment
+          await this.getWarranty({ item })
           this.isLoading = false
           return Promise.resolve()
         } catch (err) {
