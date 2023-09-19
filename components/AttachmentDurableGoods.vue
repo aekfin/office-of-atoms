@@ -57,7 +57,7 @@
       },
       async deleteFiles () {
         try {
-          await Promise.all(this.removeFiles.map(file => this.$axios({ method: 'delete', url: file })))
+          await Promise.all(this.removeFiles.map(file => this.$axios({ method: 'get', url: `${file}/delete` })))
           this.removeFiles = []
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }

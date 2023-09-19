@@ -83,7 +83,7 @@
       },
       async deleteUser (item) {
         try {
-            const { data } = await this.$store.dispatch('http', { method: 'delete', apiPath: `user/${item.id}` })
+            const { data } = await this.$store.dispatch('http', { apiPath: `user/delete/${item.id}` })
             if (data?.status?.code == 400) this.errorDialog = true
             else await this.$store.dispatch('snackbar', { text: 'ลบบุคลากรสำเร็จ' })
             await this.getList()

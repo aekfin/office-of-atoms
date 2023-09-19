@@ -58,6 +58,12 @@
           <ExportReportButton apiPath="report/pacelVerificationReport" name="รายงานตรวจนับวัสดุคงคลัง"/>
         </v-col>
       </v-row>
+      <v-row class="mt-10">
+        <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายงานติดตามสถานะการดำเนินการโครงการ</b></h4>
+          <ExportReportButton apiPath="report/procurementSummary" name="รายงานติดตามสถานะการดำเนินการโครงการ"/>
+        </v-col>
+      </v-row>
     </v-container>
   </div>
 </template>
