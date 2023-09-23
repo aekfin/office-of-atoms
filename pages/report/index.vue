@@ -1,8 +1,23 @@
 <template>
   <div id="report-page">
     <PageHeader text="รายงานทั้งหมด" hideTotal :filters="filters"/>
-    <v-container class="mt-10">
-      <v-row>
+    <v-container>
+      <v-row class="mt-10">
+        <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายงานวัสดุคงคลัง</b></h4>
+          <ExportReportButton apiPath="report/pacelAll" name="รายงานวัสดุคงคลัง"/>
+        </v-col>
+        <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายงานเบิกจ่ายวัสดุคงคลังตามหน่วยงาน</b></h4>
+          <ExportReportButton apiPath="report/pacelWithOu" name="รายงานเบิกจ่ายวัสดุคงคลังตามหน่วยงาน"/>
+        </v-col>
+        <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายงานตรวจนับวัสดุคงคลัง</b></h4>
+          <ExportReportButton apiPath="report/pacelVerificationReport" name="รายงานตรวจนับวัสดุคงคลัง"/>
+        </v-col>
+      </v-row>
+
+      <v-row class="mt-10">
         <v-col :col="12" :md="4">
           <h4 class="text-xl mb-2"><b>รายงานการยืมคืนครุภัณฑ์</b></h4>
           <ExportReportButton apiPath="report/borrowAndReturn" name="รายงานการยืมคืนครุภัณฑ์"/>
@@ -16,35 +31,42 @@
           <ExportReportButton apiPath="report/donate" name="รายงานการรับบริจาคครุภัณฑ์"/>
         </v-col>
       </v-row>
+
       <v-row class="mt-10">
         <v-col :col="12" :md="4">
           <h4 class="text-xl mb-2"><b>รายงานครุภัณฑ์ชนGFMIS</b></h4>
           <ExportReportButton apiPath="report/equipment" name="รายงานครุภัณฑ์ชนGFMIS"/>
         </v-col>
         <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายงานการจำหน่ายครุภัณฑ์</b></h4>
+          <ExportReportButton apiPath="report/sale" name="รายงานการจำหน่ายครุภัณฑ์"/>
+        </v-col>
+        <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายงานตรวจนับครุภัณฑ์</b></h4>
+          <ExportReportButton apiPath="report/checkEquipmentReport" name="รายงานตรวจนับครุภัณฑ์"/>
+        </v-col>
+      </v-row>
+
+      <v-row class="mt-10">
+        <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายงานส่งซ่อมครุภัณฑ์</b></h4>
+          <ExportReportButton apiPath="report/repairReport" name="รายงานส่งซ่อมครุภัณฑ์"/>
+        </v-col>
+        <v-col :col="12" :md="4">
           <h4 class="text-xl mb-2"><b>รายงานทะเบียนคุมทรัพย์สิน <small>(ต้องระบุเลขที่ครุภัณฑ์)</small></b></h4>
           <ExportReportButton apiPath="report/equipment-detail" name="รายงานทะเบียนคุมทรัพย์สิน"/>
         </v-col>
         <v-col :col="12" :md="4">
-          <h4 class="text-xl mb-2"><b>รายงานการจำหน่ายครุภัณฑ์</b></h4>
-          <ExportReportButton apiPath="report/sale" name="รายงานการจำหน่ายครุภัณฑ์"/>
+          <h4 class="text-xl mb-2"><b>รายงานสินทรัพย์ที่มีการจำหน่ายพร้อมค่าเสื่อม</b></h4>
+          <ExportReportButton apiPath="report/saleReportAndDepreciation" name="รายงานสินทรัพย์ที่มีการจำหน่ายพร้อมค่าเสื่อม"/>
         </v-col>
       </v-row>
+
       <v-row class="mt-10">
-        <v-col :col="12" :md="4">
-          <h4 class="text-xl mb-2"><b>รายงานวัสดุคงคลัง</b></h4>
-          <ExportReportButton apiPath="report/pacelAll" name="รายงานวัสดุคงคลัง"/>
-        </v-col>
-        <v-col :col="12" :md="4">
-          <h4 class="text-xl mb-2"><b>รายงานเบิกจ่ายวัสดุคงคลังตามหน่วยงาน</b></h4>
-          <ExportReportButton apiPath="report/pacelWithOu" name="รายงานเบิกจ่ายวัสดุคงคลังตามหน่วยงาน"/>
-        </v-col>
         <v-col :col="12" :md="4">
           <h4 class="text-xl mb-2"><b>รายงานการรอคืนหลักประกัน</b></h4>
           <ExportReportButton apiPath="report/project" name="รายงานการรอคืนหลักประกัน"/>
         </v-col>
-      </v-row>
-      <v-row class="mt-10">
         <v-col :col="12" :md="4">
           <h4 class="text-xl mb-2"><b>รายงานสถิติการจัดซื้อจัดจ้าง</b></h4>
           <ExportReportButton apiPath="report/procurementSummary" name="รายงานสถิติการจัดซื้อจัดจ้าง"/>
@@ -53,11 +75,8 @@
           <h4 class="text-xl mb-2"><b>รายงานโครงการจัดซื้อจัดจ้างที่ยังไม่เสร็จสิ้น</b></h4>
           <ExportReportButton apiPath="report/procurementSummary-non-complete" name="รายงานโครงการจัดซื้อจัดจ้างที่ยังไม่เสร็จสิ้น"/>
         </v-col>
-        <v-col :col="12" :md="4">
-          <h4 class="text-xl mb-2"><b>รายงานตรวจนับวัสดุคงคลัง</b></h4>
-          <ExportReportButton apiPath="report/pacelVerificationReport" name="รายงานตรวจนับวัสดุคงคลัง"/>
-        </v-col>
       </v-row>
+
       <v-row class="mt-10">
         <v-col :col="12" :md="4">
           <h4 class="text-xl mb-2"><b>รายงานติดตามสถานะการดำเนินการโครงการ</b></h4>

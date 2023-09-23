@@ -35,14 +35,14 @@
         items: [],
       }
     },
-    watch: {
-      '$route.query' () {
-        this.getList()
-      }
-    },
     head () {
       return {
         title: 'บริหารบุคลากร'
+      }
+    },
+    watch: {
+      '$route.query' () {
+        this.getList()
       }
     },
     mounted () {

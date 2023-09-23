@@ -39,8 +39,8 @@
               <v-row>
                 <v-col v-for="filter in filters" :key="filter.param" class="pt-0 pb-0" :cols="12" :md="filter.md || 6">
                   <template v-if="form">
-                    <v-text-field v-if="filter.type === 'textField'" :label="filter.name" v-model="form[filter.param]"/>
-                    <v-switch v-else-if="filter.type === 'switch'" :label="filter.name" v-model="form[filter.param]"/>
+                    <v-text-field v-if="filter.type === 'textField'" v-model="form[filter.param]" :label="filter.name"/>
+                    <v-switch v-else-if="filter.type === 'switch'" v-model="form[filter.param]" :label="filter.name"/>
                     <div v-else-if="filter.type === 'space'"/>
                     <SelectDropdown v-else :value.sync="form[filter.param]" :items="filter.options || []" :apiPath="filter.apiPath" itemValue="id" :itemText="filter.itemText || 'name'"
                       :lazy="!isCurrentFilters(filter)" :label="filter.name" clearable :query="{ pageSize: 999 }" @loaded="filter.options = $event"/>

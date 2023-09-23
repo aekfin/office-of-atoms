@@ -35,7 +35,7 @@
                       <AutocompleteDropdown :value.sync="form.itemParcels[i].typeId" :items="typeList" itemValue="id" itemText="name" label="ประเภท *" :rules="typeRules" apiPath="parcel/getListParcelType"
                         searchApiPath="parcel/getParcelType" required noFilter @select="onSelectType(i)"/>
                     </v-col>
-                    <v-col :cols="12" md="8" :key="form.itemParcels[i].typeId">
+                    <v-col :key="form.itemParcels[i].typeId" :cols="12" md="8">
                       <SelectDropdown :value.sync="form.itemParcels[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" :items="parcelItems" apiPath="parcel/searchParcelMaster"
                         :query="getParcelQuery(form.itemParcels[i])" :rules="parcelRules" required :disabled="!form.itemParcels[i].typeId"/>
                     </v-col>
