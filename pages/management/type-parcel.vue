@@ -7,6 +7,8 @@
     </v-data-table>
     <Pagination/>
 
+    <ConfirmDialog :value.sync="errorDialog" title="แจ้งเตือน" text="ไม่สามารถลบประเภทวัสดุคงคลังได้ เนื่องจากมีการใช้ประเภทวัสดุคงคลังนี้ไปแล้ว" hideSubmit closeText="รับทราบ"/>
+
     <v-dialog v-if="createDialog" v-model="createDialog" width="720" contentClass="type-parcel-dialog">
       <v-card>
         <v-card-title class="text-h5 justify-space-between">
@@ -57,6 +59,7 @@
           { text: 'ขั้นต่ำ', value: 'minimumStock', width: '100px', align: 'center' },
         ],
         createDialog: false,
+        errorDialog: false,
         valid: true,
         form: null,
         typeNameRule: [
@@ -105,6 +108,18 @@
       },
       closeCreateDialog () {
         this.createDialog = false
+      },
+      async onDelete (item) {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', { apiPath: 'Orgchart/deleteDepartment', query: { departmentId: item.id } })
+          if (data?.status?.code == 400) this.errorDialog = true
+          else await this.$store.dispatch('snackbar', { text: 'ลบลบประเภทวัสดุคงคลังสำเร็จ' })
+          await this.getList()
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
+        }
       },
       async onCreate () {
         const valid = this.$refs.form.validate()

@@ -12,6 +12,7 @@
     </v-data-table>
     <Pagination/>
     <CategoryDialog :dialog.sync="createDialog" :tabActive="tabActive" :tabIndex="tabIndex" :editItem="editItem" @create="onCreate" @edit="onEdit"/>
+    <ConfirmDialog :value.sync="errorDialog" title="แจ้งเตือน" :text="`ไม่สามารถลบ${tabActive.text}ได้ เนื่องจากมีการใช้${tabActive.text}นี้ไปแล้ว`" hideSubmit closeText="รับทราบ"/>
   </div>
 </template>
 
@@ -70,6 +71,7 @@
         count: 0,
         items: [],
         createDialog: false,
+        errorDialog: false,
       }
     },
     computed: {
@@ -133,6 +135,18 @@
         return [
           { type: 'button', icon: 'edit', action },
         ]
+      },
+      async onDelete (item) {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', { apiPath: 'Orgchart/deleteDepartment', query: { departmentId: item.id } })
+          if (data?.status?.code == 400) this.errorDialog = true
+          else await this.$store.dispatch('snackbar', { text: `ลบ${this.tabActive.text}สำเร็จ` })
+          await this.getList()
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
+        }
       },
       async onCreate ({ form, uploadingFiles, removeFiles }) {
         try {
