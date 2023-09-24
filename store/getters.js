@@ -1,6 +1,6 @@
 export default {
   isAdmin (state) {
-    return state.role === 'ADMIN'
+    return ['ADMIN', 'TREASURY', 'TREASURY_MANAGER'].includes(state.role)
   },
   isStaff (state) {
     return state.role === 'STAFF'

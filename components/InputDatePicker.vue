@@ -23,7 +23,8 @@
           v-on="on"
           @blur="date = parseDate(dateFormatted)"
           @change="date = parseDate(dateFormatted)"
-        />
+        >
+        </v-text-field>
       </template>
       <v-date-picker
         v-model="date"

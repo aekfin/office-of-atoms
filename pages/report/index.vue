@@ -8,7 +8,7 @@
           <ExportReportButton apiPath="report/pacelAll" name="รายงานวัสดุคงคลัง"/>
         </v-col>
         <v-col :col="12" :md="4">
-          <h4 class="text-xl mb-2"><b>รายงานเบิกจ่ายวัสดุคงคลังตามหน่วยงาน</b></h4>
+          <h4 class="text-xl mb-2"><b>รายงานเบิกจ่ายวัสดุคงคลังตามหน่วยงาน</b> <small>(กรองด้วยวันที่ได้)</small></h4>
           <ExportReportButton apiPath="report/pacelWithOu" name="รายงานเบิกจ่ายวัสดุคงคลังตามหน่วยงาน"/>
         </v-col>
         <v-col :col="12" :md="4">
@@ -165,6 +165,16 @@
             param: 'departmentId',
             apiPath: 'Orgchart/getDepartments',
             itemText: 'departmentName',
+          },
+          {
+            type: 'datePicker',
+            name: 'วันที่เริ่ม',
+            param: 'dateStart',
+          },
+          {
+            type: 'datePicker',
+            name: 'วันที่สิ้นสุด',
+            param: 'dateEnd',
           },
         ],
       }

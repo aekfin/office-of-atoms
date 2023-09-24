@@ -120,8 +120,10 @@
         formExpand: [0],
         roleList: [
           'ADMIN',
+          'TREASURY',
+          'TREASURY_MANAGER',
+          'STAFF',
           'USER',
-          'STAFF'
         ],
         seePassword: false,
         positionList: [],

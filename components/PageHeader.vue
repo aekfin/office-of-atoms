@@ -42,6 +42,7 @@
                     <v-text-field v-if="filter.type === 'textField'" v-model="form[filter.param]" :label="filter.name"/>
                     <v-switch v-else-if="filter.type === 'switch'" v-model="form[filter.param]" :label="filter.name"/>
                     <div v-else-if="filter.type === 'space'"/>
+                    <InputDatePicker v-else-if="filter.type === 'datePicker'" :value.sync="form[filter.param]" :label="filter.name"/>
                     <SelectDropdown v-else :value.sync="form[filter.param]" :items="filter.options || []" :apiPath="filter.apiPath" itemValue="id" :itemText="filter.itemText || 'name'"
                       :lazy="!isCurrentFilters(filter)" :label="filter.name" clearable :query="{ pageSize: 999 }" @loaded="filter.options = $event"/>
                   </template>
@@ -66,6 +67,7 @@
     component: {
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       ExportReportButton: () => import('~/components/ExportReportButton.vue'),
+      InputDatePicker: () => import('~/components/InputDatePicker.vue'),
     },
     props: {
       text: { type: String, required: true },
@@ -107,9 +109,10 @@
         return this.currentFilters.some(f => f.param === filter.param)
       },
       setValue (param) {
-        const val = this.$route.query?.[param]
+        let val = this.$route.query?.[param]
+        const isDate = param?.includes('date')
         const convertArray = () => val.split(',').map(v => v)
-        return val ? val.includes(',') ? convertArray() : parseInt(val) || val : null
+        return val ? isDate ? this.$fn.convertStringToDate(val) : val.includes(',') ? convertArray() : parseInt(val) || val : null
       },
       setForm () {
         this.form = this.filters.reduce((form, filter) => ({ ...form, [filter.param]: this.setValue(filter.param) }), {})
@@ -119,7 +122,11 @@
         this.dialog = false
       },
       onApply () {
-        const query = Object.entries(this.form).reduce((form, [key, val]) => val ? { ...form, [key]: val } : form, {})
+        const query = Object.entries(this.form).reduce((form, [key, val]) => {
+          const isDate = key.includes('date')
+          val = isDate && val ? this.$fn.convertDateToString(val).substring(0, 10) : val
+          return val ? { ...form, [key]: val } : form
+        }, {})
         this.$router.push({ query })
         this.dialog = false
       },
