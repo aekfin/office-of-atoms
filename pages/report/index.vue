@@ -169,12 +169,12 @@
           {
             type: 'datePicker',
             name: 'วันที่เริ่ม',
-            param: 'dateStart',
+            param: 'startDate',
           },
           {
             type: 'datePicker',
             name: 'วันที่สิ้นสุด',
-            param: 'dateEnd',
+            param: 'endDate',
           },
         ],
       }

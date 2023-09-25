@@ -110,7 +110,7 @@
       },
       setValue (param) {
         let val = this.$route.query?.[param]
-        const isDate = param?.includes('date')
+        const isDate = param?.toLowerCase()?.includes('date')
         const convertArray = () => val.split(',').map(v => v)
         return val ? isDate ? this.$fn.convertStringToDate(val) : val.includes(',') ? convertArray() : parseInt(val) || val : null
       },
@@ -123,7 +123,7 @@
       },
       onApply () {
         const query = Object.entries(this.form).reduce((form, [key, val]) => {
-          const isDate = key.includes('date')
+          const isDate = key?.toLowerCase()?.includes('date')
           val = isDate && val ? this.$fn.convertDateToString(val).substring(0, 10) : val
           return val ? { ...form, [key]: val } : form
         }, {})
