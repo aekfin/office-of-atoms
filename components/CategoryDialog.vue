@@ -14,7 +14,7 @@
             <SelectDropdown v-if="tabIndex > 1" :value.sync="form.subCategoryId" label="ประเภทพัสดุ *" :items="subCategoryItems" :rules="subcategoryRule" required :disabled="isEdit || !form.majorCategoryId || isLoadingSubCategory" :forceLoading="isLoadingSubCategory" @select="onChangeSubCategory"/>
             <SelectDropdown v-if="tabIndex > 2" :value.sync="form.typeId" label="รายการครุภัณฑ์ *" :items="typeItems" :rules="typeRule" required :disabled="isEdit || !form.subCategoryId || isLoadingType" :forceLoading="isLoadingType" @select="onChangeType"/>
             <SelectDropdown v-if="tabIndex > 3" :value.sync="form.brandId" label="ยี่ห้อ *" :items="brandItems" :rules="brandRule" required :disabled="isEdit || !form.typeId || isLoadingBrand" :forceLoading="isLoadingBrand" @select="onChangeBrand"/>
-            <v-text-field v-model="form.name" :label="categoryName" :rules="categoryNameRule" required :disabled="isEdit"/>
+            <v-text-field v-model="form.name" :label="categoryName" :rules="categoryNameRule" required/>
             <template v-if="tabIndex > 3">
               <AttachFileBtn :value.sync="uploadingFiles" :attachments="files" accept="image/gif, image/jpeg, image/png, image/webp" :limit="1" :multiple="false" btnLabel="แนบรูปเพิ่มเติม" showImage @removeAttachment="onRemoveFile"/>
             </template>
@@ -94,17 +94,24 @@
     methods: {
       async setForm () {
         if (this.editItem) {
-          this.form = {
-            majorCategoryId: this.editItem.majorCategory.id,
-            subCategoryId: this.editItem.subCategory.id,
-            typeId: this.editItem.type.id,
-            brandId: this.editItem.brand.id,
-            modelId: this.editItem.id,
+          this.form = {}
+          if (this.editItem.majorCategory) {
+            this.form.majorCategoryId = this.editItem.majorCategory.id
+            this.majorCategoryItems = [this.editItem.majorCategory]
           }
-          this.majorCategoryItems = [this.editItem.majorCategory]
-          this.subCategoryItems = [this.editItem.subCategory]
-          this.typeItems = [this.editItem.type]
-          this.brandItems = [this.editItem.brand]
+          if (this.editItem.subCategory) {
+            this.form.subCategoryId = this.editItem.subCategory.id
+            this.subCategoryItems = [this.editItem.subCategory]
+          }
+          if (this.editItem.type) {
+            this.form.typeId = this.editItem.type.id
+            this.typeItems = [this.editItem.type]
+          }
+          if (this.editItem.brand) {
+            this.form.brandId = this.editItem.brand.id
+            this.brandItems = [this.editItem.brand]
+          }
+          this.form.id = this.editItem.id
           this.form.name = this.editItem.name
         }
         const { data } = await this.$store.dispatch('http', { apiPath: `equipment/category/model/${this.editItem.id}` })

@@ -34,35 +34,45 @@
             btnText: 'หมวดหมู่พัสดุ',
             unit: 'หมวด',
             apiPath: 'equipment/category/getMejorCategorys',
-            postApiPath: 'equipment/category/addMajorCategory'
+            postApiPath: 'equipment/category/addMajorCategory',
+            editApiPath: 'equipment/category/mejorCategory',
+            deleteApiPath: 'equipment/category/delete-mejorCategory',
           },
           {
             text: 'ประเภทพัสดุ',
             btnText: 'ประเภทพัสดุ',
             unit: 'ประเภท',
             apiPath: 'equipment/category/getSubCategorys',
-            postApiPath: 'equipment/category/addSubCategory'
+            postApiPath: 'equipment/category/addSubCategory',
+            editApiPath: 'equipment/category/subCategory',
+            deleteApiPath: 'equipment/category/delete-subCategory',
           },
           {
             text: 'รายการครุภัณฑ์',
             btnText: 'รายการครุภัณฑ์',
             unit: 'รายการ',
             apiPath: 'equipment/category/types',
-            postApiPath: 'equipment/category/addType'
+            postApiPath: 'equipment/category/addType',
+            editApiPath: 'equipment/category/type',
+            deleteApiPath: 'equipment/category/delete-type',
           },
           {
             text: 'ยี่ห้อ',
             btnText: 'ยี่ห้อ',
             unit: 'ยี่ห้อ',
             apiPath: 'equipment/category/brands',
-            postApiPath: 'equipment/category/addBrand'
+            postApiPath: 'equipment/category/addBrand',
+            editApiPath: 'equipment/category/Brand',
+            deleteApiPath: 'equipment/category/delete-brand',
           },
           {
             text: 'รุ่น',
             btnText: 'รุ่น',
             unit: 'รุ่น',
             apiPath: 'equipment/category/models',
-            postApiPath: 'equipment/category/addModel'
+            postApiPath: 'equipment/category/addModel',
+            editApiPath: 'equipment/category/Model',
+            deleteApiPath: 'equipment/category/delete-model',
           },
         ],
         editItem: null,
@@ -87,7 +97,7 @@
         if (this.tabIndex > 2) headers.push({ text: `ชื่อ${this.tabs[2].text}`, value: 'type.name', width: '200px' })
         if (this.tabIndex > 1) headers.push({ text: `ชื่อ${this.tabs[1].text}`, value: 'subCategory.name', width: '200px' })
         if (this.tabIndex > 0) headers.push({ text: `ชื่อ${this.tabs[0].text}`, value: 'majorCategory.name', width: '200px' })
-        if (this.tabIndex > 3) headers.push({ text: `เครื่องมือ`, value: 'action', width: '100px' })
+        headers.push({ text: `เครื่องมือ`, value: 'action', width: '100px' })
         return headers
       },
       filters () {
@@ -134,12 +144,13 @@
         } 
         return [
           { type: 'button', icon: 'edit', action },
+          { type: 'confirm', icon: 'delete', action: () => { this.onDelete(item) } },
         ]
       },
       async onDelete (item) {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: 'Orgchart/deleteDepartment', query: { departmentId: item.id } })
+          const { data } = await this.$store.dispatch('http', { apiPath: `${this.tabActive.deleteApiPath}/${item.id}` })
           if (data?.status?.code == 400) this.errorDialog = true
           else await this.$store.dispatch('snackbar', { text: `ลบ${this.tabActive.text}สำเร็จ` })
           await this.getList()
@@ -161,9 +172,13 @@
       },
       async onEdit ({ form, uploadingFiles, removeFiles }) {
         try {
-          await this.onFileImage({ id: form?.modelId, uploadingFiles, removeFiles })
+          let { editApiPath } = this.tabActive
+          editApiPath = editApiPath && form.id && `${this.tabActive.editApiPath}/${form.id}`
+          if (editApiPath) await this.$store.dispatch('http', { method: 'patch', apiPath: editApiPath, data: { name: form.name } })
+          if (uploadingFiles?.length) await this.onFileImage({ id: form?.modelId, uploadingFiles, removeFiles })
           this.createDialog = false
           await this.$store.dispatch('snackbar', { text: `แก้ไข${this.tabActive.text}สำเร็จ` })
+          await this.getList()
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
