@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มครุภัณฑ์' : 'การแก้ไขครุภัณฑ์'" hideTotal :btnText="isCreate ? '' : 'ครุภัณฑ์ย่อย'" :createRoute="createRoute"/>
+    <PageHeader :text="isCreate ? 'การเพิ่มครุภัณฑ์' : 'การแก้ไขครุภัณฑ์'" hideTotal :btnText="isCreate ? '' : 'ครุภัณฑ์ย่อย'" :createRoute="createRoute" :logRoute="logRoute"/>
     <div v-if="!isCreate" class="d-flex justify-end mt-3">
       <ExportReportButton apiPath="report/equipment-detail" :query="{ equipmentNumber: form.number }" name="รายงานทะเบียนคุมทรัพย์สิน" text="รายงานทะเบียนคุมทรัพย์สิน"/>
     </div>
@@ -246,6 +246,9 @@
       createRoute () {
         return { path: `/durable-goods/overall/${this.$route.params.durable_goods_id}/sub/create/`, query: { backPath: this.$route.path } }
       },
+      logRoute () {
+        return { apiPath: 'equipment/getLogEquipment', query: { id: this.$route.params.durable_goods_id } }
+      },
     },
     mounted () {
       if (!this.isCreate) this.getData()
@@ -358,12 +361,14 @@
             valueAfter: data.valueAfter || '',
             registrationType: data.registrationType || '1'
           }
-          this.initCategory = {
-            majorCategory: data.majorCategory,
-            subCategory: data.subCategory,
-            type: data.type,
-            brand: data.brand,
-            model: data.model,
+          if (data.majorCategory) {
+            this.initCategory = {
+              majorCategory: data.majorCategory,
+              subCategory: data.subCategory,
+              type: data.type,
+              brand: data.brand,
+              model: data.model,
+            }
           }
           await this.getModelImage(data.model.id)
           this.isLoading = false

@@ -5,6 +5,7 @@
         <b>
           <slot>{{ text }}</slot>
         </b>
+        <v-btn v-if="logRoute" elevation="2" outlined class="ml-3" color="grey" @click="logDialog = true">ประวัติการแก้ไข</v-btn>
       </h2>
       <slot name="btn">
         <v-btn v-if="btnText" elevation="2" large color="success" @click="$emit('create')">
@@ -59,6 +60,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <LogDialog :value.sync="logDialog" :logRoute="logRoute"/>
   </div>
 </template>
 
@@ -68,6 +70,7 @@
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       ExportReportButton: () => import('~/components/ExportReportButton.vue'),
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
+      LogDialog: () => import('~/components/LogDialog.vue'),
     },
     props: {
       text: { type: String, required: true },
@@ -80,12 +83,14 @@
       reportApiPath: { type: String, default: '' },
       reportName: { type: String, default: 'รายงาน' },
       exportText: { type: String },
+      logRoute: { type: Object },
     },
     data () {
       return {
         search: '',
         form: null,
         dialog: false,
+        logDialog: false,
       }
     },
     computed: {

@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มการรับบริจาคครุภัณฑ์' : 'การแก้ไขการรับบริจาคครุภัณฑ์'" hideTotal :btnText="isCreate ? '' : 'ครุภัณฑ์ย่อย'" :createRoute="createRoute"/>
+    <PageHeader :text="isCreate ? 'การเพิ่มการรับบริจาคครุภัณฑ์' : 'การแก้ไขการรับบริจาคครุภัณฑ์'" hideTotal :btnText="isCreate ? '' : 'ครุภัณฑ์ย่อย'" :createRoute="createRoute" :logRoute="logRoute"/>
     <Loading v-if="isLoading"/>
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
@@ -223,6 +223,9 @@
       createRoute () {
         return { path: `/durable-goods/overall/${this.$route.params.durable_goods_id}/sub/create/`, query: { backPath: this.$route.path } }
       },
+      logRoute () {
+        return { apiPath: 'equipment/getLogEquipment', query: { id: this.$route.params.durable_goods_id } }
+      },
     },
     mounted () {
       if (!this.isCreate) this.getData()
@@ -331,12 +334,14 @@
             ownerId: data.owner?.id || null,
             ownerList: data.owner && [data.owner] || [],
           }
-          this.initCategory = {
-            majorCategory: data.majorCategory,
-            subCategory: data.subCategory,
-            type: data.type,
-            brand: data.brand,
-            model: data.model,
+          if (data.majorCategory) {
+            this.initCategory = {
+              majorCategory: data.majorCategory,
+              subCategory: data.subCategory,
+              type: data.type,
+              brand: data.brand,
+              model: data.model,
+            }
           }
           await this.getModelImage(data.model.id)
           this.isLoading = false

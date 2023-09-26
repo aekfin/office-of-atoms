@@ -1,6 +1,6 @@
 <template>
   <div id="project-create-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มโครงการ' : 'การแก้ไขโครงการ'" hideTotal/>
+    <PageHeader :text="isCreate ? 'การเพิ่มโครงการ' : 'การแก้ไขโครงการ'" hideTotal :logRoute="logRoute"/>
     <Loading v-if="isLoading && !project"/>
     <v-form v-else ref="form" v-model="valid" class="mt-4">
       <v-container>
@@ -340,6 +340,9 @@
       },
       projectQuery () {
         return { year: this.year || 2563, budgetStart: this.budgetStart || 0, budgetEnd: this.budgetEnd || 0 }
+      },
+      logRoute () {
+        return { apiPath: 'Project/getLogProject', query: { id: this.$route.params.project_id } }
       },
     },
     watch: {

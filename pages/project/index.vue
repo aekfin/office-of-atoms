@@ -29,6 +29,7 @@
     data () {
       return {
         isLoading: true,
+        errorDialog: false,
         count: 0,
         total: 0,
         headers: [

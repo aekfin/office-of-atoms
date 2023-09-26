@@ -19,6 +19,10 @@ const Fn = {
     const dateFormat = moment(date)
     return `${dateFormat.format('DD-MM')}-${dateFormat.year() + 543}`
   },
+  displayDateTime (date) {
+    const dateFormat = moment(date)
+    return `${dateFormat.format('DD-MM')}-${dateFormat.year() + 543}, ${dateFormat.format('HH:mm')}`
+  },
   reportDate (date) {
     const dateFormat = moment(date)
     return `${dateFormat.format('DD-MM')}-${dateFormat.year() + 543}-${dateFormat.format('HH-mm')}`

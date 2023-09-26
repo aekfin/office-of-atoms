@@ -6,19 +6,19 @@
       </v-btn>
     </template>
     <v-list class="goods-list">
-      <v-list-item>
+      <v-list-item v-if="item.majorCategory">
         <v-list-item-title>หมวดหมู่ : <b>{{ item.majorCategory.name }}</b></v-list-item-title>
       </v-list-item>
-      <v-list-item>
+      <v-list-item v-if="item.subCategory">
         <v-list-item-title>หมวดหมู่ย่อย : <b>{{ item.subCategory.name }}</b></v-list-item-title>
       </v-list-item>
-      <v-list-item>
+      <v-list-item v-if="item.type">
         <v-list-item-title>ประเภท : <b>{{ item.type.name }}</b></v-list-item-title>
       </v-list-item>
-      <v-list-item>
+      <v-list-item v-if="item.brand">
         <v-list-item-title>ยี่ห้อ : <b>{{ item.brand.name }}</b></v-list-item-title>
       </v-list-item>
-      <v-list-item>
+      <v-list-item v-if="item.model">
         <v-list-item-title>รุ่น : <b>{{ item.model.name }}</b></v-list-item-title>
       </v-list-item>
     </v-list>

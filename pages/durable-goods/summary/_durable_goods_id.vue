@@ -1,6 +1,6 @@
 <template>
   <div id="summary-durable-goods-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นครุภัณฑ์' : 'การแก้ไขค่าเริ่มต้นครุภัณฑ์'" hideTotal :btnText="isCreate ? '' : 'ครุภัณฑ์ย่อย'" :createRoute="createRoute"/>
+    <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นครุภัณฑ์' : 'การแก้ไขค่าเริ่มต้นครุภัณฑ์'" hideTotal :btnText="isCreate ? '' : 'ครุภัณฑ์ย่อย'" :createRoute="createRoute" :logRoute="logRoute"/>
     <Loading v-if="isLoading"/>
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
@@ -153,6 +153,9 @@
       isGroupAdmin () {
         return this.$store.state.userProfile?.positionMaster?.positionName === 'เเอดมินประจำกลุ่ม'
       },
+      logRoute () {
+        return { apiPath: 'equipment/getLogEquipment', query: { id: this.$route.params.durable_goods_id } }
+      },
     },
     mounted () {
       if (!this.isCreate) this.getData()
@@ -181,12 +184,14 @@
             detailList: [this.getDetail(data)],
             disable: data.disable || false,
           }
-          this.initCategory = {
-            majorCategory: data.majorCategory,
-            subCategory: data.subCategory,
-            type: data.type,
-            brand: data.brand,
-            model: data.model,
+          if (data.majorCategory) {
+            this.initCategory = {
+              majorCategory: data.majorCategory,
+              subCategory: data.subCategory,
+              type: data.type,
+              brand: data.brand,
+              model: data.model,
+            }
           }
           this.isLoading = false
           return Promise.resolve(data)
