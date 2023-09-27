@@ -16,7 +16,7 @@
         <DurableGoodsOwner :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :disabled="!isCreate" @ouChange="onOuChange"/>
 
         <div class="text-h5 mt-5 mb-2"><b>เลือกครุภัณฑ์</b></div>
-        <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="({ form }) => categoryForm = form">
+        <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="({ form }) => categoryForm = form" @changeMajor="onChangeMajor">
           <template #default>
             <v-col :cols="12" :md="isCreate ? 6 : 9">
               <v-text-field v-model="form.name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required/>
@@ -183,6 +183,7 @@
             ownerList: data.owner && [data.owner] || [],
             detailList: [this.getDetail(data)],
             disable: data.disable || false,
+            quantity: 1,
           }
           if (data.majorCategory) {
             this.initCategory = {
@@ -213,13 +214,18 @@
         }
         this.getEquipmentNumber()
       },
-      async getEquipmentNumber (equipment) {
+      onChangeMajor ({ val }) {
+        console.log('changeMarjor')
+        this.getEquipmentNumber()
+      },
+      async getEquipmentNumber () {
         try {
           const ouId = this.form.organizationId
           const quantity = this.form.quantity
-          if (ouId && quantity) {
+          const mejorCategoryId = this.categoryForm?.majorCategoryId
+          if (ouId && quantity && mejorCategoryId) {
             this.isNumberLoading = true
-            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: 1 } })
+            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: 1, mejorCategoryId } })
             data?.forEach((number, i) => {
               this.form.detailList[i].number = number
             })

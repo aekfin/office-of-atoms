@@ -44,7 +44,7 @@
                         :items="form.equipments[i].userList" apiPath="user/listUsers"/>
                     </v-col>
                   </v-row>
-                  <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="res => form.equipments[i].categoryForm = res.form" @changeModel="onChangeModel">
+                  <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="res => form.equipments[i].categoryForm = res.form" @changeMajor="onChangeMajor" @changeModel="onChangeModel">
                     <template #default>
                       <v-col :cols="12" :md="isCreate ? 6 : 9">
                         <v-text-field v-model="form.equipments[i].name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required />
@@ -288,13 +288,17 @@
         }
         this.getEquipmentNumber(equipment)
       },
+      onChangeMajor ({ val }) {
+        this.setNumberAllEquipments()
+      },
       async getEquipmentNumber (equipment) {
         try {
           const ouId = this.form.organizationId
           const quantity = equipment.quantity
-          if (ouId && quantity) {
+          const mejorCategoryId = equipment.categoryForm?.majorCategoryId
+          if (ouId && quantity && mejorCategoryId) {
             this.isNumberLoading = true
-            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: 1 } })
+            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: 1, mejorCategoryId } })
             data?.forEach((number, i) => {
               equipment.detailList[i].number = number
             })

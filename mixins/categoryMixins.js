@@ -85,6 +85,7 @@ export default {
         this.subCategoryItems = data.subCategorys
         this.isLoadingSubCategory = false
         this.$emit('change', { form: this.form, trigger: 'category', val })
+        this.$emit('changeMajor', { val })
         return Promise.resolve(data)
       } catch (err) { return Promise.reject(err) }
     },

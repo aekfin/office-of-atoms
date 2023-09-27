@@ -19,6 +19,13 @@
 
       <v-row class="mt-10">
         <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายงานพัสดุถึงจุดสั่งชื้อ</b></h4>
+          <ExportReportButton apiPath="report/parcelMinnimumStock" name="รายงานพัสดุถึงจุดสั่งชื้อ"/>
+        </v-col>
+      </v-row>
+
+      <v-row class="mt-10">
+        <v-col :col="12" :md="4">
           <h4 class="text-xl mb-2"><b>รายงานการยืมคืนครุภัณฑ์</b></h4>
           <ExportReportButton apiPath="report/borrowAndReturn" name="รายงานการยืมคืนครุภัณฑ์"/>
         </v-col>
@@ -91,6 +98,14 @@
           <ExportReportButton apiPath="report/equipmentGF" name="แบบทะเบียนครุภัณฑ์ แสดงรายละเอียด"/>
         </v-col>
       </v-row>
+
+      <v-row class="mt-10">
+        <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายการครุภัณฑ์</b></h4>
+          <ExportReportButton apiPath="report/equipmentRFID" name="รายการครุภัณฑ์"/>
+        </v-col>
+      </v-row>
+
     </v-container>
   </div>
 </template>
