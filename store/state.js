@@ -118,6 +118,7 @@ export default () => ({
         {
           title: 'บริหารวัสดุคงคลัง',
           to: '/parcel/overall/',
+          checkTreasury: true,
         },
         {
           title: 'เบิกวัสดุคงคลัง',
@@ -147,10 +148,12 @@ export default () => ({
         {
           title: 'บริหารครุภัณฑ์',
           to: '/durable-goods/overall/',
+          checkTreasury: true,
         },
         {
           title: 'รับบริจาคครุภัณฑ์',
           to: '/durable-goods/donation/',
+          checkTreasury: true,
         },
         {
           title: 'ยืม - คืน ครุภัณฑ์',
