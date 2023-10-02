@@ -1,7 +1,7 @@
 <template>
   <div id="durable-goods-withdraw-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มการเบิกครุภัณฑ์' : 'การแก้ไขการเบิกครุภัณฑ์'" hideTotal/>
-    <div class="d-flex justify-end mt-3">
+    <div v-if="!isCreate" class="d-flex justify-end mt-3">
       <ExportReportButton apiPath="equipment/requisitionDocument" name="เอกสารประกอบการเบิกครุภัณฑ์" text="เอกสารประกอบการเบิกครุภัณฑ์" :query="{ equipmentRequestId: $route.params.withdraw_id }"/>
     </div>
     <Loading v-if="isLoading"/>

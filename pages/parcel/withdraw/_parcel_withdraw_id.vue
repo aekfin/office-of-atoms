@@ -1,6 +1,9 @@
 <template>
   <div id="parcel-withdraw-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มการเบิกวัสดุคงคลัง' : 'การแก้ไขการเบิกวัสดุคงคลัง'" hideTotal/>
+    <PageHeader :text="isCreate ? 'การเพิ่มการเบิกวัสดุคงคลัง' : 'การแก้ไขการเบิกวัสดุคงคลัง'" hideTotal :reportApiPath="isCreate ? '' : 'parcel/getPickUpDocument'" reportName="ใบเบิกวัสดุคงคลัง" :reportQuery="reportQuery"/>
+    <div v-if="!isCreate" class="d-flex justify-end mt-3">
+      <ExportReportButton apiPath="parcel/getPickUpDocument" name="เอกสารประกอบการเบิกวัสดุคงคลัง" text="เอกสารประกอบการเบิกวัสดุคงคลัง" :query="reportQuery"/>
+    </div>
     <Loading v-if="isLoading"/>
     <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" cannotApprove @submit="onSubmit"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" text="ไม่สามารถขอเบิกได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้" hideSubmit closeText="รับทราบ"/>
@@ -14,6 +17,7 @@
       ParcelWithdrawForm: () => import('~/components/ParcelWithdrawForm.vue'),
       Loading: () => import('~/components/Loading.vue'),
       ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
+      ExportReportButton: () => import('~/components/ExportReportButton.vue'),
     },
     data () {
       return {
@@ -25,6 +29,9 @@
     computed: {
       isCreate () {
         return this.$route.params.parcel_withdraw_id === 'create'
+      },
+      reportQuery () {
+        return { parcelRequestId: this.$route.params.parcel_withdraw_id }
       },
     },
     mounted () {
