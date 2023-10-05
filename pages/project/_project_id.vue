@@ -102,7 +102,7 @@
           <h3 class="text-h5"><b>รายละเอียดรายการวัสดุ/ครุภัณฑ์ที่ต้องส่งมอบในแต่ละงวด</b></h3>
         </v-row>
         <div v-for="i in 5" :key="i" class="mb-3">
-          <div style="font-size: 20px"><b>งวดที่ {{ i }}</b></div>
+          <div style="font-size: 18px"><b>งวดที่ {{ i }}</b></div>
           <v-row>
             <v-col :cols="12" :md="6">
               <v-text-field v-model="form[`period${i}`]" label="รายละเอียดรายการวัสดุ/ครุภัณฑ์"/>
