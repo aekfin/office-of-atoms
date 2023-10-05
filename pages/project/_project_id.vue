@@ -98,12 +98,22 @@
             <v-textarea v-model="form.detailedWork" label="รายละเอียดงานในแต่ล่ะงวด"/>
           </v-col>
         </v-row>
-        <v-row>
-          <v-col :cols="12" :md="6">
-            <v-textarea v-model="form.detailsOfItems" label="รายละเอียดรายการวัสดุ/ครุภัณฑ์ที่ต้องส่งมอบในแต่ละงวด"/>
-          </v-col>
+        <v-row class="mt-10 mb-5">
+          <h3 class="text-h5"><b>รายละเอียดรายการวัสดุ/ครุภัณฑ์ที่ต้องส่งมอบในแต่ละงวด</b></h3>
         </v-row>
+        <div v-for="i in 5" :key="i" class="mb-3">
+          <div style="font-size: 20px"><b>งวดที่ {{ i }}</b></div>
+          <v-row>
+            <v-col :cols="12" :md="6">
+              <v-text-field v-model="form[`period${i}`]" label="รายละเอียดรายการวัสดุ/ครุภัณฑ์"/>
+            </v-col>
+            <v-col :cols="12" :md="3">
+              <InputDatePicker :value.sync="form[`period${i}Date`]" label="วันที่ส่งมอบ"/>
+            </v-col>
+          </v-row>
+        </div>
       </v-container>
+
       <v-expansion-panels v-model="formExpand" class="form-expansion-panels mt-10" flat multiple>
         <v-expansion-panel>
           <v-expansion-panel-header>
@@ -242,6 +252,16 @@
           format: null,
           budget: '',
           responsibleMan : '',
+          period1: '',
+          period1Date: '',
+          period2: '',
+          period2Date: '',
+          period3: '',
+          period3Date: '',
+          period4: '',
+          period4Date: '',
+          period5: '',
+          period5Date: '',
         },
         attachFiles: [],
         removeFile: [],
@@ -369,6 +389,11 @@
             contractStartDate: this.$fn.convertStringToDate(data.contractStartDate),
             contractEndDate: this.$fn.convertStringToDate(data.contractEndDate),
             warrantyEndDate: data.warrantyEndDate ? this.$fn.convertStringToDate(data.warrantyEndDate) : '',
+            period1Date: data.period1Date ? this.$fn.convertStringToDate(data.period1Date) : '',
+            period2Date: data.period2Date ? this.$fn.convertStringToDate(data.period2Date) : '',
+            period3Date: data.period3Date ? this.$fn.convertStringToDate(data.period3Date) : '',
+            period4Date: data.period4Date ? this.$fn.convertStringToDate(data.period4Date) : '',
+            period5Date: data.period5Date ? this.$fn.convertStringToDate(data.period5Date) : '',
           }
           this.isLoading = false
           return Promise.resolve()
@@ -452,6 +477,11 @@
             form.contractStartDate = this.$fn.convertDateToString(form.contractStartDate)
             form.contractEndDate = this.$fn.convertDateToString(form.contractEndDate)
             form.warrantyEndDate = this.$fn.convertDateToString(form.warrantyEndDate)
+            form.period1Date = form.period1Date ? this.$fn.convertDateToString(form.period1Date) : ''
+            form.period2Date = form.period2Date ? this.$fn.convertDateToString(form.period2Date) : ''
+            form.period3Date = form.period3Date ? this.$fn.convertDateToString(form.period3Date) : ''
+            form.period4Date = form.period4Date ? this.$fn.convertDateToString(form.period4Date) : ''
+            form.period5Date = form.period5Date ? this.$fn.convertDateToString(form.period5Date) : ''
             if (!this.isCreate) this.setEditForm(form)
             const apiPath = this.isCreate ? 'Project/addProjectV2' : 'Project/updateProjectV2'
             const method = this.isCreate ? 'post' : 'patch'

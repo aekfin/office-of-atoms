@@ -104,6 +104,10 @@
           <h4 class="text-xl mb-2"><b>รายการครุภัณฑ์</b></h4>
           <ExportReportButton apiPath="report/equipmentRFID" name="รายการครุภัณฑ์"/>
         </v-col>
+        <v-col :col="12" :md="4">
+          <h4 class="text-xl mb-2"><b>รายงานโครงการ</b></h4>
+          <ExportReportButton apiPath="report/projectWithEquipment" name="รายงานโครงการ"/>
+        </v-col>
       </v-row>
 
     </v-container>
