@@ -175,7 +175,7 @@
           let { editApiPath } = this.tabActive
           editApiPath = editApiPath && form.id && `${this.tabActive.editApiPath}/${form.id}`
           if (editApiPath) await this.$store.dispatch('http', { method: 'patch', apiPath: editApiPath, data: { name: form.name } })
-          if (uploadingFiles?.length) await this.onFileImage({ id: form?.modelId, uploadingFiles, removeFiles })
+          if (uploadingFiles?.length) await this.onFileImage({ id: form.id, uploadingFiles, removeFiles })
           this.createDialog = false
           await this.$store.dispatch('snackbar', { text: `แก้ไข${this.tabActive.text}สำเร็จ` })
           await this.getList()

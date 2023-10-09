@@ -36,9 +36,6 @@
           <v-col :cols="12" :md="3">
             <v-text-field v-model="form.valueAfter" label="มูลค่า (หลังโอน)" type="number" :disabled="!isCreate"/>
           </v-col>
-          <v-col :cols="12" :md="6">
-            <SelectDropdown :value.sync="form.registrationType" itemValue="id" itemText="name" :items="registrationList" label="ประเภททะเบียนครุภัณฑ์ *" :disabled="!isCreate" @select="onChangeRegistrationType"/>
-          </v-col>
         </v-row>
 
         <DurableGoodsOwner class="mt-5" :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :userList="form.ownerList" :disabled="!isCreate" @ouChange="onOuChange">
@@ -75,16 +72,19 @@
                     </template>
                   </CategoryDurableGood>
                   <v-row>
-                    <v-col :cols="6" :md="4">
+                    <v-col :cols="6" :md="3">
                       <v-text-field v-model="form.equipments[i].price" label="ราคา *" type="number" :rules="priceRules" required/>
                     </v-col>
                     <v-col :cols="6" :md="2">
                       <v-text-field v-model="form.equipments[i].year" label="ปี *" :rules="yearRules" type="number" required/>
                     </v-col>
-                    <v-col :cols="6" :md="3">
+                    <v-col :cols="6" :md="2">
                       <v-text-field v-model="form.equipments[i].classifier" label="หน่วย *" :rules="classifierRules" name="unit" required/>
                     </v-col>
-                    <v-col :cols="6" :md="3" class="depreciation">
+                    <v-col :cols="6" :md="3">
+                      <SelectDropdown :value.sync="form.equipments[i].registrationType" itemValue="id" itemText="name" :items="registrationList" label="ประเภททะเบียนครุภัณฑ์ *" @select="val => onChangeRegistrationType(form.equipments[i], val)"/>
+                    </v-col>
+                    <v-col :cols="6" :md="2" class="depreciation">
                       <v-text-field v-model="form.equipments[i].depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%"/>
                     </v-col>
                     <v-col :cols="12" class="pt-0">
@@ -179,6 +179,7 @@
               classifier: '',
               categoryForm: {},
               quantity: 1,
+              registrationType: '1',
               detailList: [this.getDetail()]
             }
           ],
@@ -191,7 +192,6 @@
           dateReceivedAfter: '',
           valueBefore: '',
           valueAfter: '',
-          registrationType: '1'
         },
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อ',
@@ -287,10 +287,6 @@
       onSelectProject ({ item }) {
         this.form.project = item
       },
-      onChangeRegistrationType ({ val }) {
-        this.form.registrationType = val
-        this.setNumberAllEquipments()
-      },
       setNumberAllEquipments () {
         this.form.equipments.forEach(equipment => {
           this.getEquipmentNumber(equipment)
@@ -299,6 +295,10 @@
       onOuChange ({ val }) {
         this.form.organizationId = val
         this.setNumberAllEquipments()
+      },
+      onChangeRegistrationType (equipment, { val }) {
+        equipment.registrationType = val
+        this.getEquipmentNumber(equipment)
       },
       onQuantityChange (equipment) {
         const quantity = equipment.quantity
@@ -320,9 +320,10 @@
           const ouId = this.form.organizationId
           const quantity = equipment.quantity
           const mejorCategoryId = equipment.categoryForm?.majorCategoryId
+          console.log(ouId, quantity, mejorCategoryId)
           if (ouId && quantity && mejorCategoryId) {
             this.isNumberLoading = true
-            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: this.form.registrationType, mejorCategoryId } })
+            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: equipment.registrationType, mejorCategoryId } })
             data?.forEach((number, i) => {
               equipment.detailList[i].number = number
             })
@@ -350,6 +351,8 @@
             ...data,
             equipments: [{
               ...data,
+              quantity: 1,
+              registrationType: data.registrationType || '1',
               detailList: [this.getDetail(data)]
             }],
             dateEntry: data.dateEntry || '',
@@ -363,7 +366,6 @@
             dateReceivedAfter: data.dateReceivedAfter || '',
             valueBefore: data.valueBefore || '',
             valueAfter: data.valueAfter || '',
-            registrationType: data.registrationType || '1'
           }
           if (data.majorCategory) {
             this.initCategory = {
