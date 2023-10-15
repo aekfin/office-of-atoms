@@ -2,6 +2,7 @@
   <div id="durable-goods-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มครุภัณฑ์' : 'การแก้ไขครุภัณฑ์'" hideTotal :btnText="isCreate ? '' : 'ครุภัณฑ์ย่อย'" :createRoute="createRoute" :logRoute="logRoute"/>
     <div v-if="!isCreate" class="d-flex justify-end mt-3">
+      <DurableGoodQRCode class="mr-2" :equipment="form"/>
       <ExportReportButton apiPath="report/equipment-detail" :query="{ equipmentNumber: form.number }" name="รายงานทะเบียนคุมทรัพย์สิน" text="รายงานทะเบียนคุมทรัพย์สิน"/>
     </div>
     <Loading v-if="isLoading"/>
@@ -75,17 +76,20 @@
                     <v-col :cols="6" :md="3">
                       <v-text-field v-model="form.equipments[i].price" label="ราคา *" type="number" :rules="priceRules" required/>
                     </v-col>
-                    <v-col :cols="6" :md="2">
+                    <v-col :cols="6" :md="3">
                       <v-text-field v-model="form.equipments[i].year" label="ปี *" :rules="yearRules" type="number" required/>
                     </v-col>
-                    <v-col :cols="6" :md="2">
+                    <v-col :cols="6" :md="3">
                       <v-text-field v-model="form.equipments[i].classifier" label="หน่วย *" :rules="classifierRules" name="unit" required/>
                     </v-col>
-                    <v-col :cols="6" :md="3">
-                      <SelectDropdown :value.sync="form.equipments[i].registrationType" itemValue="id" itemText="name" :items="registrationList" label="ประเภททะเบียนครุภัณฑ์ *" @select="val => onChangeRegistrationType(form.equipments[i], val)"/>
-                    </v-col>
-                    <v-col :cols="6" :md="2" class="depreciation">
+                    <v-col :cols="6" :md="3" class="depreciation">
                       <v-text-field v-model="form.equipments[i].depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%"/>
+                    </v-col>
+                    <v-col :cols="6" :md="3">
+                      <SelectDropdown :value.sync="form.equipments[i].registrationType" itemValue="id" itemText="name" :items="registrationList" label="ประเภททะเบียนครุภัณฑ์ *" :disabled="!isCreate" @select="val => onChangeRegistrationType(form.equipments[i], val)"/>
+                    </v-col>
+                    <v-col :cols="6" :md="3">
+                      <SelectDropdown :value.sync="form.equipments[i].moneyType" itemValue="id" itemText="name" :items="moneyTypeList" label="ประเภทของเงิน *" :disabled="!isCreate" @select="val => onChangeMoneyType(form.equipments[i], val)"/>
                     </v-col>
                     <v-col :cols="12" class="pt-0">
                       <v-textarea v-model="form.equipments[i].description" class="pt-0" label="คำอธิบายเพิ่มเติม / ข้อมูลการใช้งาน" :rows="4"/>
@@ -112,16 +116,16 @@
                       <v-text-field v-model="detail.serialNumber" label="หมายเลขซีเรียล" :disabled="!isCreate || !form.organizationId"/>
                     </v-col>
                     <v-col :cols="12" :md="3">
-                      <v-text-field v-model="detail.assetNumber" label="เลขที่สินทรัพย์" :disabled="!isCreate || !form.organizationId"/>
+                      <v-text-field v-model="detail.assetNumber" label="เลขที่สินทรัพย์" :disabled="!form.organizationId"/>
                     </v-col>
                     <v-col :cols="12" :md="3">
-                      <v-text-field v-model="detail.assetSubNumber" label="เลขที่สินทรัพย์ย่อย" required :disabled="!isCreate || !form.organizationId"/>
+                      <v-text-field v-model="detail.assetSubNumber" label="เลขที่สินทรัพย์ย่อย" required :disabled="!form.organizationId"/>
                     </v-col>
                     <v-col :cols="12" :md="3">
-                      <v-text-field v-model="detail.assetNumberAorWor" label="เลขที่สินทรัพย์ อว." required :disabled="!isCreate || !form.organizationId"/>
+                      <v-text-field v-model="detail.assetNumberAorWor" label="เลขที่สินทรัพย์ อว." required :disabled="!form.organizationId"/>
                     </v-col>
                     <v-col :cols="12" :md="3">
-                      <v-text-field v-model="detail.numberSubAorWor" label="เลขที่ อว.ย่อย" required :disabled="!isCreate || !form.organizationId"/>
+                      <v-text-field v-model="detail.numberSubAorWor" label="เลขที่ อว.ย่อย" required :disabled="!form.organizationId"/>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -156,6 +160,7 @@
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
       AttachmentDurableGoods: () => import('~/components/AttachmentDurableGoods.vue'),
+      DurableGoodQRCode: () => import('~/components/DurableGoodQRCode.vue'),
       ExportReportButton: () => import('~/components/ExportReportButton.vue'),
     },
     data () {
@@ -180,6 +185,7 @@
               categoryForm: {},
               quantity: 1,
               registrationType: '1',
+              moneyType: 'BUDGET',
               detailList: [this.getDetail()]
             }
           ],
@@ -236,6 +242,12 @@
         registrationList: [
           { id: '1', name: 'มาตราฐาน' },
           { id: '2', name: 'ต่ำกว่าเกณฑ์' },
+        ],
+        moneyTypeList: [
+          { id: 'BUDGET', name: 'เงินงบประมาณ' },
+          { id: 'OUT_OF_BUDGET', name: 'เงินนอกงบประมาณ' },
+          { id: 'OTHER', name: 'เงินอื่นๆ' },
+          { id: 'DONATION', name: 'เงินบริจาค' },
         ],
       }
     },
@@ -300,6 +312,10 @@
         equipment.registrationType = val
         this.getEquipmentNumber(equipment)
       },
+      onChangeMoneyType (equipment, { val }) {
+        equipment.moneyType = val
+        this.getEquipmentNumber(equipment)
+      },
       onQuantityChange (equipment) {
         const quantity = equipment.quantity
         const count = equipment.detailList.length
@@ -323,7 +339,7 @@
           console.log(ouId, quantity, mejorCategoryId)
           if (ouId && quantity && mejorCategoryId) {
             this.isNumberLoading = true
-            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: equipment.registrationType, mejorCategoryId } })
+            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: equipment.registrationType, moneyType: equipment.moneyType, mejorCategoryId } })
             data?.forEach((number, i) => {
               equipment.detailList[i].number = number
             })
@@ -353,6 +369,7 @@
               ...data,
               quantity: 1,
               registrationType: data.registrationType || '1',
+              moneyType: data.moneyType || 'BUDGET',
               detailList: [this.getDetail(data)]
             }],
             dateEntry: data.dateEntry || '',
@@ -427,8 +444,9 @@
       async onEdit () {
         try {
           const equipment = this.form?.equipments?.[0] || {}
+          const equipmentDetail = equipment?.detailList?.[0] || {}
           const categoryForm = equipment?.categoryForm || {}
-          const form = { ...equipment, ...categoryForm }
+          const form = { ...equipment, ...equipmentDetail, ...categoryForm }
           await this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/Edit', data: form })
           if (this.$refs.attachmentDurableGoods) await this.$refs.attachmentDurableGoods.upload()
           await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })

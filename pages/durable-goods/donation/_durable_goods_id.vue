@@ -89,16 +89,16 @@
                       <v-text-field v-model="detail.serialNumber" label="หมายเลขซีเรียล" :disabled="!isCreate || !form.organizationId"/>
                     </v-col>
                     <v-col :cols="12" :md="3">
-                      <v-text-field v-model="detail.assetNumber" label="เลขที่สินทรัพย์" :disabled="!isCreate || !form.organizationId"/>
+                      <v-text-field v-model="detail.assetNumber" label="เลขที่สินทรัพย์" :disabled="!form.organizationId"/>
                     </v-col>
                     <v-col :cols="12" :md="3">
-                      <v-text-field v-model="detail.assetSubNumber" label="เลขที่สินทรัพย์ย่อย" required :disabled="!isCreate || !form.organizationId"/>
+                      <v-text-field v-model="detail.assetSubNumber" label="เลขที่สินทรัพย์ย่อย" required :disabled="!form.organizationId"/>
                     </v-col>
                     <v-col :cols="12" :md="3">
-                      <v-text-field v-model="detail.assetNumberAorWor" label="เลขที่สินทรัพย์ อว." required :disabled="!isCreate || !form.organizationId"/>
+                      <v-text-field v-model="detail.assetNumberAorWor" label="เลขที่สินทรัพย์ อว." required :disabled="!form.organizationId"/>
                     </v-col>
                     <v-col :cols="12" :md="3">
-                      <v-text-field v-model="detail.numberSubAorWor" label="เลขที่ อว.ย่อย" required :disabled="!isCreate || !form.organizationId"/>
+                      <v-text-field v-model="detail.numberSubAorWor" label="เลขที่ อว.ย่อย" required :disabled="!form.organizationId"/>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -298,7 +298,7 @@
           const mejorCategoryId = equipment.categoryForm?.majorCategoryId
           if (ouId && quantity && mejorCategoryId) {
             this.isNumberLoading = true
-            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: 1, mejorCategoryId } })
+            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: 1, moneyType: 'BUDGET', mejorCategoryId } })
             data?.forEach((number, i) => {
               equipment.detailList[i].number = number
             })
@@ -396,8 +396,9 @@
       async onEdit () {
         try {
           const equipment = this.form?.equipments?.[0] || {}
+          const equipmentDetail = equipment?.detailList?.[0] || {}
           const categoryForm = equipment?.categoryForm || {}
-          const form = { ...equipment, ...categoryForm }
+          const form = { ...equipment, ...equipmentDetail, ...categoryForm }
           await this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/Edit', data: form })
           if (this.$refs.attachmentDurableGoods) await this.$refs.attachmentDurableGoods.upload()
           await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })
