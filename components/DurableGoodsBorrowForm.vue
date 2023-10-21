@@ -61,13 +61,16 @@
           </v-col>
           <WithdrawDurableGoodsTable v-if="projectId" class="mt-6" :items="durableGoodsWithdraw" :isLoading="isWithdrawLoading" :selectList="selectedWithdraw"/>
         </div>
-        <CategoryDurableGood v-else :key="categoryKey" :initCategory="initCategoryForm" :disabled="viewMode" noRules @change="onChangeCategory">
-          <v-col :cols="12" :md="9">
-            <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
-            <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
-              :query="{ ...categoryForm, ...ownerForm }" :disabled="viewMode"/>
-          </v-col>
-        </CategoryDurableGood>
+        <template v-else>
+          <v-text-field v-model="form.number" label="เลขที่ครุภัณฑ์" :disabled="viewMode" @change="onChangeNumber"/>
+          <CategoryDurableGood :key="categoryKey" :initCategory="initCategoryForm" :disabled="viewMode" noRules @change="onChangeCategory">
+            <v-col :cols="12" :md="9">
+              <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
+              <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
+                :query="{ ...categoryForm, ...ownerForm }" :disabled="viewMode"/>
+            </v-col>
+          </CategoryDurableGood>
+        </template>
       </v-container>
 
       <v-container v-if="isReturned">
@@ -180,6 +183,7 @@
           organization: this.item?.items?.[0]?.equipment?.organizationMaster || {},
           department: this.item?.items?.[0]?.equipment?.departmentMaster || {},
           owner: this.item?.items?.[0]?.equipment?.owner || {},
+          number: this.item?.items?.[0]?.equipment?.number || '',
         }
         if (this.item) this.setCategoryForm()
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
@@ -222,6 +226,9 @@
       },
       onSelectDepartment ({ item }) {
         this.ownerForm.departmentId = item.id
+      },
+      onChangeNumber (val) {
+        this.ownerForm = { ...this.ownerForm, number: val }
       },
       onSubmit () {
         const valid = this.$refs.form.validate()

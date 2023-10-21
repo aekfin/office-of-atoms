@@ -81,13 +81,13 @@
             options: this.$store.getters.durableGoodSelectableOptions,
           },
           {
-            name: 'กลุ่ม',
+            name: 'กอง',
             param: 'ouId',
             apiPath: 'Orgchart/getOrganizations',
             itemText: 'ouName',
           },
           {
-            name: 'กอง',
+            name: 'กลุ่ม',
             param: 'departmentId',
             apiPath: 'Orgchart/getDepartments',
             itemText: 'departmentName',

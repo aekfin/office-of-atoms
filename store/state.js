@@ -113,7 +113,6 @@ export default () => ({
         {
           title: 'วัสดุคงคลังทั้งหมด',
           to: '/parcel/summary/',
-          checkTreasury: true,
         },
         {
           title: 'บริหารวัสดุคงคลัง',
@@ -143,7 +142,6 @@ export default () => ({
         {
           title: 'ครุภัณฑ์ทั้งหมด',
           to: '/durable-goods/summary/',
-          checkTreasury: true,
         },
         {
           title: 'บริหารครุภัณฑ์',

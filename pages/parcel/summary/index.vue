@@ -23,24 +23,28 @@
         isLoading: true,
         total: 0,
         count: 0,
-        headers: [
+        originalHeaders: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ชื่อวัสดุคงคลัง', value: 'name' },
           { text: 'ประเภท', value: 'type', width: '160px', align: 'center' },
           { text: 'หน่วย', value: 'classifier', align: 'center', width: '120px' },
           { text: 'จำนวน', value: 'quantity', align: 'center', width: '140px' },
-          { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
+        headers: [],
         items: [],
       }
     },
     watch: {
       '$route.query' () {
         this.getList()
-      }
+      },
+      '$store.getters.isTreasury' () {
+        this.setHeader()
+      },
     },
     mounted () {
       this.getList()
+      this.setHeader()
     },
     methods: {
       async getList () {
@@ -50,6 +54,10 @@
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
+      },
+      setHeader () {
+        this.headers = this.originalHeaders
+        if (this.$store.getters.isTreasury) this.headers.push({ text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' })
       },
       getActionIconList (item) {
         return [

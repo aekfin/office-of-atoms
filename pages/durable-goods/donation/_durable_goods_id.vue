@@ -9,7 +9,7 @@
             <InputDatePicker :value.sync="form.dateEntry" label="วันที่รับเข้า *" :rules="dateEntryRules" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="3">
-            <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate"/>
+            <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ/วันที่กรรมการเห็นถูกต้องครบถ้วน *" :rules="inspectionDateRules" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="6">
             <v-text-field v-model="form.documentNumber" label="เลขที่เอกสาร" :disabled="!isCreate"/>
@@ -298,7 +298,7 @@
           const mejorCategoryId = equipment.categoryForm?.majorCategoryId
           if (ouId && quantity && mejorCategoryId) {
             this.isNumberLoading = true
-            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: 1, moneyType: 'BUDGET', mejorCategoryId } })
+            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: 1, moneyType: 'DONATION', mejorCategoryId } })
             data?.forEach((number, i) => {
               equipment.detailList[i].number = number
             })

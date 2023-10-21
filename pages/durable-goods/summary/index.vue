@@ -13,6 +13,9 @@
       <template #item.status="{ item }">
         <v-chip :color="$store.state.durableGoodStatusColor[item.status]">{{ $store.state.durableGoodStatus[item.status] }}</v-chip>
       </template>
+      <template #item.subEquipments="{ item }">
+        <SubEquipmentColumn :item="item"/>
+      </template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
       </template>
@@ -27,6 +30,7 @@
       PageHeader: () => import('~/components/PageHeader.vue'),
       EquipmentColumn: () => import('~/components/EquipmentColumn.vue'),
       OwnerColumn: () => import('~/components/OwnerColumn.vue'),
+      SubEquipmentColumn: () => import('~/components/SubEquipmentColumn.vue'),
       Pagination: () => import('~/components/Pagination.vue'),
     },
     data () {
@@ -35,25 +39,30 @@
         count: 0,
         total: 0,
         items: [],
-        headers: [
+        originalHeaders: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
           { text: 'ชื่อครุภัณฑ์', value: 'name' },
           { text: 'หมวดหมู่', value: 'majorCategory', width: '160px', align: 'center' },
           { text: 'ราคากลาง', value: 'price', align: 'center', width: '120px' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
+          { text: 'ครุภัณฑ์ย่อย', value: 'subEquipments', width: '120px', align: 'center' },
           { text: 'สถานะ', value: 'status', align: 'center', width: '160px' },
-          { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
         ],
+        headers: [],
       }
     },
     watch: {
       '$route.query' () {
         this.getList()
-      }
+      },
+      '$store.getters.isTreasury' () {
+        this.setHeader()
+      },
     },
     mounted () {
       this.getList()
+      this.setHeader()
     },
     methods: {
       async getList () {
@@ -63,6 +72,10 @@
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
+      },
+      setHeader () {
+        this.headers = this.originalHeaders
+        if (this.$store.getters.isTreasury) this.headers.push({ text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' })
       },
       getActionIconList (item) {
         return [
