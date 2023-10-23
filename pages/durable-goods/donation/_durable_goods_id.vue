@@ -72,7 +72,7 @@
                       <v-text-field v-model="form.equipments[i].depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%"/>
                     </v-col>
                     <v-col :cols="6" :md="3">
-                      <SelectDropdown :value.sync="registrationType" itemValue="id" itemText="name" :items="$store.state.registrationList" label="ประเภททะเบียนครุภัณฑ์ *" :disabled="!isCreate" @select="val => onChangeRegistrationType(form.equipments[i], val)"/>
+                      <SelectDropdown :value.sync="form.equipments[i].registrationType" itemValue="id" itemText="name" :items="$store.state.registrationList" label="ประเภททะเบียนครุภัณฑ์ *" :disabled="!isCreate" @select="val => onChangeRegistrationType(form.equipments[i], val)"/>
                     </v-col>
                     <v-col :cols="6" :md="3">
                       <SelectDropdown :value.sync="moneyType" itemValue="id" itemText="name" :items="$store.state.moneyTypeList" label="ประเภทของเงิน" disabled/>
@@ -169,6 +169,7 @@
               donator: '',
               userId: null,
               quantity: 1,
+              registrationType: '1',
               detailList: [this.getDetail()],
             }
           ],
@@ -225,7 +226,6 @@
           v => !!v || 'โปรดใส่จำนวน',
         ],
         formExpand: [0],
-        registrationType: '1',
         moneyType: 'DONATION',
       }
     },
@@ -271,6 +271,7 @@
             donator: '',
             userId: null,
             quantity: 1,
+            registrationType: '1',
             detailList: [this.getDetail()]
           }
         )
@@ -305,7 +306,7 @@
         this.setNumberAllEquipments()
       },
       onChangeRegistrationType (equipment, { val }) {
-        this.registrationType = val
+        equipment.registrationType = val
         this.getEquipmentNumber(equipment)
       },
       getCountBefore (equipment) {
@@ -318,7 +319,7 @@
           const ouId = this.form.organizationId
           const quantity = equipment.quantity
           const mejorCategoryId = equipment.categoryForm?.majorCategoryId
-          const registrationType = this.registrationType
+          const registrationType = equipment.registrationType
           const moneyType = this.moneyType
           const count = this.getCountBefore(equipment)
           if (ouId && quantity && mejorCategoryId) {
@@ -355,6 +356,7 @@
                 donator: data.equipmentDonation.donator,
                 userId: data.equipmentDonation.keeper.id,
                 userList: [data.equipmentDonation.keeper],
+                registrationType: data.registrationType || '1',
                 detailList: [this.getDetail(data)]
               }
             ],
@@ -362,7 +364,6 @@
             departmentId: data.department.id,
             ownerId: data.owner?.id || null,
             ownerList: data.owner && [data.owner] || [],
-            registrationType: data.registrationType || '1',
             location: data.location || '',
           }
           if (data.majorCategory) {

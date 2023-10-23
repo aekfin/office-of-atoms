@@ -228,7 +228,7 @@
         this.ownerForm.departmentId = item.id
       },
       onChangeNumber (val) {
-        this.ownerForm = { ...this.ownerForm, number: val }
+        this.ownerForm = { ...this.ownerForm, equipmentNumber: val }
       },
       onSubmit () {
         const valid = this.$refs.form.validate()

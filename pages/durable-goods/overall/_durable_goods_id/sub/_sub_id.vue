@@ -219,7 +219,7 @@
       async getSubEquipmentNumber () {
         try {
           this.isLoadingNumber = true
-          const query = { equipmentId: this.durableGoodsId, quantity: this.subEquipments.length }
+          const query = { equipmentId: this.durableGoodsId, quantity: this.subEquipments.length, count: 0 }
           const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/genSubEquipmentNumber', query })
           this.subEquipments.forEach((subEquipment, i) => {
             if (!subEquipment.number) subEquipment.number = data[i]
