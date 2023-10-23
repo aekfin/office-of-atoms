@@ -83,6 +83,16 @@ export default () => ({
     'REQUISITION': 'เบิก',
     'TRANSFER': 'โอนย้าย',
   },
+  moneyTypeList: [
+    { id: 'BUDGET', name: 'เงินงบประมาณ' },
+    { id: 'OUT_OF_BUDGET', name: 'เงินนอกงบประมาณ' },
+    { id: 'OTHER', name: 'เงินอื่นๆ' },
+    { id: 'DONATION', name: 'เงินบริจาค' },
+  ],
+  registrationList: [
+    { id: '1', name: 'มาตราฐาน' },
+    { id: '2', name: 'ต่ำกว่าเกณฑ์' },
+  ],
   leftMenus: [
     {
       title: 'หน้าหลัก',

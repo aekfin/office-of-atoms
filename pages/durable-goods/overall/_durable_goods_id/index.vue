@@ -86,10 +86,10 @@
                       <v-text-field v-model="form.equipments[i].depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%"/>
                     </v-col>
                     <v-col :cols="6" :md="3">
-                      <SelectDropdown :value.sync="form.equipments[i].registrationType" itemValue="id" itemText="name" :items="registrationList" label="ประเภททะเบียนครุภัณฑ์ *" :disabled="!isCreate" @select="val => onChangeRegistrationType(form.equipments[i], val)"/>
+                      <SelectDropdown :value.sync="form.equipments[i].registrationType" itemValue="id" itemText="name" :items="$store.state.registrationList" label="ประเภททะเบียนครุภัณฑ์ *" :disabled="!isCreate" @select="val => onChangeRegistrationType(form.equipments[i], val)"/>
                     </v-col>
                     <v-col :cols="6" :md="3">
-                      <SelectDropdown :value.sync="form.equipments[i].moneyType" itemValue="id" itemText="name" :items="moneyTypeList" label="ประเภทของเงิน *" :disabled="!isCreate" @select="val => onChangeMoneyType(form.equipments[i], val)"/>
+                      <SelectDropdown :value.sync="form.equipments[i].moneyType" itemValue="id" itemText="name" :items="$store.state.moneyTypeList" label="ประเภทของเงิน *" :disabled="!isCreate" @select="val => onChangeMoneyType(form.equipments[i], val)"/>
                     </v-col>
                     <v-col :cols="12" class="pt-0">
                       <v-textarea v-model="form.equipments[i].description" class="pt-0" label="คำอธิบายเพิ่มเติม / ข้อมูลการใช้งาน" :rows="4"/>
@@ -239,16 +239,6 @@
           v => !!v || 'โปรดใส่จำนวน',
         ],
         formExpand: [0],
-        registrationList: [
-          { id: '1', name: 'มาตราฐาน' },
-          { id: '2', name: 'ต่ำกว่าเกณฑ์' },
-        ],
-        moneyTypeList: [
-          { id: 'BUDGET', name: 'เงินงบประมาณ' },
-          { id: 'OUT_OF_BUDGET', name: 'เงินนอกงบประมาณ' },
-          { id: 'OTHER', name: 'เงินอื่นๆ' },
-          { id: 'DONATION', name: 'เงินบริจาค' },
-        ],
       }
     },
     computed: {
@@ -287,6 +277,8 @@
             classifier: '',
             categoryForm: {},
             quantity: 1,
+            registrationType: '1',
+            moneyType: 'BUDGET',
             detailList: [this.getDetail()]
           }
         )
@@ -331,15 +323,20 @@
       onChangeMajor ({ val }) {
         this.setNumberAllEquipments()
       },
+      getCountBefore (equipment) {
+        const index = this.form.equipments.findIndex(e => e === equipment)
+        const before = this.form.equipments.slice(0, index)
+        return before.reduce((sum, e) => parseInt(e.quantity) + sum, 0)
+      },
       async getEquipmentNumber (equipment) {
         try {
           const ouId = this.form.organizationId
           const quantity = equipment.quantity
           const mejorCategoryId = equipment.categoryForm?.majorCategoryId
-          console.log(ouId, quantity, mejorCategoryId)
+          const count = this.getCountBefore(equipment)
           if (ouId && quantity && mejorCategoryId) {
             this.isNumberLoading = true
-            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: equipment.registrationType, moneyType: equipment.moneyType, mejorCategoryId } })
+            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: equipment.registrationType, moneyType: equipment.moneyType, mejorCategoryId, count } })
             data?.forEach((number, i) => {
               equipment.detailList[i].number = number
             })

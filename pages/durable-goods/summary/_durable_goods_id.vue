@@ -225,7 +225,7 @@
           const mejorCategoryId = this.categoryForm?.majorCategoryId
           if (ouId && quantity && mejorCategoryId) {
             this.isNumberLoading = true
-            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: 1, moneyType: 'BUDGET', mejorCategoryId } })
+            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: 1, moneyType: 'BUDGET', mejorCategoryId, count: 0 } })
             data?.forEach((number, i) => {
               this.form.detailList[i].number = number
             })

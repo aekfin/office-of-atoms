@@ -16,7 +16,11 @@
           </v-col>
         </v-row>
 
-        <DurableGoodsOwner class="mt-5" :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :userList="form.ownerList" :disabled="!isCreate" @ouChange="onOuChange"/>
+        <DurableGoodsOwner class="mt-5" :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :userList="form.ownerList" :disabled="!isCreate" @ouChange="onOuChange">
+          <v-col :cols="12">
+            <v-text-field v-model="form.location" label="สถานที่ติดตั้ง" :disabled="!isCreate"/>
+          </v-col>
+        </DurableGoodsOwner>
 
         <div class="text-h5 mt-5"><b>เลือกครุภัณฑ์</b></div>
         <v-container>
@@ -66,6 +70,12 @@
                     </v-col>
                     <v-col :cols="6" :md="3" class="depreciation">
                       <v-text-field v-model="form.equipments[i].depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%"/>
+                    </v-col>
+                    <v-col :cols="6" :md="3">
+                      <SelectDropdown :value.sync="registrationType" itemValue="id" itemText="name" :items="$store.state.registrationList" label="ประเภททะเบียนครุภัณฑ์ *" :disabled="!isCreate" @select="val => onChangeRegistrationType(form.equipments[i], val)"/>
+                    </v-col>
+                    <v-col :cols="6" :md="3">
+                      <SelectDropdown :value.sync="moneyType" itemValue="id" itemText="name" :items="$store.state.moneyTypeList" label="ประเภทของเงิน" disabled/>
                     </v-col>
                     <v-col :cols="12" class="pt-0">
                       <v-textarea v-model="form.equipments[i].description" class="pt-0" label="คำอธิบายเพิ่มเติม" :rows="4"/>
@@ -166,6 +176,7 @@
           departmentId: null,
           ownerId: null,
           ownerList: [],
+          location: '',
           documentNumber: '',
         },
         nameRules: [
@@ -214,6 +225,8 @@
           v => !!v || 'โปรดใส่จำนวน',
         ],
         formExpand: [0],
+        registrationType: '1',
+        moneyType: 'DONATION',
       }
     },
     computed: {
@@ -291,14 +304,26 @@
       onChangeMajor ({ val }) {
         this.setNumberAllEquipments()
       },
+      onChangeRegistrationType (equipment, { val }) {
+        this.registrationType = val
+        this.getEquipmentNumber(equipment)
+      },
+      getCountBefore (equipment) {
+        const index = this.form.equipments.findIndex(e => e === equipment)
+        const before = this.form.equipments.slice(0, index)
+        return before.reduce((sum, e) => parseInt(e.quantity) + sum, 0)
+      },
       async getEquipmentNumber (equipment) {
         try {
           const ouId = this.form.organizationId
           const quantity = equipment.quantity
           const mejorCategoryId = equipment.categoryForm?.majorCategoryId
+          const registrationType = this.registrationType
+          const moneyType = this.moneyType
+          const count = this.getCountBefore(equipment)
           if (ouId && quantity && mejorCategoryId) {
             this.isNumberLoading = true
-            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: 1, moneyType: 'DONATION', mejorCategoryId } })
+            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType, moneyType, mejorCategoryId, count } })
             data?.forEach((number, i) => {
               equipment.detailList[i].number = number
             })
@@ -337,6 +362,8 @@
             departmentId: data.department.id,
             ownerId: data.owner?.id || null,
             ownerList: data.owner && [data.owner] || [],
+            registrationType: data.registrationType || '1',
+            location: data.location || '',
           }
           if (data.majorCategory) {
             this.initCategory = {
@@ -412,5 +439,9 @@
 
 <style lang="scss">
   #durable-goods-detail-page {
+    .img-preview {
+      max-width: 320px;
+      max-height: 240px;
+    }
   }
 </style>
