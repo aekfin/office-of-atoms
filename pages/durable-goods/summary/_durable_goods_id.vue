@@ -215,7 +215,6 @@
         this.getEquipmentNumber()
       },
       onChangeMajor ({ val }) {
-        console.log('changeMarjor')
         this.getEquipmentNumber()
       },
       async getEquipmentNumber () {

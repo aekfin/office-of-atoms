@@ -11,6 +11,9 @@
     <template #item.dateEntry="{ item }">
       <div>{{ $fn.displayDate(item.dateEntry) }}</div>
     </template>
+    <template #item.subEquipments="{ item }">
+      <SubEquipmentColumn :item="item"/>
+    </template>
     <template #item.action="{ item }">
       <ActionIconList :list="getActionIconList(item)"/>
     </template>
@@ -22,6 +25,7 @@
     components: {
       EquipmentColumn: () => import('~/components/EquipmentColumn.vue'),
       OwnerColumn: () => import('~/components/OwnerColumn.vue'),
+      SubEquipmentColumn: () => import('~/components/SubEquipmentColumn.vue'),
     },
     props: {
       items: { type: Array, required: true },
@@ -35,8 +39,9 @@
         { text: 'เลขที่ครุภัณฑ์', value: 'number', align: 'center', width: '120px' },
         { text: 'ชื่อครุภัณฑ์', value: 'name', align: 'center', width: '160px' },
         { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
-        { text: 'ราคา', value: 'price', align: 'center', width: '120px' },
+        { text: 'ราคา', value: 'price', align: 'center', width: '100px' },
         { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
+        { text: 'ครุภัณฑ์ย่อย', value: 'subEquipments', width: '120px', align: 'center' },
         { text: 'วันที่รับเข้า', value: 'dateEntry', align: 'center', width: '140px' },
       ]
       if (this.getActionIconList) headers.push({ text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' })

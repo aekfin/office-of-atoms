@@ -13,6 +13,9 @@
       <template #item.dateEntry="{ item }">
         <div>{{ $fn.displayDate(item.dateEntry) }}</div>
       </template>
+      <template #item.subEquipments="{ item }">
+        <SubEquipmentColumn :item="item"/>
+      </template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
       </template>
@@ -28,6 +31,7 @@
       ActionIconList: () => import('~/components/ActionIconList.vue'),
       EquipmentColumn: () => import('~/components/EquipmentColumn.vue'),
       OwnerColumn: () => import('~/components/OwnerColumn.vue'),
+      SubEquipmentColumn: () => import('~/components/SubEquipmentColumn.vue'),
       Pagination: () => import('~/components/Pagination.vue'),
     },
     data () {
@@ -43,6 +47,7 @@
           { text: 'หมวดหมู่', value: 'majorCategory', width: '160px', align: 'center' },
           { text: 'ราคากลาง', value: 'price', align: 'center', width: '120px' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
+          { text: 'ครุภัณฑ์ย่อย', value: 'subEquipments', width: '120px', align: 'center' },
           { text: 'วันที่รับเข้า', value: 'dateEntry', align: 'center', width: '140px' },
           { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
         ],
