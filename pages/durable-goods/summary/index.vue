@@ -1,17 +1,21 @@
 <template>
   <div id="durable-goods-summary-page">
-    <PageHeader text="ครุภัณฑ์ทั้งหมด" :total="total"/>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
+    <PageHeader class="mb-6" text="ครุภัณฑ์ทั้งหมด" :total="total"/>
+    <v-btn v-if="selectorListObject.length" class="d-flex align-center mb-3" outlined elevation="2" color="black" @click="onExportQRCode">
+      <i class="material-icons">qr_code_2</i>
+      <div class="ml-1">QR Code ({{ selectorListObject.length }})</div>
+    </v-btn>
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1" :loading="isLoading">
       <template #header.order>
         <div class="d-flex align-center">
-          <i :key="refreshKey" class="material-icons pointer" v-html="isSelectAll ? 'check_box' : isIndeterminate ? 'indeterminate_check_box' : 'check_box_outline_blank'" @click="onSelectAll"/>
+          <i :key="refreshKey" class="material-icons pointer" @click="onSelectAll" v-html="isSelectAll ? 'check_box' : isIndeterminate ? 'indeterminate_check_box' : 'check_box_outline_blank'"/>
           <div class="ml-2">ลำดับ</div>
         </div>
       </template>
       <template #item.order="{ index }">
         <div class="d-flex align-center">
-          <i :key="refreshKey" class="material-icons pointer" v-html="selectorList[index] ? 'check_box' : 'check_box_outline_blank'" @click="onSelect(index)"/>
-          <div class="ml-2">{{ $store.state.paginationIndex + index + 1 }}</div>
+          <i :key="refreshKey" class="material-icons pointer " @click="onSelect(index)" v-html="selectorList[index] ? 'check_box' : 'check_box_outline_blank'"/>
+          <div class="ml-3">{{ $store.state.paginationIndex + index + 1 }}</div>
         </div>
       </template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
@@ -65,6 +69,7 @@
         refreshKey: false,
         isSelectAll: false,
         isIndeterminate: false,
+        selectorListObject: [],
       }
     },
     watch: {
@@ -84,7 +89,7 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getEquipments', query: this.$route.query, context: this })
-          this.selectorList = data?.content?.map(c => false) || []
+          this.selectorList = this.items?.map(item => false) || []
           this.setAllCheckbox()
           this.isLoading = false
           return Promise.resolve(data)
@@ -93,6 +98,7 @@
       setAllCheckbox () {
         this.isSelectAll = this.selectorList.every(item => item)
         this.isIndeterminate = this.selectorList.some(item => item)
+        this.selectorListObject = this.items.filter((item, i) => this.selectorList[i])
       },
       onSelect (index) {
         this.selectorList[index] = !this.selectorList[index]
@@ -113,7 +119,16 @@
           { type: 'link', icon: 'edit', action: `/durable-goods/summary/${item.id}/` },
           // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
         ]
-      }
+      },
+      async onExportQRCode () {
+        try {
+          const ids = this.selectorListObject.map(item => item.id)
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/getEquipmentPdfForQrCode', data: { ids } })
+          var win = window.open()
+          win.document.write(`<iframe src="${data}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`)
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
     }
   }
 </script>
