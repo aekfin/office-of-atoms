@@ -2,7 +2,18 @@
   <div id="durable-goods-summary-page">
     <PageHeader text="ครุภัณฑ์ทั้งหมด" :total="total"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
-      <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
+      <template #header.order>
+        <div class="d-flex align-center">
+          <i :key="refreshKey" class="material-icons pointer" v-html="isSelectAll ? 'check_box' : isIndeterminate ? 'indeterminate_check_box' : 'check_box_outline_blank'" @click="onSelectAll"/>
+          <div class="ml-2">ลำดับ</div>
+        </div>
+      </template>
+      <template #item.order="{ index }">
+        <div class="d-flex align-center">
+          <i :key="refreshKey" class="material-icons pointer" v-html="selectorList[index] ? 'check_box' : 'check_box_outline_blank'" @click="onSelect(index)"/>
+          <div class="ml-2">{{ $store.state.paginationIndex + index + 1 }}</div>
+        </div>
+      </template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
       <template #item.majorCategory="{ item }">
         <EquipmentColumn :item="item"/>
@@ -40,7 +51,7 @@
         total: 0,
         items: [],
         originalHeaders: [
-          { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
+          { text: 'ลำดับ', value: 'order', width: '120px', align: 'center' },
           { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
           { text: 'ชื่อครุภัณฑ์', value: 'name' },
           { text: 'หมวดหมู่', value: 'majorCategory', width: '160px', align: 'center' },
@@ -50,6 +61,10 @@
           { text: 'สถานะ', value: 'status', align: 'center', width: '160px' },
         ],
         headers: [],
+        selectorList: [],
+        refreshKey: false,
+        isSelectAll: false,
+        isIndeterminate: false,
       }
     },
     watch: {
@@ -69,9 +84,25 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getEquipments', query: this.$route.query, context: this })
+          this.selectorList = data?.content?.map(c => false) || []
+          this.setAllCheckbox()
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
+      },
+      setAllCheckbox () {
+        this.isSelectAll = this.selectorList.every(item => item)
+        this.isIndeterminate = this.selectorList.some(item => item)
+      },
+      onSelect (index) {
+        this.selectorList[index] = !this.selectorList[index]
+        this.setAllCheckbox()
+        this.refreshKey = !this.refreshKey
+      },
+      onSelectAll () {
+        const val = !this.isSelectAll
+        this.selectorList = this.selectorList.map(c => val)
+        this.setAllCheckbox()
       },
       setHeader () {
         this.headers = this.originalHeaders
@@ -89,5 +120,8 @@
 
 <style lang="scss">
   #durable-goods-summary-page {
+    .material-icons {
+      user-select: none;
+    }
   }
 </style>
