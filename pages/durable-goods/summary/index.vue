@@ -112,7 +112,7 @@
       },
       setHeader () {
         this.headers = this.originalHeaders
-        if (this.$store.getters.isTreasury) this.headers.push({ text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' })
+        this.headers.push({ text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' })
       },
       getActionIconList (item) {
         return [
