@@ -27,7 +27,7 @@
                   <v-text-field v-model="form.types[0].typeName" label="ชื่อวัสดุคงคลัง *" :rules="typeNameRule" required/>
                 </v-col>
                 <v-col :cols="12" :md="3">
-                  <v-text-field v-model="form.types[0].minimumStock" class="minimum-stock" label="ขั้นต่ำ *" :rules="minimumStockRule" suffix="ชิ้น" type="number" min="0" required/>
+                  <v-text-field v-model="form.types[0].minimumStock" class="minimum-stock" label="ขั้นต่ำ *" :rules="minimumStockRule" suffix="ชิ้น" type="number"  :min="1" required />
                 </v-col>
               </v-row>
             </v-form>
@@ -70,6 +70,7 @@
         ],
         minimumStockRule: [
           v => !!v || v === 0 || 'โปรดใส่ขั้นต่ำสำหรับการแจ้งเตือน',
+          v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่าหรือเท่ากับ 0' 
         ],
         filters: [
           {
@@ -110,10 +111,11 @@
           ]
         }
       },
+     
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListParcelType', query: this.$route.query, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListParcelType', query: { ...this.$route.query, pageSize: 10 }, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
