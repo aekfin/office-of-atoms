@@ -113,6 +113,11 @@ export default () => ({
       checkTreasury: true,
     },
     {
+      title: 'ประวัติการตรวจนับครุภัณฑ์',
+      to: '/durable-goods/verify-counting-history/',
+      checkTreasury: true,
+    },
+    {
       title: 'รายงานทั้งหมด',
       to: '/report/',
     },

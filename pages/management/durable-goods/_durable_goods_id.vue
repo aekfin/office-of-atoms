@@ -6,7 +6,7 @@
       <v-container>
         <v-row>
           <v-col :cols="12" :md="3">
-            <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate"/>
+            <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate" @change="getEquipmentNumber"/>
           </v-col>
           <v-col v-if="!isCreate" :cols="12" :md="3">
             <v-switch v-model="form.disable" label="สามารถยืมได้" :trueValue="'0'" :falseValue="'1'"/>
@@ -16,7 +16,7 @@
         <DurableGoodsOwner :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :disabled="!isCreate" @ouChange="onOuChange"/>
 
         <div class="text-h5 mt-5 mb-2"><b>เลือกครุภัณฑ์</b></div>
-        <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="({ form }) => categoryForm = form" @changeMajor="onChangeMajor">
+        <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="({ form }) => categoryForm = form" @changeMajor="getEquipmentNumber">
           <template #default>
             <v-col :cols="12" :md="isCreate ? 6 : 9">
               <v-text-field v-model="form.name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required/>
@@ -210,17 +210,16 @@
         }
         this.getEquipmentNumber()
       },
-      onChangeMajor ({ val }) {
-        this.getEquipmentNumber()
-      },
       async getEquipmentNumber () {
         try {
           const ouId = this.form.organizationId
           const quantity = this.form.quantity
           const mejorCategoryId = this.categoryForm?.majorCategoryId
-          if (ouId && quantity && mejorCategoryId) {
+          const inspectionDate = this.$fn.convertInspectionDate(this.form.inspectionDate)
+          if (ouId && quantity && mejorCategoryId && inspectionDate) {
             this.isNumberLoading = true
-            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: 1, moneyType: 'BUDGET', mejorCategoryId, count: 0 } })
+            const query = { ouId, quantity, registrationType: 1, moneyType: 'BUDGET', mejorCategoryId, inspectionDate, count: 0 }
+            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query })
             data?.forEach((number, i) => {
               this.form.detailList[i].number = number
             })
