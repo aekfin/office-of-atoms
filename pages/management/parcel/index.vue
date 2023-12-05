@@ -1,7 +1,9 @@
 <template>
   <div id="parcel-page">
-    <PageHeader text="ค่าเริ่มต้นวัสดุคงคลัง" btnText="เพิ่มค่าเริ่มต้นวัสดุคงคลัง" createRoute="/management/parcel/create/" :total="total"/>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
+    <PageHeader text="ค่าเริ่มต้นวัสดุคงคลัง" btnText="เพิ่มค่าเริ่มต้นวัสดุคงคลัง" createRoute="/management/parcel/create/" :total="total" :filters="filters"/>
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter 
+    class="elevation-1 mt-6" :loading="isLoading"   >
+  
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.price || 0) }}</template>
       <template #item.action="{ item }">
@@ -24,6 +26,7 @@
         isLoading: true,
         total: 0,
         count: 0,
+        search: '',
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ชื่อวัสดุคงคลัง', value: 'name' },
@@ -33,6 +36,18 @@
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
         items: [],
+        filters: [
+          {
+            type: 'textField',
+            param: 'name',
+            name: 'ชื่อวัสดุคงคลัง',
+          },
+          {
+            type:"textField",
+            param: 'type',
+            name: 'ประเภท'
+          }
+        ]
       }
     },
     watch: {

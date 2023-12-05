@@ -1,7 +1,9 @@
 <template>
   <div id="durable-goods-page">
-    <PageHeader text="ค่าเริ่มต้นครุภัณฑ์" btnText="เพิ่มค่าเริ่มต้นครุภัณฑ์" createRoute="/management/durable-goods/create/" :total="total"/>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
+    <PageHeader text="ค่าเริ่มต้นครุภัณฑ์" btnText="เพิ่มค่าเริ่มต้นครุภัณฑ์" createRoute="/management/durable-goods/create/" :filters="filters" :total="total"/>
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter 
+    class="elevation-1 mt-6" :loading="isLoading"  >
+   
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
       <template #item.majorCategory="{ item }">
@@ -40,6 +42,7 @@
         count: 0,
         total: 0,
         items: [],
+        search: '',
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
@@ -51,6 +54,16 @@
           { text: 'สถานะ', value: 'status', align: 'center', width: '100px' },
           { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
         ],
+        filters: [
+          { type: 'textField',param: 'number',name: 'เลขที่ครุภัณฑ์' },
+          { type: 'textField',param: 'name',name: 'ชื่อครุภัณฑ์' },
+          { type: 'textField',param: 'majorCategory',name: 'หมวดหมู่' },
+          { type: 'textField',param: 'price',name: 'ราคากลาง' },
+          { type: 'textField',param: 'ouName',name: 'ผู้ครอบครอง' },
+          { type: 'textField',param: 'subEquipments',name: 'ครุภัณฑ์ย่อย' },
+          { type: 'textField',param: 'status',name: 'สถานะ' }
+        ]
+
       }
     },
     watch: {
@@ -65,7 +78,7 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getEquipments', query: this.$route.query, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getEquipments', query: { ...this.$route.query, pageSize: 10 }, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }

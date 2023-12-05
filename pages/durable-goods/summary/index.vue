@@ -1,11 +1,13 @@
 <template>
   <div id="durable-goods-summary-page">
-    <PageHeader class="mb-6" text="ครุภัณฑ์ทั้งหมด" :total="total"/>
+    <PageHeader class="mb-6" text="ครุภัณฑ์ทั้งหมด" :total="total" :filters="filters"/>
     <v-btn v-if="selectorListObject.length" class="d-flex align-center mb-3" outlined elevation="2" color="black" @click="onExportQRCode">
       <i class="material-icons">qr_code_2</i>
       <div class="ml-1">QR Code ({{ selectorListObject.length }})</div>
     </v-btn>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1" :loading="isLoading">
+    <v-data-table :headers="headers" :items="items"  :itemsPerPage="20" 
+    disableSort hideDefaultFooter class="elevation-1" :loading="isLoading" >
+   
       <template #header.order>
         <div class="d-flex align-center">
           <i :key="refreshKey" class="material-icons pointer" @click="onSelectAll" v-html="isSelectAll ? 'check_box' : isIndeterminate ? 'indeterminate_check_box' : 'check_box_outline_blank'"/>
@@ -54,6 +56,7 @@
         count: 0,
         total: 0,
         items: [],
+    
         originalHeaders: [
           { text: 'ลำดับ', value: 'order', width: '120px', align: 'center' },
           { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
@@ -70,6 +73,15 @@
         isSelectAll: false,
         isIndeterminate: false,
         selectorListObject: [],
+        filters: [
+          { type: 'textField',param: 'number',name: 'เลขที่ครุภัณฑ์', },
+          { type: 'textField',param: 'name',name: 'ชื่อครุภัณฑ์', },
+          { type: 'textField',param: 'majorCategory',name: 'หมวดหมู่', },
+          { type: 'textField',param: 'price',name: 'ราคากลาง', },
+          { type: 'textField',param: 'ouName',name: 'ผู้ครอบครอง', },
+          { type: 'textField',param: 'subEquipments',name: 'ครุภัณฑ์ย่อย', },
+          { type: 'textField',param: 'status',name: 'สถานะ', },
+        ]
       }
     },
     watch: {

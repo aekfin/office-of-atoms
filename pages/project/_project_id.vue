@@ -95,7 +95,7 @@
             <v-textarea v-model="form.detailedWorkMoney" label="รายละเอียดงาน งวดงาน/เงิน"/>
           </v-col>
           <v-col :cols="12" :md="6">
-            <v-textarea v-model="form.detailedWork" label="รายละเอียดงานในแต่ล่ะงวด"/>
+            <v-textarea v-model="form.detailedWork" label="รายละเอียดงานในแต่ละงวด"/>
           </v-col>
         </v-row>
         <v-row class="mt-10 mb-5">

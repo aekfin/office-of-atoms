@@ -223,7 +223,12 @@
               delete form.departmentId
             }
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
-            await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างบุคลากรสำเร็จ' : 'แก้ไขบุคลากรสำเร็จ' })
+            console.log("data : ",data);
+            if(data.code == '200'){
+              await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างบุคลากรสำเร็จ' : 'แก้ไขบุคลากรสำเร็จ' })
+            }else{
+              await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างบุคลากรไม่สำเร็จ' : 'แก้ไขบุคลากรไม่สำเร็จ' })
+            }
             if (this.isCreate) this.$router.push('/management/user/')
             return Promise.resolve(data)
           } else {

@@ -1,7 +1,8 @@
 <template>
   <div id="vendor-page">
-    <PageHeader text="บริหารคู่สัญญา" btnText="เพิ่มคู่สัญญา" createRoute="/management/vendor/create/" :total="total" unit="คู่สัญญา"/>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
+    <PageHeader text="บริหารคู่สัญญา" btnText="เพิ่มคู่สัญญา" createRoute="/management/vendor/create/" :total="total" :filters="filters" unit="คู่สัญญา"/>
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading"  >
+     
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
@@ -25,6 +26,7 @@
         isLoading: true,
         count: 0,
         total: 0,
+        search: '',
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'รหัสบริษัท', value: 'companyNumber', align: 'center', width: '200px' },
@@ -33,6 +35,24 @@
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
         items: [],
+        filters: [
+          {
+            type: 'textField',
+            param: 'companyName',
+            name: 'ชื่อบริษัท',
+          },
+          {
+            type: 'textField',
+            param: 'companyAddress',
+            name: 'ที่อยู่บริษัท'
+          },
+          {
+            type: 'textField',
+            param: 'companyNumber',
+            name: 'รหัสบริษัท',
+           
+          }
+        ],
       }
     },
     head () {

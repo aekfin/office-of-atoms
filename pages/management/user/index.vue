@@ -1,7 +1,10 @@
 <template>
   <div id="user-page">
-    <PageHeader text="บริหารบุคลากร" btnText="เพิ่มบุคลากร" createRoute="/management/user/create/" :total="total" unit="คน"/>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
+    <PageHeader text="บริหารบุคลากร" btnText="เพิ่มบุคลากร" createRoute="/management/user/create/" :total="total" :filters="filters"  unit="คน"/>
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" 
+      disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading"
+     >
+      
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
@@ -25,7 +28,6 @@
         isLoading: true,
         count: 0,
         total: 0,
-        search: '',
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'รหัสพนักงาน', value: 'employeeId' },
@@ -38,28 +40,27 @@
         items: [],
         filters: [
           {
-            param: 'position',
-            name: 'ตำแหน่ง',
-            options: [
-              { id: 1, name: 'ตำแหน่ง ก' },
-              { id: 2, name: 'ตำแหน่ง ข' },
-            ]
+            type: 'textField',
+            param: 'thaiFristName',
+            name: 'ชื่อ',
+           
           },
           {
-            param: 'organization',
-            name: 'กอง',
-            options: [
-              { id: 1, name: 'กอง ก' },
-              { id: 2, name: 'กอง ข' },
-            ]
+            type: 'textField',
+            param: 'thaiLastName',
+            name: 'นามสกุล'
           },
           {
-            param: 'department',
-            name: 'กลุ่ม',
-            options: [
-              { id: 1, name: 'กลุ่ม ก' },
-              { id: 2, name: 'กลุ่ม ข' },
-            ]
+            type: 'textField',
+            param: 'employeeId',
+            name: 'รหัสพนักงาน',
+           
+          },
+          {
+            type: 'textField',
+            param: 'email',
+            name: 'E-Mail',
+           
           }
         ],
       }

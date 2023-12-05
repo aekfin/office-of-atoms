@@ -1,7 +1,9 @@
 <template>
   <div id="type-parcel-page">
-    <PageHeader text="ประเภทวัสดุคงคลัง" btnText="เพิ่มประเภท" unit="ประเภท" :total="total" @create="openCreateDialog"/>
-    <v-data-table :headers="typeHeaders" :items="items" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
+    <PageHeader text="ประเภทวัสดุคงคลัง" btnText="เพิ่มประเภท" unit="ประเภท" :total="total" :filters="filters" @create="openCreateDialog"/>
+    <v-data-table :headers="typeHeaders" :items="items" disableSort hideDefaultFooter class="elevation-1 mt-6" 
+    :loading="isLoading"  >
+      
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.minimumStock="{ item }">{{ item.minimumStock || 0 }} ชิ้น</template>
     </v-data-table>
@@ -53,6 +55,7 @@
         total: 0,
         count: 0,
         items: [],
+        search: '',
         typeHeaders: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ชื่อประเภท', value: 'name' },
@@ -68,6 +71,18 @@
         minimumStockRule: [
           v => !!v || v === 0 || 'โปรดใส่ขั้นต่ำสำหรับการแจ้งเตือน',
         ],
+        filters: [
+          {
+            type: 'textField',
+            param: 'name',
+            name: 'ชื่อประเภท',
+          },
+          {
+            type:"textField",
+            param: 'minimumStock',
+            name: 'ขั้นต่ำ'
+          }
+        ]
       }
     },
     watch: {
