@@ -109,22 +109,12 @@
         return headers
       },
       filters () {
-<<<<<<< HEAD
-      //  const filters = []
-        const filters = [{ type: 'textField', name: 'ชื่อหมวดหมู่พัสดุ', param: 'majorCategoryName' }]
-        if (this.tabIndex > 0) filters.push({ type: 'textField', name: 'ชื่อประเภทพัสดุ', param: 'subCategoryName' })
-        if (this.tabIndex > 1) filters.push({ type: 'textField', name: 'ชื่อรายการครุภัณฑ์', param: 'typeName' })
-        if (this.tabIndex > 2) filters.push({ type: 'textField', name: 'ชื่อยี่ห้อ', param: 'brandName' })
-        if (this.tabIndex > 3) filters.push({ type: 'textField', name: 'ชื่อรุ่น', param: 'modelName' })
-        
-=======
         // const filters = [{ type: 'textField', name: 'ชื่อหมวดหมู่พัสดุ', param: 'majorCategoryName' }]
         // if (this.tabIndex > 0) filters.push({ type: 'textField', name: 'ชื่อประเภทพัสดุ', param: 'subCategoryName' })
         // if (this.tabIndex > 1) filters.push({ type: 'textField', name: 'ชื่อรายการครุภัณฑ์', param: 'typeName' })
         // if (this.tabIndex > 2) filters.push({ type: 'textField', name: 'ชื่อยี่ห้อ', param: 'brandName' })
         // if (this.tabIndex > 3) filters.push({ type: 'textField', name: 'ชื่อรุ่น', param: 'modelName' })
         const filters = [{ type: 'textField', name: `ชื่อ${this.tabActive.text}`, param: 'search', md: '12' }]
->>>>>>> master
         return filters
       },
     },
