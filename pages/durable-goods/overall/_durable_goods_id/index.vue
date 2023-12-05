@@ -23,7 +23,7 @@
             <InputDatePicker :value.sync="form.dateEntry" label="วันที่กรรมการเห็นถูกต้องครบถ้วน *" :rules="dateEntryRules" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="3">
-            <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate"/>
+            <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate" @change="setNumberAllEquipments"/>
           </v-col>
           <v-col :cols="12" :md="3">
             <InputDatePicker :value.sync="form.dateReceivedBefore" label="วันที่ได้มา (ก่อนโอน)" :disabled="!isCreate"/>
@@ -62,7 +62,7 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-container>
-                  <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="res => form.equipments[i].categoryForm = res.form" @changeMajor="onChangeMajor" @changeModel="onChangeModel">
+                  <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="res => form.equipments[i].categoryForm = res.form" @changeMajor="setNumberAllEquipments" @changeModel="onChangeModel">
                     <template #default>
                       <v-col :cols="12" :md="isCreate ? 6 : 9">
                         <v-text-field v-model="form.equipments[i].name" name="name" label="ชื่อครุภัณฑ์ *" :rules="nameRules" required/>
@@ -320,9 +320,6 @@
         }
         this.getEquipmentNumber(equipment)
       },
-      onChangeMajor ({ val }) {
-        this.setNumberAllEquipments()
-      },
       getCountBefore (equipment) {
         const index = this.form.equipments.findIndex(e => e === equipment)
         const before = this.form.equipments.slice(0, index)
@@ -334,9 +331,11 @@
           const quantity = equipment.quantity
           const mejorCategoryId = equipment.categoryForm?.majorCategoryId
           const count = this.getCountBefore(equipment)
-          if (ouId && quantity && mejorCategoryId) {
+          const inspectionDate = this.$fn.convertInspectionDate(this.form.inspectionDate)
+          if (ouId && quantity && mejorCategoryId && inspectionDate) {
             this.isNumberLoading = true
-            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query: { ouId, quantity, registrationType: equipment.registrationType, moneyType: equipment.moneyType, mejorCategoryId, count } })
+            const query = { ouId, quantity, registrationType: equipment.registrationType, moneyType: equipment.moneyType, mejorCategoryId, inspectionDate, count }
+            const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query })
             data?.forEach((number, i) => {
               equipment.detailList[i].number = number
             })

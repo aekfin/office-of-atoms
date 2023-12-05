@@ -60,6 +60,7 @@
       'date' (val) {
         this.dateFormatted = this.getDateFormatted(val)
         this.$emit('update:value', new Date(this.date))
+        this.$emit('change', new Date(this.date))
       },
       'value' (val) {
         this.date = this.parseValue(val)

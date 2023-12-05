@@ -15,6 +15,9 @@ const Fn = {
   convertStringToDate (date) {
     return date ? new Date(date) : ''
   },
+  convertInspectionDate (date) {
+    return moment(date).format('YYYY-MM-DD')
+  },
   displayDate (date) {
     const dateFormat = moment(date)
     return `${dateFormat.format('DD-MM')}-${dateFormat.year() + 543}`

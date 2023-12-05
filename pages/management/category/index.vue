@@ -37,6 +37,7 @@
             postApiPath: 'equipment/category/addMajorCategory',
             editApiPath: 'equipment/category/mejorCategory',
             deleteApiPath: 'equipment/category/delete-mejorCategory',
+            searchApiPath: 'equipment/category/mejorCategory/search',
           },
           {
             text: 'ประเภทพัสดุ',
@@ -46,6 +47,7 @@
             postApiPath: 'equipment/category/addSubCategory',
             editApiPath: 'equipment/category/subCategory',
             deleteApiPath: 'equipment/category/delete-subCategory',
+            searchApiPath: 'equipment/category/subCategory/search',
           },
           {
             text: 'รายการครุภัณฑ์',
@@ -55,6 +57,7 @@
             postApiPath: 'equipment/category/addType',
             editApiPath: 'equipment/category/type',
             deleteApiPath: 'equipment/category/delete-type',
+            searchApiPath: 'equipment/category/type/search',
           },
           {
             text: 'ยี่ห้อ',
@@ -64,6 +67,7 @@
             postApiPath: 'equipment/category/addBrand',
             editApiPath: 'equipment/category/Brand',
             deleteApiPath: 'equipment/category/delete-brand',
+            searchApiPath: 'equipment/category/brand/search',
           },
           {
             text: 'รุ่น',
@@ -73,6 +77,7 @@
             postApiPath: 'equipment/category/addModel',
             editApiPath: 'equipment/category/Model',
             deleteApiPath: 'equipment/category/delete-model',
+            searchApiPath: 'equipment/category/model/search',
           },
         ],
         editItem: null,
@@ -95,18 +100,18 @@
         ]
         if (this.tabIndex > 3) headers.push({ text: `ชื่อ${this.tabs[3].text}`, value: 'brand.name', width: '200px' })
         if (this.tabIndex > 2) headers.push({ text: `ชื่อ${this.tabs[2].text}`, value: 'type.name', width: '200px' })
-        if (this.tabIndex > 1) headers.push({ text: `ชื่อ${this.tabs[1].text}`, value: 'subCategory.name', width: '200px' })
-        if (this.tabIndex > 0) headers.push({ text: `ชื่อ${this.tabs[0].text}`, value: 'majorCategory.name', width: '200px' })
+        if (this.tabIndex > 1) headers.push({ text: `ชื่อ${this.tabs[1].text}`, value: 'subCategory.name', width: '240px' })
+        if (this.tabIndex > 0) headers.push({ text: `ชื่อ${this.tabs[0].text}`, value: 'majorCategory.name', width: '240px' })
         headers.push({ text: `เครื่องมือ`, value: 'action', width: '100px' })
         return headers
       },
       filters () {
-        const filters = []
         // const filters = [{ type: 'textField', name: 'ชื่อหมวดหมู่พัสดุ', param: 'majorCategoryName' }]
         // if (this.tabIndex > 0) filters.push({ type: 'textField', name: 'ชื่อประเภทพัสดุ', param: 'subCategoryName' })
         // if (this.tabIndex > 1) filters.push({ type: 'textField', name: 'ชื่อรายการครุภัณฑ์', param: 'typeName' })
         // if (this.tabIndex > 2) filters.push({ type: 'textField', name: 'ชื่อยี่ห้อ', param: 'brandName' })
         // if (this.tabIndex > 3) filters.push({ type: 'textField', name: 'ชื่อรุ่น', param: 'modelName' })
+        const filters = [{ type: 'textField', name: `ชื่อ${this.tabActive.text}`, param: 'search', md: '12' }]
         return filters
       },
     },
