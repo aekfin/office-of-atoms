@@ -22,7 +22,7 @@
             <v-form ref="form" v-model="valid" lazyValidation>
               <v-row>
                 <v-col :cols="12" :md="9">
-                  <v-text-field v-model="form.types[0].typeName" label="ชื่อวัสดุคงคลัง *" :rules="typeNameRule" required/>
+                  <v-text-field v-model="form.types[0].typeName" label="ชื่อประเภทวัสดุคงคลัง *" :rules="typeNameRule" required/>
                 </v-col>
                 <v-col :cols="12" :md="3">
                   <v-text-field v-model="form.types[0].minimumStock" class="minimum-stock" label="ขั้นต่ำ *" :rules="minimumStockRule" suffix="ชิ้น" type="number" min="0" required/>
