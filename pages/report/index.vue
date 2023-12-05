@@ -159,14 +159,14 @@
           {
             id: 4,
             name: 'ประเภทวัสดุคงคลัง',
-            param: 'typeParcel',
+            param: 'type',
             apiPath: 'parcel/getListParcelType',
           },
           {
             id: 5,
             type: 'textField',
             name: 'ชื่อวัสดุ',
-            param: 'nameParcel',
+            param: 'name',
           },
           {
             id: 6,
