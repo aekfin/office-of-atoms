@@ -35,7 +35,7 @@
           </div>
         </v-card-title>
         <v-card-text>
-          <v-form ref="form" class="mt-5">
+          <v-form ref="form" class="mt-5" @submit.prevent>
             <v-container class="pt-0 pb-0">
               <v-row>
                 <v-col v-for="filter in filters" :key="filter.param" class="pt-0 pb-0" :cols="12" :md="filter.md || 6">
