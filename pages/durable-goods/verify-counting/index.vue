@@ -27,6 +27,9 @@
     computed: {
       filters () {
         return [
+          { type: 'textField',param: 'number',name: 'เลขที่ครุภัณฑ์', },
+          { type: 'textField',param: 'name',name: 'ชื่อครุภัณฑ์', },
+          { type: 'textField',param: 'majorCategory',name: 'หมวดหมู่', },
           { param: 'ouId', name: 'กอง', itemText: 'ouName', apiPath: 'Orgchart/getOrganizations' },
           { param: 'departmentId', name: 'กลุ่ม', itemText: 'departmentName', apiPath: 'Orgchart/getDepartments' },
           { param: 'ownerId', name: 'บุคคล', itemText: this.$fn.getName, apiPath: 'user/listUsers' },

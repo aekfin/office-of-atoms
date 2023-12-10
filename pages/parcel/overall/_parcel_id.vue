@@ -5,7 +5,10 @@
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
-          <v-col :cols="12" :md="8">
+          <v-col :cols="12" :md="2">
+            <v-text-field v-model="form.year" label="ปีงบประมาณ *" :rules="yearRules" type="number"/>
+          </v-col>
+          <v-col :cols="12" :md="6">
             <SelectDropdown v-if="isCreate" :value.sync="form.projectId" itemValue="id" itemText="projectName" label="โครงการ *" apiPath="Project/getListProject" :rules="projectRules" required :disabled="!isCreate"/>
             <v-text-field v-else v-model="form.projectName" label="โครงการ *" disabled/>
           </v-col>
@@ -102,13 +105,16 @@
           v => !!v || 'โปรดเลือกวัสดุคงคลัง',
         ],
         priceRules: [
-          v => !!v || 'โปรดใส่ราคา',
+          v => !!v || 'โปรดใส่ราคา',v => v > 0 || 'ต้องมากกว่า 0'
         ],
         quantityRules: [
           v => !!v || 'โปรดใส่จำนวน',
         ],
         dateEntryRules: [
           v => !!v || 'โปรดใส่วันที่รับเข้า',
+        ],
+        yearRules: [
+          v => !!v || 'โปรดใส่งบประมาณ',
         ],
         formExpand: [0],
       }

@@ -1,6 +1,6 @@
 <template>
   <div id="parcel-page">
-    <PageHeader text="บริหารวัสดุคงคลัง" btnText="เพิ่มวัสดุคงคลัง" createRoute="/parcel/overall/create/" :total="total"/>
+    <PageHeader text="บริหารวัสดุคงคลัง" btnText="เพิ่มวัสดุคงคลัง" createRoute="/parcel/overall/create/" :total="total" :filters="filters"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.dateEntry="{ item }">
@@ -35,6 +35,18 @@
           { text: 'วันที่รับเข้า', value: 'dateEntry', width: '140px', align: 'center' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
+        filters: [
+          {
+            type: 'textField',
+            param: 'projectName',
+            name: 'โครงการ',
+          },
+          {
+            type:"textField",
+            param: 'parcelMasterName',
+            name: 'วัสดุคงคลัง'
+          }
+        ]
       }
     },
     watch: {

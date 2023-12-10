@@ -1,6 +1,6 @@
 <template>
   <div id="parcel-summary-page">
-    <PageHeader text="วัสดุคงคลังทั้งหมด" :total="total"/>
+    <PageHeader text="วัสดุคงคลังทั้งหมด" :total="total" :filters="filters"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.price || 0) }}</template>
@@ -32,6 +32,18 @@
         ],
         headers: [],
         items: [],
+        filters: [
+        {
+            type: 'textField',
+            param: 'name',
+            name: 'ชื่อวัสดุคงคลัง',
+          },
+          {
+            type: 'textField',
+            param: 'type',
+            name: 'ประเภท',
+          }
+        ]
       }
     },
     watch: {

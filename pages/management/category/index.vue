@@ -171,10 +171,19 @@
         try {
           const apiPath = this.tabActive.postApiPath
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath, data: { ...form, names: [form.name] }, query: this.$route.query })
-          await this.onFileImage({ id: data?.[0]?.id, uploadingFiles, removeFiles })
-          this.createDialog = false
-          await this.getList()
-          await this.$store.dispatch('snackbar', { text: `สร้าง${this.tabActive.text}สำเร็จ` })
+          
+          if (data?.status?.code == 400){
+            await this.$store.dispatch('snackbar', { text: `สร้าง${this.tabActive.text}ไม่สำเร็จ`})
+          }
+          else {
+            await this.onFileImage({ id: data?.[0]?.id, uploadingFiles, removeFiles })
+            this.createDialog = false
+            await this.getList()
+            await this.$store.dispatch('snackbar', { text: `สร้าง${this.tabActive.text}สำเร็จ` })
+          }
+
+
+         
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },

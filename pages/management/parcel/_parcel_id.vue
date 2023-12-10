@@ -14,7 +14,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col v-if="isCreate" :cols="12" :md="4">
+          <v-col  :cols="12" :md="4">
             <v-text-field v-model="form.price" label="ราคากลาง *" type="number" :rules="priceRules" required/>
           </v-col>
           <v-col :cols="12" :md="4">
@@ -61,13 +61,13 @@
         ],
         classifierRules: [
           v => !!v || 'โปรดใส่หน่วย',
-          v => v >= 1 || 'กรุณาใส่ค่ามากกว่า 0',
-          v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่า 0' ,
+          // v => v >= 1 || 'กรุณาใส่ค่ามากกว่า 0',
+          // v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่า 0' ,
         ],
         priceRules: [
           v => !!v || 'โปรดใส่ราคากลาง',
           v => v >= 1 || 'กรุณาใส่ค่ามากกว่า 0',
-          v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่า 0' ,
+          // v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่า 0' ,
 
         ],
         quantityRules: [

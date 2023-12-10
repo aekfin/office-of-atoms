@@ -171,7 +171,7 @@
                     </div>
                     <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
                     <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์"/>
-                    <v-text-field v-model="contact.email" class="email" label="E-Mail"/>
+                    <v-text-field v-model="contact.email" class="email" label="E-Mail" :rules="emailRules"/>
                     <v-btn v-if="form.committees.length > 1" icon @click="removeCommittee(i)">
                       <i class="material-icons">delete</i>
                     </v-btn>
@@ -346,6 +346,9 @@
         contactNameRules: [
           v => !!v || 'โปรดเลือกผู้ติดต่อ',
         ],
+        emailRules: [ 
+        v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'โปรดตรวจสอบ E-Mail'
+      ]
       }
     },
     computed: {

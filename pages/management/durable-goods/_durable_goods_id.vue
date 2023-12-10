@@ -1,6 +1,6 @@
 <template>
   <div id="summary-durable-goods-detail-page">
-    <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นครุภัณฑ์' : 'การแก้ไขค่าเริ่มต้นครุภัณฑ์'" hideTotal :btnText="isCreate ? '' : 'ครุภัณฑ์ย่อย'" :createRoute="createRoute" :logRoute="logRoute"/>
+    <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นครุภัณฑ์' : 'การแก้ไขค่าเริ่มต้นครุภัณฑ์'" hideTotal :btnText="isCreate ? '' : 'ครุภัณฑ์ย่อย'" :createRoute="createRoute" :logRoute="isCreate ? '':logRoute"/>
     <Loading v-if="isLoading"/>
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
@@ -13,7 +13,7 @@
           </v-col>
         </v-row>
 
-        <DurableGoodsOwner :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :disabled="!isCreate" @ouChange="onOuChange"/>
+        <DurableGoodsOwner :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId"  @ouChange="onOuChange"/>
 
         <div class="text-h5 mt-5 mb-2"><b>เลือกครุภัณฑ์</b></div>
         <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="({ form }) => categoryForm = form" @changeMajor="getEquipmentNumber">
@@ -297,8 +297,17 @@
             ...this.categoryForm,
             ...equipmentDetail,
           }
-          await this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/Edit', data: form })
-          await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })
+
+          
+          const { data } = await this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/Edit', data: form })
+          console.log('data : ',data);
+          if (data?.status?.code == 200){
+            await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })
+          }
+          else {
+            await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์ไม่สำเร็จ' })
+          }
+          
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
