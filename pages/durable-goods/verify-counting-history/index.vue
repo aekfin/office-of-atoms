@@ -41,7 +41,7 @@
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '128px', align: 'center' },
           { text: 'ชื่อครุภัณฑ์', value: 'name' },
-          { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
+          // { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
           { text: 'ผู้ครอบครอง', value: 'organization', width: '120px', align: 'center' },
           { text: 'สถานะการตรวจนับ', value: 'status_counting', width: '220px', align: 'center' },
           { text: 'ตรวจนับเมื่อ', value: 'checkDate', width: '160px', align: 'center' },

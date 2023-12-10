@@ -73,8 +73,13 @@
           return `${date}-${month}-${parseInt(year) + 543}`
         } return ''
       },
-      parseValue () {
-        return this.value ? this.$moment(this.value).format('YYYY-MM-DD') : ''
+      parseValue (val) {
+        if (val) {
+          const date = this.$moment(val).format('YYYY-MM-DD')
+          return date.includes('Invalid') ? '' : date
+        } else {
+          return ''
+        }
       },
       parseDate (dateFormatted) {
         if (dateFormatted) {

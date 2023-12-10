@@ -40,7 +40,7 @@
       </div>
       <ExportReportButton v-if="reportApiPath" :apiPath="reportApiPath" :name="reportName" :text="exportText"/>
     </div>
-    <v-dialog v-model="dialog" width="800" contentClass="filter-dialog">
+    <v-dialog v-model="dialog" width="1000" contentClass="filter-dialog">
       <v-card>
         <v-card-title>
           <div class="d-flex w-full justify-space-between">
@@ -49,7 +49,7 @@
           </div>
         </v-card-title>
         <v-card-text>
-          <v-form ref="form" class="mt-5">
+          <v-form ref="form" class="mt-5" @submit.prevent>
             <v-container class="pt-0 pb-0">
               <v-row>
                 <v-col v-for="filter in filters" :key="filter.param" class="pt-0 pb-0" :cols="12" :md="filter.md || 6">
@@ -131,7 +131,11 @@
         let val = this.$route.query?.[param]
         const isDate = param?.toLowerCase()?.includes('date')
         const convertArray = () => val.split(',').map(v => v)
-        return val ? isDate ? this.$fn.convertStringToDate(val) : val.includes(',') ? convertArray() : parseInt(val) || val : null
+        if (isDate) {
+          return val ? this.$fn.convertStringToDate(val) : ''
+        } else {
+          return val ? val.includes(',') ? convertArray() : parseInt(val) || val : null
+        }
       },
       setForm () {
         this.form = this.filters.reduce((form, filter) => ({ ...form, [filter.param]: this.setValue(filter.param) }), {})
