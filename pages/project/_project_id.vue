@@ -76,10 +76,10 @@
             <v-text-field v-model="form.budget" label="งบประมาณโครงการ *" type="number" :rules="budgetRules"/>
           </v-col>
           <v-col :cols="12" :lg="4" :md="6">
-            <SelectDropdown :value.sync="form.format" :items="formatList" itemValue="id" itemText="name" label="รูปแบบ *" :rules="formatRules"/>
+            <SelectDropdown :value.sync="form.format" :items="$store.state.projectFormatList" itemValue="id" itemText="name" label="รูปแบบ *" :rules="formatRules"/>
           </v-col>
           <v-col :cols="12" :lg="4" :md="6">
-            <SelectDropdown :value.sync="form.type" :items="typeList" itemValue="id" itemText="name" label="วีธี รูปแบบงาน *" :rules="contactPositionRules"/>
+            <SelectDropdown :value.sync="form.type" :items="$store.state.projectTypeList" itemValue="id" itemText="name" label="วีธี รูปแบบงาน *" :rules="contactPositionRules"/>
           </v-col>
         </v-row>
         <v-row>
@@ -271,26 +271,6 @@
           { id: 'กรรมการ', name: 'กรรมการ' },
           { id: 'กรรมการเลขานุการ', name: 'กรรมการเลขานุการ' },
           { id: 'ผู้ช่วยกรรมการและเลขานุการ', name: 'ผู้ช่วยกรรมการและเลขานุการ' },
-        ],
-        typeList: [
-          { id: 'e-Bidding', name: 'e-Bidding' },
-          { id: 'e-market', name: 'e-market' },
-          { id: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีคัดเลือก', name: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีคัดเลือก' },
-          { id: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีประกวดแบบ', name: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีประกวดแบบ' },
-          { id: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีประกาศเชิญชวนทั่วไป', name: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีประกาศเชิญชวนทั่วไป' },
-          { id: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีเฉพาะเจาะจง', name: 'งานจ้างออกแบบหรือควบคุมงานก่อสร้างโดยวิธีเฉพาะเจาะจง' },
-          { id: 'จ้างที่ปรึกษาโดยวิธีคัดเลือก', name: 'จ้างที่ปรึกษาโดยวิธีคัดเลือก' },
-          { id: 'จ้างที่ปรึกษาโดยวิธีประกาศเชิญชวนทั่วไป', name: 'จ้างที่ปรึกษาโดยวิธีประกาศเชิญชวนทั่วไป' },
-          { id: 'จ้างที่ปรึกษาโดยวิธีเฉพาะเจาะจง', name: 'จ้างที่ปรึกษาโดยวิธีเฉพาะเจาะจง' },
-          { id: 'วิธีคัดเลือก', name: 'วิธีคัดเลือก' },
-          { id: 'วิธีเฉพาะเจาะจง', name: 'วิธีเฉพาะเจาะจง' },
-          { id: 'วิธีเฉพาะเจาะจง(ข)', name: 'วิธีเฉพาะเจาะจง(ข)' },
-          { id: 'สอบราคา', name: 'สอบราคา' },
-        ],
-        formatList: [
-          { id: 'ซื้อ', name: 'ซื้อ' },
-          { id: 'จ้าง', name: 'จ้าง' },
-          { id: 'เช่า', name: 'เช่า' },
         ],
         yearRules: [
           v => !!v || 'โปรดใส่ปีงบประมาณ',
