@@ -3,7 +3,7 @@
     <template #item.selector="{ index }">
       <input v-model="selectList[index]" type="checkbox">
     </template>
-    <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
+    <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }} </template>
     <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
     <template #item.typeOfSource="{ item }">{{ sourceList[item.typeOfSource] || '-' }}</template>
     <template #item.majorCategory="{ item }">
@@ -40,6 +40,8 @@
         { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
         { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
         { text: 'ชื่อครุภัณฑ์', value: 'name' },
+        { text: 'เลขที่สินทรัพย์', value: 'assetNumber' },
+        { text: 'เลขที่สินทรัพย์ อว.', value: 'assetNumberAorWor' },
       ]
       if (this.isSale) headers.push({ text: 'ที่มา', value: 'typeOfSource', width: '140px', align: 'center' })
       headers.push({ text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' })
