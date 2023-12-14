@@ -43,9 +43,9 @@
             name: 'ชื่อวัสดุคงคลัง',
           },
           {
-            type:"textField",
-            param: 'type',
-            name: 'ประเภท'
+            name: 'ประเภท',
+            param: 'typeId',
+            apiPath: 'parcel/getListParcelType',
           }
         ]
       }

@@ -57,10 +57,27 @@
         filters: [
           { type: 'textField',param: 'number',name: 'เลขที่ครุภัณฑ์' },
           { type: 'textField',param: 'name',name: 'ชื่อครุภัณฑ์' },
-          { type: 'textField',param: 'majorCategory',name: 'หมวดหมู่' },
-          { type: 'textField',param: 'price',name: 'ราคากลาง' },
+          { 
+            name: 'หมวดหมู่',
+            param: 'majorCategoryId',
+            apiPath: 'equipment/category/getMejorCategorys', 
+          },
+          {
+            name: 'รายการครุภัณฑ์',
+            param: 'typeId',
+            apiPath: 'equipment/category/types',
+          },
+          { 
+            name: 'ยี่ห้อ',
+            param: 'brandId',
+            apiPath: 'equipment/category/brands',},
+
+          { 
+            name: 'รุ่น',
+            param: 'modelId',
+            apiPath: 'equipment/category/models'
+          },
           { type: 'textField',param: 'ouName',name: 'ผู้ครอบครอง' },
-          { type: 'textField',param: 'subEquipments',name: 'ครุภัณฑ์ย่อย' },
           { type: 'textField',param: 'status',name: 'สถานะ' }
         ]
 

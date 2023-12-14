@@ -77,11 +77,6 @@
             type: 'textField',
             param: 'name',
             name: 'ชื่อประเภท',
-          },
-          {
-            type:"textField",
-            param: 'minimumStock',
-            name: 'ขั้นต่ำ'
           }
         ]
       }
