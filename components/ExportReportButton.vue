@@ -19,10 +19,8 @@
     methods: {
       async onExportReport () {
         try {
-          const today = new Date()
           const query = { ...this.query, ...this.$route.query }
           delete query.pageNo
-          if (!query.year) query.year = today.getFullYear()
           const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query })
           const a = document.createElement('a')
           a.href = data

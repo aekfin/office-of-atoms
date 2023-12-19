@@ -19,7 +19,7 @@
             <v-textarea v-model="form.description" label="หมายเหตุ" :rows="4"/>
           </v-col>
           <v-col :cols="12" :md="4">
-            <SelectDropdown :value.sync="form.distribution_method" :items="distributionList" itemValue="id" itemText="name" label="วิธีการจำหน่าย *" :rules="distributionTypeRules"/>            
+            <SelectDropdown :value.sync="form.distribution_method" :items="$store.state.distributionList" itemValue="id" itemText="name" label="วิธีการจำหน่าย *" :rules="distributionTypeRules"/>            
           </v-col>
           <v-col :cols="12" :md="4">
             <v-text-field v-model="form.price" label="ราคาจำหน่าย" type="number" required/>
@@ -103,14 +103,6 @@
         ],
         yearRules: [
           v => !!v || 'โปรดเลือกปีงบประมาณ',
-        ],
-        distributionList: [
-          { id: 'บริจาค', name: 'บริจาค' },
-          { id: 'ขาย', name: 'ขาย' },
-          { id: 'สูญหาย', name: 'สูญหาย' },
-          { id: 'เสื่อมสภาพ', name: 'เสื่อมสภาพ' },
-          { id: 'ทำลาย', name: 'ทำลาย' },
-          { id: 'อื่นๆ', name: 'อื่นๆ' },
         ],
         numberQuery: {},
       }
