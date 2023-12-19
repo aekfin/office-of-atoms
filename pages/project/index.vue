@@ -55,6 +55,21 @@
             name: 'เลขที่โครงการ',
             param: 'projectNumber',
           },
+          {
+            type: 'textField',
+            name: 'ชื่อโครงการ',
+            param: 'projectName',
+          },
+          {
+            type: 'textField',
+            name: 'เลขที่สัญญา',
+            param: 'contractNumber',
+          },
+          {
+            type: 'textField',
+            name: 'ปีงบประมาณ',
+            param: 'year',
+          },
         ],
       }
     },

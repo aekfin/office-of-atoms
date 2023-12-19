@@ -105,7 +105,13 @@
       <h5 class="text-h5 mt-5"><b>ครุภัณฑ์ย่อย</b></h5>
       <v-container class="mt-2">
         <div v-for="(subEquipment, i) in subEquipments" :key="i" class="sub-equipment">
-          <h6 class="text-h6 mb-4"><b>ครุภัณฑ์ย่อยที่ {{ i + 1 }}.</b></h6>
+          <h6 class="text-h6 mb-4"><b>ครุภัณฑ์ย่อยที่ {{ i + 1 }}.</b>
+            <v-btn  color="error" icon @click.stop="onDelete(subEquipment)">
+            <i class="material-icons">delete</i>
+          </v-btn>
+          </h6>          
+          
+
           <v-row>
             <v-col :cols="12" :md="9">
               <v-text-field v-model="subEquipment.name" name="name" label="ชื่อครุภัณฑ์ย่อย *" :rules="nameRules" required/>
@@ -183,6 +189,17 @@
       this.getSubEquipment()
     },
     methods: {
+      async onDelete (item) {
+        try {
+          console.log("item : ",item)
+          console.log("item 1: ",this.subEquipments.length)
+          this.subEquipments.splice(this.subEquipments.indexOf(item), 1);
+          console.log("item 2: ",this.subEquipments.length)
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      },
       setSubEquipmentAutoFill () {
         this.subEquipments.forEach(subEquipment => {
           if (!subEquipment.assetNumber && this.equipment.assetNumber) subEquipment.assetNumber = this.equipment.assetNumber
@@ -234,6 +251,9 @@
           if (valid) {
             const creates = this.subEquipments.filter(equipment => !equipment.id)
             const edits = this.subEquipments.filter(equipment => equipment.id)
+
+            console.log('creates.length : ',creates.length);
+            console.log('edits.length : ',edits.length);
             if (creates.length) {
               const createData = { equipmentId: this.durableGoodsId, subEquipments: creates }
               await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/importSubEquipment', data: createData })
@@ -245,8 +265,9 @@
           }
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
-      },
+      }
     },
+    
   }
 </script>
 

@@ -41,10 +41,10 @@
                 <v-container>
                   <v-row>
                     <v-col :cols="12" :md="6">
-                      <v-text-field v-model="form.equipments[i].donator" label="ผู้บริจาค *" :rules="donatorRules" required :disabled="!isCreate"/>
+                      <v-text-field v-model="form.equipments[i].donator" label="ผู้บริจาค *" :rules="donatorRules" required />
                     </v-col>
                     <v-col :cols="12" :md="6">
-                      <SelectDropdown :value.sync="form.equipments[i].userId" label="ผู้รับผิดชอบ *" :itemText="$fn.getName" :rules="userRules" required :disabled="!isCreate"
+                      <SelectDropdown :value.sync="form.equipments[i].userId" label="ผู้รับผิดชอบ *" :itemText="$fn.getName" :rules="userRules" required 
                         :items="form.equipments[i].userList" apiPath="user/listUsers"/>
                     </v-col>
                   </v-row>

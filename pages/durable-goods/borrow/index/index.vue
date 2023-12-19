@@ -25,6 +25,22 @@
             name: 'ผู้ขอยืมครุภัณฑ์',
             param: 'projectNumber',
           },
+          {
+            type: 'textField',
+            name: 'ชื่อครุภัณฑ์',
+            param: 'equipmentName',
+          },
+          {
+            type: 'datePicker',
+            name: 'วันที่ยืม',
+            param: 'dateBorrow',
+          },
+          {
+            type: 'datePicker',
+            name: 'วันที่อนุมัติ',
+            param: 'dateApprove',
+          },
+          { type: 'textField',param: 'status',name: 'สถานะ' }
         ],
         
       }

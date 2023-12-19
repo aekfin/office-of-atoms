@@ -101,6 +101,7 @@
           },
           { type: 'textField',param: 'ouName',name: 'ผู้ครอบครอง' },
           { type: 'textField',param: 'status',name: 'สถานะ' }
+          
         ]
       }
     },
