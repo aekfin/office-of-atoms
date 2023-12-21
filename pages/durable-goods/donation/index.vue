@@ -52,8 +52,8 @@
           { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
         ],
         filters: [
-          { type: 'textField',param: 'number',name: 'เลขที่ครุภัณฑ์', },
-          { type: 'textField',param: 'name',name: 'ชื่อครุภัณฑ์', },
+          { type: 'textField',param: 'equipmentNumber',name: 'เลขที่ครุภัณฑ์', },
+          { type: 'textField',param: 'equipmentName',name: 'ชื่อครุภัณฑ์', },
           { 
             name: 'หมวดหมู่',
             param: 'majorCategoryId',
@@ -76,8 +76,13 @@
             param: 'modelId',
             apiPath: 'equipment/category/models'
           },
+          { 
+            type: 'textField',
+            param: 'price',
+            name: 'ราคากลาง'
+          },
           { type: 'textField',param: 'ouName',name: 'ผู้ครอบครอง' },
-          { type: 'textField',param: 'dateEntry',name: 'วันที่รับเข้า' },
+          { type: 'datePicker',param: 'dateEntry',name: 'วันที่รับเข้า' },
           { type: 'textField',param: 'status',name: 'สถานะ' }
         ]
 
