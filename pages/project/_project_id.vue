@@ -228,7 +228,7 @@
         manualMode: false,
         editMode: false,
         project: null,
-        year: '2563',
+        year: (new Date()).getFullYear() + 543,
         budgetStart: '0',
         budgetEnd: '100000',
         form: {
