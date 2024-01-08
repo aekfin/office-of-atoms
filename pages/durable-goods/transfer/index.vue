@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-transfer-detail-page">
-    <PageHeader text="การโอนย้ายครุภัณฑ์" btnText="เพิ่มการโอนย้ายครุภัณฑ์" createRoute="/durable-goods/transfer/create/" :total="total"/>
+    <PageHeader text="การโอนย้ายครุภัณฑ์" btnText="เพิ่มการโอนย้ายครุภัณฑ์" createRoute="/durable-goods/transfer/create/" :total="total" :filters="filters"/>
     <DurableGoodsTransferTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
     <Pagination/>
   </div>
@@ -19,6 +19,20 @@
         count: 0,
         total: 0,
         items: [],
+        filters: [
+          { type: 'textField',param: 'number',name: 'เลขที่ครุภัณฑ์', },
+          { type: 'textField',param: 'name',name: 'ชื่อครุภัณฑ์', },
+          {
+            name: 'ประเภท',
+            param: 'subCategoryId',
+            apiPath: 'equipment/category/getSubCategorys',
+          }, 
+          {
+            name: 'ครุภัณฑ์',
+            param: 'typeId',
+            apiPath: 'equipment/category/types',
+          },
+        ]
       }
     },
     watch: {

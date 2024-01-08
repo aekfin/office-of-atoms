@@ -7,12 +7,26 @@
         </b>
         <v-btn v-if="logRoute" elevation="2" outlined class="ml-3" color="grey" @click="logDialog = true">ประวัติการแก้ไข</v-btn>
       </h2>
-      <slot name="btn">
+      <!-- <slot name="btn" >
         <v-btn v-if="btnText" elevation="2" large color="success" @click="$emit('create')">
           <NLink v-if="createRoute" :to="createRoute" class="text-white">{{ btnText }}</NLink>
           <div v-else>{{ btnText }}</div>
         </v-btn>
-      </slot>
+      </slot> -->
+      <NLink v-if="createRoute" :to="createRoute" class="text-white">        
+        <slot name="btn" >
+          <v-btn v-if="btnText" elevation="2" large color="success" @click="$emit('create')">
+            {{ btnText }}
+          </v-btn>
+        </slot>
+      </NLink>
+      <div v-else><slot name="btn" >
+          <v-btn v-if="btnText" elevation="2" large color="success" @click="$emit('create')">
+            {{ btnText }}
+          </v-btn>
+        </slot>
+      </div>
+
     </div>
     <div v-if="!hideTotal" class="mt-4">ทั้งหมด {{ total || 0 }} {{ unit }}</div>
     <div v-if="filters.length" class="filter-wrapper mt-3">

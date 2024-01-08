@@ -227,7 +227,8 @@
         if (valid) this.$emit('reject', this.currentFlow, this.form)
       },
       countWithdrawRules (item) {
-        return this.showRemain ? [item.remain >= item.quantity || 'จำนวนวัสดุคงคลังไม่เพียงพอ'] : [v => !!v || `โปรดใส่จำนวน${this.viewMode ? 'จ่าย' : 'เบิก'}`]
+        return this.showRemain ? [item.remain >= item.quantity || 'จำนวนวัสดุคงคลังไม่เพียงพอ',v => v >= 1 || 'กรุณาใส่ค่ามากกว่า 0',
+          v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่า 0'] : [v => !!v || `โปรดใส่จำนวน${this.viewMode ? 'จ่าย' : 'เบิก'}`]
       },
     }
   }

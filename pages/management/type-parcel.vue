@@ -1,7 +1,9 @@
 <template>
   <div id="type-parcel-page">
-    <PageHeader text="ประเภทวัสดุคงคลัง" btnText="เพิ่มประเภท" unit="ประเภท" :total="total" @create="openCreateDialog"/>
-    <v-data-table :headers="typeHeaders" :items="items" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
+    <PageHeader text="ประเภทวัสดุคงคลัง" btnText="เพิ่มประเภท" unit="ประเภท" :total="total" :filters="filters" @create="openCreateDialog"/>
+    <v-data-table :headers="typeHeaders" :items="items" disableSort hideDefaultFooter class="elevation-1 mt-6" 
+    :loading="isLoading"  >
+      
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.minimumStock="{ item }">{{ item.minimumStock || 0 }} ชิ้น</template>
     </v-data-table>
@@ -25,7 +27,7 @@
                   <v-text-field v-model="form.types[0].typeName" label="ชื่อประเภทวัสดุคงคลัง *" :rules="typeNameRule" required/>
                 </v-col>
                 <v-col :cols="12" :md="3">
-                  <v-text-field v-model="form.types[0].minimumStock" class="minimum-stock" label="ขั้นต่ำ *" :rules="minimumStockRule" suffix="ชิ้น" type="number" min="0" required/>
+                  <v-text-field v-model="form.types[0].minimumStock" class="minimum-stock" label="ขั้นต่ำ *" :rules="minimumStockRule" suffix="ชิ้น" type="number"  :min="1" required />
                 </v-col>
               </v-row>
             </v-form>
@@ -53,6 +55,7 @@
         total: 0,
         count: 0,
         items: [],
+        search: '',
         typeHeaders: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ชื่อประเภท', value: 'name' },
@@ -67,7 +70,15 @@
         ],
         minimumStockRule: [
           v => !!v || v === 0 || 'โปรดใส่ขั้นต่ำสำหรับการแจ้งเตือน',
+          v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่าหรือเท่ากับ 0' 
         ],
+        filters: [
+          {
+            type: 'textField',
+            param: 'name',
+            name: 'ชื่อประเภท',
+          }
+        ]
       }
     },
     watch: {
@@ -95,10 +106,11 @@
           ]
         }
       },
+     
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListParcelType', query: this.$route.query, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListParcelType', query: { ...this.$route.query, pageSize: 10 }, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }

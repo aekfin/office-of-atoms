@@ -1,11 +1,13 @@
 <template>
   <div id="durable-goods-summary-page">
-    <PageHeader class="mb-6" text="ครุภัณฑ์ทั้งหมด" :total="total"/>
+    <PageHeader class="mb-6" text="ครุภัณฑ์ทั้งหมด" :total="total" :filters="filters"/>
     <v-btn v-if="selectorListObject.length" class="d-flex align-center mb-3" outlined elevation="2" color="black" @click="onExportQRCode">
       <i class="material-icons">qr_code_2</i>
       <div class="ml-1">QR Code ({{ selectorListObject.length }})</div>
     </v-btn>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1" :loading="isLoading">
+    <v-data-table :headers="headers" :items="items"  :itemsPerPage="20" 
+    disableSort hideDefaultFooter class="elevation-1" :loading="isLoading" >
+   
       <template #header.order>
         <div class="d-flex align-center">
           <i :key="refreshKey" class="material-icons pointer" @click="onSelectAll" v-html="isSelectAll ? 'check_box' : isIndeterminate ? 'indeterminate_check_box' : 'check_box_outline_blank'"/>
@@ -54,6 +56,7 @@
         count: 0,
         total: 0,
         items: [],
+    
         originalHeaders: [
           { text: 'ลำดับ', value: 'order', width: '120px', align: 'center' },
           { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
@@ -70,6 +73,36 @@
         isSelectAll: false,
         isIndeterminate: false,
         selectorListObject: [],
+        filters: [
+          { type: 'textField',param: 'number',name: 'เลขที่ครุภัณฑ์', },
+          { type: 'textField',param: 'name',name: 'ชื่อครุภัณฑ์', },
+          {
+            name: 'หมวดหมู่',
+            param: 'majorCategoryId',
+            apiPath: 'equipment/category/getMejorCategorys',
+          },
+          {
+            id: 10,
+            name: 'ประเภท',
+            param: 'subCategoryId',
+            apiPath: 'equipment/category/getSubCategorys',
+          },          
+          {
+            id: 12,
+            name: 'ยี่ห้อ',
+            param: 'brandId',
+            apiPath: 'equipment/category/brands',
+          },
+          {
+            id: 13,
+            name: 'รุ่น',
+            param: 'modelId',
+            apiPath: 'equipment/category/models',
+          },
+          { type: 'textField',param: 'ouName',name: 'ผู้ครอบครอง' },
+          { type: 'textField',param: 'status',name: 'สถานะ' }
+          
+        ]
       }
     },
     watch: {

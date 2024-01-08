@@ -47,7 +47,7 @@
         </div>
       </v-toolbar-title>
       <v-spacer/>
-      <v-btn icon @click="$router.push(parcelNotiCount ? `/parcel/request/${externalCount ? '' : 'department/'}` : 'durable-goods/request/')">
+      <v-btn :disabled="!notiCount" icon @click="$router.push(parcelNotiCount ? `/parcel/request/${externalCount ? '' : 'department/'}` : 'durable-goods/request/')">
         <v-badge overlap color="red" icon :content="notiCount" :value="!!notiCount">
           <i class="material-icons">notifications</i>
         </v-badge>

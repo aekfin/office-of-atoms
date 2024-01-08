@@ -95,7 +95,7 @@
             <v-textarea v-model="form.detailedWorkMoney" label="รายละเอียดงาน งวดงาน/เงิน"/>
           </v-col>
           <v-col :cols="12" :md="6">
-            <v-textarea v-model="form.detailedWork" label="รายละเอียดงานในแต่ล่ะงวด"/>
+            <v-textarea v-model="form.detailedWork" label="รายละเอียดงานในแต่ละงวด"/>
           </v-col>
         </v-row>
         <v-row class="mt-10 mb-5">
@@ -171,7 +171,7 @@
                     </div>
                     <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
                     <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์"/>
-                    <v-text-field v-model="contact.email" class="email" label="E-Mail"/>
+                    <v-text-field v-model="contact.email" class="email" label="E-Mail" :rules="emailRules"/>
                     <v-btn v-if="form.committees.length > 1" icon @click="removeCommittee(i)">
                       <i class="material-icons">delete</i>
                     </v-btn>
@@ -326,6 +326,9 @@
         contactNameRules: [
           v => !!v || 'โปรดเลือกผู้ติดต่อ',
         ],
+        emailRules: [ 
+        v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'โปรดตรวจสอบ E-Mail'
+      ]
       }
     },
     computed: {

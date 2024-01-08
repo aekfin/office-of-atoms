@@ -9,7 +9,7 @@
             <UploadImage class="mt-4" :image.sync="form.image"/>
           </v-col> -->
           <v-col :cols="12" :md="8">
-            <v-text-field v-model="form.companyNumber" name="code" label="รหัสผู้ขาย *" :rules="[codeRules, validCompanyNumber || 'รหัสผู้ขายซ้ำ']" required :loading="companyNumberLoading"
+            <v-text-field v-model="form.companyNumber" name="code" label="รหัสผู้ขาย *" :rules="codeRules" required :loading="companyNumberLoading"
               @blur="checkCompanyNumber"/>
           </v-col>
           <v-col :cols="12" :md="4">
@@ -120,7 +120,7 @@
           v => !!v || 'โปรดเลือกประเภทผู้ขาย',
         ],
         codeRules: [
-          v => !!v || 'โปรดใส่รหัสผู้ขาย'
+          v => v ? this.$fn.validCompanyNumber || 'รหัสผู้ขายซ้ำ' : 'โปรดใส่รหัสผู้ขาย'
         ],
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อผู้ขาย/บริษัท',

@@ -1,7 +1,9 @@
 <template>
   <div id="project-page">
     <PageHeader text="โครงการ" btnText="เพิ่มโครงการ" createRoute="/project/create/" :total="total" :filters="filters" unit="โครงการ"/>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter 
+    class="elevation-1 mt-6" :loading="isLoading"  >
+     
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.projectStartDate="{ item }">
         {{ $fn.displayDate(item.projectStartDate) }}
@@ -48,6 +50,26 @@
             name: 'ใกล้หมดระยะประกัน',
             param: 'expiringSoon',
           },
+          {
+            type: 'textField',
+            name: 'เลขที่โครงการ',
+            param: 'projectNumber',
+          },
+          {
+            type: 'textField',
+            name: 'ชื่อโครงการ',
+            param: 'projectName',
+          },
+          {
+            type: 'textField',
+            name: 'เลขที่สัญญา',
+            param: 'contractNumber',
+          },
+          {
+            type: 'textField',
+            name: 'ปีงบประมาณ',
+            param: 'year',
+          },
         ],
       }
     },
@@ -63,7 +85,10 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'Project/getListProject', query: { ...this.$route.query }, context: this })
+
+          console.log(this.$route.query);
+
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'Project/getListProject', query: { ...this.$route.query, pageSize: 10 }, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }

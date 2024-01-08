@@ -4,9 +4,9 @@
       <v-tab :to="{ path: '/durable-goods/borrow/' }">
         <div>ยืมครุภัณฑ์</div>
       </v-tab>
-      <v-tab :to="{ path: '/durable-goods/borrow/return/' }">
+      <!-- <v-tab :to="{ path: '/durable-goods/borrow/return/' }">
         <div>คืนครุภัณฑ์</div>
-      </v-tab>
+      </v-tab> -->
     </v-tabs>
     <NChild/>
   </div>

@@ -41,10 +41,10 @@
                 <v-container>
                   <v-row>
                     <v-col :cols="12" :md="6">
-                      <v-text-field v-model="form.equipments[i].donator" label="ผู้บริจาค *" :rules="donatorRules" required :disabled="!isCreate"/>
+                      <v-text-field v-model="form.equipments[i].donator" label="ผู้บริจาค *" :rules="donatorRules" required />
                     </v-col>
                     <v-col :cols="12" :md="6">
-                      <SelectDropdown :value.sync="form.equipments[i].userId" label="ผู้รับผิดชอบ *" :itemText="$fn.getName" :rules="userRules" required :disabled="!isCreate"
+                      <SelectDropdown :value.sync="form.equipments[i].userId" label="ผู้รับผิดชอบ *" :itemText="$fn.getName" :rules="userRules" required 
                         :items="form.equipments[i].userList" apiPath="user/listUsers"/>
                     </v-col>
                   </v-row>
@@ -193,13 +193,17 @@
           v => v ? `${v}`.length === 4 || 'ตัวอย่าง: 2566' : 'โปรดใส่ปี',
         ],
         deteriorationRules: [
-          v => !!v || v === 0 || 'โปรดใส่อัตราเสื่อมสภาพ',
+          v => !!v || 'โปรดใส่อัตราเสื่อมสภาพ',
+          v => v >= 1 || 'กรุณาใส่ค่ามากกว่า 0',
+          v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่า 0' ,
         ],
         classifierRules: [
           v => !!v || 'โปรดใส่หน่วย',
         ],
         priceRules: [
-          v => !!v || v === 0 || 'โปรดใส่ราคา',
+          v => !!v || 'โปรดใส่ราคา',
+          v => v >= 1 || 'กรุณาใส่ค่ามากกว่า 0',
+          v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่า 0' ,
         ],
         ouRules: [
           v => !!v || 'โปรดใส่กอง',

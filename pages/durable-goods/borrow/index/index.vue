@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-borrow-page">
-    <PageHeader text="การยืมครุภัณฑ์" btnText="เพิ่มการยืมครุภัณฑ์" createRoute="/durable-goods/borrow/create/" :total="total"/>
+    <PageHeader text="การยืมครุภัณฑ์"  :total="total" :filters="filters"/>
     <DurableGoodsBorrowTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
     <Pagination/>
   </div>
@@ -18,6 +18,31 @@
         count: 0,
         total: 0,
         items: [],
+        filters: [
+         
+          {
+            type: 'textField',
+            name: 'ผู้ขอยืมครุภัณฑ์',
+            param: 'projectNumber',
+          },
+          {
+            type: 'textField',
+            name: 'ชื่อครุภัณฑ์',
+            param: 'equipmentName',
+          },
+          {
+            type: 'datePicker',
+            name: 'วันที่ยืม',
+            param: 'dateBorrow',
+          },
+          {
+            type: 'datePicker',
+            name: 'วันที่อนุมัติ',
+            param: 'dateApprove',
+          },
+          { type: 'textField',param: 'status',name: 'สถานะ' }
+        ],
+        
       }
     },
     watch: {
