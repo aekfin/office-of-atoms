@@ -6,12 +6,15 @@
       <v-container>
         <v-row>
           <v-col :cols="12" :md="3">
+            <v-text-field v-model="form.year" label="ปีงบประมาณ *" :rules="yearRules" type="number"/>
+          </v-col>
+          <v-col :cols="12" :md="3">
             <InputDatePicker :value.sync="form.dateEntry" label="วันที่รับเข้า *" :rules="dateEntryRules" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="3">
             <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ/วันที่กรรมการเห็นถูกต้องครบถ้วน *" :rules="inspectionDateRules" required :disabled="!isCreate" @change="setNumberAllEquipments"/>
           </v-col>
-          <v-col :cols="12" :md="6">
+          <v-col :cols="12" :md="3">
             <v-text-field v-model="form.documentNumber" label="เลขที่เอกสาร" :disabled="!isCreate"/>
           </v-col>
         </v-row>

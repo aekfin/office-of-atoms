@@ -42,6 +42,8 @@
         items: [],
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
+          { text: 'เลขที่เอกสาร', value: 'equipmentDonation.documentNumber', width: '160px', align: 'center' },
+          { text: 'ชื่อผู้บริจาค', value: 'equipmentDonation.donator' },
           { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
           { text: 'ชื่อครุภัณฑ์', value: 'name' },
           { text: 'หมวดหมู่', value: 'majorCategory', width: '160px', align: 'center' },
@@ -69,8 +71,8 @@
           { 
             name: 'ยี่ห้อ',
             param: 'brandId',
-            apiPath: 'equipment/category/brands',},
-
+            apiPath: 'equipment/category/brands',
+          },
           { 
             name: 'รุ่น',
             param: 'modelId',
@@ -83,6 +85,8 @@
           },
           { type: 'textField',param: 'ouName',name: 'ผู้ครอบครอง' },
           { type: 'datePicker',param: 'dateEntry',name: 'วันที่รับเข้า' },
+          { type: 'number',param: 'yearMin',name: 'ปีงบประมาณเริ่มต้น' },
+          { type: 'number',param: 'yearMax',name: 'ปีงบประมาณสิ้นสุด' },
           { type: 'textField',param: 'status',name: 'สถานะ' }
         ]
 

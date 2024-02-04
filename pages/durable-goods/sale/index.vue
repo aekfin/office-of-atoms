@@ -38,6 +38,7 @@
         items: [],
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
+          { text: 'เลขที่เอกสาร', value: 'documentNumber', width: '160px', align: 'center' },
           { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
           { text: 'ชื่อครุภัณฑ์', value: 'name' },
           { text: 'หมวดหมู่', value: 'majorCategory', width: '160px', align: 'center' },

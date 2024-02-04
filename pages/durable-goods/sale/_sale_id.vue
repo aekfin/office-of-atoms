@@ -36,16 +36,24 @@
       <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการจำหน่าย` }}</b></h5>
       <v-container>
         <NumberDurableGood ref="numberDurableGood" :propNumber="propNumber" :propAssetNumber="propAssetNumber" :propAssetNumberAorWor="propAssetNumberAorWor" :disabled="!isCreate" @change="numberQuery = $event"/>
-        <v-row>
+        <!-- <v-row>
           <v-col :cols="12" :md="8">
             <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
               :query="numberQuery" :disabled="!isCreate" @select="onSelectDurableGoods"/>
             <v-text-field v-else-if="form.item" v-model="form.item.name" label="ครุภัณฑ์ *" disabled/>
           </v-col>
-        </v-row>
+        </v-row> -->
+        <WithdrawDurableGoodsTable3 v-if="isCreate" :items="saleItems3" :selectList3="selectList3" isSale/>
       </v-container>
+      
       <v-container v-if="isCreate">
         <WithdrawDurableGoodsTable :items="saleItems" :selectList="selectList" isSale/>
+      </v-container>
+
+   
+
+      <v-container v-if="isCreate">
+        <WithdrawDurableGoodsTable2 :items="saleItems2" :selectList2="selectList2" isSale/>
       </v-container>
 
       <AttachFileBtn class="mt-8" accept="*" :multiple="false"/>
@@ -69,6 +77,8 @@
       NumberDurableGood: () => import('~/components/NumberDurableGood.vue'),
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       WithdrawDurableGoodsTable: () => import('~/components/WithdrawDurableGoodsTable.vue'),
+      WithdrawDurableGoodsTable2: () => import('~/components/WithdrawDurableGoodsTable2.vue'),
+      WithdrawDurableGoodsTable3: () => import('~/components/WithdrawDurableGoodsTable3.vue'),
       AttachFileBtn: () => import('~/components/AttachFileBtn.vue'),
     },
     data () {
@@ -89,6 +99,10 @@
         isLoading: false,
         saleItems: [],
         selectList: [],
+        saleItems2: [],
+        selectList2: [],
+        saleItems3: [],
+        selectList3: [],
         datetimesaleRules: [
           v => !!v || `โปรดใส่วันที่จำหน่าย`,
         ],
@@ -127,8 +141,11 @@
       }
     },
     async mounted () {
-      if (this.isCreate) this.getWaitSale()
-      else await this.getData()
+      if (this.isCreate) {
+        this.getWaitSale() 
+        this.getWaitSaleByTypeOfSource()
+        this.statusAndDepartment()
+      }else await this.getData()
       this.setForm()
     },
     methods: {
@@ -147,7 +164,27 @@
         try {
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/wait-sale`, query: { ...this.$route.query, pageSize: 1000 } })
           this.saleItems = data.content
-          this.selectList = this.saleItems.map(item => true)
+          this.selectList = this.saleItems.map(item => false)
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      },
+      async getWaitSaleByTypeOfSource () {
+        try {
+          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/wait-sale?typeOfSource=REPAIR`, query: { ...this.$route.query, pageSize: 1000 } })
+          this.saleItems2 = data.content
+          this.selectList2 = this.saleItems2.map(item => false)
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      },
+      async statusAndDepartment () {
+        try {
+          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`, query: { ...this.$route.query, pageSize: 1000 } })
+          this.saleItems3 = data.content
+          this.selectList3 = this.saleItems3.map(item => false)
           return Promise.resolve()
         } catch (err) {
           return Promise.reject(err)
@@ -175,6 +212,14 @@
         if (this.saleItems.every(goods => goods.id !== item.id)) {
           this.saleItems.push(item)
           this.selectList.push(true)
+        }
+        if (this.saleItems2.every(goods => goods.id !== item.id)) {
+          this.saleItems2.push(item)
+          this.selectList2.push(true)
+        }
+        if (this.saleItems3.every(goods => goods.id !== item.id)) {
+          this.saleItems3.push(item)
+          this.selectList3.push(true)
         }
       },
       async onEdit () {

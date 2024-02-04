@@ -55,6 +55,7 @@
                 <v-col v-for="filter in filters" :key="filter.param" class="pt-0 pb-0" :cols="12" :md="filter.md || 6">
                   <template v-if="form">
                     <v-text-field v-if="filter.type === 'textField'" v-model="form[filter.param]" :label="filter.name"/>
+                    <v-text-field v-else-if="filter.type === 'number'" v-model="form[filter.param]" :label="filter.name" type="number"/>
                     <v-switch v-else-if="filter.type === 'switch'" v-model="form[filter.param]" :label="filter.name"/>
                     <div v-else-if="filter.type === 'space'"/>
                     <InputDatePicker v-else-if="filter.type === 'datePicker'" :value.sync="form[filter.param]" :label="filter.name"/>
