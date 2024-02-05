@@ -7,7 +7,7 @@
             <div class="text-2xl font-bold">ลืมรหัสผ่าน ?</div>
           </v-row>
           <v-row>
-            <v-text-field v-model="form.username" name="username" :rules="usernameRules" label="รหัสผู้ใช้งาน" required outlined/>
+            <v-text-field v-model="form.username" name="username" :rules="usernameRules" label="E-Mail ผู้ใช้งาน" required outlined/>
           </v-row>
           <v-row class="send-btn">
             <v-btn class="w-full" elevation="2" color="primary" x-large @click.stop="login">ส่งลิงค์ไปที่ E-Mail</v-btn>
