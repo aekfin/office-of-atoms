@@ -35,7 +35,7 @@
 
       <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการจำหน่าย` }}</b></h5>
       <v-container>
-        <NumberDurableGood ref="numberDurableGood" :propNumber="propNumber" :propAssetNumber="propAssetNumber" :propAssetNumberAorWor="propAssetNumberAorWor" :disabled="!isCreate" @change="numberQuery = $event"/>
+        <NumberDurableGood ref="numberDurableGood" :propNumber="propNumber" :propAssetNumber="propAssetNumber" :propAssetNumberAorWor="propAssetNumberAorWor" :disabled="!isCreate" @change="changeInput($event)"/>
         <!-- <v-row>
           <v-col :cols="12" :md="8">
             <SelectDropdown v-if="isCreate" :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
@@ -43,17 +43,17 @@
             <v-text-field v-else-if="form.item" v-model="form.item.name" label="ครุภัณฑ์ *" disabled/>
           </v-col>
         </v-row> -->
-        <WithdrawDurableGoodsTable3 v-if="isCreate" :items="saleItems3" :selectList3="selectList3" isSale/>
+        <WithdrawDurableGoodsTable3 v-if="isCreate" :items="saleItems3" :selectList3="selectList3" :List4="List4" isSale :query="numberQuery" />
       </v-container>
       
       <v-container v-if="isCreate">
-        <WithdrawDurableGoodsTable :items="saleItems" :selectList="selectList" isSale/>
+        <WithdrawDurableGoodsTable :items="saleItems" :selectList="selectList" :List4="List4" isSale/>
       </v-container>
 
    
 
       <v-container v-if="isCreate">
-        <WithdrawDurableGoodsTable2 :items="saleItems2" :selectList2="selectList2" isSale/>
+        <WithdrawDurableGoodsTable2 :items="saleItems2" :selectList2="selectList2" :List4="List4" isSale/>
       </v-container>
 
       <AttachFileBtn class="mt-8" accept="*" :multiple="false"/>
@@ -61,7 +61,7 @@
       <v-container class="mt-8">
         <v-row justify="end">
           <v-btn large plain @click="$router.push('/durable-goods/sale/')">ย้อนกลับ</v-btn>
-          <v-btn v-if="isCreate" class="ml-4" elevation="2" large color="success" :disabled="!selectList.filter(e => e).length" @click="onSubmit">{{ `จำหน่ายครุภัณฑ์` }}</v-btn>
+          <v-btn v-if="isCreate" class="ml-4" elevation="2" large color="success" :disabled="!List4.filter(e => e).length" @click="onSubmit">{{ `จำหน่ายครุภัณฑ์` }}</v-btn>
           <v-btn v-else class="ml-4" elevation="2" large color="success" @click="onEdit">{{ `บันทึก` }}</v-btn>
         </v-row>
       </v-container>
@@ -103,6 +103,7 @@
         selectList2: [],
         saleItems3: [],
         selectList3: [],
+        List4: [],
         datetimesaleRules: [
           v => !!v || `โปรดใส่วันที่จำหน่าย`,
         ],
@@ -144,7 +145,6 @@
       if (this.isCreate) {
         this.getWaitSale() 
         this.getWaitSaleByTypeOfSource()
-        this.statusAndDepartment()
       }else await this.getData()
       this.setForm()
     },
@@ -164,7 +164,7 @@
         try {
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/wait-sale`, query: { ...this.$route.query, pageSize: 1000 } })
           this.saleItems = data.content
-          this.selectList = this.saleItems.map(item => false)
+          // this.selectList = this.saleItems.map(item => false)
           return Promise.resolve()
         } catch (err) {
           return Promise.reject(err)
@@ -174,17 +174,22 @@
         try {
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/wait-sale?typeOfSource=REPAIR`, query: { ...this.$route.query, pageSize: 1000 } })
           this.saleItems2 = data.content
-          this.selectList2 = this.saleItems2.map(item => false)
+          // this.selectList2 = this.saleItems2.map(item => false)
           return Promise.resolve()
         } catch (err) {
           return Promise.reject(err)
         }
       },
-      async statusAndDepartment () {
+      async statusAndDepartment (event) {        
+        const entries = Object.entries(event);
+        let  strParams = '';
+        for (let index = 0; index < entries.length; index++) {          
+          strParams += '&' + (entries[index][0] + '=' + entries[index][1]);
+        }
         try {
-          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`, query: { ...this.$route.query, pageSize: 1000 } })
+          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`+strParams, query: { ...this.$route.query, pageSize: 1000 } })
           this.saleItems3 = data.content
-          this.selectList3 = this.saleItems3.map(item => false)
+          // this.selectList3 = this.saleItems3.map(item => false)
           return Promise.resolve()
         } catch (err) {
           return Promise.reject(err)
@@ -213,13 +218,22 @@
           this.saleItems.push(item)
           this.selectList.push(true)
         }
-        if (this.saleItems2.every(goods => goods.id !== item.id)) {
-          this.saleItems2.push(item)
-          this.selectList2.push(true)
-        }
-        if (this.saleItems3.every(goods => goods.id !== item.id)) {
-          this.saleItems3.push(item)
-          this.selectList3.push(true)
+      },
+      async changeSearch (val) {
+        try {
+          if (val) {
+            const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { equipmentNumber: this.number, isUnCheck: true } })
+            if (data.content && data.content.length) {
+              this.errorText = ''
+              this.onSave(data.content[0])
+            } else {
+              this.errorText = this.number
+            }
+            this.number = ''
+          }
+          return Promise.resolve()
+        } catch (err) {
+          return Promise.reject(err)
         }
       },
       async onEdit () {
@@ -242,7 +256,8 @@
           try {
             const form = { ...this.form }
             form.dateSale = this.$fn.convertDateToString(form.dateSale)
-            form.itemIds = this.saleItems.filter((goods, i) => this.selectList[i]).map(item => item.id)
+            // form.itemIds = this.saleItems.filter((goods, i) => this.selectList[i]).map(item => item.id) //bakup
+            form.itemIds = this.List4.map(item => item.id)
             const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/sale', data: form, query: this.$route.query })
             await this.$store.dispatch('snackbar', { text: 'จำหน่ายครุภัณฑ์สำเร็จ' })
             this.$router.push('/durable-goods/sale/')
@@ -250,6 +265,9 @@
           } catch (err) { return Promise.reject(err) }
         }
       },
+      async changeInput (event) {
+        this.statusAndDepartment(event)
+      }
     }
   }
 </script>
