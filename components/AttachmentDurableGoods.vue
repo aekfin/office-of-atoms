@@ -30,10 +30,12 @@
       }
     },
     mounted () {
+      console.log('this.isCreate : ' + this.isCreate);
       if (!this.isCreate) this.getAttachments()
     },
     methods: {
       async getAttachments () {
+        
         try {
           this.isLoading = true
           const { data: files } = await this.$store.dispatch('http', { apiPath: `equipment/getUploadFile/${this.$route.params.durable_goods_id}` })

@@ -1,4 +1,5 @@
 <template>
+  
   <div id="durable-goods-donation-page">
     <PageHeader text="การรับบริจาคครุภัณฑ์" btnText="เพิ่มการรับบริจาคครุภัณฑ์" createRoute="/durable-goods/donation/create/" :total="total" :filters="filters"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
@@ -21,10 +22,14 @@
       </template>
     </v-data-table>
     <Pagination/>
+    <div>
+    <button @click="exportToExcel">Export to Excel</button>
+  </div>
   </div>
 </template>
 
 <script>
+  import ExcelJS from 'exceljs';
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
@@ -106,14 +111,69 @@
           this.isLoading = true
           const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getEquipments/status', query: { ...this.$route.query, status: 'DONATE' }, context: this })
           this.isLoading = false
+
+          console.log('data ',data);
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
-      getActionIconList (item) {
+      async updateStatusToCancel (itemId) {
+        try {
+          console.log('itemId',itemId);
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'equipment/updateDisable?id='+itemId})
+          await this.getList()
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
+      async getActionIconList (item) {
         return [
           { type: 'link', icon: 'edit', action: `/durable-goods/donation/${item.id}/` },
           // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
+          { type: 'confirm', icon: 'delete', action: () => { this.updateStatusToCancel([item.id]) } },
         ]
+      },
+      async exportToExcel () {
+        console.log('itemIdssssssss');
+        // Create a new Excel workbook
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Sheet1');
+
+        // Sample data
+        // const data = [
+        //   ['Name', 'Age'],
+        //   ['John', 30],
+        //   ['Jane', 25],
+        //   ['Doe', 40]
+        // ];
+        const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getEquipments/status', query: { ...this.$route.query, status: 'DONATE' }, context: this })
+        console.log('data',data);
+        console.log('length',data.size);
+        const test = [
+          ['Name', 'Number', 'Price'],
+        ];
+        for(let i=0; i<data.size;i++){
+          test.push([data.content[i].name, data.content[i].number, data.content[i].price]);
+        }
+
+        console.log(test);
+
+        //  Add data to the worksheet
+        test.forEach(row => {
+          worksheet.addRow(row);
+        });
+
+        // Generate Excel file
+        const buffer = await workbook.xlsx.writeBuffer();
+
+        // Save the Excel file
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const filename = 'data.xlsx';
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
     }
   }
