@@ -40,7 +40,7 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/getRequestDetail', query: { id: this.$route.params.borrow_id } })
-          console.log('data : ',data);
+          
           this.item = data
           this.isLoading = false
           return Promise.resolve()

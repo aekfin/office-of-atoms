@@ -30,7 +30,6 @@
       }
     },
     mounted () {
-      console.log('this.isCreate : ' + this.isCreate);
       if (!this.isCreate) this.getAttachments()
     },
     methods: {

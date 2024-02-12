@@ -66,12 +66,14 @@
             param: 'majorCategoryId',
             apiPath: 'equipment/category/getMejorCategorys', 
           },
-          { type: 'textField',param: 'price',name: 'ราคากลาง', },
+          // { type: 'textField',param: 'price',name: 'ราคากลาง', },
           {
             id: 4,
             name: 'ประเภท',
-            param: 'typeId',
-            apiPath: 'parcel/getListParcelType',
+            param: 'subCategoryId',
+            apiPath: 'equipment/category/getSubCategorys',
+            // param: 'typeId',
+            // apiPath: 'parcel/getListParcelType',
           },
           { 
             name: 'ยี่ห้อ',
@@ -90,9 +92,9 @@
           },
           { type: 'textField',param: 'ouName',name: 'ผู้ครอบครอง' },
           { type: 'datePicker',param: 'dateEntry',name: 'วันที่รับเข้า' },
+          { type: 'textField',param: 'status',name: 'สถานะ' },
           { type: 'number',param: 'yearMin',name: 'ปีงบประมาณเริ่มต้น' },
-          { type: 'number',param: 'yearMax',name: 'ปีงบประมาณสิ้นสุด' },
-          { type: 'textField',param: 'status',name: 'สถานะ' }
+          { type: 'number',param: 'yearMax',name: 'ปีงบประมาณสิ้นสุด' }
         ]
 
       }
@@ -112,20 +114,18 @@
           const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getEquipments/status', query: { ...this.$route.query, status: 'DONATE' }, context: this })
           this.isLoading = false
 
-          console.log('data ',data);
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
       async updateStatusToCancel (itemId) {
         try {
-          console.log('itemId',itemId);
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'equipment/updateDisable?id='+itemId})
           await this.getList()
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
-      async getActionIconList (item) {
+      getActionIconList (item) {
         return [
           { type: 'link', icon: 'edit', action: `/durable-goods/donation/${item.id}/` },
           // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
@@ -133,32 +133,25 @@
         ]
       },
       async exportToExcel () {
-        console.log('itemIdssssssss');
         // Create a new Excel workbook
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Sheet1');
-
-        // Sample data
-        // const data = [
-        //   ['Name', 'Age'],
-        //   ['John', 30],
-        //   ['Jane', 25],
-        //   ['Doe', 40]
-        // ];
-        const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getEquipments/status', query: { ...this.$route.query, status: 'DONATE' }, context: this })
-        console.log('data',data);
-        console.log('length',data.size);
-        const test = [
-          ['Name', 'Number', 'Price'],
+        this.isLoading = true
+        const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/getEquipments/status', query: { ...this.$route.query, status: 'DONATE', disable: '99' }, context: this })
+        
+        const dataExport = [
+          ['ลำดับ', 'เลขที่เอกสาร', 'ชื่อผู้บริจาค', 'เลขที่ครุภัณฑ์', 'ชื่อครุภัณฑ์', 'ราคากลาง', 'ผู้ครอบครอง',  'วันที่รับเข้า'],
         ];
-        for(let i=0; i<data.size;i++){
-          test.push([data.content[i].name, data.content[i].number, data.content[i].price]);
+        for(let i=0; i<data.content.length;i++){
+          dataExport.push([(i+1), data.content[i].equipmentDonation.documentNumber
+          , data.content[i].equipmentDonation.donator, data.content[i].number, data.content[i].name, data.content[i].price, data.content[i].organization.ouName
+          , data.content[i].dateEntry]);
         }
 
-        console.log(test);
+        
 
         //  Add data to the worksheet
-        test.forEach(row => {
+        dataExport.forEach(row => {
           worksheet.addRow(row);
         });
 
@@ -167,13 +160,14 @@
 
         // Save the Excel file
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const filename = 'data.xlsx';
+        const filename = 'dataExport.xlsx';
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
         link.download = filename;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        this.isLoading = false
       }
     }
   }
