@@ -5,7 +5,7 @@
       <h5 class="text-h5 mt-2 mb-4"><b>รูปครุภัณฑ์</b></h5>
       <AttachFileBtn :value.sync="uploadingImageFiles" :attachments="imageFiles" btnLabel="แนบรูปเพิ่มเติม" accept="image/gif, image/jpeg, image/png, image/webp" :limit="2" showImage :multiple="false" @removeAttachment="onRemoveFile"/>
       <h5 class="text-h5 mt-10 mb-4"><b>เอกสารครุภัณฑ์</b></h5>
-      <AttachFileBtn :value.sync="uploadingFiles" :attachments="files" accept="*" :limit="2" :multiple="false" @removeAttachment="onRemoveFile"/>
+      <AttachFileBtn :value.sync="uploadingFiles" :attachments="files" accept=".xlsx, .txt, .log, .doc, .docx, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, .pdf, application/pdf" :limit="2" :multiple="false" @removeAttachment="onRemoveFile"/>
     </v-container>
   </div>
 </template>
@@ -58,8 +58,8 @@
       },
       async deleteFiles () {
         try {
-          console.log(this.removeFiles)
-          await Promise.all(this.removeFiles.map(file => this.$axios({ method: 'get', url: `${file}/delete`.replace('/frs/webservice', '') })))
+
+          await Promise.all(this.removeFiles.map(file => this.$axios({ method: 'delete', url: `${file}/delete`.replace('/frs/webservice', '') })))
           this.removeFiles = []
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }

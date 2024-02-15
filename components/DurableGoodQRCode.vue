@@ -19,7 +19,9 @@
               <img ref="imageQRCode" :src="qrcode" alt="qr_code">
             </div>
           </template>
+          <div class="centered-text"><b>{{ `${equipment.number}` }}</b></div>
         </v-card-text>
+        
       </v-card>
     </v-dialog>
   </div>
@@ -64,5 +66,9 @@
   }
 
   .durable-good-qr-code-dialog {
+  }
+
+  .centered-text {
+    text-align: center; 
   }
 </style>

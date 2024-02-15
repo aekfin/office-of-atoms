@@ -86,7 +86,8 @@
         return URL.createObjectURL(file)
       },
       getFileUrl (url) {
-        const domain = process.env.NODE_ENV === 'development' ? 'http://178.128.99.60:8081' : `${location.origin}:8081`
+        // const domain = process.env.NODE_ENV === 'development' ? 'http://178.128.99.60:8081' : `${location.origin}:8081`
+        const domain = process.env.NODE_ENV === 'development' ? 'http://localhost:8081' : `${location.origin}:8081`
         return `${domain}${url}`
       },
       onChange (e) {

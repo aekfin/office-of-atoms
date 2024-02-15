@@ -191,10 +191,7 @@
     methods: {
       async onDelete (item) {
         try {
-          console.log("item : ",item)
-          console.log("item 1: ",this.subEquipments.length)
           this.subEquipments.splice(this.subEquipments.indexOf(item), 1);
-          console.log("item 2: ",this.subEquipments.length)
           return Promise.resolve()
         } catch (err) {
           return Promise.reject(err)
@@ -252,8 +249,6 @@
             const creates = this.subEquipments.filter(equipment => !equipment.id)
             const edits = this.subEquipments.filter(equipment => equipment.id)
 
-            console.log('creates.length : ',creates.length);
-            console.log('edits.length : ',edits.length);
             if (creates.length) {
               const createData = { equipmentId: this.durableGoodsId, subEquipments: creates }
               await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/importSubEquipment', data: createData })

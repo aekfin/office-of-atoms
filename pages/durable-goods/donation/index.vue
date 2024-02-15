@@ -1,7 +1,9 @@
 <template>
   
   <div id="durable-goods-donation-page">
-    <PageHeader text="การรับบริจาคครุภัณฑ์" btnText="เพิ่มการรับบริจาคครุภัณฑ์" createRoute="/durable-goods/donation/create/" :total="total" :filters="filters"/>
+    <PageHeader text="การรับบริจาคครุภัณฑ์" btnText="เพิ่มการรับบริจาคครุภัณฑ์" createRoute="/durable-goods/donation/create/" :total="total" :filters="filters"
+    reportApiPath="report/cancelDonate" reportName="รายงานยกเลิกการรับบริจาค" exportText="รายงานยกเลิกการรับบริจาค" :reportQuery="reportQuery"/>
+    
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
@@ -22,9 +24,9 @@
       </template>
     </v-data-table>
     <Pagination/>
-    <div>
+    <!-- <div>
     <button @click="exportToExcel">Export to Excel</button>
-  </div>
+  </div> -->
   </div>
 </template>
 
@@ -99,6 +101,11 @@
 
       }
     },
+    computed: {
+      reportQuery () {
+        return { status: 'DONATE', disable: '99' }
+      },
+    },
     watch: {
       '$route.query' () {
         this.getList()
@@ -132,43 +139,43 @@
           { type: 'confirm', icon: 'delete', action: () => { this.updateStatusToCancel([item.id]) } },
         ]
       },
-      async exportToExcel () {
-        // Create a new Excel workbook
-        const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet('Sheet1');
-        this.isLoading = true
-        const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/getEquipments/status', query: { ...this.$route.query, status: 'DONATE', disable: '99' }, context: this })
+      // async exportToExcel () {
+      //   // Create a new Excel workbook
+      //   const workbook = new ExcelJS.Workbook();
+      //   const worksheet = workbook.addWorksheet('Sheet1');
+      //   this.isLoading = true
+      //   const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/getEquipments/status', query: { ...this.$route.query, status: 'DONATE', disable: '99' }, context: this })
         
-        const dataExport = [
-          ['ลำดับ', 'เลขที่เอกสาร', 'ชื่อผู้บริจาค', 'เลขที่ครุภัณฑ์', 'ชื่อครุภัณฑ์', 'ราคากลาง', 'ผู้ครอบครอง',  'วันที่รับเข้า'],
-        ];
-        for(let i=0; i<data.content.length;i++){
-          dataExport.push([(i+1), data.content[i].equipmentDonation.documentNumber
-          , data.content[i].equipmentDonation.donator, data.content[i].number, data.content[i].name, data.content[i].price, data.content[i].organization.ouName
-          , data.content[i].dateEntry]);
-        }
+      //   const dataExport = [
+      //     ['ลำดับ', 'เลขที่เอกสาร', 'ชื่อผู้บริจาค', 'เลขที่ครุภัณฑ์', 'ชื่อครุภัณฑ์', 'ราคากลาง', 'ผู้ครอบครอง',  'วันที่รับเข้า'],
+      //   ];
+      //   for(let i=0; i<data.content.length;i++){
+      //     dataExport.push([(i+1), data.content[i].equipmentDonation.documentNumber
+      //     , data.content[i].equipmentDonation.donator, data.content[i].number, data.content[i].name, data.content[i].price, data.content[i].organization.ouName
+      //     , data.content[i].dateEntry]);
+      //   }
 
         
 
-        //  Add data to the worksheet
-        dataExport.forEach(row => {
-          worksheet.addRow(row);
-        });
+      //   //  Add data to the worksheet
+      //   dataExport.forEach(row => {
+      //     worksheet.addRow(row);
+      //   });
 
-        // Generate Excel file
-        const buffer = await workbook.xlsx.writeBuffer();
+      //   // Generate Excel file
+      //   const buffer = await workbook.xlsx.writeBuffer();
 
-        // Save the Excel file
-        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const filename = 'dataExport.xlsx';
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        this.isLoading = false
-      }
+      //   // Save the Excel file
+      //   const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      //   const filename = 'dataExport.xlsx';
+      //   const link = document.createElement('a');
+      //   link.href = window.URL.createObjectURL(blob);
+      //   link.download = filename;
+      //   document.body.appendChild(link);
+      //   link.click();
+      //   document.body.removeChild(link);
+      //   this.isLoading = false
+      // }
     }
   }
 </script>

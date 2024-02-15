@@ -38,7 +38,7 @@
           </v-btn>
         </v-badge>
       </div>
-      <ExportReportButton v-if="reportApiPath" :apiPath="reportApiPath" :name="reportName" :text="exportText"/>
+      <ExportReportButton v-if="reportApiPath" :apiPath="reportApiPath" :name="reportName" :text="exportText" :query="reportQuery"/>
     </div>
     <v-dialog v-model="dialog" width="1000" contentClass="filter-dialog">
       <v-card>
@@ -99,6 +99,7 @@
       reportName: { type: String, default: 'รายงาน' },
       exportText: { type: String },
       logRoute: { type: Object },
+      reportQuery: { type: Object, default: () => {} },
     },
     data () {
       return {
