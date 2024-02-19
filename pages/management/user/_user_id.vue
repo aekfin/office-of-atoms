@@ -223,7 +223,6 @@
               delete form.departmentId
             }
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
-            console.log("data : ",data);
             if(data.code == '200'){
               await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างบุคลากรสำเร็จ' : 'แก้ไขบุคลากรสำเร็จ' })
             }else{

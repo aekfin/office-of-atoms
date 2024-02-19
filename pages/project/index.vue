@@ -86,8 +86,6 @@
         try {
           this.isLoading = true
 
-          console.log(this.$route.query);
-
           const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'Project/getListProject', query: { ...this.$route.query, pageSize: 10 }, context: this })
           this.isLoading = false
           return Promise.resolve(data)

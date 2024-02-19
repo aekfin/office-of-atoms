@@ -300,7 +300,6 @@
 
           
           const { data } = await this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/Edit', data: form })
-          console.log('data : ',data);
           if (data?.status?.code == 200){
             await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })
           }

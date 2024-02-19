@@ -50,7 +50,12 @@
     },
     computed: {
       filters () {
-        return []
+        return [
+          { type: 'textField',param: 'equipmentName',name: 'ชื่อครุภัณฑ์', },
+          { type: 'datePicker',param: 'checkDate',name: 'วันที่ตรวจนับ' },
+          { param: 'ouId', name: 'กอง', itemText: 'ouName', apiPath: 'Orgchart/getOrganizations' },
+          { param: 'departmentId', name: 'กลุ่ม', itemText: 'departmentName', apiPath: 'Orgchart/getDepartments' },
+        ]
       },
     },
     watch: {
@@ -66,7 +71,7 @@
         try {
           this.isLoading = true
           const apiPath = `equipment/getListHistoryCheckStock/`
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath, query: { ...this.$route.query, isCheck: true }, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
