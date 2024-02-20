@@ -45,11 +45,6 @@
         ],
         items: [],
         filters: [
-          // {
-          //   type: 'switch',
-          //   name: 'ใกล้หมดระยะประกัน',
-          //   param: 'expiringSoon',
-          // },
           {
             type: 'textField',
             name: 'เลขที่โครงการ',
@@ -86,7 +81,7 @@
         try {
           this.isLoading = true
 
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'Project/getListProject', query: { ...this.$route.query, pageSize: 10, expiringSoon: false }, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'Project/getListProject', query: { ...this.$route.query, pageSize: 10, expiringSoon: true }, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }

@@ -131,6 +131,10 @@ export default () => ({
       to: '/project/'
     },
     {
+      title: 'โครงการที่ใกล้หมดระยะประกัน',
+      to: '/project2/'
+    },
+    {
       title: 'ตรวจนับครุภัณฑ์',
       to: '/durable-goods/counting/',
       counting: true,
