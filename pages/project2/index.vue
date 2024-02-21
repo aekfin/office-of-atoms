@@ -45,11 +45,11 @@
         ],
         items: [],
         filters: [
-          {
-            type: 'textField',
-            name: 'เลขที่โครงการ',
-            param: 'projectNumber',
-          },
+          // {
+          //   type: 'textField',
+          //   name: 'เลขที่โครงการ',
+          //   param: 'projectNumber',
+          // },
           {
             type: 'textField',
             name: 'ชื่อโครงการ',
@@ -81,7 +81,7 @@
         try {
           this.isLoading = true
 
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'Project/getListProject', query: { ...this.$route.query, pageSize: 10, expiringSoon: true }, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'Project/getListProject', query: { ...this.$route.query, pageSize: 10, expiringSoon: true,depositRefunds: false}, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
@@ -99,7 +99,7 @@
       },
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'edit', action: `/project/${item.id}/` },
+          { type: 'link', icon: 'edit', action: `/project2/${item.id}/` },
           // { type: 'confirm', icon: 'delete', action: () => { this.removeProject(item) } },
         ]
       }

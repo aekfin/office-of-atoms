@@ -86,7 +86,7 @@
         try {
           this.isLoading = true
 
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'Project/getListProject', query: { ...this.$route.query, pageSize: 10, expiringSoon: false,depositRefunds: false }, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'Project/getListProject', query: { ...this.$route.query, pageSize: 10, depositRefunds: true }, context: this })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
@@ -104,7 +104,7 @@
       },
       getActionIconList (item) {
         return [
-          { type: 'link', icon: 'edit', action: `/project/${item.id}/` },
+          { type: 'link', icon: 'edit', action: `/project3/${item.id}/` },
           // { type: 'confirm', icon: 'delete', action: () => { this.removeProject(item) } },
         ]
       }

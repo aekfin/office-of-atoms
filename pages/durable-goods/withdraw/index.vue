@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-withdraw-page">
-    <PageHeader text="การเบิกครุภัณฑ์" btnText="เพิ่มการเบิกครุภัณฑ์" createRoute="/durable-goods/withdraw/create/" :total="total"/>
+    <PageHeader text="การเบิกครุภัณฑ์" btnText="เพิ่มการเบิกครุภัณฑ์" createRoute="/durable-goods/withdraw/create/" :total="total" :filters="filters"/>
     <DurableGoodsWithdrawTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
     <Pagination/>
   </div>
@@ -19,6 +19,14 @@
         count: 0,
         total: 0,
         items: [],
+        filters: [
+          { type: 'textField',param: 'equipmentName',name: 'ครุภัณฑ์', },
+          { type: 'textField',param: 'firstName',name: 'ผู้ขอเบิกครุภัณฑ์', },
+          { type: 'textField',param: 'ouName',name: 'ผู้ครอบครอง', },
+          { type: 'textField',param: 'status',name: 'สถานะการเบิก', },
+          { type: 'datePicker',param: 'dateBorrow',name: 'วันที่เบิก' },
+          { type: 'datePicker',param: 'dateApprove',name: 'วันที่อนุมัติ' },
+        ]
       }
     },
     watch: {
