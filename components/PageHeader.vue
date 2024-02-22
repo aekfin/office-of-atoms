@@ -38,7 +38,11 @@
           </v-btn>
         </v-badge>
       </div>
-      <ExportReportButton v-if="reportApiPath" :apiPath="reportApiPath" :name="reportName" :text="exportText" :query="reportQuery"/>
+      <div class="export-report-button">
+        <ExportReportButton v-if="reportApiPath1" :apiPath="reportApiPath1" :name="reportName1" :text="exportText1" :query="reportQuery"/>
+        <ExportReportButton v-if="reportApiPath2" :apiPath="reportApiPath2" :name="reportName2" :text="exportText2" :query="reportQuery"/>
+        <ExportReportButton v-if="reportApiPath" :apiPath="reportApiPath" :name="reportName" :text="exportText" :query="reportQuery"/>
+      </div>
     </div>
     <v-dialog v-model="dialog" width="1000" contentClass="filter-dialog">
       <v-card>
@@ -98,6 +102,12 @@
       reportApiPath: { type: String, default: '' },
       reportName: { type: String, default: 'รายงาน' },
       exportText: { type: String },
+      reportApiPath1: { type: String, default: '' },
+      reportName1: { type: String, default: 'รายงาน' },
+      exportText1: { type: String },
+      reportApiPath2: { type: String, default: '' },
+      reportName2: { type: String, default: 'รายงาน' },
+      exportText2: { type: String },
       logRoute: { type: Object },
       reportQuery: { type: Object, default: () => {} },
     },

@@ -6,6 +6,9 @@
       
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.minimumStock="{ item }">{{ item.minimumStock || 0 }} ชิ้น</template>
+      <template #item.action="{ item }">
+        <ActionIconList :list="getActionIconList(item)"/>
+      </template>
     </v-data-table>
     <Pagination/>
 
@@ -60,6 +63,7 @@
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ชื่อประเภท', value: 'name' },
           { text: 'ขั้นต่ำ', value: 'minimumStock', width: '100px', align: 'center' },
+          { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
         ],
         createDialog: false,
         errorDialog: false,
@@ -151,6 +155,12 @@
             return Promise.reject(err)
           }
         }
+      },
+      getActionIconList (item) {
+        return [
+          // { type: 'link', icon: 'edit', action: `/durable-goods/overall/${item.id}/` },
+          { type: 'link', icon: 'edit', action: () => { console.log('Confirm') } },
+        ]
       },
     }
   }

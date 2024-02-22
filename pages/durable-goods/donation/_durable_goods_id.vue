@@ -354,6 +354,7 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/getEquipments/status/${this.$route.params.durable_goods_id}` })
+          console.log('getEquipments/status ',data);
           this.form = {
             ...data,
             equipments: [
@@ -433,6 +434,7 @@
           const equipmentDetail = equipment?.detailList?.[0] || {}
           const categoryForm = equipment?.categoryForm || {}
           const form = { ...equipment, ...equipmentDetail, ...categoryForm }
+          console.log('form edit',form);
           await this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/Edit', data: form })
           if (this.$refs.attachmentDurableGoods) await this.$refs.attachmentDurableGoods.upload()
           await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })

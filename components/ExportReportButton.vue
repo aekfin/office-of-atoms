@@ -39,7 +39,7 @@
 <style lang="scss">
   .export-report-button {
     display: flex;
-
+    padding-left: 1%;
     .v-btn {
       text-transform: none;
     }
