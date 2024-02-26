@@ -133,49 +133,13 @@
         } catch (err) { return Promise.reject(err) }
       },
       getActionIconList (item) {
+        console.log('item item itemitem ',item);
         return [
           { type: 'link', icon: 'edit', action: `/durable-goods/donation/${item.id}/` },
           // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
           { type: 'confirm', icon: 'delete', action: () => { this.updateStatusToCancel([item.id]) } },
         ]
       },
-      // async exportToExcel () {
-      //   // Create a new Excel workbook
-      //   const workbook = new ExcelJS.Workbook();
-      //   const worksheet = workbook.addWorksheet('Sheet1');
-      //   this.isLoading = true
-      //   const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/getEquipments/status', query: { ...this.$route.query, status: 'DONATE', disable: '99' }, context: this })
-        
-      //   const dataExport = [
-      //     ['ลำดับ', 'เลขที่เอกสาร', 'ชื่อผู้บริจาค', 'เลขที่ครุภัณฑ์', 'ชื่อครุภัณฑ์', 'ราคากลาง', 'ผู้ครอบครอง',  'วันที่รับเข้า'],
-      //   ];
-      //   for(let i=0; i<data.content.length;i++){
-      //     dataExport.push([(i+1), data.content[i].equipmentDonation.documentNumber
-      //     , data.content[i].equipmentDonation.donator, data.content[i].number, data.content[i].name, data.content[i].price, data.content[i].organization.ouName
-      //     , data.content[i].dateEntry]);
-      //   }
-
-        
-
-      //   //  Add data to the worksheet
-      //   dataExport.forEach(row => {
-      //     worksheet.addRow(row);
-      //   });
-
-      //   // Generate Excel file
-      //   const buffer = await workbook.xlsx.writeBuffer();
-
-      //   // Save the Excel file
-      //   const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      //   const filename = 'dataExport.xlsx';
-      //   const link = document.createElement('a');
-      //   link.href = window.URL.createObjectURL(blob);
-      //   link.download = filename;
-      //   document.body.appendChild(link);
-      //   link.click();
-      //   document.body.removeChild(link);
-      //   this.isLoading = false
-      // }
     }
   }
 </script>

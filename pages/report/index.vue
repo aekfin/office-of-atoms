@@ -11,19 +11,34 @@
       <div class="mt-5">
         <PageHeader text="" hideTotal :filters="selectedFilters"/>
       </div>
-      <div class="mt-10">
+      <div class="mt-10 report-button">
+        <template>
+          <div>
+            <v-btn color="secondary" outlined elevation="2" @click="onDisplayTable">
+              <slot>
+                <div>แสดงข้อมูล</div>
+              </slot>
+            </v-btn>
+          </div>
+        </template>
         <ExportReportButton v-if="selectedReport" :apiPath="selectedReport.apiPath" :name="selectedReport.name"/>
+      </div>
+      <div class="mt-10">
+        <ReportTable v-if="selectedReport" :columnList="columnList" :valueList="valueList" :showTable="showTable"/>
       </div>
     </v-container>
   </div>
 </template>
 
 <script>
+import ReportTable from '~/components/ReportTable.vue'
+
   export default {
     components: {
-      PageHeader: () => import('~/components/PageHeader.vue'),
-      ExportReportButton: () => import('~/components/ExportReportButton.vue'),
-    },
+    PageHeader: () => import('~/components/PageHeader.vue'),
+    ExportReportButton: () => import('~/components/ExportReportButton.vue'),
+    ReportTable: () => import('~/components/ReportTable.vue'),
+},
     data () {
       return {
         group: 0,
@@ -37,6 +52,9 @@
           { id: 3, name: 'จัดซื้อจัดจ้าง', types: [10, 11] },
           { id: 4, name: 'แผนงาน โครงการ', types: [9, 12, 13] },
         ],
+        columnList: [],
+        valueList: [],
+        showTable: false,
         reportList: [
           {
             id: 1,
@@ -384,6 +402,23 @@
         this.selectedFilters = this.selectedReport?.filters.map(id => this.filterList.find(filter => filter.id === id)) || []
         this.$router.push({ query: {} })
       },
+      async onDisplayTable () {
+          console.log('apiPath ',this.selectedReport.apiPath);
+          const query = { ...this.query, ...this.$route.query }
+          delete query.pageNo
+          console.log('query ',query);
+          const { data } = await this.$store.dispatch('http', { apiPath: this.selectedReport.apiPath, query })
+          console.log('report ',data);
+          if(data.headers){           
+            this.columnList = data.headers;
+            this.valueList = data.dataTable;
+            console.log('this.columnList ',this.columnList);
+            this.showTable = true;
+          }else{
+            this.showTable = false;
+          }
+        
+      },
     },
   }
 </script>
@@ -392,6 +427,12 @@
   #report-page {
    h4 {
       font-size: 18px;
+    }
+  }
+  .report-button {
+    display: flex;
+    div {
+      padding-right: 1%;
     }
   }
 </style>

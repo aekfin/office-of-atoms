@@ -62,12 +62,12 @@
           <WithdrawDurableGoodsTable v-if="projectId" class="mt-6" :items="durableGoodsWithdraw" :isLoading="isWithdrawLoading" :selectList="selectedWithdraw"/>
         </div>
         <template v-else>
-          <v-text-field v-model="form.number" label="เลขที่ครุภัณฑ์" :disabled="viewMode" @change="onChangeNumber"/>
-          <CategoryDurableGood :key="categoryKey" :initCategory="initCategoryForm" :disabled="viewMode" noRules @change="onChangeCategory">
+          <v-text-field v-model="form.number" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/>
+          <CategoryDurableGood :key="categoryKey" :initCategory="initCategoryForm" :disabled="toggleEdit()" noRules @change="onChangeCategory">
             <v-col :cols="12" :md="9">
-              <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
+              <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
               <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
-                :query="{ ...categoryForm, ...ownerForm }" :disabled="viewMode"/>
+                :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()"/>
             </v-col>
           </CategoryDurableGood>
         </template>
@@ -87,6 +87,8 @@
           <v-btn v-if="viewMode" large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
           <v-btn v-else large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
           <v-btn v-if="!viewMode" class="ml-4" elevation="2" large color="success" @click="onSubmit">{{ `ยื่นขอ${type}` }}</v-btn>
+          <v-btn v-if="forEdit" class="ml-4" elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
+          <!-- <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn> -->
         </v-row>
       </v-container>
     </v-form>
@@ -105,6 +107,7 @@
     props: {
       item: { type: Object },
       viewMode: { type: Boolean },
+      forEdit: { type: Boolean },
       backPath: { type: String, default: '/durable-goods/borrow/' },
       cannotApprove: { type: Boolean },
       type: { type: String, default: 'ยืม' },
@@ -202,6 +205,10 @@
       getApproverText (flow) {
         return flow?.emails?.reduce((str, email, i) => `${str}${i > 0 ? ', ' : ''}${email}`, 'ผู้อนุมัติ : ') || false
       },
+      toggleEdit () {
+        console.log('edit ', this.forEdit ? !this.forEdit : this.viewMode);
+        return this.forEdit ? !this.forEdit : this.viewMode
+      },
       getStepText (flow) {
         return this.$store.state.approveStatus[flow?.status || 'PENDING']
       },
@@ -235,7 +242,20 @@
         if (this.isWithdraw) {
           this.form.selected = this.durableGoodsWithdraw.filter((goods, i) => this.selectedWithdraw[i])
         }
-        if (valid) this.$emit('submit', this.form)
+        if (valid) {          
+          if (this.forEdit) {
+            this.$emit('edit', this.form)
+          }else {
+            this.$emit('submit', this.form)
+          }
+        }
+      },
+      onEdit () {
+        const valid = this.$refs.form.validate()
+        // if (this.isWithdraw) {
+        //   this.form.selected = this.durableGoodsWithdraw.filter((goods, i) => this.selectedWithdraw[i])
+        // }
+        // if (valid) this.$emit('submit', this.form)
       },
       async onApprove () {
         const valid = this.$refs.form.validate()

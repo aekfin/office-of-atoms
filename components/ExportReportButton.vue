@@ -22,8 +22,13 @@
           const query = { ...this.query, ...this.$route.query }
           delete query.pageNo
           const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query })
+          console.log('report ',data);
           const a = document.createElement('a')
-          a.href = data
+          if(data.excel){
+            a.href = data.excel
+          }else{
+            a.href = data
+          }
           a.download = `${this.name}-${this.$fn.reportDate(new Date())}`
           a.click()
           // window.open(data, '_blank')
@@ -39,7 +44,7 @@
 <style lang="scss">
   .export-report-button {
     display: flex;
-    padding-left: 1%;
+    padding-right: 1%;
     .v-btn {
       text-transform: none;
     }

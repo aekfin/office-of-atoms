@@ -10,10 +10,11 @@
         <div>{{ item.dateApprove ? $fn.displayDate(item.dateApprove) : '-' }}</div>
       </template>
       <template #item.equipment="{ item }">
-        <span>{{ item.equipments[0].name }}</span>
+        <!-- <span>{{ item.equipments[0].name }}</span> -->
+        <span v-if="item && item.equipments && item.equipments.length > 0">{{ item.equipments[0].name }}</span>
       </template>
-      <template #item.organization.ouName="{ item }">
-        <OwnerColumn :item="item.equipments[0]"/>
+      <template  #item.organization.ouName="{ item }">
+        <OwnerColumn v-if="item && item.equipments && item.equipments.length > 0" :item="item.equipments[0]"/>
       </template>
       <template #item.status="{ item }">
         <v-chip :color="$store.state.approveStatusColor[item.status]">{{ $store.state.approveStatus[item.status] }}</v-chip>

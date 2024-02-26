@@ -6,7 +6,7 @@
       </template>
     </PageHeader>
     <Loading v-if="isLoading"/>
-    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" cannotApprove @submit="onSubmit"/>
+    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" cannotApprove @submit="onSubmit" @edit="onEdit" :forEdit="false"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
   </div>
 </template>
@@ -29,6 +29,7 @@
     },
     computed: {
       isCreate () {
+        console.log('cccc ',this.$route.params.borrow_id === 'create');
         return this.$route.params.borrow_id === 'create'
       },
     },
@@ -84,6 +85,23 @@
             await this.$store.dispatch('snackbar', { text: 'ยื่นขอยืมครุภัณฑ์สำเร็จ' })
             this.$router.push('/durable-goods/borrow/')
           }
+        } catch (err) { return Promise.reject(err) }
+      },
+      async onEdit (form) {
+        try{
+          const formData = { ...form }
+          formData.dateBorrow = this.$fn.convertDateToString(formData.dateBorrow)
+          formData.dueDate = this.$fn.convertDateToString(formData.dueDate)
+          console.log('formData ',formData);
+          // const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/borrow', data: formData })
+          // if (data?.status?.code == 400) {
+          //   await this.$store.dispatch('snackbar', { text: `Error ${data.status.code}: ${data.status.description}`, props: { color: 'red', top: true } })
+          //   this.errorText = data.status.description.includes('invalid with status') ? 'ไม่สามารถขอยืมได้ เนื่องจากครุภัณฑ์ดังกล่าวอยู่ในระหว่างการรออนุมัติหรือถูกยืมไปแล้ว' : 'ไม่สามารถขอยืมได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้'
+          //   this.dialog = true
+          // } else {
+          //   await this.$store.dispatch('snackbar', { text: 'ยื่นขอยืมครุภัณฑ์สำเร็จ' })
+          //   this.$router.push('/durable-goods/borrow/')
+          // }
         } catch (err) { return Promise.reject(err) }
       },
     }
