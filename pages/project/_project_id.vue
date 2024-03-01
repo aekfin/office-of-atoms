@@ -48,7 +48,8 @@
         </v-row>
         <v-row>
           <v-col :cols="12" :md="4">
-            <v-text-field v-model="form.projectNumber" label="เลขที่โครงการ *" :rules="codeRules" :disabled="disabledInfo"/>
+            <!-- <v-text-field v-model="form.projectNumber" label="เลขที่โครงการ หห*" :rules="codeRules" :disabled="disabledInfo"/> -->
+            <v-text-field v-model="form.projectNumber" label="เลขที่โครงการ *" :rules="[ruleFunction(form.projectName)]" :disabled="disabledInfo"/>
           </v-col>
           <v-col :cols="12" :md="4">
             <v-text-field v-model="form.contractNumber" label="เลขที่ใบสั่งซื้อ/จ้าง หรือเลขที่สัญญา *" :rules="contractNumberRules" :disabled="disabledInfo"/>
@@ -474,6 +475,9 @@
       },
       async onSubmit () {
         const valid = this.$refs.form.validate()
+       
+        // window.alert('มีชื่อโครงการหรือเลขที่โครงการที่ระบุอยู่ในระบบแล้ว');
+        
         if (valid) {
           try {
             const form = { ...this.form }
@@ -504,6 +508,16 @@
         } else {
           this.formExpand = [0, 1, 2]
         }
+      },
+      ruleFunction: function (compareValue) {
+        return (value) => {
+          if (value === compareValue) {
+            return 'เลขที่โครงการไม่สามารถซ้ำกับชื่อโครงการได้';
+          }else if(value === null || value === ''){
+            return 'โปรดใส่เลขที่โครงการ'
+          }
+          return true;
+        };
       }
     },
   }

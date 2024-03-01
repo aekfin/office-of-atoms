@@ -12,8 +12,9 @@
         <PageHeader text="" hideTotal :filters="selectedFilters"/>
       </div>
       <div class="mt-10 report-button">
+        <ExportReportButton v-if="selectedReport" :apiPath="selectedReport.apiPath" :name="selectedReport.name"/>
         <template>
-          <div>
+          <div v-if="showBtn">
             <v-btn color="secondary" outlined elevation="2" @click="onDisplayTable">
               <slot>
                 <div>แสดงข้อมูล</div>
@@ -21,7 +22,6 @@
             </v-btn>
           </div>
         </template>
-        <ExportReportButton v-if="selectedReport" :apiPath="selectedReport.apiPath" :name="selectedReport.name"/>
       </div>
       <div class="mt-10">
         <ReportTable v-if="selectedReport" :columnList="columnList" :valueList="valueList" :showTable="showTable"/>
@@ -41,6 +41,7 @@ import ReportTable from '~/components/ReportTable.vue'
 },
     data () {
       return {
+        isLoading: false,
         group: 0,
         selectedId: 1,
         selectedReport: null,
@@ -55,6 +56,7 @@ import ReportTable from '~/components/ReportTable.vue'
         columnList: [],
         valueList: [],
         showTable: false,
+        showBtn: false,
         reportList: [
           {
             id: 1,
@@ -401,8 +403,17 @@ import ReportTable from '~/components/ReportTable.vue'
         this.selectedReport = item
         this.selectedFilters = this.selectedReport?.filters.map(id => this.filterList.find(filter => filter.id === id)) || []
         this.$router.push({ query: {} })
+
+        if(this.selectedReport.id == 1 || this.selectedReport.id == 2 ){
+          this.showBtn = false;
+          this.showTable = false;
+        }else{
+          this.showBtn = true;
+        }
+        console.log('onSelectReport ', this.selectedReport);
       },
       async onDisplayTable () {
+        this.isLoading = true
           console.log('apiPath ',this.selectedReport.apiPath);
           const query = { ...this.query, ...this.$route.query }
           delete query.pageNo
@@ -417,7 +428,7 @@ import ReportTable from '~/components/ReportTable.vue'
           }else{
             this.showTable = false;
           }
-        
+          this.isLoading = false
       },
     },
   }

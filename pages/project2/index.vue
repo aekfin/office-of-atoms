@@ -1,6 +1,6 @@
 <template>
   <div id="project-page">
-    <PageHeader text="โครงการ" btnText="เพิ่มโครงการ" createRoute="/project/create/" :total="total" :filters="filters" unit="โครงการ"/>
+    <PageHeader text="โครงการที่ใกล้หมดระยะประกัน" :total="total" :filters="filters" unit="โครงการ"/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter 
     class="elevation-1 mt-6" :loading="isLoading"  >
      

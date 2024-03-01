@@ -136,6 +136,7 @@
             id: data.id,
             projectId: data.id,
             projectName: data.projectName,
+            year: data.year,
             dateEntry: data.dateEntry || new Date(),
             itemParcels: [
               {
@@ -191,8 +192,10 @@
               id: this.form.id,
               parcelMasterId: this.form.itemParcels[0].parcelMasterId,
               price: this.form.itemParcels[0].price,
-              quantity: this.form.itemParcels[0].quantity
+              quantity: this.form.itemParcels[0].quantity,
+              year: this.form.year
             }
+            console.log('editForm ',editForm)
             const form = this.isCreate ? createForm : editForm
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างโครงการ-วัสดุคงคลังสำเร็จ' : 'แก้ไขประเภทสร้างโครงการ-วัสดุคงคลังสำเร็จ' })

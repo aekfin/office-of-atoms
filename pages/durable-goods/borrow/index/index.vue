@@ -1,6 +1,7 @@
 <template>
   <div id="durable-goods-borrow-page">
-    <PageHeader text="การยืมครุภัณฑ์"  :total="total" :filters="filters"/>
+    <!-- <PageHeader text="การยืมครุภัณฑ์"  :total="total" :filters="filters"/> -->
+    <PageHeader text="การยืมครุภัณฑ์"  :total="total" :filters="filters" btnText="เพิ่มการยืมครุภัณฑ์" createRoute="/durable-goods/borrow/create/"/>
     <DurableGoodsBorrowTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
     <Pagination/>
   </div>

@@ -75,7 +75,7 @@
         selectorListObject: [],
         filters: [
           { type: 'textField',param: 'number',name: 'เลขที่ครุภัณฑ์', },
-          { type: 'textField',param: 'name',name: 'ชื่อครุภัณฑ์', },
+          { type: 'textField',param: 'equipmentName',name: 'ชื่อครุภัณฑ์', },
           {
             name: 'หมวดหมู่',
             param: 'majorCategoryId',
