@@ -11,6 +11,7 @@
       </template>
     </v-data-table>
     <Pagination/>
+    <ConfirmDialog :value.sync="deleteDialog" title="แจ้งเตือน" text="ยืนยันจะทำการลบค่าเริ่มต้นวัสดุคงคลังหรือไม่" @submit="onDelete"/>
   </div>
 </template>
 
@@ -27,6 +28,8 @@
         total: 0,
         count: 0,
         search: '',
+        deleteDialog: false,
+        itemDelete: '',
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ชื่อวัสดุคงคลัง', value: 'name' },
@@ -67,9 +70,25 @@
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
+      async onDelete () {
+        // try {
+        //   console.log('this.itemDelete ',this.itemDelete)
+        //   this.isLoading = true
+        //   const { data } = await this.$store.dispatch('http', {apiPath: '/parcel/deleteParcelMasters/'+this.itemDelete})
+        //   await this.getList()
+        //   return Promise.resolve(data)
+        // } catch (err) { return Promise.reject(err) }
+      },
+      handleDeleteAction (item) {
+        this.deleteDialog = true
+        console.log('item ',item);
+        this.itemDelete = item
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'edit', action: `/management/parcel/${item.id}/` },
+          { type: 'delete', icon: 'delete', action: () => { this.handleDeleteAction(item.masterId) } },
+          // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
         ]
       }
     }

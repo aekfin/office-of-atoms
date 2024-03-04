@@ -219,6 +219,17 @@
         </v-row>
       </v-container>
     </v-form>
+    <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" text="ไม่สามารถบันทึกได้เนื่องจากมีชื่อโครงการหรือเลขที่โครงการอยู่ในระบบแล้ว" hideSubmit closeText="รับทราบ"/>
+    <!-- <v-dialog v-model="dialog" width="720" contentClass="type-parcel-dialog">
+      <v-card>
+          <v-btn icon @click="dialog = false" class="ml-auto">
+            <i class="material-icons">close</i>
+          </v-btn>
+        <v-card-text class="red--text bottom-padding">
+           <h3 class="centered-text">ไม่สามารถบันทึกได้เนื่องจากมีชื่อโครงการหรือเลขที่โครงการอยู่ในระบบแล้ว</h3>
+        </v-card-text>       
+      </v-card>
+    </v-dialog> -->
   </div>
 </template>
 
@@ -231,9 +242,11 @@
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       ProjectDropdown: () => import('~/components/ProjectDropdown.vue'),
       Loading: () => import('~/components/Loading.vue'),
+      ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
     },
     data () {
       return {
+        dialog: false,
         valid: true,
         isLoading: false,
         manualMode: false,
@@ -494,12 +507,19 @@
             const apiPath = this.isCreate ? 'Project/addProjectV2' : 'Project/updateProjectV2'
             const method = this.isCreate ? 'post' : 'patch'
             const res = await this.$store.dispatch('http', { method, apiPath, data: form })
-            if (this.attachFiles.length) await this.uploadFiles(res.data.id)
-            this.attachFiles = []
-            this.removeFile = []
-            await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างโครงการสำเร็จ' : 'แก้ไขโครงการสำเร็จ' })
-            if (this.isCreate) this.$router.push('/project/')
-            else await this.getData()
+            console.log('res ',res);
+            if('duplicate' === res.data.status.description){
+              await this.$store.dispatch('snackbar', { text: `Error : ${res.data.status.description}`, props: { color: 'red', top: true } })
+              this.dialog = true
+            }else{
+              if (this.attachFiles.length) await this.uploadFiles(res.data.id)
+              this.attachFiles = []
+              this.removeFile = []
+              await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างโครงการสำเร็จ' : 'แก้ไขโครงการสำเร็จ' })
+              if (this.isCreate) this.$router.push('/project/')
+              else await this.getData()
+            }
+            
             return Promise.resolve(res)
           } catch (err) {
             console.log(err)
@@ -561,6 +581,13 @@
         .prefix-wrapper, .company-name, .phone, .email {
           width: 100%;
         }
+      }
+      .centered-text {
+        text-align: center;
+      }
+
+      .bottom-padding {
+        padding-bottom: 20px; /* ปรับค่าตามที่ต้องการ */
       }
     }
   }

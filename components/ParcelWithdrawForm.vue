@@ -24,12 +24,12 @@
       <v-container>
         <v-row>
           <v-col :cols="12" :md="6">
-            <InputDatePicker :value.sync="form.datePickUp" label="วันที่เบิกวัสดุคงคลัง *" :rules="datetimeWithdrawRules" required :disabled="viewMode && !canEdit"/>
+            <InputDatePicker :value.sync="form.datePickUp" label="วันที่เบิกวัสดุคงคลัง *" :rules="datetimeWithdrawRules" required :disabled="viewMode"/>
           </v-col>
         </v-row>
         <v-row>
           <v-col :cols="12">
-            <v-textarea v-model="form.description" label="หมายเหตุ" :rows="4" :disabled="viewMode && !canEdit"/>
+            <v-textarea v-model="form.description" label="หมายเหตุ" :rows="4" :disabled="viewMode"/>
           </v-col>
         </v-row>  
       </v-container>
@@ -40,23 +40,23 @@
           <v-col :cols="12" :md="3" class="d-flex align-baseline">
             <div class="mr-3"><b>{{ i + 1 }}.</b></div>
             <SelectDropdown :value.sync="form.pickUpItems[i].typeId" itemValue="id" itemText="name" label="ประเภท *" apiPath="parcel/getListParcelType" :items="parcel.types"
-              :rules="typeRules" required :disabled="viewMode && !canEdit" @select="onParcelTypeChange(form.pickUpItems[i])"/>
+              :rules="typeRules" required :disabled="viewMode" @select="onParcelTypeChange(form.pickUpItems[i])"/>
           </v-col>
           <v-col :cols="12" :md="showQuantity(form.pickUpItems[i]) ? 4 : 6">
+            <!-- <SelectDropdown :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" :rules="parcelRules" apiPath="parcel/searchParcelMaster"
+            :query="getParcelQuery(form.pickUpItems[i])" :disabled="viewMode || !form.pickUpItems[i].typeId" @select="onParcelChange($event, form.pickUpItems[i])"/> -->
             <SelectDropdown :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" :rules="parcelRules" apiPath="parcel/searchParcelMaster"
-              :query="getParcelQuery(form.pickUpItems[i])" :items="parcel.items" :disabled="viewMode && !canEdit" @select="onParcelChange($event, form.pickUpItems[i])"/>
-              <!-- <SelectDropdown :value.sync="form.pickUpItems[i].parcelMasterId" itemValue="id" itemText="name" label="วัสดุคงคลัง *" :rules="parcelRules" apiPath="parcel/searchParcelMaster"
-              :query="getParcelQuery(form.pickUpItems[i])" :items="parcel.items" :disabled="viewMode || !form.pickUpItems[i].typeId" @select="onParcelChange($event, form.pickUpItems[i])"/> -->
+              :query="getParcelQuery(form.pickUpItems[i])" :items="parcel.items" :disabled="viewMode || !form.pickUpItems[i].typeId" @select="onParcelChange($event, form.pickUpItems[i])"/>
           </v-col>
           <v-col :cols="12" :md="showQuantity(form.pickUpItems[i]) ? 5 : 3">
             <div class="d-flex align-baseline">
-              <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" class="mr-5" required :disabled="viewMode && !canEdit" type="number"/>
-              <v-text-field v-if="!viewMode || canEdit" v-model="form.pickUpItems[i].quantity" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'" :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity" type="number"/>
+              <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" class="mr-5" required :disabled="viewMode  && !privateEdit" type="number"/>
+              <v-text-field v-if="(!viewMode || canEdit)  && !disabledRemain" v-model="form.pickUpItems[i].quantity" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'" :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity" type="number"/>
               <v-text-field v-if="viewMode && !canEdit && form.pickUpItems[i].numberOfApproved !== undefined" v-model="form.pickUpItems[i].numberOfApproved" label="จำนวนจ่าย" disabled/>
               <v-btn v-if="!viewMode && form.pickUpItems.length > 1 && i === form.pickUpItems.length - 1" icon class="ml-5" @click.stop="removeParcel(i)">
                 <i class="material-icons">delete</i>
               </v-btn>
-              <div v-if="canEdit" class="text-remaining ml-5">คงเหลือ : {{ form.pickUpItems[i].remain || 0 }}</div>
+              <div v-if="canEdit && !disabledRemain" class="text-remaining ml-5">คงเหลือ : {{ form.pickUpItems[i].remain || 0 }}</div>
             </div>
           </v-col>
         </v-row>
@@ -75,7 +75,7 @@
         <v-row v-else justify="end">
           <v-btn v-if="viewMode" large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
           <v-btn v-else large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
-          <v-btn v-if="!viewMode" class="ml-4" elevation="2" large color="success" @click="onSubmit">ยื่นขอเบิก</v-btn>
+          <v-btn v-if="!viewMode || privateEdit" class="ml-4" elevation="2" large color="success" @click="onSubmit">ยื่นขอเบิก</v-btn>
         </v-row>
       </v-container>
     </v-form>
@@ -93,6 +93,9 @@
       viewMode: { type: Boolean },
       backPath: { type: String, default: '/parcel/withdraw/' },
       cannotApprove: { type: Boolean },
+      privateEdit: { type: Boolean },
+      disabledRemain: { type: Boolean },
+      
     },
     data () {
       return {
@@ -126,6 +129,8 @@
       isApprover () {
         console.log('this.cannotApprove ',this.cannotApprove);
         console.log('this.currentFlow ',this.currentFlow?.canApprove === 'true');
+        console.log('this.viewMode ',this.viewMode);
+        console.log('this.privateEdit ',this.privateEdit);
         return !this.cannotApprove && this.currentFlow?.canApprove === 'true'
       },
       isReject () {
@@ -225,7 +230,7 @@
       },
       onSubmit () {
         const valid = this.$refs.form.validate()
-        console.log('valid ',valid);
+        console.log('onSubmit  this.form',this.form);
         if (valid) this.$emit('submit', this.form)
       },
       onApprove () {
