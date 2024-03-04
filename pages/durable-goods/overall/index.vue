@@ -8,6 +8,7 @@
       reportName="พิมพ์ RFID ต่ำกว่าเกณฑ์" exportText="รายงานค่าเสื่อมครุภัณฑ์" -->
     <DurableGoodsTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
     <Pagination/>
+    <ConfirmDialog :value.sync="deleteDialog" title="แจ้งเตือน" text="ยืนยันจะทำการลบบริหารครุภัณฑ์หรือไม่" @submit="onDelete"/>
   </div>
 </template>
 
@@ -22,6 +23,8 @@
         isLoading: true,
         count: 0,
         total: 0,
+        deleteDialog: false,
+        itemDelete: '',
         items: [],
         filters: [
           {
@@ -125,10 +128,25 @@
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
+      async onDelete () {
+        // try {
+        //   console.log('this.itemDelete ',this.itemDelete)
+        //   this.isLoading = true
+        //   const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: '/parcel/deleteParcelType/'+this.itemDelete})
+        //   await this.getList()
+        //   return Promise.resolve(data)
+        // } catch (err) { return Promise.reject(err) }
+      },
+      handleDeleteAction (item) {
+        this.deleteDialog = true
+        console.log('item ',item);
+        this.itemDelete = item
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'edit', action: `/durable-goods/overall/${item.id}/` },
-          { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
+          // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
+          { type: 'delete', icon: 'delete', action: () => { this.handleDeleteAction(item.id) } },
         ]
       }
     }

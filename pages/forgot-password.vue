@@ -7,10 +7,10 @@
             <div class="text-2xl font-bold">ลืมรหัสผ่าน ?</div>
           </v-row>
           <v-row>
-            <v-text-field v-model="form.username" name="username" :rules="usernameRules" label="E-Mail ผู้ใช้งาน" required outlined/>
+            <v-text-field v-model="form.email" name="email" :rules="usernameRules" label="E-Mail ผู้ใช้งาน" required outlined/>
           </v-row>
           <v-row class="send-btn">
-            <v-btn class="w-full" elevation="2" color="primary" x-large @click.stop="login">ส่งลิงค์ไปที่ E-Mail</v-btn>
+            <v-btn class="w-full" elevation="2" color="primary" x-large @click="login">ส่งลิงค์ไปที่ E-Mail</v-btn>
           </v-row>
         </v-container>
       </v-form>      
@@ -25,12 +25,28 @@
       return {
         valid: false,
         form: {
-          username: ''
+          email: ''
         },
         usernameRules: [
-          v => !!v || 'โปรดใส่รหัสผู้ใช้งาน'
+          v => !!v || 'โปรดใส่ E-Mail ผู้ใช้งาน'
         ],
       }
+    },
+    methods: {
+      async login () {
+        const valid = this.$refs.form.validate()
+        console.log('valid ',valid)
+        if (valid) {
+          try {
+            const form = { ...this.form }
+            console.log('form ',form)
+            const { data } = await this.$store.dispatch('http', { method: 'patch', apiPath: 'oauth/resetPassword', data: form })
+            await this.$store.dispatch('snackbar', { text: 'ส่งลิงค์ไปที่ E-Mail สำเร็จ' })
+            
+            return Promise.resolve(data)
+          } catch (err) { return Promise.reject(err) }
+        }
+      },
     }
   }
 </script>

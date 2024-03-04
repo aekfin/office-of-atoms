@@ -7,7 +7,7 @@
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.minimumStock="{ item }">{{ item.minimumStock || 0 }} ชิ้น</template>
       <template #item.action="{ item }">
-        <ActionIconList :list="getActionIconList(item)"/>
+        <ActionIconList :list="getActionIconList(item)" />
       </template>
     </v-data-table>
     <Pagination/>
@@ -17,7 +17,8 @@
     <v-dialog v-if="createDialog" v-model="createDialog" width="720" contentClass="type-parcel-dialog">
       <v-card>
         <v-card-title class="text-h5 justify-space-between">
-          <div>เพิ่มประเภทวัสดุคงคลัง</div>
+          <div v-if="!editBtn">เพิ่มประเภทวัสดุคงคลัง</div>
+          <div v-else>แก้ไขประเภทวัสดุคงคลัง</div>
           <v-btn icon @click="closeCreateDialog">
             <i class="material-icons">close</i>
           </v-btn>
@@ -39,10 +40,13 @@
         <v-card-actions class="pb-5">
           <v-spacer/>
           <v-btn color="grey" text large @click="createDialog = false">ยกเลิก</v-btn>
-          <v-btn color="success" large @click="onCreate">เพิ่มประเภท</v-btn>
+          <v-btn v-if="!editBtn" color="success" large @click="onCreate">เพิ่มประเภท</v-btn>
+          <v-btn v-else color="success" large @click="onEditmedel">แก้ไขประเภท</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <ConfirmDialog :value.sync="comfirmDialog" title="แจ้งเตือน" text="ยืนยันจะทำการแก้ไขประเภทวัสดุคงคลังหรือไม่" @submit="onEdit"/>
+    <ConfirmDialog :value.sync="deleteDialog" title="แจ้งเตือน" text="ยืนยันจะทำการลบประเภทวัสดุคงคลังหรือไม่" @submit="onDeleteType"/>
   </div>
 </template>
 
@@ -51,6 +55,7 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       Pagination: () => import('~/components/Pagination.vue'),
+      ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
     },
     data () {
       return {
@@ -67,8 +72,13 @@
         ],
         createDialog: false,
         errorDialog: false,
+        editBtn: false,
+        comfirmDialog: false,
+        deleteDialog: false,
+        itemDelete: '',
         valid: true,
         form: null,
+        formEdit: null,
         typeNameRule: [
           v => !!v || 'โปรดใส่ชื่อวัสดุคงคลัง',
         ],
@@ -95,6 +105,7 @@
         this.getList()
       },
       createDialog (val) {
+        console.log('val ',val)
         if (!val) {
           this.setForm()
         }
@@ -126,6 +137,7 @@
       },
       openCreateDialog () {
         this.createDialog = true
+        this.editBtn = false
       },
       closeCreateDialog () {
         this.createDialog = false
@@ -146,6 +158,7 @@
         const valid = this.$refs.form.validate()
         if (valid) {
           try {
+            console.log('onCreate this.form ',this.form);
             const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/import/types', data: this.form })
             await this.$store.dispatch('snackbar', { text: 'สร้างประเภทวัสดุคงคลังสำเร็จ' })
             this.createDialog = false
@@ -156,10 +169,57 @@
           }
         }
       },
+      async onEdit () {
+        this.comfirmDialog = false        
+        try {
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/editParcelType', data: this.formEdit })
+          await this.$store.dispatch('snackbar', { text: 'แก้ไขประเภทวัสดุคงคลังสำเร็จ' })
+          this.createDialog = false
+          await this.getList()
+          return Promise.resolve(data)
+        } catch (err) {
+          return Promise.reject(err)
+        }
+      },
+      async onDeleteType () {
+        try {
+          console.log('this.itemDelete ',this.itemDelete)
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: '/parcel/deleteParcelType/'+this.itemDelete})
+          await this.getList()
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
+      onEditmedel () {
+        this.closeCreateDialog ();
+        this.comfirmDialog = true
+
+      },
+      handleEditAction (item) {
+        this.openCreateDialog();
+        this.editBtn = true
+        console.log('item ',item);
+        this.form = {
+          types: [
+            {
+              typeName: item.name,
+              minimumStock: item.minimumStock,
+              id: item.id,
+            }
+          ]
+        }
+        this.formEdit = this.form
+      },
+      handleDeleteAction (item) {
+        this.deleteDialog = true
+        console.log('item ',item);
+        this.itemDelete = item
+      },
       getActionIconList (item) {
         return [
           // { type: 'link', icon: 'edit', action: `/durable-goods/overall/${item.id}/` },
-          { type: 'link', icon: 'edit', action: () => { console.log('Confirm') } },
+          { type: 'edit', icon: 'edit',action: () => { this.handleEditAction(item) } },
+          { type: 'delete', icon: 'delete', action: () => { this.handleDeleteAction(item.id) } },
         ]
       },
     }

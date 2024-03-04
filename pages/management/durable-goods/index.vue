@@ -23,6 +23,7 @@
       </template>
     </v-data-table>
     <Pagination/>
+    <ConfirmDialog :value.sync="deleteDialog" title="แจ้งเตือน" text="ยืนยันจะทำการลบค่าเริ่มต้นครุภัณฑ์หรือไม่" @submit="onDelete"/>
   </div>
 </template>
 
@@ -43,6 +44,8 @@
         total: 0,
         items: [],
         search: '',
+        deleteDialog: false,
+        itemDelete: '',
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
@@ -100,10 +103,25 @@
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
+      async onDelete () {
+        // try {
+        //   console.log('this.itemDelete ',this.itemDelete)
+        //   this.isLoading = true
+        //   const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: '/parcel/deleteParcelType/'+this.itemDelete})
+        //   await this.getList()
+        //   return Promise.resolve(data)
+        // } catch (err) { return Promise.reject(err) }
+      },
+      handleDeleteAction (item) {
+        this.deleteDialog = true
+        console.log('item ',item);
+        this.itemDelete = item
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'edit', action: `/management/durable-goods/${item.id}/` },
           // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
+          { type: 'delete', icon: 'delete', action: () => { this.handleDeleteAction(item.id) } },
         ]
       }
     }
