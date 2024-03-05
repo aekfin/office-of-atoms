@@ -498,6 +498,10 @@
             form.contractStartDate = this.$fn.convertDateToString(form.contractStartDate)
             form.contractEndDate = this.$fn.convertDateToString(form.contractEndDate)
             form.warrantyEndDate = this.$fn.convertDateToString(form.warrantyEndDate)
+            for (let i = 0; i < this.form.period.length; i++) {
+              this.form.period[i].periodDate = this.form.period[i].periodDate ? this.$fn.convertDateToString(this.form.period[i].periodDate) : '';
+            }
+            console.log('form ',form);
             // form.period1Date = form.period1Date ? this.$fn.convertDateToString(form.period1Date) : ''
             // form.period2Date = form.period2Date ? this.$fn.convertDateToString(form.period2Date) : ''
             // form.period3Date = form.period3Date ? this.$fn.convertDateToString(form.period3Date) : ''
@@ -508,18 +512,27 @@
             const method = this.isCreate ? 'post' : 'patch'
             const res = await this.$store.dispatch('http', { method, apiPath, data: form })
             console.log('res ',res);
-            if('duplicate' === res.data.status.description){
-              await this.$store.dispatch('snackbar', { text: `Error : ${res.data.status.description}`, props: { color: 'red', top: true } })
-              this.dialog = true
+
+            if(res.data.status){
+              if('400' === res.data.status.code){ 
+                await this.$store.dispatch('snackbar', { text: `Error : ${res.data.status.description}`, props: { color: 'red', top: true } })               
+                res.data.status.description == 'duplicate' ? this.dialog = true : false
+              }else{
+                if (this.attachFiles.length) await this.uploadFiles(res.data.id)
+                this.attachFiles = []
+                this.removeFile = []
+                await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างโครงการสำเร็จ' : 'แก้ไขโครงการสำเร็จ' })
+                if (this.isCreate) this.$router.push('/project/')
+                else await this.getData() 
+              }
             }else{
               if (this.attachFiles.length) await this.uploadFiles(res.data.id)
               this.attachFiles = []
               this.removeFile = []
               await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างโครงการสำเร็จ' : 'แก้ไขโครงการสำเร็จ' })
               if (this.isCreate) this.$router.push('/project/')
-              else await this.getData()
-            }
-            
+              else await this.getData() 
+            }            
             return Promise.resolve(res)
           } catch (err) {
             console.log(err)

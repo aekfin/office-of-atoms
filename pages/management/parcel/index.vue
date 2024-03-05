@@ -71,17 +71,17 @@
         } catch (err) { return Promise.reject(err) }
       },
       async onDelete () {
-        // try {
-        //   console.log('this.itemDelete ',this.itemDelete)
-        //   this.isLoading = true
-        //   const { data } = await this.$store.dispatch('http', {apiPath: '/parcel/deleteParcelMasters/'+this.itemDelete})
-        //   await this.getList()
-        //   return Promise.resolve(data)
-        // } catch (err) { return Promise.reject(err) }
+        try {
+          console.log('this.itemDelete ',this.itemDelete)
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', {apiPath: '/parcel/deleteParcelMasters/'+this.itemDelete})
+          await this.getList()
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
       },
       handleDeleteAction (item) {
         this.deleteDialog = true
-        console.log('item ',item);
+        console.log('id ',item);
         this.itemDelete = item
       },
       getActionIconList (item) {

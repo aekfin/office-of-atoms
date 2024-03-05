@@ -146,7 +146,7 @@
         return [
           { type: 'link', icon: 'edit', action: `/durable-goods/overall/${item.id}/` },
           // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
-          { type: 'delete', icon: 'delete', action: () => { this.handleDeleteAction(item.id) } },
+          { type: 'delete', icon: 'delete', action: () => { this.handleDeleteAction(item) } },
         ]
       }
     }
