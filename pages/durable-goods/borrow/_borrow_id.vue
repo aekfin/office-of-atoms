@@ -29,7 +29,6 @@
     },
     computed: {
       isCreate () {
-        console.log('cccc ',this.$route.params.borrow_id === 'create');
         return this.$route.params.borrow_id === 'create'
       },
     },
@@ -92,7 +91,6 @@
           const formData = { ...form }
           formData.dateBorrow = this.$fn.convertDateToString(formData.dateBorrow)
           formData.dueDate = this.$fn.convertDateToString(formData.dueDate)
-          console.log('formData ',formData);
           // const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/borrow', data: formData })
           // if (data?.status?.code == 400) {
           //   await this.$store.dispatch('snackbar', { text: `Error ${data.status.code}: ${data.status.description}`, props: { color: 'red', top: true } })

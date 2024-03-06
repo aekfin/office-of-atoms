@@ -188,8 +188,6 @@
         } catch (err) { return Promise.reject(err) }
       },
       async onEdit ({ form, uploadingFiles, removeFiles }) {
-        console.log('onEdit', removeFiles);
-        console.log('uploadingFiles?.length ',uploadingFiles?.length);
         try {
           let { editApiPath } = this.tabActive
           editApiPath = editApiPath && form.id && `${this.tabActive.editApiPath}/${form.id}`
@@ -213,9 +211,7 @@
             data.append('modelId', id)
             await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/uploadFileModel', data })
           }
-          console.log('removeFiles', removeFiles?.length);
           if (removeFiles?.length) {
-            console.log('if removeFiles' , removeFiles);
             await Promise.all(removeFiles.map(file => this.$axios({ method: 'delete', url: `${file}/delete`.replace('/frs/webservice', '') })))
           }
           return Promise.resolve()

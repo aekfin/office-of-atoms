@@ -501,7 +501,6 @@
             for (let i = 0; i < this.form.period.length; i++) {
               this.form.period[i].periodDate = this.form.period[i].periodDate ? this.$fn.convertDateToString(this.form.period[i].periodDate) : '';
             }
-            console.log('form ',form);
             // form.period1Date = form.period1Date ? this.$fn.convertDateToString(form.period1Date) : ''
             // form.period2Date = form.period2Date ? this.$fn.convertDateToString(form.period2Date) : ''
             // form.period3Date = form.period3Date ? this.$fn.convertDateToString(form.period3Date) : ''
@@ -511,7 +510,6 @@
             const apiPath = this.isCreate ? 'Project/addProjectV2' : 'Project/updateProjectV2'
             const method = this.isCreate ? 'post' : 'patch'
             const res = await this.$store.dispatch('http', { method, apiPath, data: form })
-            console.log('res ',res);
 
             if(res.data.status){
               if('400' === res.data.status.code){ 

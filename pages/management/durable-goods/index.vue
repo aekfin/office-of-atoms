@@ -105,7 +105,6 @@
       },
       async onDelete () {
         try {
-          console.log('this.itemDelete ',this.itemDelete)
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: '/equipment/deleteEquipments/'+this.itemDelete})
           await this.getList()
@@ -114,11 +113,9 @@
       },
       handleDeleteAction (item) {
         this.deleteDialog = true
-        console.log('item ',item);
         this.itemDelete = item
       },
       getActionIconList (item) {
-        console.log('item item ',item);
         return [
           { type: 'link', icon: 'edit', action: `/management/durable-goods/${item.id}/` },
           { type: 'delete', icon: 'delete', disable: (item.status != 'RESERVE' ? true : false), action: () => { this.handleDeleteAction(item.id) } },

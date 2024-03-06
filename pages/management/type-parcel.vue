@@ -105,7 +105,6 @@
         this.getList()
       },
       createDialog (val) {
-        console.log('val ',val)
         if (!val) {
           this.setForm()
         }
@@ -158,7 +157,6 @@
         const valid = this.$refs.form.validate()
         if (valid) {
           try {
-            console.log('onCreate this.form ',this.form);
             const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/import/types', data: this.form })
             await this.$store.dispatch('snackbar', { text: 'สร้างประเภทวัสดุคงคลังสำเร็จ' })
             this.createDialog = false
@@ -183,7 +181,6 @@
       },
       async onDeleteType () {
         try {
-          console.log('this.itemDelete ',this.itemDelete)
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: '/parcel/deleteParcelType/'+this.itemDelete})
           await this.getList()
@@ -198,7 +195,6 @@
       handleEditAction (item) {
         this.openCreateDialog();
         this.editBtn = true
-        console.log('item ',item);
         this.form = {
           types: [
             {
@@ -212,7 +208,6 @@
       },
       handleDeleteAction (item) {
         this.deleteDialog = true
-        console.log('item ',item);
         this.itemDelete = item
       },
       getActionIconList (item) {

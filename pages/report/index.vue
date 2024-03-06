@@ -410,20 +410,15 @@ import ReportTable from '~/components/ReportTable.vue'
         }else{
           this.showBtn = true;
         }
-        console.log('onSelectReport ', this.selectedReport);
       },
       async onDisplayTable () {
         this.isLoading = true
-          console.log('apiPath ',this.selectedReport.apiPath);
           const query = { ...this.query, ...this.$route.query }
           delete query.pageNo
-          console.log('query ',query);
           const { data } = await this.$store.dispatch('http', { apiPath: this.selectedReport.apiPath, query })
-          console.log('report ',data);
           if(data.headers){           
             this.columnList = data.headers;
             this.valueList = data.dataTable;
-            console.log('this.columnList ',this.columnList);
             this.showTable = true;
           }else{
             this.showTable = false;

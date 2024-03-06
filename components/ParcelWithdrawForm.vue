@@ -122,26 +122,18 @@
     computed: {
       currentFlow () {
         
-        console.log('this.item ', this.item);
-        console.log('currentFlow ',this.item?.flows?.find(flow => flow?.status === 'PENDING') || null);
         return this.item?.flows?.find(flow => flow?.status === 'PENDING') || null
       },
       isApprover () {
-        console.log('this.cannotApprove ',this.cannotApprove);
-        console.log('this.currentFlow ',this.currentFlow?.canApprove === 'true');
-        console.log('this.viewMode ',this.viewMode);
-        console.log('this.privateEdit ',this.privateEdit);
         return !this.cannotApprove && this.currentFlow?.canApprove === 'true'
       },
       isReject () {
         return this.item && this.item.status === 'REJECT'
       },
       canEdit () {
-        console.log('canEdit ', this.item?.canEdit === 'true');
         return this.item?.canEdit === 'true'
       },
       canChangeQuantity () {
-        console.log('canChangeQuantity ', this.isApprover);
         return this.canEdit && this.isApprover
       },
       showRemain () {
@@ -230,7 +222,6 @@
       },
       onSubmit () {
         const valid = this.$refs.form.validate()
-        console.log('onSubmit  this.form',this.form);
         if (valid) this.$emit('submit', this.form)
       },
       onApprove () {

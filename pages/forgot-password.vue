@@ -35,11 +35,9 @@
     methods: {
       async login () {
         const valid = this.$refs.form.validate()
-        console.log('valid ',valid)
         if (valid) {
           try {
             const form = { ...this.form }
-            console.log('form ',form)
             const { data } = await this.$store.dispatch('http', { method: 'patch', apiPath: 'oauth/resetPassword', data: form })
             await this.$store.dispatch('snackbar', { text: 'ส่งลิงค์ไปที่ E-Mail สำเร็จ' })
             

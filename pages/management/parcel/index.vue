@@ -72,7 +72,6 @@
       },
       async onDelete () {
         try {
-          console.log('this.itemDelete ',this.itemDelete)
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', {apiPath: 'parcel/deleteParcelMasters/'+this.itemDelete})
           await this.getList()
@@ -81,7 +80,6 @@
       },
       handleDeleteAction (item) {
         this.deleteDialog = true
-        console.log('id ',item);
         this.itemDelete = item
       },
       getActionIconList (item) {

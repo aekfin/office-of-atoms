@@ -59,7 +59,7 @@
     methods: {
       getActionIconList (item) {
         const notConfirm = [
-          { type: 'confirm', confirmText: 'คุณยืนยันการตรวจนับครุภัณฑ์นี้หรือไม่ ?', confirmBtnColor: 'success', icon: 'check_circle', action: () => { this.$emit('approveCounting', item) } },
+          { type: 'confirm', disable: (item.status_counting === undefined ? true : false), confirmText: 'คุณยืนยันการตรวจนับครุภัณฑ์นี้หรือไม่ ?', confirmBtnColor: 'success', icon: 'check_circle', action: () => { this.$emit('approveCounting', item) } },
         ]
         const confirm = [
           { type: 'btn', icon: 'check_circle', iconColor: 'success' },
