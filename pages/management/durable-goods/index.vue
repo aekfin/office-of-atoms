@@ -104,13 +104,13 @@
         } catch (err) { return Promise.reject(err) }
       },
       async onDelete () {
-        // try {
-        //   console.log('this.itemDelete ',this.itemDelete)
-        //   this.isLoading = true
-        //   const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: '/parcel/deleteParcelType/'+this.itemDelete})
-        //   await this.getList()
-        //   return Promise.resolve(data)
-        // } catch (err) { return Promise.reject(err) }
+        try {
+          console.log('this.itemDelete ',this.itemDelete)
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: '/equipment/deleteEquipments/'+this.itemDelete})
+          await this.getList()
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
       },
       handleDeleteAction (item) {
         this.deleteDialog = true
@@ -118,10 +118,10 @@
         this.itemDelete = item
       },
       getActionIconList (item) {
+        console.log('item item ',item);
         return [
           { type: 'link', icon: 'edit', action: `/management/durable-goods/${item.id}/` },
-          // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
-          { type: 'delete', icon: 'delete', action: () => { this.handleDeleteAction(item.id) } },
+          { type: 'delete', icon: 'delete', disable: (item.status != 'RESERVE' ? true : false), action: () => { this.handleDeleteAction(item.id) } },
         ]
       }
     }

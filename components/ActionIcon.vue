@@ -19,7 +19,7 @@
         </div>
       </div>
     </v-menu>
-    <v-btn v-else icon :color="item.iconColor || undefined" @click="onConfirm">
+    <v-btn v-else icon :color="item.iconColor || undefined" @click="onConfirm" :disabled="item.disable">
       <i class="material-icons" v-text="item.icon || item.name"/>
     </v-btn>
   </div>

@@ -74,7 +74,7 @@
         try {
           console.log('this.itemDelete ',this.itemDelete)
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', {apiPath: '/parcel/deleteParcelMasters/'+this.itemDelete})
+          const { data } = await this.$store.dispatch('http', {apiPath: 'parcel/deleteParcelMasters/'+this.itemDelete})
           await this.getList()
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
