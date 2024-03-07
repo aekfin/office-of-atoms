@@ -7,7 +7,7 @@
     </NLink>
     <v-menu v-else-if="isConfirm" offsetY nudgeLeft="100%" contentClass="action-icon-menu-class">
       <template #activator="{ on, attrs }">
-        <v-btn icon v-bind="attrs" v-on="on" :color="item.iconColor || undefined">
+        <v-btn icon v-bind="attrs" v-on="on" :color="item.iconColor || undefined" :disabled="item.disable">
           <i class="material-icons" v-text="item.icon || item.name"/>
         </v-btn>
       </template>
@@ -19,7 +19,7 @@
         </div>
       </div>
     </v-menu>
-    <v-btn v-else icon :color="item.iconColor || undefined" @click="onConfirm">
+    <v-btn v-else icon :color="item.iconColor || undefined" @click="onConfirm" :disabled="item.disable">
       <i class="material-icons" v-text="item.icon || item.name"/>
     </v-btn>
   </div>

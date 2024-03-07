@@ -45,8 +45,6 @@
         try {
           
           const { data: profile } = await this.$store.dispatch('http', { apiPath: 'user/getUserbytoken' })
-          console.log('data: profile ',profile);
-          console.log('departmentMaster ',profile.departmentMaster.id);
           if(profile.departmentMaster.id === 2){
             this.disabledRemain = true
           }
@@ -62,13 +60,11 @@
       },
       async submitChanged (form) {
         try{
-          console.log('submitChanged form', form);
           const data = {
             editItems: form.pickUpItems,
             pickUpId: this.$route.params.parcel_withdraw_id,
             remark: form.description
           }
-          console.log('submitChanged ', data);
           const { res } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/editPickUpWithdraw', data })
           if (res.status.code == 400) {
             await this.$store.dispatch('snackbar', { text: `Error ${res.status.code}: ${res.status.description}`, props: { color: 'red', top: true } })
@@ -81,11 +77,9 @@
         } catch (err) { return Promise.reject(err) }
       },
       async onSubmit (form) {
-        console.log('isCreate ',this.isCreate)
         if(this.isCreate){
           try{
-            const formData = { ...form }          
-            console.log('formData ',formData)
+            const formData = { ...form }
             for(let i=0; i < formData.pickUpItems.length; i++){
               if(parseInt(formData.pickUpItems[i].quantity) < 0){
                 this.dialogCheckQty = true
@@ -93,7 +87,6 @@
             }
             if(!this.dialogCheckQty){
               formData.datePickUp = this.$fn.convertDateToString(formData.datePickUp)
-              console.log('formDatass ',formData);
               const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/pickup', data: formData })
               if (data.status.code == 400) {
                 await this.$store.dispatch('snackbar', { text: `Error ${data.status.code}: ${data.status.description}`, props: { color: 'red', top: true } })

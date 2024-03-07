@@ -120,7 +120,6 @@
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: this.checkedApiPath, query: { ...query, isCheck: true } })
           this.items = data.content
-          console.log('this.items ',this.items);
           this.pagination = data
           this.paginationIndex = data.pageable.pageSize * data.number
           this.total = data.totalElements

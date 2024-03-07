@@ -133,7 +133,6 @@
         } catch (err) { return Promise.reject(err) }
       },
       getActionIconList (item) {
-        console.log('item item itemitem ',item);
         return [
           { type: 'link', icon: 'edit', action: `/durable-goods/donation/${item.id}/` },
           // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },

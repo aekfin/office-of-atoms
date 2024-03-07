@@ -37,39 +37,24 @@
         return htmlContent;
       },
       genTable () {
-        console.log('genTable');
-        console.log('columnList ', this.columnList);
-        console.log('valueList ',this.valueList);
 
         this.headers = [];
         this.items = [];
 
-        console.log('length ',this.columnList.length);
-        // this.headers = [ { text: 'ลำดับที่', value: '1' }];
         for(let i=0; i<this.columnList.length; i++){
           const sss = (i+1)+'';
-          console.log('this.columnList[i] ',this.columnList[i]);
           this.headers.push({ text: this.columnList[i], value: sss})
         }
         
-        // this.items.push({ sss: '2222222222222222'});
           for(let i=0; i < this.valueList.length; i++){
             this.myObject = {};
             for(let j=0; j<this.columnList.length; j++){
-              // console.log('this.columnList[i] ',this.columnList[i]);
               // this.items.push({ text: this.valueList[i]})
               this.$set(this.myObject, (j+1), this.valueList[i][j]);
             }
-            console.log('myObject ',this.myObject);
             this.items.push(this.myObject)
           }
 
-
-
-        console.log('this.headers ', this.headers);
-        console.log('this.items ',this.items);
-
-        
       }
     },
   }

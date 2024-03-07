@@ -46,17 +46,13 @@
       },
       async submitChanged (form) {
         try{
-          console.log('submitChanged form', form);
           const data = {
             editItems: form.pickUpItems,
             pickUpId: this.$route.params.parcel_withdraw_id,
             remark: form.description
           }
-          console.log('submitChanged ', data);
           const { res } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/department/editPickupDepartment', data })
-          console.log('res sssssssssssssssss', res);
           if (res.data.status.code == 400) {
-            console.log('4000000000000000000000000 ');
             this.warningText = res.data.status.description.includes('out of stock') ? 'ไม่สามารถขอเบิกได้ เนื่องจากไม่มีวัสดุคงคลังเหลือ กรุณาเบิกจากภายนอกกลุ่มแทน' : 'ไม่สามารถขอเบิกได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้'
             this.dialog = true
           } else {

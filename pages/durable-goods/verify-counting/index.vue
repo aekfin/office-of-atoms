@@ -49,6 +49,7 @@
         try {
           this.isLoading = true
           const apiPath = `equipment/getEquipments/treasury?${this.$store.getters.durableGoodCountableQuery}`
+          // const apiPath = `equipment/getEquipments/treasury?status=NEW&status=RETURNED&status=WAIT_SALE`
           const { data } = await this.$store.dispatch('getListPagination', { apiPath, query: { ...this.$route.query, isCheck: true }, context: this })
           this.isLoading = false
           return Promise.resolve(data)
