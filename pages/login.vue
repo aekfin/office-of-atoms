@@ -18,7 +18,7 @@
           <v-row>
             <v-btn class="w-full" elevation="2" color="primary" x-large @click.stop="login">ลงชื่อเข้าใช้</v-btn>
             <div class="w-full text-center mt-4">
-              <NLink class="hover:underline" to="/forgot-password/">ลืมรหัสผ่าน</NLink>
+              <NLink class="hover:underline" to="/forgot-password/">ลืมรหัสผ่าน FIX001</NLink>
             </div>
           </v-row>
         </v-container>
