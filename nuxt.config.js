@@ -53,8 +53,13 @@ export default {
     proxy: true /* !isProd */,
   },
 
+<<<<<<< HEAD
   proxy: { '/api': { target: 'http://178.128.99.60:8081/frs/webservice/', ws: true } },
   // proxy: { '/api': { target: 'http://localhost:8081/frs/webservice/', ws: true } },
+=======
+  proxy: { '/api': { target: 'http://10.2.5.168:8081/frs/webservice/', ws: true } },
+  //proxy: { '/api': { target: 'http://localhost:8081/frs/webservice/', ws: true } },
+>>>>>>> 8a4fc82499c9fe632c85949f907d1a6b1321eeae
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
