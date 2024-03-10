@@ -24,15 +24,15 @@
       <v-container>
         <v-row>
           <v-col :cols="12" :md="4">
-            <InputDatePicker :value.sync="form.dateBorrow" :label="`วันที่${type}ครุภัณฑ์ *`" :rules="datetimeBorrowRules" required :disabled="viewMode"/>
+            <InputDatePicker :value.sync="form.dateBorrow" :label="`วันที่${type}ครุภัณฑ์ *`" :rules="datetimeBorrowRules" required :disabled="viewMode && !forEdit"/>
           </v-col>
           <v-col v-if="type === 'ยืม'" :cols="12" :md="4">
-            <InputDatePicker :value.sync="form.dueDate" label="วันที่ต้องคืนครุภัณฑ์ *" :rules="datetimeReturnRules" required :disabled="viewMode"/>
+            <InputDatePicker :value.sync="form.dueDate" label="วันที่ต้องคืนครุภัณฑ์ *" :rules="datetimeReturnRules" required :disabled="viewMode && !forEdit"/>
           </v-col>
         </v-row>
         <v-row>
           <v-col :cols="12">
-            <v-textarea v-model="form.description" label="หมายเหตุ" :rows="4" :disabled="viewMode"/>
+            <v-textarea v-model="form.description" label="หมายเหตุ" :rows="4" :disabled="viewMode && !forEdit"/>
           </v-col>
         </v-row>
       </v-container>
@@ -41,13 +41,21 @@
         <h5 class="text-h5 mt-5"><b>{{ `ผู้ครอบครอง` }}</b></h5>
         <v-container>
           <v-row>
-            <v-col :cols="12" :md="6">
-              <v-text-field v-if="viewMode" v-model="form.organization.ouName" label="กอง" disabled/>
+            <!-- <v-col :cols="12" :md="6">
+              <v-text-field v-if="viewMode" v-model="form.organization.ouName" label="กอง" :disabled="viewMode"/>
               <SelectDropdown v-else :value.sync="organizationId" apiPath="Orgchart/getOrganizations" itemValue="id" itemText="ouName" label="กอง" @select="onSelectOrganization"/>
             </v-col>
             <v-col :cols="12" :md="6">
-              <v-text-field v-if="viewMode" v-model="form.department.departmentName" label="กลุ่ม" disabled/>
+              <v-text-field v-if="viewMode" v-model="form.department.departmentName" label="กลุ่ม" :disabled="viewMode"/>
               <SelectDropdown v-else :value.sync="departmentId" apiPath="Orgchart/getDepartments" itemValue="id" itemText="departmentName" label="กลุ่ม" @select="onSelectDepartment"/>
+            </v-col> -->
+            <v-col :cols="12" :md="6">
+              <v-text-field v-if="viewMode  && !forEdit" v-model="form.organization.ouName" label="กอง" :disabled="viewMode  && !forEdit"/>
+              <SelectDropdown v-else :value.sync="form.organization.id" apiPath="Orgchart/getOrganizations" itemValue="id" itemText="ouName" label="กอง" @select="onSelectOrganization"/>
+            </v-col>
+            <v-col :cols="12" :md="6">
+              <v-text-field v-if="viewMode  && !forEdit" v-model="form.department.departmentName" label="กลุ่ม" :disabled="viewMode && !forEdit"/>
+              <SelectDropdown v-else :value.sync="form.department.id" apiPath="Orgchart/getDepartments" itemValue="id" itemText="departmentName" label="กลุ่ม" @select="onSelectDepartment"/>
             </v-col>
           </v-row>
         </v-container>
@@ -65,8 +73,11 @@
           <v-text-field v-model="form.number" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/>
           <CategoryDurableGood :key="categoryKey" :initCategory="initCategoryForm" :disabled="toggleEdit()" noRules @change="onChangeCategory">
             <v-col :cols="12" :md="9">
-              <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
+              <!-- <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
               <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
+                :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()"/> -->
+                <v-text-field v-if="viewMode && !onCategoryChange" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
+              <SelectDropdown  v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
                 :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()"/>
             </v-col>
           </CategoryDurableGood>
@@ -87,7 +98,7 @@
           <v-btn v-if="viewMode" large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
           <v-btn v-else large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
           <v-btn v-if="!viewMode" class="ml-4" elevation="2" large color="success" @click="onSubmit">{{ `ยื่นขอ${type}` }}</v-btn>
-          <v-btn v-if="forEdit" class="ml-4" elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
+          <v-btn v-if="viewMode && forEdit" class="ml-4" elevation="2" large color="success" @click="onEdit">บันทึก</v-btn>
           <!-- <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn> -->
         </v-row>
       </v-container>
@@ -145,7 +156,8 @@
         files: [],
         removeFiles: [],
         equipmentList: [],
-        categoryKey: false,
+        categoryKey: false,        
+        onCategoryChange: false,
       }
     },
     computed: {
@@ -168,6 +180,7 @@
       }
     },
     mounted () {
+      
       this.setForm()
     },
     methods: {
@@ -187,6 +200,9 @@
           department: this.item?.items?.[0]?.equipment?.departmentMaster || {},
           owner: this.item?.items?.[0]?.equipment?.owner || {},
           number: this.item?.items?.[0]?.equipment?.number || '',
+          borrowId: this.item?.borrowId,
+          equipmentRequestId: this.item?.id,
+          equipmentXRequestId: this.item?.items?.[0].equipmentXRequestId
         }
         if (this.item) this.setCategoryForm()
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
@@ -200,13 +216,13 @@
         if (trigger) {
           this.categoryForm = { ...form }
           this.form.itemId = null
+          this.onCategoryChange = true
         }
       },
       getApproverText (flow) {
         return flow?.emails?.reduce((str, email, i) => `${str}${i > 0 ? ', ' : ''}${email}`, 'ผู้อนุมัติ : ') || false
       },
       toggleEdit () {
-        console.log('edit ', this.forEdit ? !this.forEdit : this.viewMode);
         return this.forEdit ? !this.forEdit : this.viewMode
       },
       getStepText (flow) {
@@ -242,20 +258,18 @@
         if (this.isWithdraw) {
           this.form.selected = this.durableGoodsWithdraw.filter((goods, i) => this.selectedWithdraw[i])
         }
-        if (valid) {          
-          if (this.forEdit) {
-            this.$emit('edit', this.form)
-          }else {
-            this.$emit('submit', this.form)
-          }
+        if (valid) { 
+          this.$emit('submit', this.form)
         }
       },
       onEdit () {
         const valid = this.$refs.form.validate()
-        // if (this.isWithdraw) {
-        //   this.form.selected = this.durableGoodsWithdraw.filter((goods, i) => this.selectedWithdraw[i])
-        // }
-        // if (valid) this.$emit('submit', this.form)
+        if (this.isWithdraw) {
+          this.form.selected = this.durableGoodsWithdraw.filter((goods, i) => this.selectedWithdraw[i])
+        }
+        if (valid) {
+          this.$emit('edit', this.form)
+        }
       },
       async onApprove () {
         const valid = this.$refs.form.validate()

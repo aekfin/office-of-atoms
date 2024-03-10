@@ -22,7 +22,6 @@
           const query = { ...this.query, ...this.$route.query }
           delete query.pageNo
           const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query })
-          console.log('report ',data);
           const a = document.createElement('a')
           if(data.excel){
             a.href = data.excel
