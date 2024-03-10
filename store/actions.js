@@ -8,6 +8,9 @@ export default {
     } catch (err) {
       const status = err.response.status
       if (status === 401) {
+
+        // localStorage.setItem('authToken', data.jwttoken)
+        // this.$axios.setHeader('Authorization', `Bearer ${data.jwttoken}`)
         this.$router.replace('/login/')
       }
       await dispatch('snackbar', { text: `<b>Error ${status}: </b> ${err.response.statusText}`, props: { color: 'red', top: true } })
