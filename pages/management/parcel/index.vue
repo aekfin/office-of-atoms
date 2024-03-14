@@ -49,6 +49,11 @@
             name: 'ประเภท',
             param: 'typeId',
             apiPath: 'parcel/getListParcelType',
+          },
+          {
+            name: 'จำนวน',
+            param: 'quantity',
+            type: 'number',
           }
         ]
       }

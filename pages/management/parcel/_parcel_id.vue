@@ -111,6 +111,7 @@
         const valid = this.$refs.form.validate()
         try {
           if (valid) {
+            this.isLoading = true
             const apiPath = this.isCreate ? 'parcel/importMasterAndStock' : 'parcel/editParcelMasters'
             const method = this.isCreate ? 'post' : 'patch'
             this.form.parcelName = this.form.name
@@ -118,7 +119,8 @@
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
             if (!this.isCreate) await this.$store.dispatch('http', { method: 'patch', apiPath: 'parcel/editQuatityLogImportParcelMasters', data: { editQuantity: this.form.quantity, parcelMasterId: this.form.parcelMasterId } })
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างค่าเริ่มต้นวัสดุคงคลังสำเร็จ' : 'แก้ไขค่าเริ่มต้นวัสดุคงคลังสำเร็จ' })
-            if (this.isCreate) this.$router.push('/management/parcel/')
+            // if (this.isCreate) this.$router.push('/management/parcel/')
+            this.$router.push('/management/parcel/')
             return Promise.resolve(data)
           } else {
             return Promise.resolve()
