@@ -169,6 +169,7 @@
         equipment: null,
         formExpand: [0],
         subEquipments: [],
+        subItemDelete: [],
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อ',
         ],
@@ -191,6 +192,9 @@
     methods: {
       async onDelete (item) {
         try {
+          
+          this.subItemDelete.push(item.id);
+          console.log('onDelete item ',this.subItemDelete)
           this.subEquipments.splice(this.subEquipments.indexOf(item), 1);
           return Promise.resolve()
         } catch (err) {
@@ -254,6 +258,12 @@
               await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/importSubEquipment', data: createData })
             }
             if (edits.length) {
+              const edits2 = {
+              ...edits,
+              subItemDelete: this.subItemDelete || [],
+              } 
+              
+              console.log('edits2 ',edits2);
               await Promise.all(edits.map(edit => this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/editSubEquipment', data: edit })))
             }
             await this.getSubEquipment()

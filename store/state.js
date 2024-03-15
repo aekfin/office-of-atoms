@@ -13,6 +13,11 @@ export default () => ({
     'PENDING': 'รออนุมัติ',
     'REJECT': 'ไม่อนุมัติ',
   },
+  requestStatusEnum: {
+    'SUCCESS': 'อนุมัติ',
+    'PENDING': 'รออนุมัติ',
+    'REJECT': 'ไม่อนุมัติ',
+  },
   approveStatusColor: {
     'SUCCESS': 'success',
     'APPROVE': 'success',

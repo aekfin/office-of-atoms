@@ -106,6 +106,7 @@
           organizationId: null,
           departmentId: null,
           ownerId: null,
+          userId: null,
           inspectionDate: new Date(),
           quantity: 1,
           detailList: [this.getDetail()],
@@ -180,6 +181,7 @@
             organizationId: data.organization.id,
             departmentId: data.department.id,
             ownerId: data.owner?.id || null,
+            userId: data.owner?.id || null,
             ownerList: data.owner && [data.owner] || [],
             detailList: [this.getDetail(data)],
             disable: data.disable || false,
@@ -250,10 +252,11 @@
           if (valid) {
             if (this.isCreate) await this.onCreate()
             else await this.onEdit()
-            if (!this.isCreate) {
-              if (this.$refs.attachmentDurableGoods) await this.$refs.attachmentDurableGoods.upload()
-              await this.getData()
-            }
+            // if (!this.isCreate) {
+            //   if (this.$refs.attachmentDurableGoods) await this.$refs.attachmentDurableGoods.upload()
+            //   await this.getData()
+            // }
+            await this.getData()
           }
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
@@ -297,13 +300,16 @@
             ...this.categoryForm,
             ...equipmentDetail,
           }
+          // userId
+          console.log('form form ',form);
           
           const { data } = await this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/Edit', data: form })
           if (data?.status?.code == 200){
             await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })
+            if (this.$refs.attachmentDurableGoods) await this.$refs.attachmentDurableGoods.upload()
           }
           else {
-            await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์ไม่สำเร็จ' })
+            await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์ไม่สำเร็จ' , props: { color: 'red' }})
           }
           
           return Promise.resolve()

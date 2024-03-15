@@ -41,7 +41,12 @@
             name: 'วันที่อนุมัติ',
             param: 'dateApprove',
           },
-          { type: 'textField',param: 'status',name: 'สถานะ' }
+          // { type: 'textField',param: 'status',name: 'สถานะ' }
+          {
+            name: 'สถานะ',
+            param: 'status',
+            options: this.$store.getters.durableGoodSelectableOptionsRequestStatusEnum,
+          },
         ],
         
       }

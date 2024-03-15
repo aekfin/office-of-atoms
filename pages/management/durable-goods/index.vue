@@ -81,7 +81,12 @@
             apiPath: 'equipment/category/models'
           },
           { type: 'textField',param: 'ouName',name: 'ผู้ครอบครอง' },
-          { type: 'textField',param: 'status',name: 'สถานะ' }
+          // { type: 'textField',param: 'status',name: 'สถานะ' }
+          {
+            name: 'สถานะ',
+            param: 'status',
+            options: this.$store.getters.durableGoodSelectableOptions,
+          },
         ]
 
       }

@@ -15,4 +15,8 @@ export default {
     const list = state.durableGoodSelectable
     return Object.keys(list).map(key => ({ id: key, name: list[key] }))
   },
+  durableGoodSelectableOptionsRequestStatusEnum (state) {
+    const list = state.requestStatusEnum
+    return Object.keys(list).map(key => ({ id: key, name: list[key] }))
+  },
 }
