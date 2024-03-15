@@ -502,8 +502,8 @@
             console.log(this.form.period);
             if(this.form.period){
               for (let i = 0; i < this.form.period.length; i++) {
-              this.form.period[i].periodDate = this.form.period[i].periodDate ? this.$fn.convertDateToString(this.form.period[i].periodDate) : '';
-            }
+                this.form.period[i].periodDate = this.form.period[i].periodDate ? this.$fn.convertDateToString(this.form.period[i].periodDate) : '';
+              }
             }
             
             // form.period1Date = form.period1Date ? this.$fn.convertDateToString(form.period1Date) : ''
@@ -515,7 +515,6 @@
             const apiPath = this.isCreate ? 'Project/addProjectV2' : 'Project/updateProjectV2'
             const method = this.isCreate ? 'post' : 'patch'
             const res = await this.$store.dispatch('http', { method, apiPath, data: form })
-
             if(res.data.status){
               if('400' === res.data.status.code){ 
                 await this.$store.dispatch('snackbar', { text: `Error : ${res.data.status.description}`, props: { color: 'red', top: true } })               
@@ -525,16 +524,18 @@
                 this.attachFiles = []
                 this.removeFile = []
                 await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างโครงการสำเร็จ' : 'แก้ไขโครงการสำเร็จ' })
-                if (this.isCreate) this.$router.push('/project/')
-                else await this.getData() 
+                this.$router.push('/project/')
+                // if (this.isCreate) this.$router.push('/project/')
+                // else await this.getData() 
               }
             }else{
               if (this.attachFiles.length) await this.uploadFiles(res.data.id)
               this.attachFiles = []
               this.removeFile = []
               await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างโครงการสำเร็จ' : 'แก้ไขโครงการสำเร็จ' })
-              if (this.isCreate) this.$router.push('/project/')
-              else await this.getData() 
+              this.$router.push('/project/')
+              // if (this.isCreate) this.$router.push('/project/')
+              // else await this.getData() 
             }            
             return Promise.resolve(res)
           } catch (err) {
