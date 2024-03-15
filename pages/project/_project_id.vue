@@ -498,9 +498,14 @@
             form.contractStartDate = this.$fn.convertDateToString(form.contractStartDate)
             form.contractEndDate = this.$fn.convertDateToString(form.contractEndDate)
             form.warrantyEndDate = this.$fn.convertDateToString(form.warrantyEndDate)
-            for (let i = 0; i < this.form.period.length; i++) {
+            console.log("###################################");
+            console.log(this.form.period);
+            if(this.form.period){
+              for (let i = 0; i < this.form.period.length; i++) {
               this.form.period[i].periodDate = this.form.period[i].periodDate ? this.$fn.convertDateToString(this.form.period[i].periodDate) : '';
             }
+            }
+            
             // form.period1Date = form.period1Date ? this.$fn.convertDateToString(form.period1Date) : ''
             // form.period2Date = form.period2Date ? this.$fn.convertDateToString(form.period2Date) : ''
             // form.period3Date = form.period3Date ? this.$fn.convertDateToString(form.period3Date) : ''
