@@ -53,7 +53,7 @@ export default {
     proxy: true /* !isProd */,
   },
 
-  proxy: { '/api': { target: 'http://10.2.5.168:8081/frs/webservice/', ws: true } },
+  proxy: { '/api': { target: 'http://172.19.0.1:8081/frs/webservice/', ws: true } },
   //proxy: { '/api': { target: 'http://178.128.99.60:8081/frs/webservice/', ws: true } },
   // proxy: { '/api': { target: 'http://localhost:8081/frs/webservice/', ws: true } },
 
