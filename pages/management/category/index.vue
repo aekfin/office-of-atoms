@@ -189,9 +189,10 @@
       },
       async onEdit ({ form, uploadingFiles, removeFiles }) {
         try {
+          const req = { name: form.name, majorCategoryId: form.majorCategoryId, subCategoryId: form.subCategoryId, typeId: form.typeId };
           let { editApiPath } = this.tabActive
           editApiPath = editApiPath && form.id && `${this.tabActive.editApiPath}/${form.id}`
-          if (editApiPath) await this.$store.dispatch('http', { method: 'patch', apiPath: editApiPath, data: { name: form.name } })
+          if (editApiPath) await this.$store.dispatch('http', { method: 'patch', apiPath: editApiPath, data: req })
           if (uploadingFiles?.length) await this.onFileImage({ id: form.id, uploadingFiles, removeFiles })
           if (removeFiles?.length) await this.onFileImage({ id: form.id, uploadingFiles, removeFiles })
           this.createDialog = false

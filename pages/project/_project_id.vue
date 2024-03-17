@@ -499,7 +499,6 @@
             form.contractEndDate = this.$fn.convertDateToString(form.contractEndDate)
             form.warrantyEndDate = this.$fn.convertDateToString(form.warrantyEndDate)
             console.log("###################################");
-            console.log(this.form.period);
             if(this.form.period){
               for (let i = 0; i < this.form.period.length; i++) {
                 this.form.period[i].periodDate = this.form.period[i].periodDate ? this.$fn.convertDateToString(this.form.period[i].periodDate) : '';

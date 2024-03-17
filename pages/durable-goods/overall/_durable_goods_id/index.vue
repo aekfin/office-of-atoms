@@ -335,6 +335,7 @@
           if (ouId && quantity && mejorCategoryId && inspectionDate) {
             this.isNumberLoading = true
             const query = { ouId, quantity, registrationType: equipment.registrationType, moneyType: equipment.moneyType, mejorCategoryId, inspectionDate, count }
+            
             const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query })
             data?.forEach((number, i) => {
               equipment.detailList[i].number = number
@@ -359,6 +360,7 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/project/${this.$route.params.durable_goods_id}` })
+          
           this.form = {
             ...data,
             equipments: [{
@@ -389,7 +391,7 @@
               model: data.model,
             }
           }
-          await this.getModelImage(data.model.id)
+          if(data.model?.id) await this.getModelImage(data.model.id);
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
@@ -422,8 +424,8 @@
             equipments: this.form.equipments.map(equipment => ({ ...equipment, ownerId: this.form.ownerId, ...this.convertDetail(equipment) })),
             dateEntry: this.$fn.convertDateToString(this.form.dateEntry),
             inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
-            dateReceivedBefore: this.$fn.convertDateToString(this.form.dateReceivedBefore),
-            dateReceivedAfter: this.$fn.convertDateToString(this.form.dateReceivedAfter),
+            dateReceivedBefore: this.form.dateReceivedBefore ? this.$fn.convertDateToString(this.form.dateReceivedBefore) : '',
+            dateReceivedAfter: this.form.dateReceivedAfter ? this.$fn.convertDateToString(this.form.dateReceivedAfter) : '',
           }
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/project/import', data: form })
           await Promise.all(

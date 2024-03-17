@@ -115,6 +115,7 @@
           this.form.id = this.editItem.id
           this.form.name = this.editItem.name
         }
+        
         const { data } = await this.$store.dispatch('http', { apiPath: `equipment/category/model/${this.editItem.id}` })
         this.files = data.fileInfo
       },

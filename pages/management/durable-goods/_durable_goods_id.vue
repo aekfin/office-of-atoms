@@ -301,7 +301,6 @@
             ...equipmentDetail,
           }
           // userId
-          console.log('form form ',form);
           
           const { data } = await this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/Edit', data: form })
           if (data?.status?.code == 200){

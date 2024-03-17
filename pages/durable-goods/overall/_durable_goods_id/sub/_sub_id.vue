@@ -106,9 +106,10 @@
       <v-container class="mt-2">
         <div v-for="(subEquipment, i) in subEquipments" :key="i" class="sub-equipment">
           <h6 class="text-h6 mb-4"><b>ครุภัณฑ์ย่อยที่ {{ i + 1 }}.</b>
-            <v-btn  color="error" icon @click.stop="onDelete(subEquipment)">
-            <i class="material-icons">delete</i>
-          </v-btn>
+            <!-- <v-btn  color="error" icon @click.stop="onDelete(subEquipment)"> -->
+            <v-btn v-if="!subEquipment.newOne" color="error" icon @click.stop="handleDeleteAction(subEquipment)">
+              <i class="material-icons">delete</i>
+            </v-btn>
           </h6>          
           
 
@@ -153,6 +154,7 @@
         </v-row>
       </v-container>
     </v-form>
+    <ConfirmDialog :value.sync="editORDelDialog" title="แจ้งเตือน" text="ยืนยันจะทำการลบครุภัณฑ์ย่อยหรือไม่" @submit="onDelete"/>
   </div>
 </template>
 
@@ -160,6 +162,7 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
+      ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
     },
     data () {
       return {
@@ -167,6 +170,7 @@
         isLoading: false,
         isLoadingNumber: false,
         equipment: null,
+        editORDelDialog: false,
         formExpand: [0],
         subEquipments: [],
         subItemDelete: [],
@@ -192,10 +196,16 @@
     methods: {
       async onDelete (item) {
         try {
-          
-          this.subItemDelete.push(item.id);
-          console.log('onDelete item ',this.subItemDelete)
+          this.isLoading = true
           this.subEquipments.splice(this.subEquipments.indexOf(item), 1);
+
+          const deletes = this.subItemDelete.filter(equipment => equipment.id)
+
+          if (deletes.length) {
+            await Promise.all(deletes.map(del => this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/deleteSubEquipment', data: del })))  
+            this.subItemDelete = [];           
+          }
+          this.isLoading = false
           return Promise.resolve()
         } catch (err) {
           return Promise.reject(err)
@@ -217,6 +227,7 @@
             assetNumberAorWor: '',
             numberSubAorWor: '',
             assetSubNumber: '',
+            newOne: true
           }
         )
         this.getSubEquipmentNumber()
@@ -239,8 +250,11 @@
           this.isLoadingNumber = true
           const query = { equipmentId: this.durableGoodsId, quantity: this.subEquipments.length, count: 0 }
           const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/genSubEquipmentNumber', query })
+          
           this.subEquipments.forEach((subEquipment, i) => {
-            if (!subEquipment.number) subEquipment.number = data[i]
+            if (!subEquipment.number) {
+              subEquipment.number = data[data.length-1]
+            }
           })
           this.isLoadingNumber = false
           return Promise.resolve()
@@ -252,25 +266,27 @@
           if (valid) {
             const creates = this.subEquipments.filter(equipment => !equipment.id)
             const edits = this.subEquipments.filter(equipment => equipment.id)
-
             if (creates.length) {
               const createData = { equipmentId: this.durableGoodsId, subEquipments: creates }
               await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/importSubEquipment', data: createData })
             }
             if (edits.length) {
-              const edits2 = {
-              ...edits,
-              subItemDelete: this.subItemDelete || [],
-              } 
-              
-              console.log('edits2 ',edits2);
-              await Promise.all(edits.map(edit => this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/editSubEquipment', data: edit })))
+              await Promise.all(edits.map(edit => this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/editSubEquipment', data: edit })))              
             }
+             
             await this.getSubEquipment()
           }
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
-      }
+      },
+      handleDeleteAction (item) {   
+        if (item.id) {          
+          this.editORDelDialog = true
+          this.subItemDelete.push(item);
+        }else{
+          this.subEquipments.splice(this.subEquipments.indexOf(item), 1);
+        }
+      },
     },
     
   }
