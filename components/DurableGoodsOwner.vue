@@ -7,7 +7,9 @@
       <SelectDropdown :value.sync="organizationId" :label="`กอง ${onlyUser ? '' : '*'}`" itemText="ouName" :rules="ouRules" required :disabled="disabled" apiPath="Orgchart/getOrganizations" @select="$emit('ouChange', $event)"/>
     </v-col>
     <v-col :cols="12" :md="4">
-      <SelectDropdown :value.sync="departmentId" :label="`กลุ่ม ${onlyUser ? '' : '*'}`" itemText="departmentName" :rules="departmentRules" required :disabled="disabled" apiPath="Orgchart/getDepartments"/>
+      <!-- <SelectDropdown :value.sync="departmentId" :label="`กลุ่ม ${onlyUser ? '' : '*'}`" itemText="departmentName" :rules="departmentRules" required :disabled="disabled" apiPath="Orgchart/getDepartments"/> -->
+      <SelectDropdown :value.sync="departmentId" :label="`กลุ่ม ${onlyUser ? '' : '*'}`" itemText="departmentName" :rules="departmentRules" required :disabled="disabled || !organizationId" apiPath="Orgchart/getDepartmentsByOU" 
+      :query="{ ouId: organizationId }"/>
     </v-col>
     <v-col :cols="12" :md="4">
       <!-- <SelectDropdown :value.sync="userId" :label="`บุคคล ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" apiPath="user/listUsers"

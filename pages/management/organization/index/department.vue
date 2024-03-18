@@ -22,7 +22,17 @@
           <div class="mt-3">
             <v-form ref="form" v-model="valid" lazyValidation>
               <v-row>
-                <v-col :cols="12">
+                <v-col :cols="12" :md="9"> 
+                  <OrganizationDropdown v-if="isCreate || editMode" v-model="organizationName" itemValue="ouName" itemText="ouName" label="กอง *" apiPath="Orgchart/organization-detail" 
+                    :rules="ouNameRules" required  @select="onSelectOrganization"/>                
+                  <v-text-field v-if="!isCreate && !editMode" v-model="organizationName" label="กอง *" :rules="ouNameRules" required disabled/>
+                </v-col>
+                <v-col v-if="!isCreate" class="d-flex align-center" cols="auto">
+                  <v-btn block outlined @click="onEditProject">เลือกกองอื่น</v-btn>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col :cols="12" :md="9">
                   <v-text-field v-model="form.name" label="ชื่อกลุ่ม *" :rules="nameRule" required/>
                 </v-col>
               </v-row>
@@ -44,6 +54,7 @@
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
+      OrganizationDropdown: () => import('~/components/OrganizationDropdown.vue'),
     },
     data () {
       return {
@@ -56,13 +67,19 @@
         form: { name: '' },
         isCreate: true,
         valid: false,
+        organizationId: null,
+        organizationName: '',
+        editMode: false,
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
-          { text: 'ชื่อกอง', value: 'departmentName' },
+          { text: 'ชื่อกลุ่ม', value: 'departmentName' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
         nameRule: [
           v => !!v || 'โปรดใส่ชื่อกลุ่ม',
+        ],
+        ouNameRules: [
+          v => !!v || 'โปรดใส่ชื่อกอง',
         ],
       }
     },
@@ -103,9 +120,13 @@
         this.form = { name: '' }
         this.dialog = true
       },
-      onEdit (item) {
+      async onEdit (item) {
+        
+
+        const { data } = await this.$store.dispatch('http', { apiPath: 'Orgchart/getOrganizationsById', query: { ouId: item.organizationId } })
+        this.organizationName = data?.[0].ouName;
         this.isCreate = false
-        this.form = { id: item.id, name: item.departmentName }
+        this.form = { id: item.id, name: item.departmentName, organizationId: item.organizationId}
         this.dialog = true
       },
       async onDelete (item) {
@@ -125,9 +146,9 @@
         if (valid) {
           try {
             if (this.isCreate) {
-              await this.$store.dispatch('http', { method: 'post', apiPath: 'Orgchart/addDepartments', data: { names: [this.form.name] } })
+              await this.$store.dispatch('http', { method: 'post', apiPath: 'Orgchart/addDepartments', data: { names: [this.form.name], organizationId: this.form.organizationId } })
             } else {
-              await this.$store.dispatch('http', { method: 'patch', apiPath: `Orgchart/editDepartment/${this.form.id}`, query: { newName: this.form.name } })
+              await this.$store.dispatch('http', { method: 'patch', apiPath: `Orgchart/editDepartment/${this.form.id}`, query: { newName: this.form.name , organizationId: this.form.organizationId} })
             }
             await this.$store.dispatch('snackbar', { text: `${this.title}สำเร็จ` })
             this.dialog = false
@@ -138,6 +159,13 @@
           }
         }
 
+      },
+      onEditProject () {
+        this.form.projectName = ''
+        this.editMode = true
+      },
+      onSelectOrganization (item ) {
+        this.form.organizationId = item.item.id
       },
     },
   }

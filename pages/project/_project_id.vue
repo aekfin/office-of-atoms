@@ -33,7 +33,7 @@
               <v-text-field v-model="budgetEnd" class="cost-field" label="งบประมาณสูงสุด *" :rules="budgetEndRules" type="number" :disabled="!budgetStart"/>
             </v-row>
           </v-col>
-          <v-col :cols="12" :md="6">
+          <v-col :cols="12" :md="6"> 
             <ProjectDropdown v-model="form.projectName" itemValue="projectName" itemText="projectName" label="โครงการ *" :apiPath="propjectApiPath" :query="projectQuery"
               :rules="projectRules" isProject required :disabled="!year || !budgetStart || !budgetEnd" @select="onSelectProject"/>
           </v-col>
