@@ -9,7 +9,7 @@
       </template>
     </v-data-table>
     <Pagination/>
-    <ConfirmDialog :value.sync="errorDialog" title="แจ้งเตือน" text="ไม่สามารถลบบุคลากรได้ เนื่องจากมีการใช้บุคลากรนี้ไปแล้ว" hideSubmit closeText="รับทราบ"/>
+    <ConfirmDialog :value.sync="errorDialog" title="แจ้งเตือน" text="ไม่สามารถลบข้อมูลคู่สัญญาได้ เนื่องจากมีการใช้คู่สัญญานี้ไปแล้ว" hideSubmit closeText="รับทราบ"/>
   </div>
 </template>
 
@@ -29,7 +29,7 @@
         search: '',
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
-          { text: 'รหัสบริษัท', value: 'companyNumber', align: 'center', width: '200px' },
+          { text: 'เลขประจำตัวผู้เสียภาษี', value: 'companyNumber', align: 'center', width: '200px' },
           { text: 'ชื่อบริษัท', value: 'companyName' },
           { text: 'ที่อยู่บริษัท', value: 'companyAddress', width: '240px' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
@@ -51,7 +51,12 @@
             param: 'companyNumber',
             name: 'รหัสบริษัท',
            
-          }
+          },
+          {
+            name: 'ประเภทผู้ขาย',
+            param: 'companyType',
+            options: this.$store.getters.companyTypeSelectableOptions,
+          },
         ],
       }
     },

@@ -175,7 +175,6 @@
         this.editMode = true
       },
       onSelectOrganization (item ) {
-        console.log('item ', item);
         this.form.organizationId = item.item?.id  || null
       },
       closeDialog () {

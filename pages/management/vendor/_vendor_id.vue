@@ -9,7 +9,7 @@
             <UploadImage class="mt-4" :image.sync="form.image"/>
           </v-col> -->
           <v-col :cols="12" :md="8">
-            <v-text-field v-model="form.companyNumber" name="code" label="รหัสผู้ขาย *" :rules="codeRules" required :loading="companyNumberLoading"
+            <v-text-field v-model="form.companyNumber" name="code" label="เลขประจำตัวผู้เสียภาษี *" :rules="codeRules" required :loading="companyNumberLoading"
               @blur="checkCompanyNumber"/>
           </v-col>
           <v-col :cols="12" :md="4">
@@ -130,12 +130,15 @@
         ],
         contactNameRules: [
           v => !!v || 'โปรดใส่ชื่อ - นามสกุล',
+          v => /^[a-zA-Zก-๏\s]+$/.test(v) || 'กรุณากรอกชื่อ-นามสกุลเป็นตัวอักษรเท่านั้น'
         ],
         contactTelRules: [
           v => !!v || 'โปรดใส่เบอร์โทรศัพท์',
+          v => /^\d+$/.test(v) || 'กรุณากรอกเบอร์โทรศัพท์เป็นตัวตัวเลขเท่านั้น'
         ],
         contactPositionRules: [
           v => !!v || 'โปรดใส่ตำแหน่ง',
+          v => /^[a-zA-Zก-๏\s]+$/.test(v) || 'กรุณากรอกตำแหน่งเป็นตัวอักษรเท่านั้น'
         ],
         contactEmailRules: [
           v => v ? this.$fn.checkEmailFormat(v) || 'โปรดใส่ E-Mail ให้ถูกต้อง' : 'โปรดใส่ E-Mail'

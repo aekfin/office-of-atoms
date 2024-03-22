@@ -90,12 +90,16 @@ export default () => ({
     'REPAIR': 'ส่งซ่อม',
     'DONATE': 'รับบริจาค',
   },
+  companyTypeSelectable: {
+    'corporation': 'นิติบุคคล',
+    'person': 'บุคคลธรรมดา',
+  },
   durableGoodTypes: {
     'BORROW': 'ยืม',
     'RETURN': 'คืน',
     'REQUISITION': 'เบิก',
     'TRANSFER': 'โอนย้าย',
-  },
+  },   
   projectFormatList: [
     { id: 'ซื้อ', name: 'ซื้อ' },
     { id: 'จ้าง', name: 'จ้าง' },

@@ -84,7 +84,7 @@
         ],
         minimumStockRule: [
           v => !!v || v === 0 || 'โปรดใส่ขั้นต่ำสำหรับการแจ้งเตือน',
-          v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่าหรือเท่ากับ 0' 
+          v => /^[0-9]$/.test(v) || 'กรุณาใส่ค่ามากกว่าหรือเท่ากับ 0' 
         ],
         filters: [
           {
@@ -188,9 +188,11 @@
         } catch (err) { return Promise.reject(err) }
       },
       onEditmedel () {
-        this.closeCreateDialog ();
-        this.comfirmDialog = true
-
+        const valid = this.$refs.form.validate()
+        if (valid) {
+          this.closeCreateDialog ();
+          this.comfirmDialog = true
+        }
       },
       handleEditAction (item) {
         this.openCreateDialog();

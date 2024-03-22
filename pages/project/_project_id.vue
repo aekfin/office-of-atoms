@@ -150,7 +150,7 @@
                     </div>
                     <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
                     <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์" :rules="phoneNumberRules"/>
-                    <v-text-field v-model="contact.email" class="email" label="E-Mail"/>
+                    <v-text-field v-model="contact.email" class="email" label="E-Mail" :rules="emailRules"/>
                     <v-btn v-if="form.directors.length > 1" icon @click="removeContact(i)">
                       <i class="material-icons">delete</i>
                     </v-btn>
@@ -354,7 +354,7 @@
           v => /^[a-zA-Zก-๏\s]+$/.test(v) || 'กรุณากรอกชื่อ-นามสกุลเป็นตัวอักษรเท่านั้น'
         ],
         phoneNumberRules: [
-          v => /^\d+$/.test(v) || 'กรุณากรอกเบอร์โทรศัพท์เป็นตัวตัวเลขเท่านั้น'
+          v => v === '' || /^\d+$/.test(v) || 'กรุณากรอกเบอร์โทรศัพท์เป็นตัวตัวเลขเท่านั้น'
         ],
         emailRules: [ 
           v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'โปรดตรวจสอบ E-Mail'
