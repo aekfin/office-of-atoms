@@ -149,7 +149,7 @@
                       <v-text-field v-model="contact.description" label="ตำแหน่ง *" :rules="positionRules"/>
                     </div>
                     <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
-                    <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์"/>
+                    <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์" :rules="phoneNumberRules"/>
                     <v-text-field v-model="contact.email" class="email" label="E-Mail"/>
                     <v-btn v-if="form.directors.length > 1" icon @click="removeContact(i)">
                       <i class="material-icons">delete</i>
@@ -180,8 +180,8 @@
                       <div class="mr-5">{{ i + 1 }}.</div>
                       <SelectDropdown :value.sync="contact.description" :items="companyPositionList" itemValue="id" itemText="name" label="ประเภทคณะกรรมการ *" :rules="contactPositionRules"/>
                     </div>
-                    <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
-                    <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์"/>
+                    <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules" />
+                    <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์" :rules="phoneNumberRules"/>
                     <v-text-field v-model="contact.email" class="email" label="E-Mail" :rules="emailRules"/>
                     <v-btn v-if="form.committees.length > 1" icon @click="removeCommittee(i)">
                       <i class="material-icons">delete</i>
@@ -347,13 +347,18 @@
         ],
         positionRules: [
           v => !!v || 'โปรดใส่ตำแหน่ง',
+          v => /^[a-zA-Zก-๏\s]+$/.test(v) || 'กรุณากรอกตำแหน่งเป็นตัวอักษรเท่านั้น'
         ],
         contactNameRules: [
           v => !!v || 'โปรดเลือกผู้ติดต่อ',
+          v => /^[a-zA-Zก-๏\s]+$/.test(v) || 'กรุณากรอกชื่อ-นามสกุลเป็นตัวอักษรเท่านั้น'
+        ],
+        phoneNumberRules: [
+          v => /^\d+$/.test(v) || 'กรุณากรอกเบอร์โทรศัพท์เป็นตัวตัวเลขเท่านั้น'
         ],
         emailRules: [ 
-        v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'โปรดตรวจสอบ E-Mail'
-      ]
+          v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'โปรดตรวจสอบ E-Mail'
+        ]
       }
     },
     computed: {
@@ -554,7 +559,7 @@
           }
           return true;
         };
-      }
+      },
     },
   }
 </script>

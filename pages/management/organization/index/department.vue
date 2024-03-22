@@ -10,11 +10,12 @@
 
     <ConfirmDialog :value.sync="errorDialog" title="แจ้งเตือน" text="ไม่สามารถลบกลุ่มได้ เนื่องจากมีการใช้กลุ่มนี้ไปแล้ว" hideSubmit closeText="รับทราบ"/>
 
-    <v-dialog v-model="dialog" width="720" contentClass="type-parcel-dialog">
+    <v-dialog v-model="dialog" width="720" contentClass="type-parcel-dialog teststyle">
       <v-card>
         <v-card-title class="text-h5 justify-space-between">
           <div>{{ title }}</div>
-          <v-btn icon @click="dialog = false">
+          <v-btn icon @click="closeDialog">
+            <!-- <v-btn icon @click="dialog = false"> -->
             <i class="material-icons">close</i>
           </v-btn>
         </v-card-title>
@@ -120,14 +121,17 @@
         this.form = { name: '' }
         this.dialog = true
       },
-      async onEdit (item) {
-        
+      async onEdit (item) {        
 
         const { data } = await this.$store.dispatch('http', { apiPath: 'Orgchart/getOrganizationsById', query: { ouId: item.organizationId } })
         this.organizationName = data?.[0].ouName;
         this.isCreate = false
         this.form = { id: item.id, name: item.departmentName, organizationId: item.organizationId}
         this.dialog = true
+        const element = document.querySelector('.v-dialog__content');
+        if (element) {
+          element.style.pointerEvents = 'auto';           
+        }
       },
       async onDelete (item) {
         try {
@@ -144,7 +148,13 @@
       async onSubmit () {
         const valid = this.$refs.form.validate()
         if (valid) {
+          const element = document.querySelector('.v-dialog__content');
+          if (element) {
+            element.style.pointerEvents = 'none';           
+          }
+          this.editMode = false
           try {
+            this.isLoading = true
             if (this.isCreate) {
               await this.$store.dispatch('http', { method: 'post', apiPath: 'Orgchart/addDepartments', data: { names: [this.form.name], organizationId: this.form.organizationId } })
             } else {
@@ -165,13 +175,26 @@
         this.editMode = true
       },
       onSelectOrganization (item ) {
-        this.form.organizationId = item.item.id
+        console.log('item ', item);
+        this.form.organizationId = item.item?.id  || null
       },
+      closeDialog () {
+        this.dialog = false
+        const element = document.querySelector('.v-dialog__content');
+        if (element) {
+          element.style.pointerEvents = 'none';           
+        }
+        this.editMode = false
+      }
     },
   }
 </script>
 
 <style lang="scss">
   #department-page {
+  }
+
+  .v-dialog__content {
+    pointer-events:  auto
   }
 </style>
