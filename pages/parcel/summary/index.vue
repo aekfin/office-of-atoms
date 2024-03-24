@@ -9,6 +9,7 @@
       </template>
     </v-data-table>
     <Pagination/>
+    <ConfirmDialog :value.sync="deleteDialog" title="แจ้งเตือน" text="ยืนยันจะทำการลบวัสดุคงคลังหรือไม่" @submit="onDelete"/>
   </div>
 </template>
 
@@ -23,6 +24,8 @@
         isLoading: true,
         total: 0,
         count: 0,
+        deleteDialog: false,        
+        itemDelete: '',
         originalHeaders: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ชื่อวัสดุคงคลัง', value: 'name' },
@@ -71,9 +74,22 @@
         this.headers = this.originalHeaders
         if (this.$store.getters.isTreasury) this.headers.push({ text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' })
       },
+      async onDelete () {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', {apiPath: 'parcel/deleteParcelMasters/'+this.itemDelete})
+          await this.getList()
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
+      handleDeleteAction (item) {
+        this.deleteDialog = true
+        this.itemDelete = item
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'edit', action: `/parcel/summary/${item.id}/` },
+          { type: 'delete', icon: 'delete', action: () => { this.handleDeleteAction(item.id) } },
         ]
       }
     }

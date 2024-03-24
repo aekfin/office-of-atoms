@@ -16,7 +16,8 @@
       </template>
     </v-data-table>
     <Pagination/>
-    <ConfirmDialog :value.sync="errorDialog" title="แจ้งเตือน" text="ไม่สามารถลบโครงการได้ เนื่องจากมีการใช้โครงการนี้ไปแล้ว" hideSubmit closeText="รับทราบ"/>
+    <ConfirmDialog :value.sync="errorDialog" title="แจ้งเตือน" text="ไม่สามารถลบโครงการได้ เนื่องจากมีการใช้โครงการนี้ไปแล้ว" hideSubmit closeText="รับทราบ"/>    
+    <ConfirmDialog :value.sync="deleteDialog" title="แจ้งเตือน" text="ยืนยันจะทำการลบโครงการหรือไม่" @submit="onDeleteType"/>
   </div>
 </template>
 
@@ -34,6 +35,8 @@
         errorDialog: false,
         count: 0,
         total: 0,
+        deleteDialog: false,
+        itemDelete: '',
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'เลขที่โครงการ', value: 'projectNumber', width: '140px', align: 'center' },
@@ -70,6 +73,14 @@
             name: 'ปีงบประมาณ',
             param: 'year',
           },
+          { type: 'datePicker',
+            param: 'projectStartDate',
+            name: 'วันทีเริ่มโครงการ' 
+          },
+          { type: 'datePicker',
+            param: 'contractStartDate',
+            name: 'วันเริ่มสัญญา' 
+          },
         ],
       }
     },
@@ -91,9 +102,20 @@
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
-      async removeProject (item) {
+      // async removeProject (item) {
+      //   try {
+      //     const { data } = await this.$store.dispatch('http', { apiPath: `Project/delete/${item.id}` })
+      //     if (data?.status?.code == 400) this.errorDialog = true
+      //     else await this.$store.dispatch('snackbar', { text: 'ลบโครงการสำเร็จ' })
+      //     await this.getList()
+      //     return Promise.resolve()
+      //   } catch (err) {
+      //     return Promise.reject(err)
+      //   }
+      // },
+      async onDeleteType () {
         try {
-          const { data } = await this.$store.dispatch('http', { apiPath: `Project/delete/${item.id}` })
+          const { data } = await this.$store.dispatch('http', { apiPath: 'Project/delete/'+this.itemDelete })
           if (data?.status?.code == 400) this.errorDialog = true
           else await this.$store.dispatch('snackbar', { text: 'ลบโครงการสำเร็จ' })
           await this.getList()
@@ -102,10 +124,15 @@
           return Promise.reject(err)
         }
       },
+      handleDeleteAction (item) {
+        this.deleteDialog = true
+        this.itemDelete = item
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'edit', action: `/project/${item.id}/` },
           // { type: 'confirm', icon: 'delete', action: () => { this.removeProject(item) } },
+          { type: 'delete', icon: 'delete', action: () => { this.handleDeleteAction(item.id) } },
         ]
       }
     }

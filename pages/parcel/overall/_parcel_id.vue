@@ -6,11 +6,15 @@
       <v-container>
         <v-row>
           <v-col :cols="12" :md="2">
-            <v-text-field v-model="form.year" label="ปีงบประมาณ *" :rules="yearRules" type="number"/>
+            <v-text-field v-model="year" label="ปีงบประมาณ *" :rules="yearRules" type="number"/>
           </v-col>
           <v-col :cols="12" :md="6">
-            <SelectDropdown v-if="isCreate" :value.sync="form.projectId" itemValue="id" itemText="projectName" label="โครงการ *" apiPath="Project/getListProject" :rules="projectRules" required :disabled="!isCreate"/>
+            <!-- <ProjectDropdown v-if="isCreate" v-model="form.projectName" itemValue="projectName" itemText="projectName" label="โครงการ *" :apiPath="propjectApiPath" :query="projectQuery"
+              :rules="projectRules" isProject required :disabled="!year" @select="onSelectProject"/> -->
+            <SelectDropdown v-if="isCreate" :value.sync="form.projectId" itemValue="id" itemText="projectName" label="โครงการ *" apiPath="Project/getListProject" :rules="projectRules" required 
+            :disabled="!isCreate" :query="projectQuery"/>
             <v-text-field v-else v-model="form.projectName" label="โครงการ *" disabled/>
+           
           </v-col>
           <v-col :cols="12" :md="4">
             <InputDatePicker :value.sync="form.dateEntry" label="วันที่รับเข้า *" :rules="dateEntryRules" required :disabled="!isCreate"/>
@@ -76,11 +80,13 @@
       AutocompleteDropdown: () => import('~/components/AutocompleteDropdown.vue'),
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       Loading: () => import('~/components/Loading.vue'),
+      // ProjectDropdown: () => import('~/components/ProjectDropdown.vue'), 
     },
     data () {
       return {
         valid: true,
         isLoading: false,
+        year: (new Date()).getFullYear() + 543,
         form: {
           projectId: null,
           dateEntry: new Date(),
@@ -122,6 +128,12 @@
     computed: {
       isCreate () {
         return this.$route.params.parcel_id === 'create'
+      },      
+      propjectApiPath () {
+        return 'thirdParty/project-detail-nobudget'
+      },
+      projectQuery () {
+        return { year: this.year || 2563,}
       },
     },
     mounted () {
@@ -177,6 +189,20 @@
       onSelectType (i) {
         this.form.itemParcels[i].parcelMasterId = null
         this.parcelItems = []
+      },
+      onSelectProject ({ val, item }) {
+        // const getDate = date => date && date.setFullYear(date.getFullYear() - 543) || ''
+        // if (item) {
+        //   this.form.projectName = item.projectName
+        //   this.form.projectNumber = item.projectNumber
+        //   this.form.contractNumber = item.contractNumber
+        //   this.form.projectStartDate = item.projectStartDate ? this.$fn.convertStringToDate(item.projectStartDate) : ''
+        //   this.form.contractStartDate = item.contractStartDate ? this.$fn.convertStringToDate(item.contractStartDate) : ''
+        //   this.form.contractEndDate = item.contractEndDate ? this.$fn.convertStringToDate(item.contractEndDate) : ''
+        //   getDate(this.form.projectStartDate)
+        //   getDate(this.form.contractStartDate)
+        //   getDate(this.form.contractEndDate)
+        // }
       },
       async onSubmit () {
         const valid = this.$refs.form.validate()

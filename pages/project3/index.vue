@@ -70,6 +70,14 @@
             name: 'ปีงบประมาณ',
             param: 'year',
           },
+          { type: 'datePicker',
+            param: 'projectStartDate',
+            name: 'วันทีเริ่มโครงการ' 
+          },
+          { type: 'datePicker',
+            param: 'contractStartDate',
+            name: 'วันเริ่มสัญญา' 
+          },
         ],
       }
     },

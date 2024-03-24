@@ -49,7 +49,7 @@
           {
             type: 'textField',
             param: 'companyNumber',
-            name: 'รหัสบริษัท',
+            name: 'เลขประจำตัวผู้เสียภาษี',
            
           },
           {
@@ -57,6 +57,30 @@
             param: 'companyType',
             options: this.$store.getters.companyTypeSelectableOptions,
           },
+          // {
+          //   type: 'textField',
+          //   param: 'contactName',
+          //   name: 'ชื่อผู้ติดต่อ',
+           
+          // },
+          // {
+          //   type: 'textField',
+          //   param: 'contactPosition',
+          //   name: 'ตำแหน่งผู้ติดต่อ',
+           
+          // },
+          // {
+          //   type: 'textField',
+          //   param: 'contactEmail',
+          //   name: 'อีเมลผู้ติดต่อ',
+           
+          // },
+          // {
+          //   type: 'textField',
+          //   param: 'contactPhone',
+          //   name: 'เบอร์โทรศัพท์ผู้ติดต่อ',
+           
+          // },
         ],
       }
     },

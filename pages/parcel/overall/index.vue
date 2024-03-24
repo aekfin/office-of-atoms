@@ -11,6 +11,7 @@
       </template>
     </v-data-table>
     <Pagination/>
+    <ConfirmDialog :value.sync="deleteDialog" title="แจ้งเตือน" text="ยืนยันจะทำการลบบริหารวัสดุคงคลังหรือไม่" @submit="onDelete"/>
   </div>
 </template>
 
@@ -26,6 +27,8 @@
         count: 0,
         total: 0,
         items: [],
+        deleteDialog: false,        
+        itemDelete: '',
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'โครงการ', value: 'projectName' },
@@ -68,9 +71,22 @@
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
+      async onDelete () {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', {apiPath: 'parcel/deleteParcelProject/'+this.itemDelete})
+          await this.getList()
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
+      handleDeleteAction (item) {
+        this.deleteDialog = true
+        this.itemDelete = item
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'edit', action: `/parcel/overall/${item.id}/` },
+          { type: 'delete', icon: 'delete', action: () => { this.handleDeleteAction(item.id) } },
         ]
       }
     }

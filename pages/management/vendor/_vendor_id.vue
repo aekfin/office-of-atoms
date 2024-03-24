@@ -9,8 +9,8 @@
             <UploadImage class="mt-4" :image.sync="form.image"/>
           </v-col> -->
           <v-col :cols="12" :md="8">
-            <v-text-field v-model="form.companyNumber" name="code" label="เลขประจำตัวผู้เสียภาษี *" :rules="codeRules" required :loading="companyNumberLoading"
-              @blur="checkCompanyNumber"/>
+            <v-text-field v-model="form.companyNumber" name="code" label="เลขประจำตัวผู้เสียภาษี *"  :rules="rules" required :loading="companyNumberLoading"
+            @blur="checkCompanyNumber"/>
           </v-col>
           <v-col :cols="12" :md="4">
             <SelectDropdown :value.sync="form.companyType" :items="typeList" label="ประเภทผู้ขาย *" :rules="typeRules" required/>
@@ -115,12 +115,14 @@
         ],
         formExpand: [0],
         validCompanyNumber: true,
+        validCompanyNumberEmpty: true,
         companyNumberLoading: false,
         typeRules: [
           v => !!v || 'โปรดเลือกประเภทผู้ขาย',
         ],
         codeRules: [
-          v => v ? this.$fn.validCompanyNumber || 'รหัสผู้ขายซ้ำ' : 'โปรดใส่รหัสผู้ขาย'
+        v => !!v || 'โปรดใส่รหัสผู้ขาย',
+          // v => v ? this.$fn.validCompanyNumber || 'รหัสผู้ขายซ้ำ' : 'โปรดใส่รหัสผู้ขาย'
         ],
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อผู้ขาย/บริษัท',
@@ -143,6 +145,9 @@
         contactEmailRules: [
           v => v ? this.$fn.checkEmailFormat(v) || 'โปรดใส่ E-Mail ให้ถูกต้อง' : 'โปรดใส่ E-Mail'
         ],
+        rules: [
+          v => !!v || 'โปรดใส่รหัสผู้ขาย'
+        ]
       }
     },
     computed: {
@@ -178,8 +183,15 @@
             const { data } = await this.$store.dispatch('http', { apiPath: 'Project/checkCompany', query: { companyNumber: this.form.companyNumber } })
             this.validCompanyNumber = data.data === false
             this.companyNumberLoading = false
+            if (data === true) {
+              this.rules = ['รหัสผู้ขายซ้ำ']
+            } else {
+              this.rules = [];
+            }
             return Promise.resolve()
           } catch (err) { return Promise.reject(err) } 
+        }else{
+          this.rules = ['โปรดใส่รหัสผู้ขาย']
         }
       },
       async onSubmit () {
