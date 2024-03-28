@@ -255,6 +255,10 @@ export default () => ({
           to: '/management/organization/'
         },
         {
+          title: 'ประเภทผู้ขาย',
+          to: '/management/sellertype/'
+        },
+        {
           title: 'บริหารบุคลากร',
           to: '/management/user/'
         },

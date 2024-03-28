@@ -78,6 +78,9 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', {apiPath: 'parcel/deleteParcelMasters/'+this.itemDelete})
+          if('400' === data.status.code){ 
+            await this.$store.dispatch('snackbar', { text: `Error : ${data.status.description}`, props: { color: 'red', top: true } })  
+          }
           await this.getList()
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }

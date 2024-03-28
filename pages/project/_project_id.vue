@@ -375,7 +375,11 @@
         return { year: this.year || 2563, budgetStart: this.budgetStart || 0, budgetEnd: this.budgetEnd || 0 }
       },
       logRoute () {
-        return { apiPath: 'Project/getLogProject', query: { id: this.$route.params.project_id } }
+        if(!this.isCreate){
+          return { apiPath: 'Project/getLogProject', query: { id: this.$route.params.project_id } }
+        }else{
+          return null
+        }  
       },
     },
     watch: {

@@ -52,11 +52,16 @@
             name: 'เลขประจำตัวผู้เสียภาษี',
            
           },
-          {
+          { 
             name: 'ประเภทผู้ขาย',
             param: 'companyType',
-            options: this.$store.getters.companyTypeSelectableOptions,
+            apiPath: 'Orgchart/getListSellerType',
           },
+          // {
+          //   name: 'ประเภทผู้ขาย',
+          //   param: 'companyType',
+          //   options: this.$store.getters.companyTypeSelectableOptions,
+          // },
           // {
           //   type: 'textField',
           //   param: 'contactName',
@@ -99,6 +104,7 @@
     },
     methods: {
       async getList () {
+        
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'Project/getListCompany', query: this.$route.query, context: this })

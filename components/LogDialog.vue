@@ -11,7 +11,8 @@
         <Loading v-if="isLoading"/>
         <template v-else>
           <v-data-table v-if="logList.length" :headers="headers" :items="logList" :itemsPerPage="Infinity" disableSort hideDefaultFooter class="elevation-1 mt-2" :loading="isLoading">
-            <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
+            <!-- <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template> -->
+            <template #item.order="{ index }">{{ index + 1 }}</template>
             <template #item.createdDate="{ item }">
               <div>{{ $fn.displayDateTime(item.createdDate.replace('T', '')) }}</div>
             </template>

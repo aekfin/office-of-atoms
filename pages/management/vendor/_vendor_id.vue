@@ -13,7 +13,8 @@
             @blur="checkCompanyNumber"/>
           </v-col>
           <v-col :cols="12" :md="4">
-            <SelectDropdown :value.sync="form.companyType" :items="typeList" label="ประเภทผู้ขาย *" :rules="typeRules" required/>
+            <!-- <SelectDropdown :value.sync="form.companyType" :items="typeList" label="ประเภทผู้ขาย *" :rules="typeRules" required/>  -->
+            <SelectDropdown :value.sync="form.companyType" apiPath="Orgchart/getListSellerType"  label="ประเภทผู้ขาย *" :rules="typeRules" required/> 
           </v-col>
           <v-col :cols="12">
             <v-text-field v-model="form.companyName" label="ชื่อผู้ขาย/บริษัท *" :rules="nameRules" required/>
