@@ -89,14 +89,24 @@
         filters: [
           {
             type: 'textField',
-            param: 'name',
-            name: 'ชื่อประเภท',
+            param: 'minimumStock',
+            name: 'จำนวนขั้นต่ำ',
           },
           {
             type: 'textField',
-            param: 'minimumStock',
-            name: 'จำนวน',
-          }
+            param: 'maximumStock',
+            name: 'จำนวนสุงสุด',
+          },
+          {
+            type: 'textField',
+            param: 'name',
+            name: 'ชื่อประเภท',
+          },
+          // {
+          //   type: 'textField',
+          //   param: 'minimumStock',
+          //   name: 'จำนวน',
+          // }
         ]
       }
     },

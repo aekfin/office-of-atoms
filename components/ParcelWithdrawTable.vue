@@ -1,5 +1,6 @@
 <template>
   <div id="parcel-withdraw-table">
+    <PageHeader :filters="filters" hideTotal/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.user_fk.thaiFristName="{ item }">{{ item.user_fk.thaiFristName }} {{ item.user_fk.thaiLastName }}</template>
@@ -73,6 +74,24 @@
           { text: 'จำนวนเบิก', value: 'quantity', width: '120px', align: 'center' },
           { text: 'จำนวนจ่าย', value: 'numberOfApproved', width: '120px', align: 'center' },
         ],
+        filters: [
+        {
+          type: 'textField',
+          param: 'thaiFristName',
+          name: 'ผู้ขอเบิกวัสดุคงคลัง',
+        },
+        { type: 'datePicker',
+          param: 'datePickUp',
+          name: 'วันที่เบิก' },
+        {
+            name: 'สถานะการเบิก',
+            param: 'status',
+            options: this.$store.getters.durableGoodSelectableOptionsRequestStatusEnum,
+        },
+        { type: 'textField',
+          param: 'name',
+          name: 'ชื่อวัสดุคงคลัง' },
+        ]
       }
     },
     watch: {

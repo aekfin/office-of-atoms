@@ -62,7 +62,7 @@ import ReportTable from '~/components/ReportTable.vue'
             id: 1,
             name: 'รายงานวัสดุคงคลัง',
             apiPath: 'report/pacelAll',
-            filters: [2, 3, 4, 5],
+            filters: [2, 3, 4, 5, 16],
           },
           {
             id: 2,

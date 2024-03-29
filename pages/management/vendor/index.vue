@@ -9,7 +9,7 @@
       </template>
     </v-data-table>
     <Pagination/>
-    <ConfirmDialog :value.sync="errorDialog" title="แจ้งเตือน" text="ไม่สามารถลบข้อมูลคู่สัญญาได้ เนื่องจากมีการใช้คู่สัญญานี้ไปแล้ว" hideSubmit closeText="รับทราบ"/>
+    <ConfirmDialog :value.sync="errorDialog" title="แจ้งเตือน" text="ไม่สามารถลบข้อมูลคู่สัญญาได้ เนื่องจากมีการใช้คู่สัญญานี้ไปแล้ว" hideSubmit closeText="รับทราบ" @update:value="returnDialog"/>
   </div>
 </template>
 
@@ -115,7 +115,7 @@
       async deleteUser (item) {
         try {
             const { data } = await this.$store.dispatch('http', { apiPath: `Project/delete/company/${item.id}` })
-            if (data?.status?.code == 400) this.errorDialog = true
+            if (data?.status?.code == 400) this.errorDialog = true 
             else await this.$store.dispatch('snackbar', { text: 'ลบบุคลากรสำเร็จ' })
             await this.getList()
             return Promise.resolve(data)
@@ -126,6 +126,9 @@
           { type: 'link', icon: 'edit', action: `/management/vendor/${item.id}/` },
           { type: 'confirm', icon: 'delete', action: () => { this.deleteUser(item) } },
         ]
+      },
+      returnDialog (item) {
+        this.getList()
       },
     },
   }

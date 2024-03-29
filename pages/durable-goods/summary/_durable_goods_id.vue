@@ -1,6 +1,9 @@
 <template>
   <div id="summary-durable-goods-detail-page">
     <PageHeader :text="isCreate ? 'การเพิ่มค่าเริ่มต้นครุภัณฑ์' : 'การแก้ไขค่าเริ่มต้นครุภัณฑ์'" hideTotal :btnText="isCreate ? '' : 'ครุภัณฑ์ย่อย'" :createRoute="createRoute" :logRoute="logRoute"/>
+    <div v-if="!isCreate" class="d-flex justify-end mt-3">
+      <DurableGoodQRCode class="mr-2" :equipment="form"/>
+    </div>
     <Loading v-if="isLoading"/>
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
@@ -90,6 +93,7 @@
       CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
       DurableGoodsOwner: () => import('~/components/DurableGoodsOwner.vue'),
       AttachmentDurableGoods: () => import('~/components/AttachmentDurableGoods.vue'),
+      DurableGoodQRCode: () => import('~/components/DurableGoodQRCode.vue'), 
     },
     data () {
       return {

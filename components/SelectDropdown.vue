@@ -75,7 +75,8 @@
         try {
           this.isLoading = true
           const pageNo = more ? this.pagination.number + 1 : 0
-          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { pageNo, pageSize: 7, ...this.query } })
+          // const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { pageNo, pageSize: 7, ...this.query } })
+          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { pageNo, pageSize: 100, ...this.query } })
           if (data.content) {
             this.pagination = data
             this.list = more || this.items.length ? [ ...this.items, ...this.list, ...data.content ] : data.content

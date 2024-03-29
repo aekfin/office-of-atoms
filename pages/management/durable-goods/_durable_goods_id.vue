@@ -256,7 +256,8 @@
             //   if (this.$refs.attachmentDurableGoods) await this.$refs.attachmentDurableGoods.upload()
             //   await this.getData()
             // }
-            await this.getData()
+            // await this.getData()
+            this.$router.push('/management/durable-goods/')
           }
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
@@ -287,6 +288,7 @@
               this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.categoryForm, id: item.id } })
             })
           )
+          // this.$route.params.durable_goods_id === data?.[0].id
           await this.$store.dispatch('snackbar', { text: 'เพิ่มครุภัณฑ์สำเร็จ' })
           this.$router.push('/management/durable-goods/')
           return Promise.resolve(data)

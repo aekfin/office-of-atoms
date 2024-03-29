@@ -31,16 +31,23 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col :cols="12" :md="6">
+          <!-- <v-col :cols="12" :md="6">
             <SelectDropdown :value.sync="form.ouId" label="กอง *" itemText="ouName" :rules="ouRules" required apiPath="Orgchart/getOrganizations" :disabled="disabled"/>
           </v-col>
           <v-col :cols="12" :md="6">
             <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required apiPath="Orgchart/getDepartments" :disabled="disabled || disabledByPosition"/>
+          </v-col> -->
+          <v-col>
+            <DurableGoodsOwner :organization="form.ouId" :department.sync="form.departmentId" :hideUser="true" :disabled="!isCreate" @ouChange="onOuChange">
+            </DurableGoodsOwner>
           </v-col>
+          
         </v-row>
         <v-row>
           <v-col :cols="12" :md="6">
-            <v-text-field v-model="form.username" label="E-Mail ผู้ใช้งาน *" :rules="usernameRules" name="email" required :disabled="disabled || !isCreate"/>
+            <!-- <v-text-field v-model="form.username" label="E-Mail ผู้ใช้งาน *" :rules="usernameRules" name="email" required :disabled="disabled || !isCreate"/> -->
+            <v-text-field v-model="form.username" label="E-Mail ผู้ใช้งาน *" name="email" :disabled="disabled || !isCreate" :rules="rules" required :loading="emailLoading"
+            @blur="checkEmail"/> 
           </v-col>
           <v-col :cols="12" :md="6">
             <SelectDropdown :value.sync="form.roleName" :items="roleList" label="สิทธ์การใช้งาน *" :rules="roleRules" multiple required :disabled="disabled"/>
@@ -66,7 +73,7 @@
             <v-container>
               <v-row>
                 <v-col>
-                  <v-text-field v-model="form.phone" name="tel" type="tel" label="เบอร์โทรศัพท์" :disabled="disabled"/>
+                  <v-text-field v-model="form.phone" name="tel" type="tel" label="เบอร์โทรศัพท์"  :disabled="disabled"/>
                 </v-col>
               </v-row>
               <v-row>
@@ -117,6 +124,8 @@
           address: ''
         },
         disabledByPosition: false,
+        emailLoading: false,
+        originalEmail: '',
         formExpand: [0],
         roleList: [
           'ADMIN',
@@ -134,16 +143,20 @@
           v => v ? v.length === 13 || 'โปรดใส่รหัสบัตรประชาชนให้ครบ 13 หลัก' : 'โปรดใส่รหัสบัตรประชาชน',
         ],
         fistNameThRules: [
-          v => !!v || 'โปรดใส่ชื่อ',
+          v => !!v || 'โปรดใส่ชื่อ',          
+          v => /^[ก-๏\s]+$/.test(v) || 'กรุณากรอกชื่อเป็นตัวอักษรภาษาไทยเท่านั้น'
         ],
         lastNameThRules: [
           v => !!v || 'โปรดใส่นามสกุล',
+          v => /^[ก-๏\s]+$/.test(v) || 'กรุณากรอกนามสกุลเป็นตัวอักษรภาษาไทยเท่านั้น'
         ],
         fistNameEnRules: [
           v => !!v || 'โปรดใส่ชื่อ (Eng)',
+          v => /^[a-zA-Z\s]+$/.test(v) || 'กรุณากรอกชื่อเป็นตัวอักษรภาษาอังกฤษเท่านั้น'
         ],
         lastNameEnRules: [
           v => !!v || 'โปรดใส่นามสกุล (Eng)',
+          v => /^[a-zA-Z\s]+$/.test(v) || 'กรุณากรอกนามสกุลเป็นตัวอักษรภาษาอังกฤษเท่านั้น'
         ],
         usernameRules: [
           v => v ? this.$fn.checkEmailFormat(v) || 'โปรดใส่ E-Mail ให้ถูกต้อง' : 'โปรดใส่ E-Mail ผู้ใช้งาน'
@@ -163,6 +176,12 @@
         roleRules: [
           v => !!v && v.length || 'โปรดใส่สิทธ์การใช้งาน',
         ],
+        contactTelRules: [
+          v => /^\d+$/.test(v) || 'กรุณากรอกเบอร์โทรศัพท์เป็นตัวตัวเลขเท่านั้น'
+        ],
+        rules: [
+          v => !!v || 'โปรดใส่ E-Mail ผู้ใช้งาน'
+        ]
       }
     },
     computed: {
@@ -209,7 +228,9 @@
       async onSubmit () {
         const valid = this.$refs.form.validate()
         try {
+          
           if (valid) {
+            this.isLoading = true
             const apiPath = this.isCreate ? 'oauth/register' : 'user/update'
             const method = this.isCreate ? 'post' : 'patch'
             const form = { ...this.form }
@@ -223,18 +244,44 @@
               delete form.departmentId
             }
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
-            if(data.code == '200'){
+            if(data.status.code == '200'){
               await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างบุคลากรสำเร็จ' : 'แก้ไขบุคลากรสำเร็จ' })
             }else{
               await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างบุคลากรไม่สำเร็จ' : 'แก้ไขบุคลากรไม่สำเร็จ' })
             }
             if (this.isCreate) this.$router.push('/management/user/')
+            this.isLoading = false
             return Promise.resolve(data)
           } else {
             this.formExpand = [0]
             return Promise.resolve()
           }
         } catch (err) { return Promise.reject(err) }
+      },
+      async checkEmail () {
+        if (this.form.username && this.originalEmail !== this.form.username) {
+          if(this.$fn.checkEmailFormat(this.form.username)){
+            try {
+              this.emailLoading = true
+              const { data } = await this.$store.dispatch('http', { apiPath: 'user/checkUsername', query: { username: this.form.username } })
+              // this.validCompanyNumber = data.data === false
+              this.emailLoading = false
+              if (data === true) {
+                this.rules = ['E-Mail ผู้ใช้งานซ้ำ']
+              } else {
+                this.rules = [];
+              }
+              return Promise.resolve()
+            } catch (err) { return Promise.reject(err) } 
+          }else{
+            this.rules = ['โปรดใส่ E-Mail ให้ถูกต้อง']
+          }
+        }else{
+          this.rules = ['โปรดใส่ E-Mail ผู้ใช้งาน']
+        }
+      },
+      onOuChange ({ val }) {
+        this.form.ouId = val
       },
     }
   }
