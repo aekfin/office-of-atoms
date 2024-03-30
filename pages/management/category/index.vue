@@ -173,7 +173,11 @@
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath, data: { ...form, names: [form.name] }, query: this.$route.query })
           
           if (data?.status?.code == 400){
-            await this.$store.dispatch('snackbar', { text: `สร้าง${this.tabActive.text}ไม่สำเร็จ` , props: { color: 'red' }})
+            if(data?.status?.description){
+              await this.$store.dispatch('snackbar', { text: `Error : ${data.status.description}`, props: { color: 'red', top: true } })  
+            }else{
+              await this.$store.dispatch('snackbar', { text: `สร้าง${this.tabActive.text}ไม่สำเร็จ` , props: { color: 'red' }})
+            }            
           }
           else {
             await this.onFileImage({ id: data?.[0]?.id, uploadingFiles, removeFiles })

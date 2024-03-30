@@ -111,7 +111,7 @@
       async onDelete () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: '/equipment/deleteEquipments/'+this.itemDelete})
+          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: 'equipment/deleteEquipments/'+this.itemDelete})
           await this.getList()
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }

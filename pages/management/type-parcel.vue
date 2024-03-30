@@ -84,7 +84,7 @@
         ],
         minimumStockRule: [
           v => !!v || v === 0 || 'โปรดใส่ขั้นต่ำสำหรับการแจ้งเตือน',
-          v => /^[0-9]$/.test(v) || 'กรุณาใส่ค่ามากกว่าหรือเท่ากับ 0' 
+          v => /^[1-9][0-9]*$/.test(v) || 'กรุณาใส่ค่ามากกว่าหรือเท่ากับ 0' 
         ],
         filters: [
           {
@@ -168,7 +168,12 @@
         if (valid) {
           try {
             const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/import/types', data: this.form })
-            await this.$store.dispatch('snackbar', { text: 'สร้างประเภทวัสดุคงคลังสำเร็จ' })
+
+            if (data.status.code == 400) {
+              await this.$store.dispatch('snackbar', { text: ' ประเภทวัสดุซ้ำ', props: { color: 'red', top: true } })              
+            } else {
+              await this.$store.dispatch('snackbar', { text: 'สร้างประเภทวัสดุคงคลังสำเร็จ' })
+            }
             this.createDialog = false
             await this.getList()
             return Promise.resolve(data)

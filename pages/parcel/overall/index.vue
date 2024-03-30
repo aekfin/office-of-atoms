@@ -66,7 +66,7 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListParcelProject', query: this.$route.query, context: this })
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'parcel/getListParcelProject', query: this.$route.query, context: this, pageSize: 10 })
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }

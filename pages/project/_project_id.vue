@@ -93,10 +93,10 @@
         </v-row>
         <v-row>
           <v-col :cols="12" :md="6">
-            <v-textarea v-model="form.detailedWorkMoney" label="รายละเอียดงาน งวดงาน/เงิน"/>
+            <v-textarea v-model="form.detailedWorkMoney" label="รายละเอียดงาน งวดงาน/เงิน" :rules="detailedWorkMoney"/>
           </v-col>
           <v-col :cols="12" :md="6">
-            <v-textarea v-model="form.detailedWork" label="รายละเอียดงานในแต่ละงวด"/>
+            <v-textarea v-model="form.detailedWork" label="รายละเอียดงานในแต่ละงวด" :rules="detailedWork"/>
           </v-col>
         </v-row>
         <v-row class="mt-10 mb-5">
@@ -344,6 +344,12 @@
         ],
         contactPositionRules: [
           v => !!v || 'โปรดใส่ประเภทคณะกรรมการ',
+        ],
+        detailedWorkMoney: [
+          v => !!v || 'โปรดใส่รายละเอียดงาน งวดงาน/เงิน',
+        ],
+        detailedWork: [
+          v => !!v || 'โปรดใส่รายละเอียดงานในแต่ละงวด',
         ],
         positionRules: [
           v => !!v || 'โปรดใส่ตำแหน่ง',
