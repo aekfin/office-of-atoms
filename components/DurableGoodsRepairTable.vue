@@ -53,8 +53,8 @@
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
           { text: 'สถานะการซ่อม', value: 'status', align: 'center', width: '140px' },
           { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
-        ],
-        repairColor: {
+        ],        
+        repairColor: { 
           'สำเร็จ': 'success',
           'ไม่สำเร็จ': 'error',
           'รอซ่อม': 'warning',

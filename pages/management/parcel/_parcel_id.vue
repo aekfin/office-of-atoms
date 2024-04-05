@@ -9,7 +9,10 @@
             <AutocompleteDropdown :value.sync="form.typeId" :items="defaultItems" itemValue="id" itemText="name" label="ประเภท *" :rules="typeRules" apiPath="parcel/getListParcelType"
               searchApiPath="parcel/getParcelType" required noFilter/>
           </v-col>
-          <v-col :cols="12" :md="8">
+          <v-col :cols="12" :md="4">
+            <v-text-field v-model="form.code" label="รหัส *" :rules="codeRules" required/>
+          </v-col>
+          <v-col :cols="12" :md="4">
             <v-text-field v-model="form.name" label="ชื่อ *" :rules="nameRules" required/>
           </v-col>
         </v-row>
@@ -73,8 +76,12 @@
         quantityRules: [
           v => !!v || 'โปรดใส่จำนวน',
           v => v >= 1 || 'กรุณาใส่ค่ามากกว่า 0',
-          v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่า 0' ,
-        
+          v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่า 0' ,        
+        ],
+        codeRules: [
+          v => !!v || 'โปรดใส่รหัส',
+          v => v >= 0 || 'กรุณาใส่ค่ามากกว่า 0',
+          v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่า 0' ,        
         ],
       }
     },

@@ -50,7 +50,7 @@
           </v-col>
           <v-col :cols="12" :md="showQuantity(form.pickUpItems[i]) ? 5 : 3">
             <div class="d-flex align-baseline">
-              <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" class="mr-5" required :disabled="viewMode  && !privateEdit" type="number"/>
+              <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" :rules="quantityFixedRules" class="mr-5" required :disabled="viewMode  && !privateEdit" type="number"/>
               <v-text-field v-if="(!viewMode || canEdit)  && !disabledRemain" v-model="form.pickUpItems[i].quantity" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'" :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity" type="number"/>
               <v-text-field v-if="viewMode && !canEdit && form.pickUpItems[i].numberOfApproved !== undefined" v-model="form.pickUpItems[i].numberOfApproved" label="จำนวนจ่าย" disabled/>
               <v-btn v-if="!viewMode && form.pickUpItems.length > 1 && i === form.pickUpItems.length - 1" icon class="ml-5" @click.stop="removeParcel(i)">
@@ -115,6 +115,11 @@
         ],
         datetimeWithdrawRules: [
           v => !!v || 'โปรดใส่วันที่เบิก',
+        ],
+        quantityFixedRules: [
+        v => !!v || 'โปรดใส่จำนวนเบิก',
+            v => v >= 1 || 'กรุณาใส่ค่ามากกว่า 0',
+            v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่า 0',
         ],
         step: 1,
       }
@@ -240,7 +245,11 @@
             v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่า 0',
             item.quantity < item.quantityFixed || `กรุณาใส่ไม่เกินจำนวนที่เบิก`
           ] 
-        : [v => !!v || `โปรดใส่จำนวน${this.viewMode ? 'จ่าย' : 'เบิก'}`]
+        : [
+            v => !!v || `โปรดใส่จำนวน${this.viewMode ? 'จ่าย' : 'เบิก'}`,
+            v => v >= 1 || 'กรุณาใส่ค่ามากกว่า 0',
+            v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่า 0',
+          ]
       },
     }
   }

@@ -33,6 +33,7 @@
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ชื่อวัสดุคงคลัง', value: 'name' },
+          { text: 'รหัสวัสดุคงคลัง', value: 'code' },
           { text: 'ประเภท', value: 'type', width: '160px', align: 'center' },
           { text: 'จำนวน', value: 'quantity', align: 'center', width: '140px' },
           { text: 'หน่วย', value: 'classifier', align: 'center', width: '120px' },
@@ -78,7 +79,7 @@
       async onDelete () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', {apiPath: 'parcel/deleteParcelMasters/'+this.itemDelete}) 
+          const { data } = await this.$store.dispatch('http', {apiPath: 'parcel/deleteBkLogParcelMasters/'+this.itemDelete}) 
           if('400' === data.status.code){ 
             await this.$store.dispatch('snackbar', { text: `Error : ${data.status.description}`, props: { color: 'red', top: true } })  
           }
@@ -93,7 +94,7 @@
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'edit', action: `/management/parcel/${item.id}/` },
-          { type: 'delete', icon: 'delete', action: () => { this.handleDeleteAction(item.masterId) } },
+          { type: 'delete', icon: 'delete', action: () => { this.handleDeleteAction(item.id) } },
           // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
         ]
       }

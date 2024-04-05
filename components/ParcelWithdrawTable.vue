@@ -3,15 +3,15 @@
     <PageHeader :filters="filters" hideTotal/>
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
-      <template #item.user_fk.thaiFristName="{ item }">{{ item.user_fk.thaiFristName }} {{ item.user_fk.thaiLastName }}</template>
-      <template #item.datePickUp="{ item }">
-        <div>{{ item.datePickUp ? $fn.displayDate(item.datePickUp) : '-' }}</div>
+      <template #item.user_fk?.thaiFristName="{ item }">{{ item.user_fk?.thaiFristName }} {{ item.user_fk?.thaiLastName }}</template>
+      <template #item?.datePickUp="{ item }">
+        <div >{{ item?.datePickUp ? $fn.displayDate(item?.datePickUp) : '-' }}</div>
       </template>
-      <template #item.dateApprove="{ item }">
-        <div>{{ item.dateApprove ? $fn.displayDate(item.dateApprove) : '-' }}</div>
+      <template #item?.dateApprove="{ item }">
+        <div>{{ item?.dateApprove ? $fn.displayDate(item?.dateApprove) : '-' }}</div>
       </template>
-      <template #item.status="{ item }">
-        <v-chip :color="$store.state.approveStatusColor[item.status]">{{ $store.state.approveStatus[item.status] }}</v-chip>
+      <template #item?.status="{ item }">
+        <v-chip :color="$store.state.approveStatusColor[item?.status]">{{ $store.state.approveStatus[item?.status] }}</v-chip>
       </template>
       <template #item.parcel="{ item }">
         <div class="d-flex align-center justify-center">
@@ -104,7 +104,7 @@
         try {
           this.dialog = true
           this.isLoadingDialog = true
-          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { id: item.id } })
+          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { id: item?.id } })
           this.selectedWithdrawParcel = data
           this.isLoadingDialog = false
           return Promise.resolve()

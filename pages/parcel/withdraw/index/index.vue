@@ -1,8 +1,9 @@
 <template>
   <div id="parcel-withdraw-page">
     <PageHeader text="การเบิกวัสดุคงคลัง" btnText="เพิ่มการเบิกวัสดุคงคลัง" createRoute="/parcel/withdraw/create/" :total="total"/>
-    <ParcelWithdrawTable :items="items" :getActionIconList="getActionIconList" :isLoading="isLoading"/>
+    <ParcelWithdrawTable :items="items" :getActionIconList="getActionIconList" :isLoading="isLoading"/>    
     <Pagination/>
+    <ConfirmDialog :value.sync="deleteDialog" title="แจ้งเตือน" text="ยืนยันจะทำการลบการเบิกวัสดุคงคลังหรือไม่" @submit="onDelete"/>
   </div>
 </template>
 
@@ -19,6 +20,8 @@
         count: 0,
         total: 0,
         items: [],
+        deleteDialog: false,        
+        itemDelete: '',
       }
     },
     watch: {
@@ -38,10 +41,22 @@
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
+      async onDelete () {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', {apiPath: 'parcel/deletePickUpWithdraw/'+this.itemDelete})
+          await this.getList()
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
+      handleDeleteAction (item) {
+        this.deleteDialog = true
+        this.itemDelete = item
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'edit', action: `/parcel/withdraw/${item.id}/` },
-          // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
+          { type: 'delete', icon: 'delete', disable: (item.status != 'PENDING' ? true : false), action: () => { this.handleDeleteAction(item.id) } },
         ]
       },
     },
