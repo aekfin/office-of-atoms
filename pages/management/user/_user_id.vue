@@ -38,7 +38,7 @@
             <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required apiPath="Orgchart/getDepartments" :disabled="disabled || disabledByPosition"/>
           </v-col> -->
           <v-col>
-            <DurableGoodsOwner :organization="form.ouId" :department.sync="form.departmentId" :hideUser="true" :disabled="!isCreate" @ouChange="onOuChange">
+            <DurableGoodsOwner :organization="form.ouId" :department.sync="form.departmentId" :hideUser="true"  @ouChange="onOuChange">
             </DurableGoodsOwner>
           </v-col>
           
