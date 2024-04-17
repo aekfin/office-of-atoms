@@ -243,7 +243,7 @@
             item.remain >= item.quantity || 'จำนวนวัสดุคงคลังไม่เพียงพอ',
             v => v >= 1 || 'กรุณาใส่ค่ามากกว่า 0',
             v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่า 0',
-            item.quantity < item.quantityFixed || `กรุณาใส่ไม่เกินจำนวนที่เบิก`
+            item.quantity <= item.quantityFixed || `กรุณาใส่ไม่เกินจำนวนที่เบิก`
           ] 
         : [
             v => !!v || `โปรดใส่จำนวน${this.viewMode ? 'จ่าย' : 'เบิก'}`,

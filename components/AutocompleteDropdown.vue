@@ -34,6 +34,8 @@
       readonly: { type: Boolean },
       noFilter: { type: Boolean },
       notCallMounted: { type: Boolean },
+      // organizationId: { type: Number },
+      // departmentId: { type: Number },
     },
     data () {
       return {
@@ -85,6 +87,8 @@
     },
     methods: {
       async getList (more = false) {
+        // console.log('organizationId ',this.organizationId);
+        // console.log('departmentId',this.departmentId);
         try {
           this.isLoading = true
           const pageNo = more ? this.pagination.number + 1 : 0

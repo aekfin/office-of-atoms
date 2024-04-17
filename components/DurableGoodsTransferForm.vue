@@ -38,8 +38,25 @@
       </v-container>
 
       <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการ${type}` }}</b></h5>
+      <!-- <template v-for="(item, index) in form.item">
+        <v-container class="mt-2" :key="index">
+          <NumberDurableGood ref="numberDurableGood" :propNumber="item.equipment.number || ''" :disabled="viewMode" @change="numberQuery = $event"/>
+          <v-row>
+            <v-col>
+              <v-text-field v-if="viewMode" v-model="item.equipment.name" label="ครุภัณฑ์ *" disabled/>
+              <SelectDropdown v-else :value.sync="item.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
+                :query="numberQuery" :disabled="viewMode" @select="onSelectDurableGoods"/>
+            </v-col>
+          </v-row>
+        </v-container>
+      </template> -->
       <v-container class="mt-2">
-        <NumberDurableGood ref="numberDurableGood" :propNumber="form.item && form.item.equipment.number || ''" :disabled="viewMode" @change="numberQuery = $event"/>
+        <NumberDurableGood ref="numberDurableGood" :propNumber="form.item && form.item.equipment.number || ''" :disabled="viewMode" 
+        :propAssetNumber="form.item && form.item.equipment.assetNumber || ''" 
+        :propAssetNumberAorWor="form.item && form.item.equipment.assetNumberAorWor || ''" 
+        :propSerialNumber="form.item && form.item.equipment.serialNumber || ''" 
+        :propAssetSubNumber="form.item && form.item.equipment.assetSubNumber || ''" 
+        :propNumberSubAorWor="form.item && form.item.equipment.numberSubAorWor || ''" @change="numberQuery = $event"/>
         <v-row>
           <v-col>
             <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
@@ -124,7 +141,8 @@
     data () {
       return {
         valid: true,
-        form: null,
+        form: null,        
+        ouId: null,
         datetimeBorrowRules: [
           v => !!v || `โปรดใส่วันที่${this.type}`,
         ],
@@ -170,6 +188,7 @@
     },
     methods: {
       setForm () {
+        console.log('this.item ',this.item)
         const data = this.item?.items?.[0]
         this.form = {
           description: this.item?.description || '',
@@ -183,6 +202,8 @@
           ouId: this.item?.transferto?.ouId || null,
           departmentId: this.item?.transferto?.departmentId || null,
         }
+        
+        console.log('this.form ',this.form)
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
         this.step = index + 2
         this.files = this.item?.transferto?.transferFile || []
@@ -214,6 +235,8 @@
       onSubmit () {
         const valid = this.$refs.form.validate()
         const form = { ...this.form, itemIds: this.transferItems.filter((goods, i) => this.selectList [i]).map(item => item.id)}
+        form.ouId = this.ouId;
+        console.log('form ',form);
         delete form.itemId
         if (valid) this.$emit('submit', form)
       },
@@ -250,6 +273,10 @@
           const res = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/transferDocument', data })
           return Promise.resolve(res)
         } catch (err) { return Promise.reject(err) }
+      },
+      onOuChange ({ val }) {
+        console.log('onOuChange' , val)
+        this.ouId = val
       },
     }
   }

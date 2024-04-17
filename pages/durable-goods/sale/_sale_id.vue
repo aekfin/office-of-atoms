@@ -162,7 +162,8 @@
       },
       async getWaitSale () {
         try {
-          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/wait-sale`, query: { ...this.$route.query, pageSize: 1000 } })
+          const { data } = await this.$store.dispatch('http', { apiPath: `equipment/wait-sale?typeOfSource=CHECK_STOCK`, query: { ...this.$route.query, pageSize: 1000 } })
+          console.log('data',data );
           this.saleItems = data.content
           // this.selectList = this.saleItems.map(item => false)
           return Promise.resolve()

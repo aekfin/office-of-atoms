@@ -25,6 +25,7 @@
         item: null,
         dialog: false,
         errorText: 'ไม่สามารถขอยืมได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้',
+
       }
     },
     computed: {
@@ -39,9 +40,16 @@
       async getData () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/getRequestDetail', query: { id: this.$route.params.borrow_id } })
-          
-          this.item = data
+          const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/getRequestDetail', query: { id: this.$route.params.borrow_id } })   
+          console.log('getData',data);       
+          // this.item = data
+
+          this.item = {
+            ...data,
+            ouId: data.ouId,
+            departmentId: data.departmentId || null
+          }
+
           this.isLoading = false
           return Promise.resolve()
         } catch (err) {
@@ -71,6 +79,7 @@
         }
       },
       async onSubmit (form) {
+        console.log('onSubmit ', form);
         try{
           const formData = { ...form }
           formData.dateBorrow = this.$fn.convertDateToString(formData.dateBorrow)
@@ -87,6 +96,7 @@
         } catch (err) { return Promise.reject(err) }
       },
       async onEdit (form) {
+        console.log('onEdit ', form);
         try{
           const formData = { ...form }
           formData.dateBorrow = this.$fn.convertDateToString(formData.dateBorrow)

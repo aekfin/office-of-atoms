@@ -15,14 +15,14 @@
       <!-- <SelectDropdown :value.sync="userId" :label="`บุคคล ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" apiPath="user/listUsers"
          :rules="userRules" :query="{ departmentId: departmentId, ouId: organizationId }"/> -->
       <AutocompleteDropdown v-if="!hideUser" :value.sync="userId" :label="`บุคคล ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" :apiPath="userApiPath"
-        :searchApiPath="userApiPath" :rules="userRules" :query="userQuery" :searchQuery="userQuery" searchKey="email" noFilter>
+        :searchApiPath="userApiPath" :rules="userRules" :query="userQuery" :searchQuery="userQuery" searchKey="email" noFilter :organizationId="organizationId" :departmentId="departmentId">
         <template #item="{ item }">
           <div v-if="item" style="display: flex; align-items: center; gap: 8px;">
             <div>{{ $fn.getName(item) }}</div>
             <div style="color: grey; font-size: 12px;">({{ item.email }})</div>
           </div>
         </template>
-      </AutocompleteDropdown>
+      </AutocompleteDropdown> 
     </v-col>
     <slot/>
   </v-row>
@@ -65,7 +65,7 @@
         return (!this.onlyUser && (!this.organizationId || !this.departmentId)) || this.disabled
       },
       userApiPath () {
-        return 'user/listUsers'
+        return 'user/listUsers2'
       },
       userQuery () {
         return { departmentId: this.departmentId, ouId: this.organizationId }

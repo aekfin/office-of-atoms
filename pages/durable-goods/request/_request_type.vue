@@ -112,6 +112,7 @@
           this.isLoading = true
           const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getListRequestFilter', query: { ...this.$route.query, ...this.apiPathQuery }, context: this })
           const { types } = this.apiPathQuery
+          console.log('data ',data)
           this.$store.commit('SET_STATE', { name: `approveEquipment${types}`, val: data })
           this.isLoading = false
           return Promise.resolve(data)

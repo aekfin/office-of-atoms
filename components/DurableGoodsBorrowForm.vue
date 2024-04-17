@@ -38,7 +38,7 @@
       </v-container>
 
       <template v-if="!hideOwner">
-        <h5 class="text-h5 mt-5"><b>{{ `ผู้ครอบครอง` }}</b></h5>
+        <!-- <h5 class="text-h5 mt-5"><b>{{ `ผู้ครอบครอง` }}</b></h5> -->
         <v-container>
           <v-row>
             <!-- <v-col :cols="12" :md="6">
@@ -49,13 +49,17 @@
               <v-text-field v-if="viewMode" v-model="form.department.departmentName" label="กลุ่ม" :disabled="viewMode"/>
               <SelectDropdown v-else :value.sync="departmentId" apiPath="Orgchart/getDepartments" itemValue="id" itemText="departmentName" label="กลุ่ม" @select="onSelectDepartment"/>
             </v-col> -->
-            <v-col :cols="12" :md="6">
+            <!-- <v-col :cols="12" :md="6">
               <v-text-field v-if="viewMode  && !forEdit" v-model="form.organization.ouName" label="กอง" :disabled="viewMode  && !forEdit"/>
               <SelectDropdown v-else :value.sync="form.organization.id" apiPath="Orgchart/getOrganizations" itemValue="id" itemText="ouName" label="กอง" @select="onSelectOrganization"/>
             </v-col>
             <v-col :cols="12" :md="6">
               <v-text-field v-if="viewMode  && !forEdit" v-model="form.department.departmentName" label="กลุ่ม" :disabled="viewMode && !forEdit"/>
               <SelectDropdown v-else :value.sync="form.department.id" apiPath="Orgchart/getDepartments" itemValue="id" itemText="departmentName" label="กลุ่ม" @select="onSelectDepartment"/>
+            </v-col> -->
+            <v-col>
+              <DurableGoodsOwner :organization.sync="form.ouId" :department.sync="form.departmentId" :hideUser="true" :disabled="isCreate" @ouChange="onOuChange">
+              </DurableGoodsOwner>
             </v-col>
           </v-row>
         </v-container>
@@ -130,7 +134,8 @@
       return {
         valid: true,
         form: null,
-        projectId: null,
+        projectId: null,       
+        ouId: null,
         datetimeBorrowRules: [
           v => !!v || `โปรดใส่วันที่${this.type}`,
         ],
@@ -202,7 +207,9 @@
           number: this.item?.items?.[0]?.equipment?.number || '',
           borrowId: this.item?.borrowId,
           equipmentRequestId: this.item?.id,
-          equipmentXRequestId: this.item?.items?.[0].equipmentXRequestId
+          equipmentXRequestId: this.item?.items?.[0].equipmentXRequestId,
+          ouId: this.item?.ouId,
+          departmentId: this.item?.departmentId,
         }
         if (this.item) this.setCategoryForm()
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
@@ -259,7 +266,10 @@
           this.form.selected = this.durableGoodsWithdraw.filter((goods, i) => this.selectedWithdraw[i])
         }
         if (valid) { 
-          this.$emit('submit', this.form)
+          const formData = { ...this.form }
+          formData.ouId = this.ouId;
+          console.log('formData ', formData);
+          this.$emit('submit', formData)
         }
       },
       onEdit () {
@@ -268,7 +278,10 @@
           this.form.selected = this.durableGoodsWithdraw.filter((goods, i) => this.selectedWithdraw[i])
         }
         if (valid) {
-          this.$emit('edit', this.form)
+          const formData = { ...this.form }
+          formData.ouId = this.ouId;
+          console.log('formData ', formData);
+          this.$emit('edit', formData)
         }
       },
       async onApprove () {
@@ -294,6 +307,10 @@
           const res = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/returnedDocument', data })
           return Promise.resolve(res)
         } catch (err) { return Promise.reject(err) }
+      },      
+      onOuChange ({ val }) {
+        console.log('onOuChange' , val)
+        this.ouId = val
       },
     }
   }

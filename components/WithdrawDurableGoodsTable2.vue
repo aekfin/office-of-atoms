@@ -5,7 +5,7 @@
     </template>
     <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }} </template>
     <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
-    <template #item.typeOfSource="{ item }">{{ sourceList[item.REPAIR] || '-' }}</template>
+    <template #item.typeOfSource="{ item }">{{ sourceList[item.typeOfSource] || '-' }}</template>
     <template #item.majorCategory="{ item }">
       <EquipmentColumn :item="item"/>
     </template>

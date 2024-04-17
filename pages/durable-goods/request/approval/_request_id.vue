@@ -49,6 +49,7 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/getRequestDetail', query: { id: this.$route.params.request_id } })
+          console.log('datas ',data)
           this.item = data
           this.originalItems = _.cloneDeep(this.item)
           this.isLoading = false
