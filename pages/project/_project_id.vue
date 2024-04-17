@@ -24,7 +24,7 @@
         </v-row>
         <v-row v-else-if="isCreate || editMode">
           <v-col :cols="12" :md="2">
-            <v-text-field v-model="year" label="ปีงบประมาณ *" :rules="yearRules" type="number"/>
+            <v-text-field v-model="form.year" label="ปีงบประมาณ *" :rules="yearRules" type="number"/>
           </v-col>
           <v-col :cols="12" :md="4" class="d-flex align-center">
             <v-row class="flex-nowrap" align="baseline">
@@ -35,7 +35,7 @@
           </v-col>
           <v-col :cols="12" :md="6"> 
             <ProjectDropdown v-model="form.projectName" itemValue="projectName" itemText="projectName" label="โครงการ *" :apiPath="propjectApiPath" :query="projectQuery"
-              :rules="projectRules" isProject required :disabled="!year || !budgetStart || !budgetEnd" @select="onSelectProject"/>
+              :rules="projectRules" isProject required :disabled="!form.year || !budgetStart || !budgetEnd" @select="onSelectProject"/>
           </v-col>
         </v-row>
         <v-row v-else>
@@ -252,11 +252,11 @@
         manualMode: false,
         editMode: false,
         project: null,
-        year: (new Date()).getFullYear() + 543,
         budgetStart: '0',
         budgetEnd: '100000',
         form: {
           projectName: '',
+          year: (new Date()).getFullYear() + 543,
           projectNumber: '',
           contractNumber: '',
           contractControlNumber: '',
@@ -378,7 +378,7 @@
         return 'thirdParty/project-detail-v2'
       },
       projectQuery () {
-        return { year: this.year || 2563, budgetStart: this.budgetStart || 0, budgetEnd: this.budgetEnd || 0 }
+        return { year: this.form.year || 2563, budgetStart: this.budgetStart || 0, budgetEnd: this.budgetEnd || 0 }
       },
       logRoute () {
         if(!this.isCreate){
@@ -528,6 +528,7 @@
             if (!this.isCreate) this.setEditForm(form)
             const apiPath = this.isCreate ? 'Project/addProjectV2' : 'Project/updateProjectV2'
             const method = this.isCreate ? 'post' : 'patch'
+            console.log('form ',form)
             const res = await this.$store.dispatch('http', { method, apiPath, data: form })
             if(res.data.status){
               if('400' === res.data.status.code){ 

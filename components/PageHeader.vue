@@ -63,8 +63,10 @@
                     <v-switch v-else-if="filter.type === 'switch'" v-model="form[filter.param]" :label="filter.name"/>
                     <div v-else-if="filter.type === 'space'"/>
                     <InputDatePicker v-else-if="filter.type === 'datePicker'" :value.sync="form[filter.param]" :label="filter.name"/>
-                    <SelectDropdown v-else :value.sync="form[filter.param]" :items="filter.options || []" :apiPath="filter.apiPath" itemValue="id" :itemText="filter.itemText || 'name'"
-                      :lazy="!isCurrentFilters(filter)" :label="filter.name" clearable :query="{ pageSize: 999 }" @loaded="filter.options = $event"/>
+                    <SelectDropdown v-else :value.sync="form[filter.param]" ref="selectDropdowns" :filtersId="filter.id" :items="filter.options || []" :apiPath="filter.apiPath" itemValue="id" :itemText="filter.itemText || 'name'"
+                      :lazy="!isCurrentFilters(filter)" :label="filter.name" clearable :query="{ pageSize: 999 }" @loaded="filter.options = $event"
+                      @select="handleSelectDropdowns($event,filter)"/>
+                      <!-- @select="$emit('select', $event)"/> -->
                   </template>
                 </v-col>
               </v-row>
@@ -133,7 +135,8 @@
       },
     },
     mounted () {
-      this.setForm()
+      this.setForm();
+      // this.handleSelectDropdowns();
     },
     methods: {
       isCurrentFilters (filter) {
@@ -165,6 +168,56 @@
         this.$router.push({ query })
         this.dialog = false
       },
+      handleSelectDropdowns (event,fil) {
+        // console.log('event', event)
+        // console.log('fil', fil)
+        this.$emit('select', event)
+        // console.log('filters', this.filters)
+
+        if(fil.id === 9){
+          this.filters.forEach(clear => {
+            if(clear.id === 10 || clear.id === 11 || clear.id === 12 || clear.id === 13 ){
+               clear.options = []
+            }
+          });
+        }else if(fil.id === 10){
+          this.filters.forEach(clear => {
+            if(clear.id === 11 || clear.id === 12 || clear.id === 13 ){
+               clear.options = []
+            }
+          });
+        }else if(fil.id === 11){
+          this.filters.forEach(clear => {
+            if(clear.id === 12 || clear.id === 13 ){
+               clear.options = []
+            }
+          });
+        }else if(fil.id === 12){
+          this.filters.forEach(clear => {
+            if(clear.id === 13 ){
+               clear.options = []
+            }
+          });
+        }
+
+        // console.log('this.$refs.selectDropdowns', this.$refs.selectDropdowns)
+        // if (this.$refs.selectDropdowns) {
+        //   this.$refs.selectDropdowns.forEach(selectDropdown => {
+        //     if(fil.id === 9){
+        //       if(selectDropdown.filtersId === 10 || selectDropdown.filtersId === 11 || selectDropdown.filtersId === 12 || selectDropdown.filtersId === 13){
+        //         selectDropdown.list = []
+        //         // selectDropdown.items = []
+        //         this.$emit('select', event)
+        //       }
+        //     }
+        //   });
+        // } else {
+        //   console.error('SelectDropdowns are not defined or not ready yet');
+        // }
+
+        
+        
+      }
     }
   }
 </script>

@@ -78,6 +78,7 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'user/listUsers', query: this.$route.query, context: this })
+          console.log('data ',data)
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }

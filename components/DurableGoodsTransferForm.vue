@@ -72,11 +72,15 @@
           <v-col :cols="12" class="pb-0">
             <b>{{ `ผู้รับโอน` }}</b>
           </v-col>
-          <v-col :cols="12" :md="6">
+          <!-- <v-col :cols="12" :md="6">
             <SelectDropdown :value.sync="form.ouId" label="กอง *" itemText="ouName" :rules="ouRules" required apiPath="Orgchart/getOrganizations" :disabled="!form.itemId || viewMode"/>
           </v-col>
           <v-col :cols="12" :md="6">
             <SelectDropdown :value.sync="form.departmentId" label="กลุ่ม *" itemText="departmentName" :rules="departmentRules" required apiPath="Orgchart/getDepartments" :disabled="!form.itemId || viewMode"/>
+          </v-col> -->
+          <v-col>
+            <DurableGoodsOwner :organization="form.ouId" :department.sync="form.departmentId" :hideUser="true" :disabled="isCreate" @ouChange="onOuChange">
+            </DurableGoodsOwner>
           </v-col>
         </v-row>
       </v-container>

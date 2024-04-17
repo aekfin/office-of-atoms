@@ -1,6 +1,6 @@
 <template>
   <div id="durable-goods-summary-page">
-    <PageHeader class="mb-6" text="ครุภัณฑ์ทั้งหมด" :total="total" :filters="filters"/>
+    <PageHeader class="mb-6" text="ครุภัณฑ์ทั้งหมด" :total="total" :filters="filters" @select="ouChanges"/>
     <v-btn v-if="selectorListObject.length" class="d-flex align-center mb-3" outlined elevation="2" color="black" @click="onExportQRCode">
       <i class="material-icons">qr_code_2</i>
       <div class="ml-1">QR Code ({{ selectorListObject.length }})</div>
@@ -73,32 +73,67 @@
         isSelectAll: false,
         isIndeterminate: false,
         selectorListObject: [],
+        chkRelationFilters: 0,
+        chkRelationFilterssss:0,
+        chkOnSelectMajorCategory: '',
         filters: [
           { type: 'textField',param: 'number',name: 'เลขที่ครุภัณฑ์', },
           { type: 'textField',param: 'name',name: 'ชื่อครุภัณฑ์', },
           {
-            name: 'หมวดหมู่',
+            name: 'หมวดหมู่พัสดุ',
             param: 'majorCategoryId',
             apiPath: 'equipment/category/getMejorCategorys',
           },
           {
-            id: 10,
-            name: 'ประเภท',
+            name: 'ประเภทพัสดุ',
             param: 'subCategoryId',
             apiPath: 'equipment/category/getSubCategorys',
-          },          
+          },
           {
-            id: 12,
+            name: 'รายการครุภัณฑ์',
+            param: 'typeId',
+            apiPath: 'equipment/category/types',
+          },
+          {
             name: 'ยี่ห้อ',
             param: 'brandId',
             apiPath: 'equipment/category/brands',
           },
           {
-            id: 13,
             name: 'รุ่น',
             param: 'modelId',
             apiPath: 'equipment/category/models',
           },
+          // {
+          //   id: 9,
+          //   name: 'หมวดหมู่',
+          //   param: 'majorCategoryId',
+          //   apiPath: 'equipment/category/getMejorCategorys',
+          // },
+          // {
+          //   id: 10,
+          //   name: 'ประเภท',
+          //   param: 'subCategoryId',
+          //   apiPath: '',
+          // },
+          // {
+          //   id: 11,
+          //   name: 'รายการครุภัณฑ์',
+          //   param: 'typeId',
+          //   apiPath: '',
+          // },          
+          // {
+          //   id: 12,
+          //   name: 'ยี่ห้อ',
+          //   param: 'brandId',
+          //   apiPath: '',
+          // },
+          // {
+          //   id: 13,
+          //   name: 'รุ่น',
+          //   param: 'modelId',
+          //   apiPath: '',
+          // },
           { type: 'textField',param: 'ouName',name: 'ผู้ครอบครอง' },
           // { type: 'textField',param: 'status',name: 'สถานะ' }
           {
@@ -166,6 +201,37 @@
           win.document.write(`<iframe src="${data}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`)
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
+      },      
+      ouChanges (val) {
+        console.log('val', val)
+        console.log('this.filtersssss', this.filters)
+        console.log('this.chkRelationFilters', this.chkRelationFilters)
+        if(val.item){
+          for(let i=0; i < this.filters.length;i++){
+            
+            if(this.filters[i].id === 10){
+              this.filters[i].apiPath = 'equipment/category/getSubCategoryByMejor/'+val.item.id;
+              this.chkRelationFilters = 1;
+            }
+            if(this.chkRelationFilters === 1 && this.filters[i].id === 11){
+              this.filters[i].apiPath = 'equipment/category/getTypesBySubCategory/'+val.item.id;
+              this.chkRelationFilters = 2;
+            }
+            if(this.chkRelationFilters === 2 && this.filters[i].id === 12){
+              this.filters[i].apiPath = 'equipment/category/getBrandsByType/'+val.item.id;
+              this.chkRelationFilters = 3;
+            }
+            if(this.chkRelationFilters === 3 && this.filters[i].id === 13){
+              this.filters[i].apiPath = 'equipment/category/getModelsByBrand/'+val.item.id;
+            }            
+            
+          }
+          
+        }
+      },
+      clear (val) {
+        console.log('clear val', val)
+        
       },
     }
   }

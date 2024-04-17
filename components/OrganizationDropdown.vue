@@ -65,7 +65,7 @@
       async getList (more = false) {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { ...this.query, keyword: this.search || 1 } })
+          const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { ...this.query, keyword: this.search  } })
           this.list = data.content
           this.isLoading = false
           this.$emit('loaded', this.list)
