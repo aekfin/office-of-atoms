@@ -54,6 +54,7 @@
         try{
           const formData = { ...form }
           formData.dateTransfer = this.$fn.convertDateToString(formData.dateBorrow)
+          console.log('formData ',formData);
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/transfer', data: formData })
           if (data.status.code == 400) {
             await this.$store.dispatch('snackbar', { text: `Error ${data.status.code}: ${data.status.description}`, props: { color: 'red', top: true } })

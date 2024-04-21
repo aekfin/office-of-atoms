@@ -73,6 +73,7 @@
     methods: {
       async getList (more = false) {
         try {
+          console.log('this.val',this.val);
           this.isLoading = true
           const pageNo = more ? this.pagination.number + 1 : 0
           // const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { pageNo, pageSize: 7, ...this.query } })
@@ -100,6 +101,8 @@
       },
       onChange (val) {
         const item = this.list.find(item => item[this.itemValue] == val)
+        // this.val = item.id
+        // console.log('this.val',this.val);
         this.$emit('select', { val, item })
       },
     },

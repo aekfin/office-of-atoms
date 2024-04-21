@@ -30,6 +30,7 @@
       initForm: { type: Object },
       initCategory: { type: Object },
       noRules: { type: Boolean },
+      itemEquipment: { type: Object },
     },
     watch: {
       async 'initForm' (val, oldVal) {
@@ -42,6 +43,7 @@
     },
     methods: {
       async setForm () {
+        console.log('itemEquipmentssssssss',this.itemEquipment);
         if (!_.isEmpty(this.initForm)) {
           try {
             this.form = this.initForm

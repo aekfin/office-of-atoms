@@ -75,14 +75,15 @@
         </div>
         <template v-else>
           <v-text-field v-model="form.number" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/>
-          <CategoryDurableGood :key="categoryKey" :initCategory="initCategoryForm" :disabled="toggleEdit()" noRules @change="onChangeCategory">
+          <CategoryDurableGood :key="categoryKey" :initCategory="initCategoryForm" :disabled="toggleEdit()" noRules :itemEquipment="itemEquipment" 
+          @change="onChangeCategory">
             <v-col :cols="12" :md="9">
               <!-- <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
               <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
                 :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()"/> -->
                 <v-text-field v-if="viewMode && !onCategoryChange" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
               <SelectDropdown  v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
-                :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()"/>
+                :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()" @select="onChangeEquipment"/>
             </v-col>
           </CategoryDurableGood>
         </template>
@@ -121,6 +122,7 @@
     },
     props: {
       item: { type: Object },
+      itemEquipment: { type: Object },
       viewMode: { type: Boolean },
       forEdit: { type: Boolean },
       backPath: { type: String, default: '/durable-goods/borrow/' },
@@ -217,15 +219,33 @@
         this.files = this.item?.returnedFile?.files || []
       },
       setCategoryForm (category) {
+        console.log('setCategoryForm ',this.item?.items?.[0]);
         this.initCategoryForm = category || this.item?.items?.[0]
       },
       onChangeCategory ({ form, trigger }) {
+        console.log('onChangeCategory',form)
+        console.log('this.form.itemId ',this.form.itemId);
         if (trigger) {
           this.categoryForm = { ...form }
-          this.form.itemId = null
+          // this.form.itemId = null
           this.onCategoryChange = true
         }
       },
+      onChangeEquipment (val) {
+        console.log('val ',val);
+        this.itemEquipment = val.item
+        this.initCategoryForm.majorCategory = this.itemEquipment.majorCategory
+        this.initCategoryForm.subCategory = this.itemEquipment.subCategory
+        this.initCategoryForm.type = this.itemEquipment.type
+        this.initCategoryForm.brand = this.itemEquipment.brand
+        this.initCategoryForm.model = this.itemEquipment.model
+        console.log('this.itemEquipment ',this.itemEquipment);
+        console.log('this.initCategoryForm ',this.initCategoryForm);
+        this.categoryKey = !this.categoryKey;
+        
+        this.form.number = val?.item?.number
+        this.form.itemId = val?.item?.id
+      },      
       getApproverText (flow) {
         return flow?.emails?.reduce((str, email, i) => `${str}${i > 0 ? ', ' : ''}${email}`, 'ผู้อนุมัติ : ') || false
       },

@@ -58,6 +58,7 @@
           const formData = { ...form }
           formData.dateBorrow = this.$fn.convertDateToString(formData.dateBorrow)
           formData.itemIds = form.selected.map(item => item.id)
+          console.log('onSubmit ',formData);
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/requisition', data: formData })
           if (data.status.code == 400) {
             await this.$store.dispatch('snackbar', { text: `Error ${data.status.code}: ${data.status.description}`, props: { color: 'red', top: true } })
