@@ -98,7 +98,7 @@ import ReportTable from '~/components/ReportTable.vue'
             id: 7,
             name: 'รายงานการจำหน่ายครุภัณฑ์',
             apiPath: 'report/sale',
-            filters: [2, 3, 20, 15, 6, 7, 19, 21, 16],
+            filters: [2, 3, 20, 15, 6, 7, 8, 19, 21, 16],
           },
           {
             id: 8,
