@@ -18,6 +18,9 @@
           </v-col>
         </v-row>
         <v-row v-if="manualMode">
+          <v-col :cols="12" :md="2">
+            <v-text-field v-model="form.year" label="ปีงบประมาณ *" :rules="yearRules" type="number"/>
+          </v-col>
           <v-col :cols="12" :md="10">
             <v-text-field v-model="form.projectName" label="โครงการ *" :rules="projectUserRules" required/>
           </v-col>
@@ -39,6 +42,9 @@
           </v-col>
         </v-row>
         <v-row v-else>
+          <v-col :cols="12" :md="2">
+            <v-text-field v-model="form.year" label="ปีงบประมาณ *" :rules="yearRules" type="number"/>
+          </v-col>
           <v-col :cols="12" :md="10">
             <v-text-field v-model="form.projectName" label="โครงการ *" :rules="projectUserRules" required disabled/>
           </v-col>
@@ -148,7 +154,8 @@
                       <div class="mr-5">{{ i + 1 }}.</div>
                       <v-text-field v-model="contact.description" label="ตำแหน่ง *" :rules="positionRules"/>
                     </div>
-                    <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/>
+                    <!-- <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules"/> -->
+                    <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล" />
                     <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์" :rules="phoneNumberRules"/>
                     <v-text-field v-model="contact.email" class="email" label="E-Mail" :rules="emailRules"/>
                     <v-btn v-if="form.directors.length > 1" icon @click="removeContact(i)">

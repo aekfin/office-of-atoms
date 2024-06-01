@@ -5,6 +5,9 @@
     <template #item.majorCategory="{ item }">
       <EquipmentColumn :item="item"/>
     </template>
+    <template #item.project.projectName="{ item }">
+      <ProjectColumn :item="item"/>
+    </template>
     <template #item.organization.ouName="{ item }">
       <OwnerColumn :item="item"/>
     </template>
@@ -35,11 +38,12 @@
     data () {
       const headers = [
         { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
-        { text: 'โครงการ', value: 'project.projectName' },
+        // { text: 'โครงการ', value: 'project.projectName' },
         { text: 'เลขที่ครุภัณฑ์', value: 'number', align: 'center', width: '120px' },
-        { text: 'ชื่อครุภัณฑ์', value: 'name', align: 'center', width: '160px' },
+        { text: 'รายการครุภัณฑ์', value: 'type.name', align: 'center', width: '160px' },
         { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
         { text: 'ราคา', value: 'price', align: 'center', width: '100px' },
+        { text: 'โครงการ', value: 'project.projectName', width: '120px', align: 'center'  },
         { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
         { text: 'ครุภัณฑ์ย่อย', value: 'subEquipments', width: '120px', align: 'center' },
         { text: 'วันที่รับเข้า', value: 'dateEntry', align: 'center', width: '140px' },

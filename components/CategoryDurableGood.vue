@@ -15,6 +15,12 @@
     <v-col :cols="12" :md="cols">
       <SelectDropdown :value.sync="form.modelId" :label="`รุ่น ${noRules ? '' : '*'}`" :items="modelItems" :rules="!noRules && modelRule || []" required :disabled="disabled || !form.brandId || isLoadingModel" :forceLoading="isLoadingModel" @select="onChangeModel"/>
     </v-col>
+    <!-- <v-col :cols="12" :md="cols">
+      <SelectDropdown :value.sync="form.brandId" :label="`ยี่ห้อ ${noRules ? '' : '*'}`" :items="brandItems" :rules="!noRules && brandRule || []" required :disabled="disabled || isLoadingBrand" :forceLoading="isLoadingBrand" />
+    </v-col>
+    <v-col :cols="12" :md="cols">
+      <SelectDropdown :value.sync="form.modelId" :label="`รุ่น ${noRules ? '' : '*'}`" :items="modelItems" :rules="!noRules && modelRule || []" required :disabled="disabled || isLoadingModel" :forceLoading="isLoadingModel" />
+    </v-col> -->
     <slot :categoryForm="form"/>
   </v-row>
 </template>

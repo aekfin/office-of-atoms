@@ -10,7 +10,7 @@
               searchApiPath="parcel/getParcelType" required noFilter/>
           </v-col>
           <v-col :cols="12" :md="4">
-            <v-text-field v-model="form.code" label="รหัส *" :rules="codeRules" required/>
+            <v-text-field v-model="form.code" label="รหัส"/>
           </v-col>
           <v-col :cols="12" :md="4">
             <v-text-field v-model="form.name" label="ชื่อ *" :rules="nameRules" required/>
@@ -18,7 +18,7 @@
         </v-row>
         <v-row>
           <v-col  :cols="12" :md="4">
-            <v-text-field v-model="form.price" label="ราคากลาง *" type="number" :rules="priceRules" required/>
+            <v-text-field v-model="form.price" label="ราคา *" type="number" :rules="priceRules" required/>
           </v-col>
           <v-col :cols="12" :md="4">
             <v-text-field v-model="form.quantity" label="จำนวน *" type="number" :rules="quantityRules"  required/>

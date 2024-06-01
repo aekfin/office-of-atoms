@@ -114,8 +114,11 @@
           
 
           <v-row>
-            <v-col :cols="12" :md="9">
+            <v-col :cols="12" :md="6">
               <v-text-field v-model="subEquipment.name" name="name" label="ชื่อครุภัณฑ์ย่อย *" :rules="nameRules" required/>
+            </v-col>
+            <v-col :cols="12" :md="3">
+              <v-text-field v-model="subEquipment.cost" name="cost" label="มูลค่า *" :rules="classifierRules" required/>
             </v-col>
             <v-col :cols="12" :md="3">
               <v-text-field v-model="subEquipment.classifier" name="unit" label="หน่วย *" :rules="classifierRules" required/>
@@ -268,6 +271,7 @@
             const edits = this.subEquipments.filter(equipment => equipment.id)
             if (creates.length) {
               const createData = { equipmentId: this.durableGoodsId, subEquipments: creates }
+              console.log('createData ',createData);
               await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/importSubEquipment', data: createData })
             }
             if (edits.length) {

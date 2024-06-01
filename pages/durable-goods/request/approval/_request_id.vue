@@ -3,7 +3,7 @@
     <PageHeader :text="`อนุมัติการ${type}ครุภัณฑ์`" hideTotal/>
     <Loading v-if="isLoading"/>
     <DurableGoodsTransferForm v-else-if="type === 'โอนย้าย'" :item="item" :viewMode="!isCreate" isApprover :backPath="backPath" :type="type" @approve="onApprove" @reject="onReject"/>
-    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" isApprover :backPath="backPath" :type="type" @approve="onApprove" @reject="onReject"/>
+    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" isApprover :backPath="backPath" :type="type" :forEdit="true" @approve="onApprove" @reject="onReject"/>
   </div>
 </template>
 

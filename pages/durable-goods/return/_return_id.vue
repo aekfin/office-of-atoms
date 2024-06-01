@@ -54,6 +54,7 @@
           this.isReturnLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/getRequestDetail`, query: { id: this.borrowId } })
           this.setForm(data)
+          this.item = data
           this.isReturnLoading = false
           return Promise.resolve()
         } catch (err) {

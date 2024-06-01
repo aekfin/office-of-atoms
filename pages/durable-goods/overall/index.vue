@@ -27,20 +27,26 @@
         itemDelete: '',
         items: [],
         filters: [
+          { type: 'number',param: 'pageSize',name: 'จำนวนรายการในการแสดงผลของตาราง' }, 
           {
             type: 'textField',
             name: 'ชื่อโครงการ',
             param: 'projectName',
           },
-          {
-            type: 'textField',
-            name: 'ชื่อครุภัณฑ์',
-            param: 'equipmentName',
-          },
+          // {
+          //   type: 'textField',
+          //   name: 'ชื่อครุภัณฑ์',
+          //   param: 'equipmentName',
+          // },
           {
             type: 'textField',
             name: 'เลขที่ครุภัณฑ์',
             param: 'equipmentNumber',
+          },
+          {
+            type: 'textField',
+            name: 'เลขที่ครุภัณฑ์ย่อย',
+            param: 'equipmentSubNumber',
           },
           {
             type: 'textField',
@@ -98,7 +104,11 @@
             param: 'departmentId',
             apiPath: 'Orgchart/getDepartments',
             itemText: 'departmentName',
-          },
+          },          
+          { type: 'number',param: 'yearMin',name: 'ปีงบประมาณเริ่มต้น' },
+          { type: 'number',param: 'yearMax',name: 'ปีงบประมาณสิ้นสุด' },          
+          { type: 'datePicker',param: 'inspectionDateMin',name: 'วันที่ตรวจรับเริ่มต้น' },
+          { type: 'datePicker',param: 'inspectionDateMax',name: 'วันที่ตรวจรับสิ้นสุด' },
           {
             name: 'ประเภททะเบียนครุภัณฑ์',
             param: 'registrationType',
@@ -106,8 +116,7 @@
               { id: '1', name: 'มาตราฐาน' },
               { id: '2', name: 'ต่ำกว่าเกณฑ์' },
             ]
-          },
-          { type: 'number',param: 'year',name: 'ปีงบประมาณ' },
+          }
         ],
       }
     },

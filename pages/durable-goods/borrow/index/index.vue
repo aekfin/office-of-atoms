@@ -65,6 +65,7 @@
           this.isLoading = true
           const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/getListRequestFilter', query: { ...this.$route.query, isOwner: true, types: 'BORROW' }, context: this })
           this.isLoading = false
+          console.log('datadatadata ',data);
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },

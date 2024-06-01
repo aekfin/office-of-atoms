@@ -15,6 +15,10 @@
           <v-col :cols="12" :md="3">
             <InputDatePicker :value.sync="form.dateDocument" label="วันที่เอกสาร *" :rules="isCreate ? datetimeDocumentRules : []" required :disabled="!isCreate"/>
           </v-col>
+          <v-col :cols="12" :md="3"></v-col>
+          <v-col :cols="12" :md="4">
+            <v-text-field v-model="form.bookNumber" label="เลขที่หนังสือ" required/>
+          </v-col>
           <v-col :cols="12">
             <v-textarea v-model="form.description" label="หมายเหตุ" :rows="4"/>
           </v-col>
@@ -26,9 +30,6 @@
           </v-col>
           <v-col :cols="12" :md="4">
             <v-text-field v-model="form.buyer" label="ผู้ซื้อ / ผู้รับบริจาค" required/>
-          </v-col>
-          <v-col :cols="12" :md="4">
-            <v-text-field v-model="form.bookNumber" label="เลขที่หนังสือ" required/>
           </v-col>
         </v-row>
       </v-container>

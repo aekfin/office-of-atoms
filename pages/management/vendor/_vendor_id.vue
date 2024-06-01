@@ -19,8 +19,20 @@
           <v-col :cols="12">
             <v-text-field v-model="form.companyName" label="ชื่อผู้ขาย/บริษัท *" :rules="nameRules" required/>
           </v-col>
-          <v-col :cols="12">
-            <v-textarea v-model="form.companyAddress" name="address" label="ที่อยู่ *" :rules="addressRules" required/>
+          <v-col :cols="6">
+            <v-text-field v-model="form.companyAddress" name="address" label="ที่อยู่ *" :rules="addressRules" required/>
+          </v-col>
+          <v-col :cols="3">
+            <v-text-field v-model="form.companyAddress" name="address" label="ตำบล/แขวง *" :rules="addressRules" required/>
+          </v-col>
+          <v-col :cols="3">
+            <v-text-field v-model="form.companyAddress" name="address" label="อำเภอ/เขต *" :rules="addressRules" required/>
+          </v-col>
+          <v-col :cols="3">
+            <v-text-field v-model="form.companyAddress" name="address" label="จังหวัด *" :rules="addressRules" required/>
+          </v-col>
+          <v-col :cols="3">
+            <v-text-field v-model="form.companyAddress" name="address" label="รหัสไปรษณีย์ *" :rules="addressRules" required/>
           </v-col>
           <v-col :cols="12">
             <v-text-field v-model="form.companyPhone" label="เบอร์โทรศัพท์ *" :rules="contactTelRules"/>
@@ -52,15 +64,15 @@
                         <v-text-field v-model="contact.name" label="ชื่อ - นามสกุล *" :rules="contactNameRules"/>
                       </v-col>
                       <v-col :md="5" class="d-flex">
-                        <v-text-field v-model="contact.position" name="code" label="ตำแหน่ง *" :rules="contactPositionRules" required/>
+                        <v-text-field v-model="contact.position" name="code" label="ตำแหน่ง" />
                       </v-col>
                     </v-row>
                     <v-row>
                       <v-col :md="7">
-                        <v-text-field v-model="contact.email" class="pl-8" label="E-mail *" :rules="contactEmailRules"/>
+                        <v-text-field v-model="contact.email" class="pl-8" label="E-mail"/>
                       </v-col>
                       <v-col :md="5">
-                        <v-text-field v-model="contact.phone" label="เบอร์โทรศัพท์ *" :rules="contactTelRules"/>
+                        <v-text-field v-model="contact.phone" label="เบอร์โทรศัพท์" />
                       </v-col>
                     </v-row>
                   </div>

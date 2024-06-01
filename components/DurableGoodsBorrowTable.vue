@@ -3,6 +3,9 @@
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.user_fk.thaiFristName="{ item }">{{ item.user_fk.thaiFristName }} {{ item.user_fk.thaiLastName }}</template>
+      <template #item.equipmentNumber="{ item }">
+        <span>{{ item.equipments[0].number }}</span>
+      </template>
       <template #item.dateBorrow="{ item }">
         <div>{{ item.dateBorrow ? $fn.displayDate(item.dateBorrow) : '-' }}</div>
       </template>
@@ -46,6 +49,7 @@
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'ผู้ขอยืมครุภัณฑ์', value: 'user_fk.thaiFristName' },
+          { text: 'เลขครุภัณฑ์', value: 'equipmentNumber' },
           { text: 'วันที่ยืม', value: 'dateBorrow', width: '120px', align: 'center' },
           { text: 'วันที่คืน', value: 'dueDate', width: '120px', align: 'center' },
           { text: 'วันที่อนุมัติ', value: 'dateApprove', width: '120px', align: 'center' },

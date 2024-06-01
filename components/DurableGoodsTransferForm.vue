@@ -30,6 +30,11 @@
             <InputDatePicker :value.sync="form.dateReturn" label="วันที่ต้องคืน ครุภัณฑ์ *" :rules="datetimeReturnRules" required :disabled="viewMode"/>
           </v-col> -->
         </v-row>
+        <v-row v-if="transferPage">
+          <v-col :cols="12" :md="3">
+            <v-text-field v-model="form.transferNumber" label="เลขที่บันทึกโอนย้าย" :disabled="viewMode"/>
+          </v-col>
+        </v-row>
         <v-row>
           <v-col :cols="12">
             <v-textarea v-model="form.description" label="หมายเหตุ" :rows="4" :disabled="viewMode"/>
@@ -137,12 +142,14 @@
       backPath: { type: String, default: '/durable-goods/borrow/' },
       cannotApprove: { type: Boolean },
       type: { type: String, default: 'ยืม' },
+      transferPage: { type: Boolean },
     },
     data () {
       return {
         valid: true,
         form: null,        
         ouId: null,
+        transferNumber: null,
         datetimeBorrowRules: [
           v => !!v || `โปรดใส่วันที่${this.type}`,
         ],
@@ -187,9 +194,17 @@
       this.setForm()
     },
     methods: {
-      setForm () {
-        console.log('this.item ',this.item)
+      async setForm () {
+        console.log('this.item sssssssssssss',this.item)
         const data = this.item?.items?.[0]
+        
+        console.log('this.item transferNumber',this.item?.transferNumber)
+        this.transferNumber = this.item?.transferNumber;
+        if(!this.viewMode){
+          const  datas = await this.$store.dispatch('http', { apiPath: 'equipment/getLastTransferNumber' })
+          this.transferNumber = datas.data;
+          console.log('datas ',datas.data);
+        }
         this.form = {
           description: this.item?.description || '',
           dateBorrow: this.item?.dateBorrow || new Date(),
@@ -201,9 +216,10 @@
           owner: data?.equipment?.owner || {},
           ouId: this.item?.transferto?.ouId || null,
           departmentId: this.item?.transferto?.departmentId || null,
+          transferNumber: this.transferNumber
         }
         
-        console.log('this.form ',this.form)
+        console.log('this.forms ',this.form)
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
         this.step = index + 2
         this.files = this.item?.transferto?.transferFile || []
@@ -236,6 +252,7 @@
         const valid = this.$refs.form.validate()
         const form = { ...this.form, itemIds: this.transferItems.filter((goods, i) => this.selectList [i]).map(item => item.id)}
         form.ouId = this.ouId;
+        form.transferNumber =  this.transferNumber;
         console.log('form ',form);
         delete form.itemId
         if (valid) this.$emit('submit', form)

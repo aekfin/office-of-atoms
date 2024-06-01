@@ -5,7 +5,8 @@
       <ExportReportButton apiPath="equipment/requisitionDocument" name="เอกสารประกอบการเบิกครุภัณฑ์" text="เอกสารประกอบการเบิกครุภัณฑ์" :query="{ equipmentRequestId: $route.params.withdraw_id }"/>
     </div>
     <Loading v-if="isLoading"/>
-    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" type="เบิก" cannotApprove backPath="/durable-goods/withdraw/" hideOwner isWithdraw @submit="onSubmit"/>
+    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" :requisitionStatus="requisitionStatus" type="เบิก" 
+    cannotApprove backPath="/durable-goods/withdraw/" hideOwner isWithdraw @submit="onSubmit" @edit="onEdit"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
   </div>
 </template>
@@ -23,6 +24,7 @@
         isLoading: false,
         item: null,
         dialog: false,
+        requisitionStatus: null,
         errorText: 'ไม่สามารถขอเบิกได้ เนื่องจากในกองหรือกลุ่มของท่านไม่มีผู้ที่มีสิทธิ์อนุมัติได้',
       }
     },
@@ -40,6 +42,7 @@
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/getRequestDetail', query: { id: this.$route.params.withdraw_id } })
           this.item = data
+          this.requisitionStatus = this.item?.status
           this.isLoading = false
           return Promise.resolve()
         } catch (err) {
@@ -68,6 +71,23 @@
             await this.$store.dispatch('snackbar', { text: 'ยื่นขอเบิกวัสดุคงคลังสำเร็จ' })
             this.$router.push('/durable-goods/withdraw/')
           }
+        } catch (err) { return Promise.reject(err) }
+      },
+      async onEdit (form) {
+        try{
+          const formData = { ...form }
+          formData.dateBorrow = this.$fn.convertDateToString(formData.dateBorrow)
+          formData.itemIds = form.selected.map(item => item.id)
+          const listOldItem = []
+          for(let i=0; i < formData.oldItem.length; i++){
+            listOldItem.push(formData.oldItem[i].equipment.id)
+          }
+          formData.oldItem = listOldItem;
+          console.log('onEdit ',formData);
+          await this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/editRequisition', data: formData })
+          await this.$store.dispatch('snackbar', { text: 'แก้ไขเบิกครุภัณฑ์สำเร็จ' })
+          await this.getData()
+          return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
     } 
