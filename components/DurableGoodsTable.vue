@@ -41,6 +41,7 @@
         // { text: 'โครงการ', value: 'project.projectName' },
         { text: 'เลขที่ครุภัณฑ์', value: 'number', align: 'center', width: '120px' },
         { text: 'รายการครุภัณฑ์', value: 'type.name', align: 'center', width: '160px' },
+        { text: 'เลขที่สินทรัพย์ อว.', value: 'assetNumberAorWor', align: 'center', width: '160px' },
         { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
         { text: 'ราคา', value: 'price', align: 'center', width: '100px' },
         { text: 'โครงการ', value: 'project.projectName', width: '120px', align: 'center'  },

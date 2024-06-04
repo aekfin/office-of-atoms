@@ -101,19 +101,20 @@
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: `ชื่อ${this.tabActive.text}`, value: 'name' },
         ]
-        if (this.tabIndex > 3) headers.push({ text: `ชื่อ${this.tabs[3].text}`, value: 'brand.name', width: '200px' })
-        if (this.tabIndex > 2) headers.push({ text: `ชื่อ${this.tabs[2].text}`, value: 'type.name', width: '200px' })
-        if (this.tabIndex > 1) headers.push({ text: `ชื่อ${this.tabs[1].text}`, value: 'subCategory.name', width: '240px' })
-        if (this.tabIndex > 0) headers.push({ text: `ชื่อ${this.tabs[0].text}`, value: 'majorCategory.name', width: '240px' })
+        if (this.tabIndex > 3 && this.tabIndex < 4) headers.push({ text: `ชื่อ${this.tabs[3].text}`, value: 'brand.name', width: '200px' })
+        if (this.tabIndex > 2 && this.tabIndex < 3) headers.push({ text: `ชื่อ${this.tabs[2].text}`, value: 'type.name', width: '200px' })
+        if (this.tabIndex > 1 && this.tabIndex < 3) headers.push({ text: `ชื่อ${this.tabs[1].text}`, value: 'subCategory.name', width: '240px' })
+        if (this.tabIndex > 0 && this.tabIndex < 3) headers.push({ text: `ชื่อ${this.tabs[0].text}`, value: 'majorCategory.name', width: '240px' })
         headers.push({ text: `เครื่องมือ`, value: 'action', width: '100px' })
         return headers
       },
       filters () {
-        const filters = [{ type: 'textField', name: 'ชื่อหมวดหมู่พัสดุ', param: 'majorCategoryName' }]
-        if (this.tabIndex > 0) filters.push({ type: 'textField', name: 'ชื่อประเภทพัสดุ', param: 'subCategoryName' })
-        if (this.tabIndex > 1) filters.push({ type: 'textField', name: 'ชื่อรายการครุภัณฑ์', param: 'typeName' })
-        if (this.tabIndex > 2) filters.push({ type: 'textField', name: 'ชื่อยี่ห้อ', param: 'brandName' })
-        if (this.tabIndex > 3) filters.push({ type: 'textField', name: 'ชื่อรุ่น', param: 'modelName' })
+        const filters = []
+        if (this.tabIndex >= 0 && this.tabIndex < 3) filters.push({ type: 'textField', name: 'ชื่อหมวดหมู่พัสดุ', param: 'majorCategoryName' })
+        if (this.tabIndex > 0 && this.tabIndex < 3) filters.push({ type: 'textField', name: 'ชื่อประเภทพัสดุ', param: 'subCategoryName' })
+        if (this.tabIndex > 1 && this.tabIndex < 3) filters.push({ type: 'textField', name: 'ชื่อรายการครุภัณฑ์', param: 'typeName' })
+        if (this.tabIndex > 2 && this.tabIndex < 4) filters.push({ type: 'textField', name: 'ชื่อยี่ห้อ', param: 'brandName' })
+        if (this.tabIndex > 3 && this.tabIndex < 5) filters.push({ type: 'textField', name: 'ชื่อรุ่น', param: 'modelName' })
         //const filters = [{ type: 'textField', name: `ชื่อ${this.tabActive.text}`, param: 'search', md: '12' }]
         return filters
       },
@@ -148,6 +149,7 @@
       getActionIconList (item) {
         const action = () => {
           this.editItem = item
+          console.log('this.editItem ',this.editItem)
           this.createDialog = true
         } 
         return [
@@ -170,6 +172,9 @@
       async onCreate ({ form, uploadingFiles, removeFiles }) {
         try {
           const apiPath = this.tabActive.postApiPath
+          console.log('apiPath ',apiPath);
+          console.log('data ', { ...form, names: [form.name] });
+          console.log('query ', this.$route.query);
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath, data: { ...form, names: [form.name] }, query: this.$route.query })
           
           if (data?.status?.code == 400){
@@ -193,9 +198,12 @@
       },
       async onEdit ({ form, uploadingFiles, removeFiles }) {
         try {
-          const req = { name: form.name, majorCategoryId: form.majorCategoryId, subCategoryId: form.subCategoryId, typeId: form.typeId };
+          const req = { name: form.name, depreciationYear: form.depreciationYear, majorCategoryId: form.majorCategoryId, subCategoryId: form.subCategoryId, typeId: form.typeId };
           let { editApiPath } = this.tabActive
           editApiPath = editApiPath && form.id && `${this.tabActive.editApiPath}/${form.id}`
+          console.log('apiPath ',editApiPath);
+          console.log('data ', req);
+          // console.log('query ', this.$route.query);
           if (editApiPath) await this.$store.dispatch('http', { method: 'patch', apiPath: editApiPath, data: req })
           if (uploadingFiles?.length) await this.onFileImage({ id: form.id, uploadingFiles, removeFiles })
           if (removeFiles?.length) await this.onFileImage({ id: form.id, uploadingFiles, removeFiles })

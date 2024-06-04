@@ -16,7 +16,7 @@
         <DurableGoodsOwner :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId"  @ouChange="onOuChange"/>
 
         <div class="text-h5 mt-5 mb-2"><b>เลือกครุภัณฑ์</b></div>
-        <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="({ form }) => categoryForm = form" @changeMajor="getEquipmentNumber">
+        <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="({ form }) => categoryForm = form" @changeMajor="getEquipmentNumber" @changeDepreciationYear="changeDepreciationYear">
           <template #default>
             <v-col :cols="12" :md="isCreate ? 6 : 9">
               <v-text-field v-model="form.name" name="name" label="ชื่อครุภัณฑ์"/>
@@ -37,7 +37,7 @@
             <v-text-field v-model="form.classifier" label="หน่วย *" :rules="classifierRules" name="unit" required/>
           </v-col>
           <v-col :cols="12" :md="3" class="depreciation">
-            <v-text-field v-model="form.depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%"/>
+            <v-text-field v-model="form.depreciation_rate" label="อัตราเสื่อมสภาพ *" :rules="deteriorationRules" :rows="3" type="number" suffix="ปี"/>
           </v-col>
           <v-col :cols="12" class="pt-0">
             <v-textarea v-model="form.description" class="pt-0" label="คำอธิบายเพิ่มเติม" :rows="4"/>
@@ -176,6 +176,7 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/${this.$route.params.durable_goods_id}` })
+          console.log('datdatadatadatหหหหหหหหหหหหaa ',data);
           this.form = {
             ...data,
             organizationId: data.organization.id,
@@ -196,6 +197,7 @@
               model: data.model,
             }
           }
+          console.log('this.initCategory ',this.initCategory);
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
@@ -235,6 +237,9 @@
         } catch (err) {
           return Promise.reject(err)
         }
+      },
+      async changeDepreciationYear (val) {
+        this.form.depreciation_rate = val.depreciationYear
       },
       convertDetail () {
         return {

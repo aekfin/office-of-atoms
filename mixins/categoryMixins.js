@@ -55,40 +55,43 @@ export default {
     resetOnCategory () {
       this.form.subCategoryId = null
       this.form.typeId = null
-      this.form.brandId = null
-      this.form.modelId = null
+      // this.form.brandId = null
+      // this.form.modelId = null
       this.subCategoryItems = []
       this.typeItems = []
-      this.brandItems = []
-      this.modelItems = []
+      // this.brandItems = []
+      // this.modelItems = []
     },
     resetOnSubCategory () {
       this.form.typeId = null
-      this.form.brandId = null
-      this.form.modelId = null
+      // this.form.brandId = null
+      // this.form.modelId = null
       this.typeItems = []
-      this.brandItems = []
-      this.modelItems = []
+      // this.brandItems = []
+      // this.modelItems = []
     },
     resetOnType () {
-      this.form.brandId = null
-      this.form.modelId = null
-      this.brandItems = []
-      this.modelItems = []
+      // this.form.brandId = null
+      // this.form.modelId = null
+      // this.brandItems = []
+      // this.modelItems = []
     },
     resetOnBrand () {
-      this.form.modelId = null
-      this.modelItems = []
+      // this.form.modelId = null
+      // this.modelItems = []
     },
     async onChangeCategory ({ val, reset = true }) {
       try {
         this.isLoadingSubCategory = true
         if (reset) this.resetOnCategory()
         const { data } = await this.$store.dispatch('http', { apiPath: `equipment/category/mejorCategory/${val}`, query: this.$route.query })
+        console.log('data.subCategorys ',data);
         this.subCategoryItems = data.subCategorys
+        this.form.depreciation_rate = data.depreciationYear
         this.isLoadingSubCategory = false
         this.$emit('change', { form: this.form, trigger: 'category', val })
         this.$emit('changeMajor', { val })
+        this.$emit('changeDepreciationYear', { depreciationYear: data.depreciationYear })
         return Promise.resolve(data)
       } catch (err) { return Promise.reject(err) }
     },
@@ -105,24 +108,27 @@ export default {
     },
     async onChangeType ({ val, reset = true }) {
       try {
-        this.isLoadingBrand = true
-        if (reset) this.resetOnType()
-        const { data } = await this.$store.dispatch('http', { apiPath: `equipment/category/type/${val}`, query: this.$route.query })
-        this.brandItems = data.brands
-        this.isLoadingBrand = false
+        // this.isLoadingBrand = true
+        // if (reset) this.resetOnType()
+        // console.log('query',this.$route.query);
+        // const { data } = await this.$store.dispatch('http', { apiPath: `equipment/category/type/${val}`, query: this.$route.query })
+        // this.brandItems = data.brands
+        // this.isLoadingBrand = false
         this.$emit('change', { form: this.form, trigger: 'type', val })
-        return Promise.resolve(data)
+        // return Promise.resolve(data)
+        return Promise.resolve()
       } catch (err) { return Promise.reject(err) }
     },
     async onChangeBrand ({ val, reset = true }) {
       try {
-        this.isLoadingModel = true
-        if (reset) this.resetOnBrand()
-        const { data } = await this.$store.dispatch('http', { apiPath: `equipment/category/brand/${val}`, query: this.$route.query })
-        this.modelItems = data.models
-        this.isLoadingModel = false
+        // this.isLoadingModel = true
+        // if (reset) this.resetOnBrand()
+        // const { data } = await this.$store.dispatch('http', { apiPath: `equipment/category/brand/${val}`, query: this.$route.query })
+        // this.modelItems = data.models
+        // this.isLoadingModel = false
         this.$emit('change', { form: this.form, trigger: 'brand', val })
-        return Promise.resolve(data)
+        // return Promise.resolve(data)
+        return Promise.resolve()
       } catch (err) { return Promise.reject(err) }
     },
     async onChangeModel ({ val, reset = true }) {

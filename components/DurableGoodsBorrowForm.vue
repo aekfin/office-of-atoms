@@ -58,7 +58,7 @@
               <SelectDropdown v-else :value.sync="form.department.id" apiPath="Orgchart/getDepartments" itemValue="id" itemText="departmentName" label="กลุ่ม" @select="onSelectDepartment"/>
             </v-col> -->
             <v-col>
-              <DurableGoodsOwner :organization.sync="form.ouId" :department.sync="form.departmentId" :hideUser="true" :disabled="isCreate" @ouChange="onOuChange">
+              <DurableGoodsOwner :organization.sync="ouId" :department.sync="departmentId" :hideUser="true" :disabled="isCreate" @ouChange="onOuChange">
               </DurableGoodsOwner>
             </v-col>
           </v-row>
@@ -87,7 +87,7 @@
                 <!-- <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
                 <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
                   :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()"/> -->
-                  <v-text-field v-if="viewMode && !onCategoryChange && form.item && form.item.equipment" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
+                  <v-text-field v-if="viewMode && !onCategoryChange" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
                 <SelectDropdown  v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
                   :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()" @select="onChangeEquipment"/>
               </v-col>
@@ -145,8 +145,7 @@
       return {
         valid: true,
         form: null,
-        projectId: null,       
-        ouId: null,
+        projectId: null,
         datetimeBorrowRules: [
           v => !!v || `โปรดใส่วันที่${this.type}`,
         ],
@@ -162,6 +161,7 @@
         step: 1,
         organizationId: null,
         departmentId: null,
+        ouId: null,
         ownerForm: {},
         categoryForm: {},
         initCategoryForm: {},
@@ -211,24 +211,25 @@
         }
         
         console.log('this.item ',this.item);
+          this.oldItem = this.item?.items;
+        
+        this.form = {
+          description: this.item?.description || '',
+          dateBorrow: this.item?.dateBorrow || new Date(),
+          dueDate: this.item?.dueDate || getDueDate(),
+          itemId: this.item?.items?.[0]?.equipment?.id || null,
+          item: this.item?.items?.[0] || null,
+          organization: this.item?.items?.[0]?.equipment?.organizationMaster || {},
+          department: this.item?.items?.[0]?.equipment?.departmentMaster || {},
+          owner: this.item?.items?.[0]?.equipment?.owner || {},
+          number: this.item?.items?.[0]?.equipment?.number || '',
+          borrowId: this.item?.borrowId,
+          equipmentRequestId: this.item?.id, 
+          equipmentXRequestId: this.item?.items?.[0].equipmentXRequestId,
+        }
         if(this.item){
-          this.oldItem = this.item.items;
-          this.form = {
-            description: this.item?.description || '',
-            dateBorrow: this.item?.dateBorrow || new Date(),
-            dueDate: this.item?.dueDate || getDueDate(),
-            itemId: this.item?.items?.[0]?.equipment?.id || null,
-            item: this.item?.items?.[0] || null,
-            organization: this.item?.items?.[0]?.equipment?.organizationMaster || {},
-            department: this.item?.items?.[0]?.equipment?.departmentMaster || {},
-            owner: this.item?.items?.[0]?.equipment?.owner || {},
-            number: this.item?.items?.[0]?.equipment?.number || '',
-            borrowId: this.item?.borrowId,
-            equipmentRequestId: this.item?.id, 
-            equipmentXRequestId: this.item?.items?.[0].equipmentXRequestId,
-            departmentId: this.item?.departmentId,
-            ouId: this.item?.ouId,
-          }
+          this.departmentId = this.item.departmentId,
+          this.ouId =  this.item.ouId
         }
         
         
@@ -260,7 +261,7 @@
         this.form.number = val?.item?.number
         this.form.itemId = val?.item?.id
       },      
-      getApproverText (flow) {
+      getApproverText (flow) { 
         return flow?.emails?.reduce((str, email, i) => `${str}${i > 0 ? ', ' : ''}${email}`, 'ผู้อนุมัติ : ') || false
       },
       toggleEdit () {

@@ -139,6 +139,10 @@
         return this.item?.canEdit === 'true'
       },
       canChangeQuantity () {
+        console.log('this.canEdit',this.canEdit);
+        console.log('this.isApprover ',this.isApprover);
+        
+        console.log('this.canEdit && this.isApprover ',this.canEdit && this.isApprover);
         return this.canEdit && this.isApprover
       },
       showRemain () {

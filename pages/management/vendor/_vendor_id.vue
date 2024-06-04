@@ -19,21 +19,28 @@
           <v-col :cols="12">
             <v-text-field v-model="form.companyName" label="ชื่อผู้ขาย/บริษัท *" :rules="nameRules" required/>
           </v-col>
-          <v-col :cols="6">
+          <v-col :cols="12">
             <v-text-field v-model="form.companyAddress" name="address" label="ที่อยู่ *" :rules="addressRules" required/>
           </v-col>
-          <v-col :cols="3">
-            <v-text-field v-model="form.companyAddress" name="address" label="ตำบล/แขวง *" :rules="addressRules" required/>
+          <AddressDurableGood :cols="3" :initCategory="initCategory" @change="({ form }) => categoryForm = form">
+            <!-- <template #default>
+            <v-col cols="12" :md="3">
+              <v-text-field v-model="form.companyPostcode" name="companyPostcode" label="รหัสไปรษณีย์ *" disabled :rules="postcodeRules" required/>
+            </v-col>
+          </template> -->
+          </AddressDurableGood>
+          <!-- <v-col :cols="3">
+            <SelectDropdown :value.sync="form.companyProvince" label="จังหวัด *" apiPath="Orgchart/getListProvince?pageSize=1000" :items="companyProvinceItems" :rules="provinceRules" required :disabled="disabled" @select="onChangeProvince"/>
           </v-col>
           <v-col :cols="3">
-            <v-text-field v-model="form.companyAddress" name="address" label="อำเภอ/เขต *" :rules="addressRules" required/>
+            <SelectDropdown :value.sync="form.companyDistrict" label="อำเภอ/เขต *" :items="companyDistrictItems" :rules="districtRules" required :disabled="disabled || !form.companyProvince || isLoadingcompanyDistrict" :forceLoading="isLoadingcompanyDistrict" @select="onChangeDistrict"/>
           </v-col>
           <v-col :cols="3">
-            <v-text-field v-model="form.companyAddress" name="address" label="จังหวัด *" :rules="addressRules" required/>
-          </v-col>
-          <v-col :cols="3">
-            <v-text-field v-model="form.companyAddress" name="address" label="รหัสไปรษณีย์ *" :rules="addressRules" required/>
-          </v-col>
+            <SelectDropdown :value.sync="form.companySubDistrict" label="ตำบล/แขวง *" :items="companySubDistrictItems" :rules="subDistrictRules" required :disabled="disabled || !form.companyDistrict || isLoadingcompanySubDistrict" :forceLoading="isLoadingcompanySubDistrict" @select="onChangeSubDistrict"/>
+          </v-col> -->
+          <!-- <v-col :cols="3">
+            <v-text-field v-model="form.companyPostcode" name="companyPostcode" label="รหัสไปรษณีย์ *" disabled :rules="postcodeRules" required/>
+          </v-col> -->
           <v-col :cols="12">
             <v-text-field v-model="form.companyPhone" label="เบอร์โทรศัพท์ *" :rules="contactTelRules"/>
           </v-col>
@@ -99,11 +106,13 @@
 </template>
 
 <script>
+import _ from 'lodash'
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
       // UploadImage: () => import('~/components/UploadImage.vue'),
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
+      AddressDurableGood: () => import('~/components/AddressDurableGood.vue'),
     },
     data () {
       return {
@@ -118,10 +127,22 @@
           companyType: '',
           serviceType: '',
           warrantytype: '',
+          // companyProvinceItems: [],
+          // companyDistrictItems: [],
+          // companySubDistrictItems: [],
+          // companyPostcodeItems: [],
+          // isLoadingcompanyDistrict: false,
+          // isLoadingcompanySubDistrict: false,
+          // isLoadingcompanyPostcode: false,
           contractPersons: [
             { name: '', position: '', email: '', phone: '' }
           ]
         },
+        categoryForm: {},        
+        initCategory: {},
+        // companyProvince:'',
+        // companyDistrict:'',
+        // companySubDistrict:'',
         typeList: [
           { id: 'corporation', name: 'นิติบุคคล' },
           { id: 'person', name: 'บุคคลธรรมดา' },
@@ -142,6 +163,18 @@
         ],
         addressRules: [
           v => !!v || 'โปรดใส่ที่อยู่',
+        ],
+        subDistrictRules: [
+          v => !!v || 'โปรดใส่ ตำบล/แขวง',
+        ],
+        districtRules: [
+          v => !!v || 'โปรดใส่ อำเถอ/แขวง',
+        ],
+        provinceRules: [
+          v => !!v || 'โปรดใส่ จังหวัด',
+        ],
+        postcodeRules: [
+          v => !!v || 'โปรดใส่รหัสไปรษณีย์',
         ],
         contactNameRules: [
           v => !!v || 'โปรดใส่ชื่อ - นามสกุล',
@@ -169,17 +202,31 @@
       },
     },
     mounted () {
-      if (!this.isCreate) this.getData()
+      if (!this.isCreate){ 
+        this.getData() 
+      }
     },
     methods: {
       async getData () {
         try {
+          
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: 'Project/getcompany', query: { id: this.$route.params.vendor_id } })
           this.originalCompanyNumber = data.companyNumber
           this.form = data
+          console.log('123415 ',this.form);
+
+          if (data) {
+            this.initCategory = {
+              province: data.companyProvinceDto,
+              district: data.companyDistrictDto,
+              subDistrict: data.companySubDistrictDto,
+            }
+          }
           this.isLoading = false
           return Promise.resolve()
+          
+          
         } catch (err) { return Promise.reject(err) }
       },
       addContact () {
@@ -213,7 +260,12 @@
           if (valid) {
             const apiPath = this.isCreate ? 'Project/addcompany' : 'Project/updateCompany'
             const method = this.isCreate ? 'post' : 'patch'
-            const { data } = await this.$store.dispatch('http', { method, apiPath, data: this.form })
+            const form = {
+              ...this.form,
+              ...this.categoryForm,
+            }
+            console.log('form form ',form);
+            const { data } = await this.$store.dispatch('http', { method, apiPath, data: form })
             await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างคู่สัญญาสำเร็จ' : 'แก้ไขคู่สัญญาสำเร็จ' })
             if (this.isCreate) this.$router.push('/management/vendor/')
             else await this.getData()
@@ -224,6 +276,70 @@
           }
         } catch (err) { return Promise.reject(err) }
       },
+      // resetOnProvince () {
+      //   this.form.companyDistrict = null
+      //   this.form.companySubDistrict = null
+      //   this.form.companyPostcode = null
+      //   this.companyDistrictItems = []
+      //   this.companySubDistrictItems = []
+      //   this.companyPostcodeItems = []
+      // },
+      // resetOnDistrict () {
+      //   this.form.companySubDistrict = null
+      //   this.form.companyPostcode = null
+      //   this.companySubDistrictItems = []
+      //   this.companyPostcodeItems = []
+      // },
+      // resetOnSubDistrict () {
+      //   this.form.companyPostcode = null
+      //   this.companyPostcodeItems = []
+      // },
+      // async onChangeProvince ({ val, reset = true }) {
+      //   try {
+      //     this.isLoadingcompanyDistrict = true
+      //     if (reset) this.resetOnProvince()
+      //     const { data } = await this.$store.dispatch('http', { apiPath: `Orgchart/getProvinceById/${val}`, query: this.$route.query })
+      //     console.log('data.district ',data.district);
+      //     this.companyDistrictItems = data.district
+      //     this.isLoadingcompanyDistrict = false
+      //     this.$nextTick (() => {
+      //       this.$forceUpdate ();
+      //     });
+      //     return Promise.resolve(data)
+      //   } catch (err) { return Promise.reject(err) }
+      // },      
+      // async onChangeDistrict ({ val, reset = true }) {
+      //   try {
+      //     this.isLoadingcompanySubDistrict = true
+      //     if (reset) this.resetOnDistrict()
+      //     const { data } = await this.$store.dispatch('http', { apiPath: `Orgchart/getDistrictById/${val}`, query: this.$route.query })
+      //     this.companySubDistrictItems = data.subDistrict
+      //     this.isLoadingcompanySubDistrict = false
+      //     this.$nextTick (() => {
+      //       this.$forceUpdate ();
+      //     });
+      //     return Promise.resolve(data)
+      //   } catch (err) { return Promise.reject(err) }
+      // },
+      // async onChangeSubDistrict ({ val, reset = true }) {
+      //   try {
+      //     this.isLoadingcompanySubDistrict = true
+      //     if (reset) this.resetOnSubDistrict()
+      //     const { data } = await this.$store.dispatch('http', { apiPath: `Orgchart/getSubDistrictById/${val}`, query: this.$route.query })
+      //     console.log('onChangeSubDistrict data',data);
+      //     this.form.companyPostcode = data.zipCode
+      //     this.isLoadingcompanySubDistrict = false
+      //     this.$nextTick (() => {
+      //       this.$forceUpdate ();
+      //     });
+      //     return Promise.resolve(data)
+      //   } catch (err) { return Promise.reject(err) }
+      // },
+      // refreshSelectDropdown () {
+      //   this.$nextTick(() => {
+      //     this.$forceUpdate(); // อัพเดท component ใหม่
+      //   });
+      // },
     }
   }
 </script>

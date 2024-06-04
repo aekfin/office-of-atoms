@@ -10,12 +10,13 @@
       <v-card-text class="black--text pt-2">
         <div>
           <v-form ref="form" v-model="valid" lazyValidation>
-            <SelectDropdown v-if="tabIndex > 0" :value.sync="form.majorCategoryId" label="หมวดหมู่พัสดุ *" apiPath="equipment/category/getMejorCategorys" :items="majorCategoryItems" :rules="categoryRule" required  @select="onChangeCategory"/>
-            <SelectDropdown v-if="tabIndex > 1" :value.sync="form.subCategoryId" label="ประเภทพัสดุ *" :items="subCategoryItems" :rules="subcategoryRule" required :disabled=" !form.majorCategoryId || isLoadingSubCategory" :forceLoading="isLoadingSubCategory" @select="onChangeSubCategory"/>
+            <SelectDropdown v-if="tabIndex > 0 && tabIndex < 3" :value.sync="form.majorCategoryId" label="หมวดหมู่พัสดุ *" apiPath="equipment/category/getMejorCategorys" :items="majorCategoryItems" :rules="categoryRule" required  @select="onChangeCategory"/>
+            <SelectDropdown v-if="tabIndex > 1 && tabIndex < 3" :value.sync="form.subCategoryId" label="ประเภทพัสดุ *" :items="subCategoryItems" :rules="subcategoryRule" required :disabled=" !form.majorCategoryId || isLoadingSubCategory" :forceLoading="isLoadingSubCategory" @select="onChangeSubCategory"/>
             <!-- <SelectDropdown v-if="tabIndex > 2" :value.sync="form.typeId" label="รายการครุภัณฑ์ *" :items="typeItems" :rules="typeRule" required :disabled="isEdit || !form.subCategoryId || isLoadingType" :forceLoading="isLoadingType" @select="onChangeType"/> -->
-            <SelectDropdown v-if="tabIndex > 2" :value.sync="form.typeId" label="รายการครุภัณฑ์ *" :items="typeItems" :rules="typeRule" required :disabled="!form.subCategoryId || isLoadingType" :forceLoading="isLoadingType" @select="onChangeType"/>
-            <SelectDropdown v-if="tabIndex > 3" :value.sync="form.brandId" label="ยี่ห้อ *" :items="brandItems" :rules="brandRule" required :disabled="isEdit || !form.typeId || isLoadingBrand" :forceLoading="isLoadingBrand" @select="onChangeBrand"/>
+            <SelectDropdown v-if="tabIndex > 2 && tabIndex < 3" :value.sync="form.typeId" label="รายการครุภัณฑ์ *" :items="typeItems" :rules="typeRule" required :disabled="!form.subCategoryId || isLoadingType" :forceLoading="isLoadingType" @select="onChangeType"/>
+            <!-- <SelectDropdown v-if="tabIndex > 3" :value.sync="form.brandId" label="ยี่ห้อ *" :items="brandItems" :rules="brandRule" required :disabled="isEdit || !form.typeId || isLoadingBrand" :forceLoading="isLoadingBrand" @select="onChangeBrand"/> -->
             <v-text-field v-model="form.name" :label="categoryName" :rules="categoryNameRule" required/>
+            <v-text-field v-if="tabIndex === 0" v-model="form.depreciationYear" label="จำนวนปีที่เสื่อมราคา *" :rules="depreciationYearRule" required/>
             <template v-if="tabIndex > 3">
               <AttachFileBtn :value.sync="uploadingFiles" :attachments="files" accept="image/gif, image/jpeg, image/png, image/webp" :limit="1" :multiple="false" btnLabel="แนบรูปเพิ่มเติม" showImage @removeAttachment="onRemoveFile"/>
             </template>
@@ -66,6 +67,11 @@
           v => !!v || `โปรดใส่ชื่อ${this.tabActive.text}`,
         ]
       },
+      depreciationYearRule () {
+        return [
+          v => !!v || 'โปรดใส่จำนวนปีที่เสื่อมราคา',
+        ]
+      },
     },
     watch: {
       'createDialog' (val) {
@@ -114,8 +120,9 @@
           }
           this.form.id = this.editItem.id
           this.form.name = this.editItem.name
+          this.form.depreciationYear = this.editItem.depreciationYear
         }
-        
+        // console.log('this.editItemthis.editItem ',this.editItem);
         const { data } = await this.$store.dispatch('http', { apiPath: `equipment/category/model/${this.editItem.id}` })
         this.files = data.fileInfo
       },

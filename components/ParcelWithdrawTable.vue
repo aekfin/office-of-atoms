@@ -10,7 +10,7 @@
       <template #item?.dateApprove="{ item }">
         <div>{{ item?.dateApprove ? $fn.displayDate(item?.dateApprove) : '-' }}</div>
       </template>
-      <template #item?.status="{ item }">
+      <template #item.status="{ item }">
         <v-chip :color="$store.state.approveStatusColor[item?.status]">{{ $store.state.approveStatus[item?.status] }}</v-chip>
       </template>
       <template #item.parcel="{ item }">

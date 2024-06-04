@@ -1,6 +1,6 @@
 <template>
   <v-row class="category-durable-good">
-    <v-col :cols="12" :md="cols">
+    <v-col :cols="12" :md="cols"> 
       <SelectDropdown :value.sync="form.majorCategoryId" :label="`หมวดหมู่พัสดุ ${noRules ? '' : '*'}`" apiPath="equipment/category/getMejorCategorys?pageSize=1000" :items="majorCategoryItems" :rules="!noRules && categoryRule || []" required :disabled="disabled" @select="onChangeCategory"/>
     </v-col>
     <v-col :cols="12" :md="cols">
@@ -9,18 +9,18 @@
     <v-col :cols="12" :md="cols">
       <SelectDropdown :value.sync="form.typeId" :label="`รายการครุภัณฑ์ ${noRules ? '' : '*'}`" :items="typeItems" :rules="!noRules && typeRule || []" required :disabled="disabled || !form.subCategoryId || isLoadingType" :forceLoading="isLoadingType" @select="onChangeType"/>
     </v-col>
-    <v-col :cols="12" :md="cols">
+    <!-- <v-col :cols="12" :md="cols">
       <SelectDropdown :value.sync="form.brandId" :label="`ยี่ห้อ ${noRules ? '' : '*'}`" :items="brandItems" :rules="!noRules && brandRule || []" required :disabled="disabled || !form.typeId || isLoadingBrand" :forceLoading="isLoadingBrand" @select="onChangeBrand"/>
     </v-col>
     <v-col :cols="12" :md="cols">
       <SelectDropdown :value.sync="form.modelId" :label="`รุ่น ${noRules ? '' : '*'}`" :items="modelItems" :rules="!noRules && modelRule || []" required :disabled="disabled || !form.brandId || isLoadingModel" :forceLoading="isLoadingModel" @select="onChangeModel"/>
-    </v-col>
-    <!-- <v-col :cols="12" :md="cols">
-      <SelectDropdown :value.sync="form.brandId" :label="`ยี่ห้อ ${noRules ? '' : '*'}`" :items="brandItems" :rules="!noRules && brandRule || []" required :disabled="disabled || isLoadingBrand" :forceLoading="isLoadingBrand" />
+    </v-col> -->
+    <v-col :cols="12" :md="cols">
+      <SelectDropdown :value.sync="form.brandId" :label="`ยี่ห้อ ${noRules ? '' : '*'}`" apiPath="equipment/category/brands?pageSize=1000" :items="brandItems" :rules="!noRules && brandRule || []" required :disabled="disabled || isLoadingBrand" :forceLoading="isLoadingBrand" />
     </v-col>
     <v-col :cols="12" :md="cols">
-      <SelectDropdown :value.sync="form.modelId" :label="`รุ่น ${noRules ? '' : '*'}`" :items="modelItems" :rules="!noRules && modelRule || []" required :disabled="disabled || isLoadingModel" :forceLoading="isLoadingModel" />
-    </v-col> -->
+      <SelectDropdown :value.sync="form.modelId" :label="`รุ่น ${noRules ? '' : '*'}`" apiPath="equipment/category/models?pageSize=1000" :items="modelItems" :rules="!noRules && modelRule || []" required :disabled="disabled || isLoadingModel" :forceLoading="isLoadingModel" />
+    </v-col>
     <slot :categoryForm="form"/>
   </v-row>
 </template>
@@ -49,7 +49,7 @@
     },
     methods: {
       async setForm () {
-        console.log('itemEquipmentssssssss',this.itemEquipment);
+        console.log('this.initForm',this.initForm);
         if (!_.isEmpty(this.initForm)) {
           try {
             this.form = this.initForm
@@ -64,6 +64,7 @@
         }
       },
       onInitCategory () {
+        console.log('this.initCategory this.initCategory',this.initCategory);
         this.form = {
           majorCategoryId: this.initCategory.majorCategory?.id,
           subCategoryId: this.initCategory.subCategory?.id,
@@ -76,6 +77,11 @@
         this.typeItems = [this.initCategory.type]
         this.brandItems = [this.initCategory.brand]
         this.modelItems = [this.initCategory.model]
+        console.log('this.majorCategoryItems',this.majorCategoryItems);
+        console.log('this.subCategoryItems',this.majorCategoryItems);
+        console.log('this.typeItems',this.typeItems);
+        console.log('this.brandItems',this.brandItems);
+        console.log('this.modelItems',this.modelItems);
         this.$emit('change', { form: this.form })
       },
     }

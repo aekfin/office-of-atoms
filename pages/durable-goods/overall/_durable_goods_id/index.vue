@@ -23,7 +23,9 @@
             <InputDatePicker :value.sync="form.dateEntry" label="วันที่กรรมการเห็นถูกต้องครบถ้วน *" :rules="dateEntryRules" required :disabled="!isCreate"/>
           </v-col>
           <v-col :cols="12" :md="3">
-            <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate" @change="setNumberAllEquipments"/>
+            <!-- <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate" @change="setNumberAllEquipments"/> -->
+            <InputDatePicker v-if="isCreate" :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required   @change="setNumberAllEquipments"/>
+            <InputDatePicker v-else :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required  />
           </v-col>
           <v-col :cols="12" :md="3">
             <InputDatePicker :value.sync="form.dateReceivedBefore" label="วันที่ได้มา (ก่อนโอน)" :disabled="!isCreate"/>
@@ -62,7 +64,7 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-container>
-                  <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="res => form.equipments[i].categoryForm = res.form" @changeMajor="setNumberAllEquipments" @changeModel="onChangeModel">
+                  <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="res => form.equipments[i].categoryForm = res.form" @changeMajor="setNumberAllEquipments" @changeModel="onChangeModel" @changeDepreciationYear="val => changeDepreciationYear(i, val)">
                     <template #default>
                       <v-col :cols="12" :md="isCreate ? 6 : 9">
                         <v-text-field v-model="form.equipments[i].name" name="name" label="ชื่อครุภัณฑ์" />
@@ -83,7 +85,7 @@
                       <v-text-field v-model="form.equipments[i].classifier" label="หน่วย *" :rules="classifierRules" name="unit" required/>
                     </v-col>
                     <v-col :cols="6" :md="3" class="depreciation">
-                      <v-text-field v-model="form.equipments[i].depreciation_rate" label="อัตราเสื่อมสภาพต่อปี *" :rules="deteriorationRules" :rows="3" type="number" suffix="%"/>
+                      <v-text-field v-model="form.equipments[i].depreciation_rate" label="อัตราเสื่อมสภาพ *" :rules="deteriorationRules" :rows="3" type="number" suffix="ปี"/>
                     </v-col>
                     <v-col :cols="6" :md="3">
                       <SelectDropdown :value.sync="form.equipments[i].registrationType" itemValue="id" itemText="name" :items="$store.state.registrationList" label="ประเภททะเบียนครุภัณฑ์ *" :disabled="!isCreate" @select="val => onChangeRegistrationType(form.equipments[i], val)"/>
@@ -346,6 +348,10 @@
         } catch (err) {
           return Promise.reject(err)
         }
+      },
+      async changeDepreciationYear (i,val) {
+        this.form.equipments[i].depreciation_rate = val.depreciationYear
+        console.log('this.forsm val val ',val);
       },
       onChangeModel ({ val }) {
         if (val) this.getModelImage(val)
