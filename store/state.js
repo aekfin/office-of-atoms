@@ -26,6 +26,7 @@ export default () => ({
   },
   approveRequest: null,
   approveRequestDepartment: null,
+  approveListProject: null,
   approveEquipmentRequest: null,
   approveEquipmentBORROW: null,
   approveEquipmentRETURN: null,
@@ -141,7 +142,8 @@ export default () => ({
     },
     {
       title: 'โครงการที่ใกล้หมดระยะประกัน',
-      to: '/project2/'
+      to: '/project2/',
+      projectBadge: true,
     },
     {
       title: 'โครงการที่คืนเงินประกันแล้ว',

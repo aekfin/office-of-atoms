@@ -63,6 +63,7 @@
           { text: 'ผู้ขอเบิกวัสดุคงคลัง', value: 'user_fk.thaiFristName' },
           { text: 'วันที่เบิก', value: 'datePickUp', width: '140px', align: 'center' },
           { text: 'วันที่อนุมัติ', value: 'dateApprove', width: '140px', align: 'center' },
+          { text: 'วันที่สิ้นสุดการรับประกัน', value: 'warrantyEndDate', width: '200px', align: 'center' },
           { text: 'วัสดุคงคลัง', value: 'parcel', width: '160px', align: 'center' },
           { text: 'สถานะการเบิก', value: 'status', width: '160px', align: 'center' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },

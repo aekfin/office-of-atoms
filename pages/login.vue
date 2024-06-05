@@ -53,6 +53,7 @@
       this.$store.commit('SET_STATE', { name: 'role', val: null })
         this.$store.commit('SET_STATE', { name: 'approveRequest', val: null })
         this.$store.commit('SET_STATE', { name: 'approveRequestDepartment', val: null })
+        this.$store.commit('SET_STATE', { name: 'approveListProject', val: null })
     },
     methods: {
       async login () {

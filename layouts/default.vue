@@ -30,7 +30,10 @@
           </v-list-item>
           <v-list-item v-else-if="showMenu(menu)" :to="menu.to" router>
             <v-list-item-content>
-              <v-list-item-title>{{ menu.title }}</v-list-item-title>
+              <v-list-item-title class="truncate">
+                {{ menu.title }}
+                <v-badge v-if="menu.projectBadge && projectCount" class="ml-2 mr-2" color="red" :content="projectCount"/>
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </div>
@@ -106,6 +109,9 @@ export default {
     equipmentCount () {
       return this.$store.state.approveEquipmentRequest?.totalElements || 0
     },
+    projectCount () {
+      return this.$store.state.approveListProject?.totalElements || 0
+    },
     parcelNotiCount () {
       return this.externalCount + this.internalCount
     },
@@ -151,14 +157,18 @@ export default {
     },
     async getNoti () {
       try {
-        const [{ data: approveRequest }, { data: approveRequestDepartment }, { data: approveEquipmentRequest }] = await Promise.all([
+        console.log('approveRequest ',approveRequest);
+        const [{ data: approveRequest }, { data: approveRequestDepartment }, { data: approveEquipmentRequest }, { data: approveListProject }] = await Promise.all([
           this.$store.dispatch('http', { apiPath: 'parcel/getListPickUp', context: this }),
           this.$store.dispatch('http', { apiPath: 'parcel/department/getListPickUp', context: this }),
           this.$store.dispatch('http', { apiPath: 'equipment/getListRequest', context: this }),
+          this.$store.dispatch('http', { apiPath: 'Project/getListProject?expiringSoon=true&depositRefunds=false', context: this }),
         ])
+        console.log('approveListProject ',approveListProject);
         this.$store.commit('SET_STATE', { name: 'approveRequest', val: approveRequest })
         this.$store.commit('SET_STATE', { name: 'approveRequestDepartment', val: approveRequestDepartment })
         this.$store.commit('SET_STATE', { name: 'approveEquipmentRequest', val: approveEquipmentRequest })
+        this.$store.commit('SET_STATE', { name: 'approveListProject', val: approveListProject })
         return Promise.resolve()
       } catch (err) {
         return Promise.reject(err)
@@ -227,6 +237,11 @@ export default {
       .header-text {
         display: none;
       }
+    }
+    .truncate {
+      white-space: unset;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 </style>
