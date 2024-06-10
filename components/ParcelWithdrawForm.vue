@@ -34,7 +34,7 @@
         </v-row>  
       </v-container>
 
-      <h2 class="text-h5 mt-5"><b>เลือกวัสดุคงคลังที่ต้องการเบิก</b></h2>
+      <h2 class="text-h5 mt-5"><b>เลือกวัสดุคงคลังที่ต้องการเบิก<span>{{ isTreasury }}</span></b></h2>
       <v-container class="pb-0">
         <v-row v-for="(parcel, i) in form.pickUpItems" :key="i" class="mt-0">
           <v-col :cols="12" :md="3" class="d-flex align-baseline">
@@ -50,7 +50,8 @@
           </v-col>
           <v-col :cols="12" :md="showQuantity(form.pickUpItems[i]) ? 5 : 3">
             <div class="d-flex align-baseline">
-              <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" :rules="quantityFixedRules" class="mr-5" required :disabled="viewMode  && !privateEdit" type="number"/>
+              <!-- <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" :rules="quantityFixedRules" class="mr-5" required :disabled="viewMode  && !privateEdit" type="number"/> -->
+              <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" :rules="quantityFixedRules" class="mr-5" required :disabled="viewMode && !privateEdit" type="number"/>
               <v-text-field v-if="(!viewMode || canEdit)  && !disabledRemain" v-model="form.pickUpItems[i].quantity" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'" :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity" type="number"/>
               <v-text-field v-if="viewMode && !canEdit && form.pickUpItems[i].numberOfApproved !== undefined" v-model="form.pickUpItems[i].numberOfApproved" label="จำนวนจ่าย" disabled/>
               <v-btn v-if="!viewMode && form.pickUpItems.length > 1 && i === form.pickUpItems.length - 1" icon class="ml-5" @click.stop="removeParcel(i)">
@@ -89,12 +90,13 @@
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
     },
     props: {
-      item: { type: Object },
+      item: { type: Object }, 
       viewMode: { type: Boolean },
       backPath: { type: String, default: '/parcel/withdraw/' },
       cannotApprove: { type: Boolean },
       privateEdit: { type: Boolean },
       disabledRemain: { type: Boolean },
+      isTreasury: { type: Boolean },
       
     },
     data () {

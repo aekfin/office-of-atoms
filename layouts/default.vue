@@ -140,6 +140,7 @@ export default {
         if (authToken) {
           await this.$store.dispatch('http', { apiPath: 'oauth/valify-token' })
           const { data: profile } = await this.$store.dispatch('http', { apiPath: 'user/getUserbytoken' })
+          console.log('profile profile ',profile);
           const { data: role } = await this.$store.dispatch('http', { apiPath: 'roles/getRoles' })
           this.$store.commit('SET_STATE', { name: 'userProfile', val: profile})
           this.$store.commit('SET_STATE', { name: 'role', val: role})

@@ -60,7 +60,10 @@
         isLoadingDialog: true,
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
+          { text: 'รายการ', value: 'parcelName', width: '120px', align: 'center' },
           { text: 'ผู้ขอเบิกวัสดุคงคลัง', value: 'user_fk.thaiFristName' },
+          { text: 'กลุ่ม', value: 'organization.ouName', width: '150px' },
+          { text: 'กอง', value: 'department.departmentName', width: '150px' },
           { text: 'วันที่เบิก', value: 'datePickUp', width: '140px', align: 'center' },
           { text: 'วันที่อนุมัติ', value: 'dateApprove', width: '140px', align: 'center' },
           { text: 'วันที่สิ้นสุดการรับประกัน', value: 'warrantyEndDate', width: '200px', align: 'center' },

@@ -2,7 +2,7 @@
   <div id="parcel-request-detail-page">
     <PageHeader :text="'อนุมัติการเบิกวัสดุคงคลัง'" hideTotal/>
     <Loading v-if="isLoading"/>
-    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" :backPath="backPath" @approve="onApprove" @reject="onReject"/>
+    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" :backPath="backPath" @approve="onApprove" @reject="onReject" :isTreasury="isTreasury"/>
   </div>
 </template>
 
@@ -27,6 +27,10 @@
       },
       backPath () {
         return this.$route.path.includes('all-request') ? '/parcel/all-request/' : '/parcel/request/'
+      },
+      isTreasury (state) {
+        console.log('state.userProfile?.isTreasury ',this.$store.state.userProfile?.isTreasury);
+        return this.$store.state.userProfile?.isTreasury === 'true'
       },
     },
     mounted () {

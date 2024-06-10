@@ -39,6 +39,10 @@
           <v-col :cols="12" :md="3">
             <v-text-field v-model="form.valueAfter" label="มูลค่า (หลังโอน)" type="number" :disabled="!isCreate"/>
           </v-col>
+          <v-col :cols="12" :md="3" style="padding-top: 2%;">
+            <input type="checkbox" v-model="form.projectStatus"/>
+            <label>สถานะของโครงการที่มีการเพิ่มครุภัณฑ์ครบถ้วน</label>
+          </v-col>
         </v-row>
 
         <DurableGoodsOwner class="mt-5" :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId" :userList="form.ownerList" :disabled="!isCreate" @ouChange="onOuChange">
@@ -200,6 +204,7 @@
           dateReceivedAfter: '',
           valueBefore: '',
           valueAfter: '',
+          projectStatus: '',
         },
         nameRules: [
           v => !!v || 'โปรดใส่ชื่อ',
@@ -433,6 +438,7 @@
             dateReceivedBefore: this.form.dateReceivedBefore ? this.$fn.convertDateToString(this.form.dateReceivedBefore) : '',
             dateReceivedAfter: this.form.dateReceivedAfter ? this.$fn.convertDateToString(this.form.dateReceivedAfter) : '',
           }
+          console.log('form ',form);
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/project/import', data: form })
           await Promise.all(
             data.map((item, i) => {
@@ -450,7 +456,7 @@
           const equipment = this.form?.equipments?.[0] || {}
           const equipmentDetail = equipment?.detailList?.[0] || {}
           const categoryForm = equipment?.categoryForm || {}
-          const form = { ...equipment, ...equipmentDetail, ...categoryForm }
+          const form = { ...equipment, ...equipmentDetail, ...categoryForm, projectStatus: this.form.projectStatus }
           await this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/Edit', data: form })
           if (this.$refs.attachmentDurableGoods) await this.$refs.attachmentDurableGoods.upload()
           await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })
