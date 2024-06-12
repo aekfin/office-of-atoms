@@ -187,7 +187,20 @@
                       <div class="mr-5">{{ i + 1 }}.</div>
                       <SelectDropdown :value.sync="contact.description" :items="companyPositionList" itemValue="id" itemText="name" label="ประเภทคณะกรรมการ *" :rules="contactPositionRules"/>
                     </div>
-                    <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules" />
+                    <!-- <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules" /> -->
+                    <div v-if="!manualModes[i]" class="company-name">
+                      <v-text-field  v-model="contact.name"  label="ชื่อ-นามสกุล *" :rules="contactNameRules" />                      
+                    </div>
+                    <div v-else class="company-name">
+                          <UserDropdown v-model="contact.name" itemValue="thaiFristName" itemText="thaiFristName" label="ชื่อ-นามสกุล *" apiPath="Orgchart/user-detail" 
+                        :rules="contactNameRules" required  @select="onSelectUser($event,i)"/> 
+                    </div>
+                    <div>
+                      <v-col :cols="4">
+                        <!-- <v-btn color="secondary" @click="manualModes[i] = !manualModes[i]">{{ manualModes[i] ? 'เลือกรายการ' : 'กรอกชื่อเอง' }}</v-btn> -->
+                      <v-btn color="secondary" @click="toggleManualMode(i)">{{ manualModes[i] ? 'กรอกชื่อด้วยตัวเอง' : 'เลือกชื่อจากรายการ' }}</v-btn>
+                      </v-col>
+                    </div>
                     <v-text-field v-model="contact.mobile" class="phone" label="เบอร์โทรศัพท์" :rules="phoneNumberRules"/>
                     <v-text-field v-model="contact.email" class="email" label="E-Mail" :rules="emailRules"/>
                     <v-btn v-if="form.committees.length > 1" icon @click="removeCommittee(i)">
@@ -238,6 +251,7 @@
       </v-card>
     </v-dialog> -->
   </div>
+  
 </template>
 
 <script>
@@ -250,6 +264,7 @@
       ProjectDropdown: () => import('~/components/ProjectDropdown.vue'),
       Loading: () => import('~/components/Loading.vue'),
       ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
+      UserDropdown: () => import('~/components/UserDropdown.vue'),
     },
     data () {
       return {
@@ -257,6 +272,7 @@
         valid: true,
         isLoading: false,
         manualMode: false,
+        manualModes: {},
         editMode: false,
         project: null,
         budgetStart: '0',
@@ -500,6 +516,15 @@
         delete form.fileInfo
         form.removeFile = this.removeFile
       },
+      onSelectUser (item,index ) {
+        this.form.committees[index].name = item.val
+        console.log('onSelectUser item',item);
+        console.log('onSelectUser index',index);
+        console.log('onSelectUser committees ',this.form.committees);
+      },
+      toggleManualMode (index) {
+        this.$set(this.manualModes, index, !this.manualModes[index]);
+      },
       async onDepositRefund () {
         try {
           await this.$store.dispatch('http', { apiPath: 'Project/deposit-refunds', query: { projectId: this.$route.params.project_id } })
@@ -589,13 +614,13 @@
       gap: 20px;
 
       .prefix-wrapper {
-        width: 30%;
+        width: 35%;
         display: flex;
         align-items: baseline;
       }
 
       .company-name {
-        width: 40%;
+        width: 35%;
       }
 
       .phone {
@@ -603,7 +628,7 @@
       }
 
       .email {
-        width: 20%
+        width: 25%
       }
 
       .cost-field {

@@ -51,8 +51,10 @@
           <v-col :cols="12" :md="showQuantity(form.pickUpItems[i]) ? 5 : 3">
             <div class="d-flex align-baseline">
               <!-- <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" :rules="quantityFixedRules" class="mr-5" required :disabled="viewMode  && !privateEdit" type="number"/> -->
-              <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" :rules="quantityFixedRules" class="mr-5" required :disabled="viewMode && !privateEdit" type="number"/>
-              <v-text-field v-if="(!viewMode || canEdit)  && !disabledRemain" v-model="form.pickUpItems[i].quantity" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'" :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity" type="number"/>
+              <!-- <v-text-field v-if="(!viewMode || canEdit)  && !disabledRemain" v-model="form.pickUpItems[i].quantity" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'" :rules="countWithdrawRules(form.pickUpItems[i])" required :disabled="viewMode && !canChangeQuantity" type="number"/> -->
+              <v-text-field v-if="viewMode" v-model="form.pickUpItems[i].quantityFixed" label="จำนวนเบิก *" :rules="quantityFixedRules" class="mr-5" required :disabled="viewMode && !privateEdit && (!isTreasury && isPending)" type="number"/>
+              <v-text-field v-if="(!viewMode || canEdit)  && !disabledRemain" v-model="form.pickUpItems[i].quantity" :label="viewMode ? 'จำนวนจ่าย *' : 'จำนวนเบิก *'" :rules="countWithdrawRules(form.pickUpItems[i])" required 
+              :disabled="viewMode && !canChangeQuantity && (!isTreasury && isPending)" type="number"/>
               <v-text-field v-if="viewMode && !canEdit && form.pickUpItems[i].numberOfApproved !== undefined" v-model="form.pickUpItems[i].numberOfApproved" label="จำนวนจ่าย" disabled/>
               <v-btn v-if="!viewMode && form.pickUpItems.length > 1 && i === form.pickUpItems.length - 1" icon class="ml-5" @click.stop="removeParcel(i)">
                 <i class="material-icons">delete</i>
@@ -77,6 +79,7 @@
           <v-btn v-if="viewMode" large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
           <v-btn v-else large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
           <v-btn v-if="!viewMode || privateEdit" class="ml-4" elevation="2" large color="success" @click="onSubmit">ยื่นขอเบิก</v-btn>
+          <v-btn v-if="viewMode && isTreasury && !isPending" elevation="2" large color="success" @click="onEdit">บันทึก</v-btn>
         </v-row>
       </v-container>
     </v-form>
@@ -136,6 +139,9 @@
       },
       isReject () {
         return this.item && this.item.status === 'REJECT'
+      },
+      isPending () {
+        return this.item && this.item.status === 'PENDING'
       },
       canEdit () {
         return this.item?.canEdit === 'true'
@@ -234,6 +240,10 @@
       onSubmit () {
         const valid = this.$refs.form.validate()
         if (valid) this.$emit('submit', this.form)
+      },
+      onEdit () {
+        const valid = this.$refs.form.validate()
+        if (valid) this.$emit('edit', this.form)
       },
       onApprove () {
         const valid = this.$refs.form.validate()
