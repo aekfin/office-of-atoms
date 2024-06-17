@@ -71,7 +71,8 @@
               <div>เลือกครุภัณฑ์ใหม่</div>
             </slot>
           </v-btn></h5>
-      <v-container class="mt-2">
+      <!-- <v-container v-if="!isBorrow" class="mt-2">    -->
+      <v-container class="mt-2">         
         <div v-if="isWithdraw && !viewMode || isVisibleProject === 'on'" >
           <v-col :cols="12" :md="12">
             <SelectDropdown :value.sync="projectId" itemValue="id" itemText="projectName" label="เลือกโครงการ *" apiPath="Project/getListProject" :rules="projectRules" @select="onSelectProject"/>
@@ -95,6 +96,39 @@
           </div>
         </template>
       </v-container>
+      <!-- <v-container v-else class="mt-2"> รอทำมากกว่า1ครั้ง
+        <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
+            <v-expansion-panel v-for="(equipment, i) in form.equipments" :key="i" accordion>
+              <v-expansion-panel-header v-if="!viewMode" class="text-h6">
+                <div class="d-flex align-center">
+                  <div>ครุภัณฑ์ รายการที่ {{ i + 1 }}.</div>
+                  <v-btn v-if="form.equipments.length > 1 && i === form.equipments.length - 1" class="ml-5" icon @click.stop="removeDurableGoods(i)">
+                    <i class="material-icons">delete</i>
+                  </v-btn>
+                </div>
+                <template #actions>
+                  <i class="material-icons">keyboard_arrow_down</i>
+                </template>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-container>
+                  <v-text-field v-model="form.number" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/>
+                  <CategoryDurableGood :key="categoryKey" :initCategory="initCategoryForm" :disabled="toggleEdit()" noRules :itemEquipment="itemEquipment" 
+                  @change="onChangeCategory">
+                    <v-col :cols="12" :md="9">
+                        <v-text-field v-if="viewMode && !onCategoryChange" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
+                      <SelectDropdown  v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
+                        :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()" @select="onChangeEquipment"/>
+                    </v-col>
+                  </CategoryDurableGood>
+                  <v-row v-if="isBorrow"  class="mb-5">
+                    <v-btn block rounded outlined @click="addDurableGoods()">เพิ่มครุภัณฑ์</v-btn>
+                  </v-row>
+              </v-container>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
+      </v-container> -->
 
       <v-container v-if="isReturned">
         <AttachFileBtn :value.sync="attachFiles" :attachments="files" accept="*" :multiple="false" :disabled="!isApprover" @removeAttachment="onRemoveFile"/>
@@ -140,11 +174,28 @@
       hideOwner: { type: Boolean },
       isWithdraw: { type: Boolean },
       requisitionStatus: { type: String },
+      isBorrow: { type: Boolean },
     },
     data () {
       return {
         valid: true,
-        form: null,
+        form: {          
+          equipments: [
+            {
+              name: '',
+              year: (new Date()).getFullYear() + 543,
+              price: '',
+              description: '',
+              depreciation_rate: '',
+              classifier: '',
+              categoryForm: {},
+              quantity: 1,
+              registrationType: '1',
+              moneyType: 'BUDGET',
+              detailList: [this.getDetail()]
+            }
+          ],
+        },
         projectId: null,
         datetimeBorrowRules: [
           v => !!v || `โปรดใส่วันที่${this.type}`,
@@ -177,6 +228,7 @@
         isVisibleProject: null,
         isVisibleEquipment: null,
         oldItem: [],
+        formExpand: [0],
       }
     },
     computed: {
@@ -360,7 +412,45 @@
         // ChooseNewEquipment
         this.isVisibleProject = 'on';
         this.isVisibleEquipment = 'off';
+      },      
+      getDetail (data = {}) {
+        return {
+          number: data.number || '',
+          assetNumber: data.assetNumber || '',
+          assetNumberAorWor: data.assetNumberAorWor || '',
+          serialNumber: data.serialNumber || '',
+          numberSubAorWor: data.numberSubAorWor || '',
+          assetSubNumber: data.assetSubNumber || '',
+        }
       },
+      addDurableGoods () {
+        this.form.equipments.push(
+          {
+            name: '',
+            year: (new Date()).getFullYear() + 543,
+            price: '',
+            description: '',
+            depreciation_rate: '',
+            classifier: '',
+            categoryForm: {},
+            quantity: 1,
+            registrationType: '1',
+            moneyType: 'BUDGET',
+            detailList: [this.getDetail()]
+          }
+        )
+        this.formExpand = [ ...this.formExpand, this.formExpand.length ]
+        this.setNumberAllEquipments()
+      },      
+      removeDurableGoods (i) {
+        this.form.equipments.splice(i, 1)
+      },
+      // setNumberAllEquipments () {
+      //   this.form.equipments.forEach(equipment => {
+      //     this.getEquipmentNumber(equipment)
+      //   })
+      // },
+
     }
   }
 </script>

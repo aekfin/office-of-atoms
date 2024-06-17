@@ -49,6 +49,12 @@
                 <v-col :cols="12">
                   <SelectDropdown :value.sync="departmentId" :label="`กลุ่ม ${onlyUser ? '' : '*'}`" itemText="departmentName" :rules="departmentRules" required :disabled="disabled" apiPath="Orgchart/getDepartments" @select="onSelectDepartment"/>
                 </v-col>
+              </v-row> 
+              <v-row>
+                <v-col :cols="12">
+                  <SelectDropdown :value.sync="userId" :label="`บุคคล ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" apiPath="user/listUsers"
+         :rules="userRules" :query="{ departmentId: departmentId, ouId: organizationId }" @select="onSelectUser"/>
+                </v-col>
               </v-row>
               <v-row>
                 <v-col :cols="12">
@@ -93,6 +99,7 @@
         dialog: false,
         organizationId: '',
         departmentId: '',
+        userId:'',
         location: '',
         rowData: {},
       }
@@ -150,9 +157,11 @@
         this.getCheckedList({ pageNo: number || 0 })
       },
       async onChangeStatus (data) {
+        console.log(data);
         
         this.organizationId = data.organization.id
         this.departmentId = data.department.id
+        this.userId = data.owner?.id
         this.location = data.location
         this.dialog = true
         // this.onSave(content)
@@ -179,7 +188,7 @@
       async onSave (content) {
          try {
            await this.$store.dispatch('http', { apiPath: 'equipment/checkStock', query: { id: content.id, status: content.status, status_counting: content.status_counting
-          , organizationId: this.organizationId, departmentId: this.departmentId, location: this.location} })
+          , organizationId: this.organizationId, departmentId: this.departmentId, userId: this.userId, location: this.location} })
            await this.$store.dispatch('snackbar', { text: `ตรวจนับครุภัณฑ์เลขที่ "${content.number}" สำเร็จ` })
            await Promise.all([
              this.getCheckedList(),
@@ -196,6 +205,9 @@
       },
       onSelectDepartment (data) {
         this.departmentId = data.item.id
+      },
+      onSelectUser (data) {
+        this.userId = data.item.id
       },
     },
   }

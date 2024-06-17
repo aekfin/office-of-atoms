@@ -6,7 +6,7 @@
       </template>
     </PageHeader>
     <Loading v-if="isLoading"/>
-    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" cannotApprove @submit="onSubmit" @edit="onEdit" :forEdit="true"/>
+    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" cannotApprove @submit="onSubmit" @edit="onEdit" :forEdit="true" :isBorrow="true"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
   </div>
 </template>
