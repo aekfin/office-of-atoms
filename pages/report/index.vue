@@ -68,7 +68,7 @@ import ReportTable from '~/components/ReportTable.vue'
             id: 2,
             name: 'รายงานเบิกจ่ายวัสดุคงคลังตามหน่วยงาน',
             apiPath: 'report/pacelWithOu',
-            filters: [2, 3, 4, 5, 14, 16],
+            filters: [16, 2, 3, 4, 5, 14],
           },
           {
             id: 3,
