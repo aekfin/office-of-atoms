@@ -39,6 +39,12 @@
           <v-col :cols="12" :md="3" class="depreciation">
             <v-text-field v-model="form.depreciation_rate" label="อัตราเสื่อมสภาพ *" :rules="deteriorationRules" :rows="3" type="number" suffix="ปี"/>
           </v-col>
+          <v-col :cols="6" :md="3">
+            <SelectDropdown :value.sync="form.registrationType" itemValue="id" itemText="name" :items="$store.state.registrationList" label="ประเภททะเบียนครุภัณฑ์ *" :disabled="!isCreate" />
+          </v-col>
+          <v-col :cols="6" :md="3">
+            <SelectDropdown :value.sync="form.moneyType" itemValue="id" itemText="name" :items="$store.state.moneyTypeList" label="ประเภทของเงิน"/> 
+          </v-col>
           <v-col :cols="12" class="pt-0">
             <v-textarea v-model="form.description" class="pt-0" label="คำอธิบายเพิ่มเติม" :rows="4"/>
           </v-col>
@@ -177,6 +183,16 @@
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/${this.$route.params.durable_goods_id}` })
           console.log('datdatadatadatหหหหหหหหหหหหaa ',data);
+          let  moneyType = '';
+          if(data.moneyType === 'เงินงบประมาณ'){
+            moneyType = 'BUDGET';
+          }else if(data.moneyType === 'เงินนอกงบประมาณ'){
+            moneyType = 'OUT_OF_BUDGET';
+          }else if(data.moneyType === 'เงินอื่นๆ'){
+            moneyType = 'OTHER';
+          }else{
+            moneyType = 'DONATION';
+          }
           this.form = {
             ...data,
             organizationId: data.organization.id,
@@ -187,6 +203,7 @@
             detailList: [this.getDetail(data)],
             disable: data.disable || false,
             quantity: 1,
+            moneyType: moneyType
           }
           if (data.majorCategory) {
             this.initCategory = {
@@ -197,7 +214,7 @@
               model: data.model,
             }
           }
-          console.log('this.initCategory ',this.initCategory);
+          console.log('this.form ',this.form.moneyType);
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
@@ -218,6 +235,10 @@
         }
         this.getEquipmentNumber()
       },
+      // onChangeRegistrationType (equipment, { val }) {
+      //   equipment.registrationType = val
+      //   this.getEquipmentNumber(equipment)
+      // },
       async getEquipmentNumber () {
         try {
           const ouId = this.form.organizationId
@@ -273,6 +294,8 @@
             departmentId: this.form.departmentId,
             organizationId: this.form.organizationId,
             inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
+            registrationType: this.form.registrationType,
+            moneyType: this.form.moneyType,
             equipments: [
               {
                 name: this.form.name,
@@ -287,6 +310,7 @@
               }
             ]
           }
+          console.log('sss form ',form);
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/import', data: form })
           await Promise.all(
             data.map((item) => {
@@ -297,6 +321,7 @@
           await this.$store.dispatch('snackbar', { text: 'เพิ่มครุภัณฑ์สำเร็จ' })
           this.$router.push('/management/durable-goods/')
           return Promise.resolve(data)
+          // return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
       async onEdit () {

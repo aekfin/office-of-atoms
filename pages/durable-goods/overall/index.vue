@@ -26,43 +26,15 @@
         deleteDialog: false,
         itemDelete: '',
         items: [],
-        filters: [
-          { type: 'number',param: 'pageSize',name: 'จำนวนรายการในการแสดงผลของตาราง' }, 
+        filters: [    
+          { type: 'number',param: 'pageSize',name: 'จำนวนรายการในการแสดงผลของตาราง' },   
           {
             type: 'textField',
             name: 'ชื่อโครงการ',
             param: 'projectName',
-          },
-          // {
-          //   type: 'textField',
-          //   name: 'ชื่อครุภัณฑ์',
-          //   param: 'equipmentName',
-          // },
-          {
-            type: 'textField',
-            name: 'เลขที่ครุภัณฑ์',
-            param: 'equipmentNumber',
-          },
-          {
-            type: 'textField',
-            name: 'เลขที่ครุภัณฑ์ย่อย',
-            param: 'equipmentSubNumber',
-          },
-          {
-            type: 'textField',
-            name: 'เลขที่สินทรัพย์',
-            param: 'assetNumber',
-          },
-          {
-            type: 'textField',
-            name: 'เลขที่สินทรัพย์ อว.',
-            param: 'assetNumberAorWor',
-          },
-          {
-            type: 'textField',
-            name: 'เลขที่สั่งซื้อสั่งจ้าง/เลขที่สัญญา',
-            param: 'contractNumber',
-          },
+          },    
+          { type: 'number',param: 'yearMin',name: 'ปีงบประมาณเริ่มต้น' },
+          { type: 'number',param: 'yearMax',name: 'ปีงบประมาณสิ้นสุด' }, 
           {
             name: 'หมวดหมู่พัสดุ',
             param: 'majorCategoryId',
@@ -79,20 +51,47 @@
             apiPath: 'equipment/category/types',
           },
           {
-            name: 'ยี่ห้อ',
-            param: 'brandId',
-            apiPath: 'equipment/category/brands',
+            type: 'textField',
+            name: 'เลขที่ครุภัณฑ์',
+            param: 'equipmentNumber',
           },
           {
-            name: 'รุ่น',
-            param: 'modelId',
-            apiPath: 'equipment/category/models',
+            type: 'textField',
+            name: 'เลขที่สินทรัพย์',
+            param: 'assetNumber',
           },
           {
-            name: 'สถานะ',
-            param: 'status',
-            options: this.$store.getters.durableGoodSelectableOptions,
+            type: 'textField',
+            name: 'เลขที่สินทรัพย์ อว.',
+            param: 'assetNumberAorWor',
           },
+          { type: 'datePicker',param: 'dateEntryMin',name: 'วันที่กรรมการเห็นถูกต้องครบถ้วนเริ่มต้น' },
+          { type: 'datePicker',param: 'dateEntryMax',name: 'วันที่กรรมการเห็นถูกต้องครบถ้วนสิ้นสุด' },
+          // {
+          //   type: 'textField',
+          //   name: 'ชื่อครุภัณฑ์',
+          //   param: 'equipmentName',
+          // },
+          {
+            type: 'textField',
+            name: 'เลขที่สั่งซื้อสั่งจ้าง/เลขที่สัญญา',
+            param: 'contractNumber',
+          },
+          {
+            type: 'textField',
+            name: 'เลขที่ครุภัณฑ์ย่อย',
+            param: 'equipmentSubNumber',
+          },
+          // {
+          //   name: 'ยี่ห้อ',
+          //   param: 'brandId',
+          //   apiPath: 'equipment/category/brands',
+          // },
+          // {
+          //   name: 'รุ่น',
+          //   param: 'modelId',
+          //   apiPath: 'equipment/category/models',
+          // },
           {
             name: 'กอง',
             param: 'ouId',
@@ -104,11 +103,14 @@
             param: 'departmentId',
             apiPath: 'Orgchart/getDepartments',
             itemText: 'departmentName',
-          },          
-          { type: 'number',param: 'yearMin',name: 'ปีงบประมาณเริ่มต้น' },
-          { type: 'number',param: 'yearMax',name: 'ปีงบประมาณสิ้นสุด' },          
-          { type: 'datePicker',param: 'inspectionDateMin',name: 'วันที่ตรวจรับเริ่มต้น' },
-          { type: 'datePicker',param: 'inspectionDateMax',name: 'วันที่ตรวจรับสิ้นสุด' },
+          },
+          {
+            name: 'สถานะ',
+            param: 'status',
+            options: this.$store.getters.durableGoodSelectableOptions,
+          },           
+          // { type: 'datePicker',param: 'inspectionDateMin',name: 'วันที่ตรวจรับเริ่มต้น' },
+          // { type: 'datePicker',param: 'inspectionDateMax',name: 'วันที่ตรวจรับสิ้นสุด' },
           {
             name: 'ประเภททะเบียนครุภัณฑ์',
             param: 'registrationType',
@@ -135,20 +137,15 @@
           const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/project/getEquipments', query: this.$route.query, context: this })
           console.log('getList',data)
           for(let i=0; i < data.size;i++){
-            if(data.content[i].haveSupEquipment){
-              // console.log('data.content[i].id',data.content[i].id)
+            // if(data.content[i].haveSupEquipment){
+            if (data.content[i] && data.content[i].haveSupEquipment) {
               const id = data.content[i].id
               const response = await this.$store.dispatch('http', { apiPath: 'equipment/getSubEquipments', query: { equipmentId: id } })
-              // console.log('this.equipment',)
               const subEquipmentModel = response.data.subEquipmentModel;
               data.content[i].subEquipmentModel = subEquipmentModel
-              // console.log('this.subEquipments ',data2.subEquipmentModel )
             }
-            // const newItem = {  xcxc: 'xcxc'  };
-            // data.content[i].newItem = newItem
           }
           
-          console.log('xxxxxx ',data)
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }

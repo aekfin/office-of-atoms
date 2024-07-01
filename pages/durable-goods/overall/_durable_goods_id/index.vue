@@ -371,14 +371,26 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/project/${this.$route.params.durable_goods_id}` })
-          
+          let  moneyType = '';
+          if(data.moneyType === 'เงินงบประมาณ'){
+            moneyType = 'BUDGET';
+          }else if(data.moneyType === 'เงินนอกงบประมาณ'){
+            moneyType = 'OUT_OF_BUDGET';
+          }else if(data.moneyType === 'เงินอื่นๆ'){
+            moneyType = 'OTHER';
+          }else if(data.moneyType === 'เงินบริจาค'){
+            moneyType = 'DONATION';
+          }else{
+            moneyType = 'BUDGET';
+          }
           this.form = {
             ...data,
             equipments: [{
               ...data,
               quantity: 1,
               registrationType: data.registrationType || '1',
-              moneyType: data.moneyType || 'BUDGET',
+              // moneyType: data.moneyType || 'BUDGET',
+              moneyType: moneyType,
               detailList: [this.getDetail(data)]
             }],
             dateEntry: data.dateEntry || '',
