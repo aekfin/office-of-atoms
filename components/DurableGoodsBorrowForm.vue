@@ -59,7 +59,7 @@
             </v-col> -->
             <v-col>
               <DurableGoodsOwner :organization.sync="ouId" :department.sync="departmentId" :hideUser="true" :disabled="isCreate" @ouChange="onOuChange">
-              </DurableGoodsOwner>
+              </DurableGoodsOwner> 
             </v-col>
           </v-row>
         </v-container>
@@ -253,6 +253,23 @@
     mounted () {
       
       this.setForm()
+    },
+    created () {
+      if (!this.form.item) {
+        this.form.item = {};
+      }
+      if (!this.form.item.equipment) {
+        this.form.item.equipment = {};
+      }
+      if (!this.form.item.equipment.name) {
+        this.form.item.equipment.name = '';
+      }
+      if(this.item){
+        this.departmentId = this.item.departmentId,
+        this.ouId =  this.item.ouId
+      }
+      
+      if (this.item) this.setCategoryForm()
     },
     methods: {
       setForm () {

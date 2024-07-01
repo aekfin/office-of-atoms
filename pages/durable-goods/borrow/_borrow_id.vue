@@ -49,7 +49,7 @@
             ouId: data.ouId,
             departmentId: data.departmentId || null
           }
-
+          console.log('getData this.item',this.item);  
           this.isLoading = false
           return Promise.resolve()
         } catch (err) {

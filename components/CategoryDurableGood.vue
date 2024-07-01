@@ -45,6 +45,8 @@
     },
     mounted () {
       this.setForm()
+      
+      console.log('this.initCategory',this.initCategory);
       if (!_.isEmpty(this.initCategory)) this.onInitCategory()
     },
     methods: {

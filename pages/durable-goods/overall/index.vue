@@ -6,7 +6,7 @@
       reportApiPath2="report/equipmentGF?registrationType=2" reportName2="พิมพ์ RFID ต่ำกว่าเกณฑ์" exportText2="พิมพ์ RFID ต่ำกว่าเกณฑ์"/>
       <!-- reportName="พิมพ์ RFID มาตราฐาน" exportText="รายงานค่าเสื่อมครุภัณฑ์"
       reportName="พิมพ์ RFID ต่ำกว่าเกณฑ์" exportText="รายงานค่าเสื่อมครุภัณฑ์" -->
-    <DurableGoodsTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
+    <DurableGoodsTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/> 
     <Pagination/>
     <ConfirmDialog :value.sync="deleteDialog" title="แจ้งเตือน" text="ยืนยันจะทำการลบบริหารครุภัณฑ์หรือไม่" @submit="onDelete"/>
   </div>
@@ -133,6 +133,22 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/project/getEquipments', query: this.$route.query, context: this })
+          console.log('getList',data)
+          for(let i=0; i < data.size;i++){
+            if(data.content[i].haveSupEquipment){
+              // console.log('data.content[i].id',data.content[i].id)
+              const id = data.content[i].id
+              const response = await this.$store.dispatch('http', { apiPath: 'equipment/getSubEquipments', query: { equipmentId: id } })
+              // console.log('this.equipment',)
+              const subEquipmentModel = response.data.subEquipmentModel;
+              data.content[i].subEquipmentModel = subEquipmentModel
+              // console.log('this.subEquipments ',data2.subEquipmentModel )
+            }
+            // const newItem = {  xcxc: 'xcxc'  };
+            // data.content[i].newItem = newItem
+          }
+          
+          console.log('xxxxxx ',data)
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
