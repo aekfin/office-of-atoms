@@ -197,6 +197,8 @@ import 'vuetify/dist/vuetify.min.css';
         headerSubEquipments: [
           { text: 'เลขที่ครุภัณฑ์ย่อย', value: 'number', width: '160px' },
           { text: 'ชื่อครุภัณฑ์ย่อย', value: 'name' },
+          { text: 'มูลค่า', value: 'cost' },
+          { text: 'หน่วย', value: 'classifier' },
         ]
       }
     },
