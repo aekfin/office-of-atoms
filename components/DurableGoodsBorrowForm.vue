@@ -71,8 +71,8 @@
               <div>เลือกครุภัณฑ์ใหม่</div>
             </slot>
           </v-btn></h5>
-      <!-- <v-container v-if="!isBorrow" class="mt-2">    -->
-      <v-container class="mt-2">         
+      <v-container v-if="!isBorrow" class="mt-2">   
+      <!-- <v-container class="mt-2">          -->
         <div v-if="isWithdraw && !viewMode || isVisibleProject === 'on'" >
           <v-col :cols="12" :md="12">
             <SelectDropdown :value.sync="projectId" itemValue="id" itemText="projectName" label="เลือกโครงการ *" apiPath="Project/getListProject" :rules="projectRules" @select="onSelectProject"/>
@@ -96,7 +96,7 @@
           </div>
         </template>
       </v-container>
-      <!-- <v-container v-else class="mt-2"> รอทำมากกว่า1ครั้ง
+      <v-container v-else class="mt-2"> <!-- ทำมากกว่า1ครั้ง -->
         <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
             <v-expansion-panel v-for="(equipment, i) in form.equipments" :key="i" accordion>
               <v-expansion-panel-header v-if="!viewMode" class="text-h6">
@@ -128,7 +128,7 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
           </v-expansion-panels>
-      </v-container> -->
+      </v-container>
 
       <v-container v-if="isReturned">
         <AttachFileBtn :value.sync="attachFiles" :attachments="files" accept="*" :multiple="false" :disabled="!isApprover" @removeAttachment="onRemoveFile"/>
