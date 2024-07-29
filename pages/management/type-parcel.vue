@@ -155,8 +155,12 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: 'Orgchart/deleteDepartment', query: { departmentId: item.id } })
-          if (data?.status?.code == 400) this.errorDialog = true
-          else await this.$store.dispatch('snackbar', { text: 'ลบประเภทวัสดุคงคลังสำเร็จ' })
+          if (data?.status?.code == 400) {
+            await this.$store.dispatch('snackbar', { text: ' ลบประเภทวัสดุคงคลังไม่สำเร็จ', props: { color: 'red', top: true } })              
+            this.errorDialog = true
+          }else {
+            await this.$store.dispatch('snackbar', { text: 'ลบประเภทวัสดุคงคลังสำเร็จ' })
+          }
           await this.getList()
           return Promise.resolve()
         } catch (err) {
@@ -198,6 +202,15 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: '/parcel/deleteParcelType/'+this.itemDelete})
+         
+          if (data?.status?.code == 400) {
+           // await this.$store.dispatch('snackbar', { text: ' ลบประเภทวัสดุคงคลังไม่สำเร็จ', props: { color: 'red', top: true } })              
+            this.errorDialog = true
+          }else {
+            await this.$store.dispatch('snackbar', { text: 'ลบประเภทวัสดุคงคลังสำเร็จ' })
+          }
+         
+         
           await this.getList()
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }

@@ -37,7 +37,7 @@
             <v-text-field v-model="form.classifier" label="หน่วย *" :rules="classifierRules" name="unit" required/>
           </v-col>
           <v-col :cols="12" :md="3" class="depreciation">
-            <v-text-field v-model="form.depreciation_rate" label="อัตราเสื่อมสภาพ *" :rules="deteriorationRules" :rows="3" type="number" suffix="ปี"/>
+            <v-text-field v-model="form.depreciation_rate" label="อัตราค่าเสื่อม *" :rules="deteriorationRules" :rows="3" type="number" suffix="ปี"/>
           </v-col>
           <v-col :cols="6" :md="3">
             <SelectDropdown :value.sync="form.registrationType" itemValue="id" itemText="name" :items="$store.state.registrationList" label="ประเภททะเบียนครุภัณฑ์ *" :disabled="!isCreate" />
@@ -56,7 +56,7 @@
           <v-col :cols="12" md>
             <div class="d-flex align-center">
               <div v-if="isCreate" class="mr-4">{{ j + 1 }}.</div>
-              <v-text-field v-model="detail.number" name="code" label="เลขที่ครุภัณฑ์ *" required disabled/>
+              <v-text-field v-model="detail.number" name="code" label="เลขที่ครุภัณฑ์ *" required />
             </div>
           </v-col>
           <v-col :cols="12" :md="3">
@@ -133,7 +133,7 @@
           v => v ? `${v}`.length === 4 || 'ตัวอย่าง: 2566' : 'โปรดใส่ปี',
         ],
         deteriorationRules: [
-          v => !!v  || 'โปรดใส่อัตราเสื่อมสภาพ',
+          v => !!v  || 'โปรดใส่อัตราค่าเสื่อม',
           v => v >= 1 || 'กรุณาใส่ค่ามากกว่า 0',
           v => /^[0-9]+$/.test(v) || 'กรุณาใส่ค่ามากกว่า 0' ,
         ],

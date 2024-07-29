@@ -89,7 +89,7 @@
                       <v-text-field v-model="form.equipments[i].classifier" label="หน่วย *" :rules="classifierRules" name="unit" required/>
                     </v-col>
                     <v-col :cols="6" :md="3" class="depreciation">
-                      <v-text-field v-model="form.equipments[i].depreciation_rate" label="อัตราเสื่อมสภาพ *" :rules="deteriorationRules" :rows="3" type="number" suffix="ปี"/>
+                      <v-text-field v-model="form.equipments[i].depreciation_rate" label="อัตราค่าเสื่อม *" :rules="deteriorationRules" :rows="3" type="number" suffix="ปี"/>
                     </v-col>
                     <v-col :cols="6" :md="3">
                       <SelectDropdown :value.sync="form.equipments[i].registrationType" itemValue="id" itemText="name" :items="$store.state.registrationList" label="ประเภททะเบียนครุภัณฑ์ *" :disabled="!isCreate" @select="val => onChangeRegistrationType(form.equipments[i], val)"/>
@@ -219,7 +219,7 @@
           v => v ? `${v}`.length === 4 || 'ตัวอย่าง: 2566' : 'โปรดใส่ปี',
         ],
         deteriorationRules: [
-          v => !!v || v === 0 || 'โปรดใส่อัตราเสื่อมสภาพ',
+          v => !!v || v === 0 || 'โปรดใส่อัตราค่าเสื่อม',
         ],
         classifierRules: [
           v => !!v || 'โปรดใส่หน่วย',

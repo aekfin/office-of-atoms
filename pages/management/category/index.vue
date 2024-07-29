@@ -179,7 +179,9 @@
           
           if (data?.status?.code == 400){
             if(data?.status?.description){
-              await this.$store.dispatch('snackbar', { text: `Error : ${data.status.description}`, props: { color: 'red', top: true } })  
+              //await this.$store.dispatch('snackbar', { text: `Error : ${data.status.description}`, props: { color: 'red', top: true } })  
+              await this.$store.dispatch('snackbar', { text: `สร้าง${this.tabActive.text}ไม่สำเร็จ` , props: { color: 'red' }})
+
             }else{
               await this.$store.dispatch('snackbar', { text: `สร้าง${this.tabActive.text}ไม่สำเร็จ` , props: { color: 'red' }})
             }            

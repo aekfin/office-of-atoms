@@ -52,7 +52,7 @@
               </v-row> 
               <v-row>
                 <v-col :cols="12">
-                  <SelectDropdown :value.sync="userId" :label="`บุคคล ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" apiPath="user/listUsers"
+                  <SelectDropdown :value.sync="userId" :label="`ผู้รับผิดชอบ ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" apiPath="user/listUsers"
          :rules="userRules" :query="{ departmentId: departmentId, ouId: organizationId }" @select="onSelectUser"/>
                 </v-col>
               </v-row>
