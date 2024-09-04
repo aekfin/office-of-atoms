@@ -2,7 +2,8 @@
   <div id="durable-goods-withdraw-page">
     <PageHeader text="การเบิกครุภัณฑ์" btnText="เพิ่มการเบิกครุภัณฑ์" createRoute="/durable-goods/withdraw/create/" :total="total" :filters="filters"/>
     <DurableGoodsWithdrawTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
-    <Pagination/>
+    <Pagination/>    
+    <ConfirmDialog :value.sync="deleteDialog" title="แจ้งเตือน" text="ยืนยันจะทำการลบรายการเบิกครุภัณฑ์หรือไม่" @submit="onDeleteType"/>
   </div>
 </template>
 
@@ -26,7 +27,9 @@
           { type: 'textField',param: 'status',name: 'สถานะการเบิก', },
           { type: 'datePicker',param: 'dateBorrow',name: 'วันที่เบิก' },
           { type: 'datePicker',param: 'dateApprove',name: 'วันที่อนุมัติ' },
-        ]
+        ],
+        deleteDialog: false,
+        itemDelete: '',
       }
     },
     watch: {
@@ -47,10 +50,22 @@
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
+      async onDeleteType () {
+        try {
+          this.isLoading = true
+          const { data } = await this.$store.dispatch('http', { method: 'get', apiPath: '/equipment/deleteWithdraw/'+this.itemDelete})
+          await this.getList()
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+      },
+      handleDeleteAction (item) {
+        this.deleteDialog = true
+        this.itemDelete = item
+      },
       getActionIconList (item) {
         return [
           { type: 'link', icon: 'edit', action: `/durable-goods/withdraw/${item.id}/` },
-          // { type: 'confirm', icon: 'delete', action: () => { console.log('Confirm') } },
+          { type: 'delete', icon: 'delete', disable: (item.status != 'PENDING' ? true : false), action: () => { this.handleDeleteAction(item.id) } },
         ]
       },
     },

@@ -88,7 +88,7 @@
 </style> -->
 
 <template>
-  <v-data-table  :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="durable-goods-table elevation-1 mt-6" :loading="isLoading"
+  <v-data-table  :items="items" :itemsPerPage="100" disableSort hideDefaultFooter class="durable-goods-table elevation-1 mt-6" :loading="isLoading"
   :headers="dessertHeaders"
       :expanded.sync="expanded"      
         item-value="name"
@@ -178,12 +178,13 @@ import 'vuetify/dist/vuetify.min.css';
         // { text: 'โครงการ', value: 'project.projectName' },
         { text: 'เลขที่ครุภัณฑ์', value: 'number', align: 'center', width: '120px' },
         { text: 'รายการครุภัณฑ์', value: 'type.name', align: 'center', width: '160px' },
-        { text: 'เลขที่สินทรัพย์ อว.', value: 'assetNumberAorWor', align: 'center', width: '160px' },
+        { text: 'เลขที่สินทรัพย์ อว.', value: 'assetNumberAorWor', align: 'center', width: '160px' },        
+        { text: 'เลขที่สั่งซื้อสั่งจ้าง/เลขที่สัญญา', value: 'project.contractNumber', align: 'center', width: '250px' },
         { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
         { text: 'ราคา', value: 'price', align: 'center', width: '100px' },
         { text: 'โครงการ', value: 'project.projectName', width: '120px', align: 'center'  },
         { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
-        { text: 'ครุภัณฑ์ย่อย', value: 'subEquipments', width: '120px', align: 'center' },
+        // { text: 'ครุภัณฑ์ย่อย', value: 'subEquipments', width: '120px', align: 'center' },
         { text: 'วันที่รับเข้า', value: 'dateEntry', align: 'center', width: '140px' },
       ]
       // if (this.getActionIconList) dessertHeaders.push({ text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' })

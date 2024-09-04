@@ -173,7 +173,7 @@
       return {
         valid: true,
         isLoading: false,
-        isNumberLoading: false,
+        isNumberLoading: false, 
         initCategory: {},
         modelImages: [],
         form: {
@@ -383,6 +383,7 @@
           }else{
             moneyType = 'BUDGET';
           }
+          console.log('getData ', data);
           this.form = {
             ...data,
             equipments: [{

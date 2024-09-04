@@ -5,6 +5,15 @@
     <v-form v-else ref="form" v-model="valid" lazyValidation class="mt-4">
       <v-container>
         <v-row>
+          <v-col :cols="12" :md="6">
+            <SelectDropdown v-if="isCreate" :value.sync="form.projectId" itemValue="id" itemText="projectName" label="โครงการ *" apiPath="Project/getListProject" :rules="projectRules" required :disabled="!isCreate" @select="onSelectProject"/>
+            <v-text-field v-else-if="form.project" v-model="form.project.projectName" label="โครงการ *" disabled/>
+          </v-col>
+          <v-col :cols="12" :md="3">
+            <v-text-field :value="form.project && form.project.contractNumber || ''" label="เลขที่สั่งซื้อสั่งจ้าง/เลขที่สัญญา" :disabled="!isCreate"/>
+          </v-col>          
+        </v-row>
+        <v-row>
           <v-col :cols="12" :md="3">
             <InputDatePicker :value.sync="form.inspectionDate" label="วันที่ตรวจรับ *" :rules="inspectionDateRules" required :disabled="!isCreate" @change="getEquipmentNumber"/>
           </v-col>
@@ -103,6 +112,7 @@
         isLoading: false,
         isNumberLoading: false,
         form: {
+          projectId: null,
           name: '',
           year: (new Date()).getFullYear() + 543,
           price: '',
@@ -150,6 +160,9 @@
         ],
         quantityRules: [
           v => v > 0 ||'โปรดใส่จำนวนครุภัณฑ์',
+        ],
+        projectRules: [
+          v => !!v || 'โปรดเลือกโครงการ',
         ],
       }
     },
@@ -291,6 +304,7 @@
       async onCreate () {
         try {
           const form = {
+            projectId: this.form.projectId,
             departmentId: this.form.departmentId,
             organizationId: this.form.organizationId,
             inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
@@ -345,6 +359,9 @@
           
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
+      },
+      onSelectProject ({ item }) {
+        this.form.project = item
       },
     }
   }

@@ -264,9 +264,11 @@
       if (!this.form.item.equipment.name) {
         this.form.item.equipment.name = '';
       }
+      console.log('this.item before set form',this.item);
+      console.log('this.item ouId',this.item?.items?.[0]?.equipment?.organizationMaster.id);
       if(this.item){
-        this.departmentId = this.item.departmentId,
-        this.ouId =  this.item.ouId
+        this.ouId =  this.item?.items?.[0]?.equipment?.organizationMaster.id || this.item.ouId
+        this.departmentId = this.item?.items?.[0]?.equipment?.departmentMaster.id || this.item.departmentId
       }
       
       if (this.item) this.setCategoryForm()
@@ -279,7 +281,7 @@
           return date
         }
         
-        console.log('this.item ',this.item);
+        console.log('this.item BorrowForm',this.item);
           this.oldItem = this.item?.items;
         
         this.form = {
@@ -297,8 +299,8 @@
           equipmentXRequestId: this.item?.items?.[0].equipmentXRequestId,
         }
         if(this.item){
-          this.departmentId = this.item.departmentId,
-          this.ouId =  this.item.ouId
+          this.ouId =  this.item?.items?.[0]?.equipment?.organizationMaster.id || this.item.ouId
+          this.departmentId = this.item?.items?.[0]?.equipment?.departmentMaster.id || this.item.departmentId
         }
         
         
