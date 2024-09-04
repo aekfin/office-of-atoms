@@ -16,7 +16,7 @@
             <SelectDropdown v-if="tabIndex > 2 && tabIndex < 3" :value.sync="form.typeId" label="รายการครุภัณฑ์ *" :items="typeItems" :rules="typeRule" required :disabled="!form.subCategoryId || isLoadingType" :forceLoading="isLoadingType" @select="onChangeType"/>
             <!-- <SelectDropdown v-if="tabIndex > 3" :value.sync="form.brandId" label="ยี่ห้อ *" :items="brandItems" :rules="brandRule" required :disabled="isEdit || !form.typeId || isLoadingBrand" :forceLoading="isLoadingBrand" @select="onChangeBrand"/> -->
             <v-text-field v-model="form.name" :label="categoryName" :rules="categoryNameRule" required/>
-            <v-text-field v-if="tabIndex === 0" v-model="form.depreciationYear" label="จำนวนปีที่เสื่อมราคา *" :rules="depreciationYearRule" required/>
+            <v-text-field v-if="tabIndex === 0" v-model="form.depreciationYear" label="อัตราค่าเสื่อม (ปี) *" :rules="depreciationYearRule" required/>
             <template v-if="tabIndex > 3">
               <AttachFileBtn :value.sync="uploadingFiles" :attachments="files" accept="image/gif, image/jpeg, image/png, image/webp" :limit="1" :multiple="false" btnLabel="แนบรูปเพิ่มเติม" showImage @removeAttachment="onRemoveFile"/>
             </template>
@@ -69,7 +69,7 @@
       },
       depreciationYearRule () {
         return [
-          v => !!v || 'โปรดใส่จำนวนปีที่เสื่อมราคา',
+          v => !!v || 'โปรดใส่อัตราค่าเสื่อม (ปี)',
         ]
       },
     },

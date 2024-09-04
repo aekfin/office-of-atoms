@@ -32,7 +32,7 @@
           { type: 'textField',param: 'majorCategory',name: 'หมวดหมู่', },
           { param: 'ouId', name: 'กอง', itemText: 'ouName', apiPath: 'Orgchart/getOrganizations' },
           { param: 'departmentId', name: 'กลุ่ม', itemText: 'departmentName', apiPath: 'Orgchart/getDepartments' },
-          { param: 'ownerId', name: 'บุคคล', itemText: this.$fn.getName, apiPath: 'user/listUsers' },
+          { param: 'ownerId', name: 'ผู้รับผิดชอบ', itemText: this.$fn.getName, apiPath: 'user/listUsers' },
         ]
       },
     },
