@@ -79,22 +79,39 @@
           { text: 'จำนวนจ่าย', value: 'numberOfApproved', width: '120px', align: 'center' },
         ],
         filters: [
-        {
-          type: 'textField',
-          param: 'thaiFristName',
-          name: 'ผู้ขอเบิกวัสดุคงคลัง',
-        },
-        { type: 'datePicker',
-          param: 'datePickUp',
-          name: 'วันที่เบิก' },
-        {
-            name: 'สถานะการเบิก',
-            param: 'status',
-            options: this.$store.getters.durableGoodSelectableOptionsRequestStatusEnum,
-        },
-        { type: 'textField',
-          param: 'name',
-          name: 'ชื่อวัสดุคงคลัง' },
+          {
+            type: 'textField',
+            name: 'ปีงบประมาณ',
+            param: 'year',
+          },
+          {
+            type: 'textField',
+            param: 'thaiFristName', 
+            name: 'ผู้ขอเบิกวัสดุคงคลัง',
+          },
+          { type: 'datePicker',
+            param: 'datePickUpMin',
+            name: 'ช่วงวันที่เบิกเริ่มต้น' 
+          },
+          { type: 'datePicker',
+            param: 'datePickUpMax',
+            name: 'ช่วงวันที่เบิกสิ้นสุด' 
+          },
+          { type: 'textField',
+            param: 'name',
+            name: 'ชื่อวัสดุคงคลัง' 
+          },
+          {
+            name: 'หน่วยงานที่รับผิดชอบ',
+            param: 'ouId',
+            apiPath: 'Orgchart/getOrganizations',
+            itemText: 'ouName',
+          },
+          {
+              name: 'สถานะการเบิก',
+              param: 'status',
+              options: this.$store.getters.durableGoodSelectableOptionsRequestStatusEnum,
+          }
         ]
       }
     },

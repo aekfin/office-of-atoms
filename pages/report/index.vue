@@ -48,7 +48,7 @@ import ReportTable from '~/components/ReportTable.vue'
         selectedFilters: [],
         reportGroup: [
           { id: 0, name: 'ทั้งหมด', types: [] },
-          { id: 1, name: 'หมวดหมู่วัสดุคงคลัง', types: [1, 2, 3, 4] },
+          { id: 1, name: 'หมวดหมู่วัสดุคงคลัง', types: [1, 2, 3, 4, 23, 24] },
           { id: 2, name: 'หมวดหมู่ครุภัณฑ์', types: [5, 6, 7, 8, 14, 15, 16, 17, 18, 19, 20, 21, 22] },
           { id: 3, name: 'จัดซื้อจัดจ้าง', types: [10, 11] },
           { id: 4, name: 'แผนงาน โครงการ', types: [9, 12, 13] },
@@ -189,6 +189,18 @@ import ReportTable from '~/components/ReportTable.vue'
             name: 'รายงานตรวจนับครุภัณฑ์',
             apiPath: 'report/checkEquipmentReport ',
             filters: [20, 15, 32, 16],
+          },
+          {
+            id: 23,
+            name: 'รายงานวัสดุคงคลังยอดคงเหลือ',
+            apiPath: 'report/pacelAll2',
+            filters: [2, 3, 4, 5, 16],
+          },
+          {
+            id: 24,
+            name: 'รายงานวัสดุคงคลังยอดคงเหลือ(รายเดือน)',
+            apiPath: 'report/pacelAllByMonth',
+            filters: [33, 4, 5, 16],
           },
         ],
         filterList: [
@@ -385,6 +397,12 @@ import ReportTable from '~/components/ReportTable.vue'
             name: 'เลขที่ครุภัณฑ์',
             param: 'equipmentNumber',
           },
+          {
+            id: 33,
+            name: 'เดือน',
+            param: 'month',
+            options: this.$store.getters.durableGoodSelecMonthOptions,
+          },
         ],
       }
     },
@@ -403,8 +421,8 @@ import ReportTable from '~/components/ReportTable.vue'
         this.selectedReport = item
         this.selectedFilters = this.selectedReport?.filters.map(id => this.filterList.find(filter => filter.id === id)) || []
         this.$router.push({ query: {} })
-
-        if(this.selectedReport.id == 1 || this.selectedReport.id == 2 ){
+        console.log('this.selectedReport',this.selectedReport);
+        if(this.selectedReport.id == 1 || this.selectedReport.id == 2 || this.selectedReport.id == 23 || this.selectedReport.id == 24){
           this.showBtn = false;
           this.showTable = false;
         }else{

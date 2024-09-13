@@ -2,7 +2,8 @@
   <div id="parcel-request-detail-page">
     <PageHeader :text="'อนุมัติการเบิกวัสดุคงคลัง'" hideTotal/>
     <Loading v-if="isLoading"/>
-    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" :backPath="backPath" @approve="onApprove" @reject="onReject" @edit="onEdit" :isTreasury="isTreasury"/>
+    <ParcelWithdrawForm v-else :item="item" :viewMode="!isCreate" :backPath="backPath" @approve="onApprove" @reject="onReject" 
+    @edit="onEdit" @edit2="onEdit2" :isTreasury="isTreasury"/>
   </div>
 </template>
 
@@ -17,7 +18,7 @@
     data () {
       return {
         isLoading: false,
-        item: null,
+        item: null, 
         originalItems: null,
       }
     },
@@ -98,6 +99,24 @@
               remark: this.item.description
             }
             await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/editPickUp2', data })            
+            this.$router.push('/parcel/request/')
+          }
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
+      async onEdit2 (form) {
+        try{
+          const isChanged = !_.isEqual(this.originalItems.items, form.pickUpItems)
+          console.log('form ',form);
+          console.log('this.originalItems.items ',this.originalItems.items);
+          console.log('form.pickUpItems ',form.pickUpItems);
+          if (isChanged) {
+            const data = {
+              editItems: form.pickUpItems,
+              pickUpId: this.$route.params.parcel_request_id,
+              remark: this.item.description
+            }
+            await this.$store.dispatch('http', { method: 'post', apiPath: 'parcel/editPickUp3', data })            
             this.$router.push('/parcel/request/')
           }
           return Promise.resolve()

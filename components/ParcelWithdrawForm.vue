@@ -72,6 +72,7 @@
       <v-container class="mt-8">
         <v-row v-if="isApprover" justify="end">
           <v-btn large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
+          <v-btn v-if="viewMode && isTreasury && isPending" class="mr-4" elevation="2" large color="success" @click="onEdit2">แก้ไข</v-btn>
           <v-btn v-if="!isReject" class="mr-4" elevation="2" large outlined color="error" @click="onReject">ไม่อนุมัติ</v-btn>
           <v-btn v-if="!isReject" elevation="2" large color="success" @click="onApprove">อนุมัติ</v-btn>
         </v-row>
@@ -135,6 +136,8 @@
         return this.item?.flows?.find(flow => flow?.status === 'PENDING') || null
       },
       isApprover () {
+        
+        console.log('this.isApproverหหห',!this.cannotApprove && this.currentFlow?.canApprove === 'true');
         return !this.cannotApprove && this.currentFlow?.canApprove === 'true'
       },
       isReject () {
@@ -244,6 +247,10 @@
       onEdit () {
         const valid = this.$refs.form.validate()
         if (valid) this.$emit('edit', this.form)
+      },
+      onEdit2 () {
+        const valid = this.$refs.form.validate()
+        if (valid) this.$emit('edit2', this.form)
       },
       onApprove () {
         const valid = this.$refs.form.validate()

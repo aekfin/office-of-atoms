@@ -12,7 +12,7 @@ export default {
     return state.durableGoodCountable.reduce((query, status, i) => `${query}${i > 0 ? '&': ''}status=${status}`, '')
   },
   durableGoodSelectableOptions (state) { 
-    const list = state.durableGoodSelectable
+    const list = state.durableGoodSelectable 
     return Object.keys(list).map(key => ({ id: key, name: list[key] }))
   },
   durableGoodSelectableOptionsRequestStatusEnum (state) {
@@ -21,6 +21,10 @@ export default {
   },
   companyTypeSelectableOptions (state) {
     const list = state.companyTypeSelectable
+    return Object.keys(list).map(key => ({ id: key, name: list[key] }))
+  },
+  durableGoodSelecMonthOptions (state) { 
+    const list = state.durableGoodSelecMonth 
     return Object.keys(list).map(key => ({ id: key, name: list[key] }))
   },
 }
