@@ -26,7 +26,7 @@
           </v-btn>
         </slot>
       </div>
-
+ 
     </div>
     <div v-if="!hideTotal" class="mt-4">ทั้งหมด {{ total || 0 }} {{ unit }}</div>
     <div v-if="filters.length" class="filter-wrapper mt-3">
@@ -37,11 +37,19 @@
             <div>กรองข้อมูล</div>
           </v-btn>
         </v-badge>
+        <SelectDropdown v-if="numberfilters" v-model="selectedFilter" itemValue="id" itemText="name" :items="numPage" label="จำนวนแสดงผลของตาราง" @select="onSelect" />
       </div>
       <div class="export-report-button">
         <ExportReportButton v-if="reportApiPath1" :apiPath="reportApiPath1" :name="reportName1" :text="exportText1" :query="reportQuery"/>
         <ExportReportButton v-if="reportApiPath2" :apiPath="reportApiPath2" :name="reportName2" :text="exportText2" :query="reportQuery"/>
         <ExportReportButton v-if="reportApiPath" :apiPath="reportApiPath" :name="reportName" :text="exportText" :query="reportQuery"/>
+      </div>
+      <div class="export-report-button">
+        <v-btn v-if="btnApproveAllPath" color="secondary" outlined elevation="2" @click="$emit('approveAll')">
+          <slot>
+            <div>{{ approveName }}</div>
+          </slot>
+        </v-btn>
       </div>
     </div>
     <v-dialog v-model="dialog" width="1000" contentClass="filter-dialog">
@@ -112,6 +120,10 @@
       exportText2: { type: String },
       logRoute: { type: Object },
       reportQuery: { type: Object, default: () => {} },
+      numPage: { type: Array, default: () => [20,30,50,100] },
+      numberfilters: { type: Boolean },
+      btnApproveAllPath: { type: String, default: '' },
+      approveName: { type: String },
     },
     data () {
       return {
@@ -165,6 +177,14 @@
           val = isDate && val ? this.$fn.convertDateToString(val).substring(0, 10) : val
           return val ? { ...form, [key]: val } : form
         }, {})
+        console.log('query ',query);
+        this.$router.push({ query })
+        this.dialog = false
+      },
+      onSelect ({ val, item }) {
+        console.log('val ',val);
+        console.log('item ',item);
+        const query = {"pageSize": val}
         this.$router.push({ query })
         this.dialog = false
       },
@@ -248,5 +268,10 @@
     .v-card {
       padding: 8px;
     }
+  }
+
+  .filter-number-page {
+    display: flex;
+    padding-right: 1%;
   }
 </style>

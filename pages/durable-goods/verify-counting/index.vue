@@ -1,9 +1,11 @@
 <template>
   <div id="durable-goods-verify-counting-detail-page">
-    <PageHeader text="ยืนยันการตรวจนับครุภัณฑ์" :total="total" :filters="filters"/>
+    <PageHeader text="ยืนยันการตรวจนับครุภัณฑ์" :total="total" :filters="filters"
+     btnApproveAllPath="report/depreciation"  approveName="อนุมัติทั้งหมด" @approveAll="handleApproveAll"/>
     <div class="mt-10">
       <CountingDurableTable :items.sync="items" :paginationIndex="$store.state.paginationIndex || 0" :isLoading="isLoading" hasAction @approveCounting="onApproveCounting"/>
       <Pagination/>
+      <ConfirmDialog :value.sync="approveDialog" title="แจ้งเตือน" text="ยืนยันจะทำการตรวจนับครุภัณฑ์ทั้งหมดหรือไม่" @submit="approveAll"/>
     </div>
   </div>
 </template>
@@ -21,7 +23,8 @@
         count: 0,
         total: 0,
         items: [],
-        dialog: false,
+        dialog: false,        
+        approveDialog: false,
       }
     },
     computed: {
@@ -63,6 +66,28 @@
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
       },
+      handleApproveAll () {
+        this.approveDialog = true        
+      },
+      async approveAll () {
+        // ฟังก์ชันนี้จะถูกเรียกเมื่อได้รับอีเวนต์ 'create'
+        this.isLoading = true
+        try {
+          const apiPath = `equipment/getEquipments/treasury?${this.$store.getters.durableGoodCountableQuery}`
+          const { data } = await this.$store.dispatch('getListPagination', { apiPath, query: { ...this.$route.query, isCheck: true, pageSize: 1000 } })
+          for(let i=0; i<data.content.length;i++){
+            if(!data.content[i].isApprove){
+              console.log('handleApproveAll  data',data.content[i].id);
+              await this.$store.dispatch('http', { apiPath: 'equipment/confirm', query: { id: data.content[i].id } })
+            }                    
+          }
+          await this.$store.dispatch('snackbar', { text: `ยืนยันการตรวจนับครุภัณฑ์ทั้งหมดสำเร็จ` })
+          await this.getList()
+          this.isLoading = false
+          return Promise.resolve(data)
+        } catch (err) { return Promise.reject(err) }
+        
+      }
     },
   }
 </script>

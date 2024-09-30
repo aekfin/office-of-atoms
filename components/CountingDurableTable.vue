@@ -19,6 +19,9 @@
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
       </template>
+      <template #item.action2="{ item }">
+        <ActionIconList :list="getActionIconList2(item)"/>
+      </template>
     </v-data-table>
   </div>
 </template>
@@ -47,10 +50,11 @@
         { text: 'เลขที่ อว.', value: 'assetNumberAorWor' },
         { text: 'เลขที่ อว.ย่อย  ', value: 'numberSubAorWor' },
         { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
-        { text: 'ผู้ครอบครอง', value: 'organization', width: '120px', align: 'center' },
+        { text: 'ผู้ครอบครอง', value: 'organization', width: '140px', align: 'center' },
         { text: 'สถานะการตรวจนับ', value: 'status_counting', width: '220px', align: 'center' },
       ]
-      if (this.hasAction) headers.push({ text: 'การอนุมัติ', value: 'action', width: '100px', align: 'center' })
+      if (this.hasAction) headers.push({ text: 'การอนุมัติ', value: 'action', width: '120px', align: 'center' })
+      if (this.hasAction) headers.push({ text: 'แก้ไขชื่อผู้ถือครอง', value: 'action2', width: '150px', align: 'center' })
       return {
         headers
       }
@@ -70,6 +74,11 @@
           { type: 'btn', icon: 'check_circle',disable: (item.status_counting === undefined ? true : false), iconColor: 'success' },
         ]
         return item.isApprove ? confirm : notConfirm
+      },
+      getActionIconList2 (item) {
+        return [
+          { type: 'link', icon: 'edit', action: `/durable-goods/verify-counting/${item.id}/` },
+        ]
       },
     }
   }

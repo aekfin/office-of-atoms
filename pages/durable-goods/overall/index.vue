@@ -3,7 +3,8 @@
     <PageHeader text="บริหารครุภัณฑ์" btnText="เพิ่มครุภัณฑ์" createRoute="/durable-goods/overall/create/" :total="total" :filters="filters" 
       reportApiPath="report/depreciation" reportName="รายงานค่าเสื่อมครุภัณฑ์" exportText="รายงานค่าเสื่อมครุภัณฑ์"
       reportApiPath1="report/equipmentGF?registrationType=1" reportName1="พิมพ์ RFID มาตราฐาน" exportText1="พิมพ์ RFID มาตราฐาน"
-      reportApiPath2="report/equipmentGF?registrationType=2" reportName2="พิมพ์ RFID ต่ำกว่าเกณฑ์" exportText2="พิมพ์ RFID ต่ำกว่าเกณฑ์"/>
+      reportApiPath2="report/equipmentGF?registrationType=2" reportName2="พิมพ์ RFID ต่ำกว่าเกณฑ์" exportText2="พิมพ์ RFID ต่ำกว่าเกณฑ์"
+      numberfilters="true"/>
       <!-- reportName="พิมพ์ RFID มาตราฐาน" exportText="รายงานค่าเสื่อมครุภัณฑ์"
       reportName="พิมพ์ RFID ต่ำกว่าเกณฑ์" exportText="รายงานค่าเสื่อมครุภัณฑ์" -->
     <DurableGoodsTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/> 

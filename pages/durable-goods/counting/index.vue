@@ -57,8 +57,19 @@
                 </v-col>
               </v-row>
               <v-row>
+                <v-col :cols="4">
+                  <v-text-field v-model="building" label="อาคาร *" :rules="nameRule" required/>
+                </v-col>
+                <v-col :cols="4">
+                  <v-text-field v-model="floor" label="ชั้น *" :rules="nameRule" required/>
+                </v-col>
+                <v-col :cols="4">
+                  <v-text-field v-model="room" label="ห้อง *" :rules="nameRule" required/>
+                </v-col>
+              </v-row>
+              <v-row>
                 <v-col :cols="12">
-                  <v-text-field v-model="location" label="สถานที่ *" :rules="nameRule" required/>
+                  <v-text-field v-model="location" label="รายละเอียดสถานที่ *" :rules="nameRule" required/>
                 </v-col>
               </v-row>
             </v-form>
@@ -100,6 +111,9 @@
         organizationId: '',
         departmentId: '',
         userId:'',
+        building: '',
+        floor: '',
+        room: '',
         location: '',
         rowData: {},
       }
@@ -162,6 +176,9 @@
         this.organizationId = data.organization.id
         this.departmentId = data.department.id
         this.userId = data.owner?.id
+        this.building = data.building
+        this.floor = data.floor
+        this.room = data.room
         this.location = data.location
         this.dialog = true
         // this.onSave(content)
@@ -188,7 +205,8 @@
       async onSave (content) {
          try {
            await this.$store.dispatch('http', { apiPath: 'equipment/checkStock', query: { id: content.id, status: content.status, status_counting: content.status_counting
-          , organizationId: this.organizationId, departmentId: this.departmentId, userId: this.userId, location: this.location} })
+          , organizationId: this.organizationId, departmentId: this.departmentId, userId: this.userId
+          , location: this.location, building: this.building, floor: this.floor, room: this.room} })
            await this.$store.dispatch('snackbar', { text: `ตรวจนับครุภัณฑ์เลขที่ "${content.number}" สำเร็จ` })
            await Promise.all([
              this.getCheckedList(),
