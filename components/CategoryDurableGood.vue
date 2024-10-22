@@ -66,7 +66,7 @@
         }
       },
       onInitCategory () {
-        console.log('this.initCategory this.initCategory',this.initCategory);
+        console.log('this.initCategory this.initCategorysssssssssssssssssssssss',this.initCategory);
         this.form = {
           majorCategoryId: this.initCategory.majorCategory?.id,
           subCategoryId: this.initCategory.subCategory?.id,

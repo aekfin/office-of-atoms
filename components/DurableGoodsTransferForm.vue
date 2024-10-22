@@ -107,6 +107,7 @@
         </v-row>
       </v-container>
 
+      <!-- <v-container v-if="viewMode"> -->
       <v-container v-if="viewMode">
         <AttachFileBtn :value.sync="attachFiles" :attachments="files" accept="*" :multiple="false" :disabled="isApprover" @removeAttachment="onRemoveFile"/>
       </v-container>
@@ -248,13 +249,17 @@
           }
         }
       },
-      onSubmit () {
+      async onSubmit () {
         const valid = this.$refs.form.validate()
         const form = { ...this.form, itemIds: this.transferItems.filter((goods, i) => this.selectList [i]).map(item => item.id)}
         form.ouId = this.ouId;
         form.transferNumber =  this.transferNumber;
         console.log('form ',form);
         delete form.itemId
+        if (valid) {
+          if (this.attachFiles.length) await this.uploadFiles()
+          // this.$emit('approve', this.currentFlow, this.form)
+        }
         if (valid) this.$emit('submit', form)
       },
       async onApprove () {

@@ -65,14 +65,16 @@
         </v-container>
       </template>
 
-      <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการ${type}` }}</b>
+      <h5 v-if="isWithdraw && !viewMode" class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการ${type}` }}</b>
           <v-btn v-if="isWithdraw && viewMode && requisitionStatus === 'PENDING'" color="secondary" outlined elevation="2" @click="onChooseNewEquipment" >
             <slot>
               <div>เลือกครุภัณฑ์ใหม่</div>
             </slot>
-          </v-btn></h5>
-      <!-- <v-container v-if="!isBorrow" class="mt-2">    -->
-      <v-container class="mt-2">  
+          </v-btn>
+      </h5>
+      <h5 v-else class="text-h5 mt-5"><b>รายการครุภัณฑ์</b></h5>
+      <v-container class="mt-2">   
+      <!-- <v-container class="mt-2">          -->
         <div v-if="isWithdraw && !viewMode || isVisibleProject === 'on'" >
           <v-col :cols="12" :md="12">
             <SelectDropdown :value.sync="projectId" itemValue="id" itemText="projectName" label="เลือกโครงการ *" apiPath="Project/getListProject" :rules="projectRules" @select="onSelectProject"/>
@@ -80,55 +82,30 @@
           <WithdrawDurableGoodsTable v-if="projectId" class="mt-6" :items="durableGoodsWithdraw" :isLoading="isWithdrawLoading" :selectList="selectedWithdraw" :List4="List4"/>
         </div>
         <template v-else-if="isVisibleEquipment !== 'off'">
-          <div>
+          <!-- <div>
             <v-text-field v-model="form.number" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/>
             <CategoryDurableGood :key="categoryKey" :initCategory="initCategoryForm" :disabled="toggleEdit()" noRules :itemEquipment="itemEquipment" 
             @change="onChangeCategory">
               <v-col :cols="12" :md="9">
-                <!-- <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
-                <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
-                  :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()"/> -->
                   <v-text-field v-if="viewMode && !onCategoryChange" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
                 <SelectDropdown  v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
                   :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()" @select="onChangeEquipment"/>
               </v-col>
             </CategoryDurableGood>
+          </div> -->
+          <div v-for="(equipment, i) in equipments" :key="i">            
+            <div>ครุภัณฑ์ รายการที่ {{ i + 1 }}.</div>
+            <!-- <div>{{ equipment.initCategoryFormList }}</div> -->
+            <v-text-field v-model="equipment.initCategoryFormList.equipment.number" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/>
+            <CategoryDurableGood :key="categoryKey" :initCategory="equipment.initCategoryFormList" :disabled="toggleEdit()" noRules >
+              <v-col :cols="12" :md="9">
+                  <v-text-field v-if="viewMode && !onCategoryChange" v-model="equipment.initCategoryFormList.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
+              </v-col>
+            </CategoryDurableGood>
           </div>
         </template>
       </v-container>
-      <!-- <v-container v-else class="mt-2"> 
-        <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
-            <v-expansion-panel v-for="(equipment, i) in form.equipments" :key="i" accordion>
-              <v-expansion-panel-header v-if="!viewMode" class="text-h6">
-                <div class="d-flex align-center">
-                  <div>ครุภัณฑ์ รายการที่ {{ i + 1 }}.</div>
-                  <v-btn v-if="form.equipments.length > 1 && i === form.equipments.length - 1" class="ml-5" icon @click.stop="removeDurableGoods(i)">
-                    <i class="material-icons">delete</i>
-                  </v-btn>
-                </div>
-                <template #actions>
-                  <i class="material-icons">keyboard_arrow_down</i>
-                </template>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <v-container>
-                  <v-text-field v-model="form.number" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/>
-                  <CategoryDurableGood :key="categoryKey" :initCategory="initCategoryForm" :disabled="toggleEdit()" noRules :itemEquipment="itemEquipment" 
-                  @change="onChangeCategory">
-                    <v-col :cols="12" :md="9">
-                        <v-text-field v-if="viewMode && !onCategoryChange" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
-                      <SelectDropdown  v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
-                        :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()" @select="onChangeEquipment"/>
-                    </v-col>
-                  </CategoryDurableGood>
-                  <v-row v-if="isBorrow"  class="mb-5">
-                    <v-btn block rounded outlined @click="addDurableGoods()">เพิ่มครุภัณฑ์</v-btn>
-                  </v-row>
-              </v-container>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-      </v-container> -->
+      
 
       <v-container v-if="isReturned">
         <AttachFileBtn :value.sync="attachFiles" :attachments="files" accept="*" :multiple="false" :disabled="!isApprover" @removeAttachment="onRemoveFile"/>
@@ -158,7 +135,7 @@
     components: {
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
-      CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
+      // CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
       WithdrawDurableGoodsTable: () => import('~/components/WithdrawDurableGoodsTable.vue'),
       AttachFileBtn: () => import('~/components/AttachFileBtn.vue'),
     },
@@ -195,7 +172,8 @@
               detailList: [this.getDetail()]
             }
           ],
-        },
+        },    
+        equipments: [],
         projectId: null,
         datetimeBorrowRules: [
           v => !!v || `โปรดใส่วันที่${this.type}`,
@@ -282,7 +260,22 @@
           return date
         }
         
-        console.log('this.item BorrowForm',this.item);
+        console.log('this.item withdraw',this.item);
+        console.log('this.form.equipmentsหหหห',this.equipments);
+        if(this.item){
+          for(let i = 0;i<this.item.items.length;i++){
+            console.log('test i',this.item.items[i].equipment.number);
+            const setData = this.item.items[i].equipment;
+            this.equipments.push(
+              {
+                initCategoryFormList: this.item?.items?.[i]
+              }
+            )            
+          }
+        }
+
+        console.log('this.equipments withdraw',this.equipments);
+
           this.oldItem = this.item?.items;
         
         this.form = {
@@ -443,28 +436,28 @@
           assetSubNumber: data.assetSubNumber || '',
         }
       },
-      addDurableGoods () {
-        this.form.equipments.push(
-          {
-            name: '',
-            year: (new Date()).getFullYear() + 543,
-            price: '',
-            description: '',
-            depreciation_rate: '',
-            classifier: '',
-            categoryForm: {},
-            quantity: 1,
-            registrationType: '1',
-            moneyType: 'BUDGET',
-            detailList: [this.getDetail()]
-          }
-        )
-        this.formExpand = [ ...this.formExpand, this.formExpand.length ]
-        this.setNumberAllEquipments()
-      },      
-      removeDurableGoods (i) {
-        this.form.equipments.splice(i, 1)
-      },
+      // addDurableGoods () {
+      //   this.form.equipments.push(
+      //     {
+      //       name: '',
+      //       year: (new Date()).getFullYear() + 543,
+      //       price: '',
+      //       description: '',
+      //       depreciation_rate: '',
+      //       classifier: '',
+      //       categoryForm: {},
+      //       quantity: 1,
+      //       registrationType: '1',
+      //       moneyType: 'BUDGET',
+      //       detailList: [this.getDetail()]
+      //     }
+      //   )
+      //   this.formExpand = [ ...this.formExpand, this.formExpand.length ]
+      //   this.setNumberAllEquipments()
+      // },      
+      // removeDurableGoods (i) {
+      //   this.form.equipments.splice(i, 1)
+      // },
       // setNumberAllEquipments () {
       //   this.form.equipments.forEach(equipment => {
       //     this.getEquipmentNumber(equipment)

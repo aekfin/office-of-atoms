@@ -300,6 +300,10 @@ export default () => ({
           title: 'ค่าเริ่มต้นครุภัณฑ์',
           to: '/management/durable-goods/'
         },
+        {
+          title: 'ข้อมูลที่อยู่',
+          to: '/management/address/'
+        },
       ]
     }
   ],

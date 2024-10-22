@@ -58,37 +58,27 @@
               <SelectDropdown v-else :value.sync="form.department.id" apiPath="Orgchart/getDepartments" itemValue="id" itemText="departmentName" label="กลุ่ม" @select="onSelectDepartment"/>
             </v-col> -->
             <v-col>
-              <DurableGoodsOwner :organization.sync="ouId" :department.sync="departmentId" :hideUser="true" :disabled="isCreate" @ouChange="onOuChange">
+              <DurableGoodsOwner :organization.sync="ouId" :department.sync="departmentId" :hideUser="true"  @ouChange="onOuChange">
               </DurableGoodsOwner> 
             </v-col>
           </v-row>
         </v-container>
       </template>
 
-      <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการ${type}` }}</b>
-          <v-btn v-if="isWithdraw && viewMode && requisitionStatus === 'PENDING'" color="secondary" outlined elevation="2" @click="onChooseNewEquipment" >
-            <slot>
-              <div>เลือกครุภัณฑ์ใหม่</div>
-            </slot>
-          </v-btn></h5>
-      <!-- <v-container v-if="!isBorrow" class="mt-2">    -->
-      <v-container class="mt-2">  
-        <div v-if="isWithdraw && !viewMode || isVisibleProject === 'on'" >
-          <v-col :cols="12" :md="12">
-            <SelectDropdown :value.sync="projectId" itemValue="id" itemText="projectName" label="เลือกโครงการ *" apiPath="Project/getListProject" :rules="projectRules" @select="onSelectProject"/>
-          </v-col>
-          <WithdrawDurableGoodsTable v-if="projectId" class="mt-6" :items="durableGoodsWithdraw" :isLoading="isWithdrawLoading" :selectList="selectedWithdraw" :List4="List4"/>
-        </div>
-        <template v-else-if="isVisibleEquipment !== 'off'">
+      <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการ${type}` }}</b></h5>
+      <v-container class="mt-2"> 
+        <template>
           <div>
-            <v-text-field v-model="form.number" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/>
-            <CategoryDurableGood :key="categoryKey" :initCategory="initCategoryForm" :disabled="toggleEdit()" noRules :itemEquipment="itemEquipment" 
+            <!-- <v-text-field v-model="form.number" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/> -->
+            <EquipmentNumberDropdown v-model="form.number" itemValue="number" itemText="number" label="เลขที่ครุภัณฑ์ *" apiPath="equipment/equipmentByKeyword" 
+                    :rules="ouNameRules" required :majorCategoryId="form.majorCategoryId" :subCategoryId="form.subCategoryId" :typeId="form.typeId" @select="onSelectEquipmentNumber"/>                
+            <CategoryDurableGood :key="categoryKey" :initCategory="initCategoryForm" :disabled="true" noRules :itemEquipment="itemEquipment" 
             @change="onChangeCategory">
               <v-col :cols="12" :md="9">
                 <!-- <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
                 <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
                   :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()"/> -->
-                  <v-text-field v-if="viewMode && !onCategoryChange" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
+                  <v-text-field v-if="viewMode && !onCategoryChange" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="true"/>
                 <SelectDropdown  v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
                   :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()" @select="onChangeEquipment"/>
               </v-col>
@@ -96,39 +86,6 @@
           </div>
         </template>
       </v-container>
-      <!-- <v-container v-else class="mt-2"> 
-        <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
-            <v-expansion-panel v-for="(equipment, i) in form.equipments" :key="i" accordion>
-              <v-expansion-panel-header v-if="!viewMode" class="text-h6">
-                <div class="d-flex align-center">
-                  <div>ครุภัณฑ์ รายการที่ {{ i + 1 }}.</div>
-                  <v-btn v-if="form.equipments.length > 1 && i === form.equipments.length - 1" class="ml-5" icon @click.stop="removeDurableGoods(i)">
-                    <i class="material-icons">delete</i>
-                  </v-btn>
-                </div>
-                <template #actions>
-                  <i class="material-icons">keyboard_arrow_down</i>
-                </template>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <v-container>
-                  <v-text-field v-model="form.number" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/>
-                  <CategoryDurableGood :key="categoryKey" :initCategory="initCategoryForm" :disabled="toggleEdit()" noRules :itemEquipment="itemEquipment" 
-                  @change="onChangeCategory">
-                    <v-col :cols="12" :md="9">
-                        <v-text-field v-if="viewMode && !onCategoryChange" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
-                      <SelectDropdown  v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
-                        :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()" @select="onChangeEquipment"/>
-                    </v-col>
-                  </CategoryDurableGood>
-                  <v-row v-if="isBorrow"  class="mb-5">
-                    <v-btn block rounded outlined @click="addDurableGoods()">เพิ่มครุภัณฑ์</v-btn>
-                  </v-row>
-              </v-container>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-      </v-container> -->
 
       <v-container v-if="isReturned">
         <AttachFileBtn :value.sync="attachFiles" :attachments="files" accept="*" :multiple="false" :disabled="!isApprover" @removeAttachment="onRemoveFile"/>
@@ -159,8 +116,8 @@
       SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
       CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
-      WithdrawDurableGoodsTable: () => import('~/components/WithdrawDurableGoodsTable.vue'),
       AttachFileBtn: () => import('~/components/AttachFileBtn.vue'),
+      EquipmentNumberDropdown: () => import('~/components/EquipmentNumberDropdown.vue'),
     },
     props: {
       item: { type: Object },
@@ -284,7 +241,6 @@
         
         console.log('this.item BorrowForm',this.item);
           this.oldItem = this.item?.items;
-        
         this.form = {
           description: this.item?.description || '',
           dateBorrow: this.item?.dateBorrow || new Date(),
@@ -298,6 +254,9 @@
           borrowId: this.item?.borrowId,
           equipmentRequestId: this.item?.id, 
           equipmentXRequestId: this.item?.items?.[0].equipmentXRequestId,
+          majorCategoryId: this.item?.items?.[0].majorCategory.id,
+          subCategoryId: this.item?.items?.[0].subCategory.id,
+          typeId: this.item?.items?.[0].type.id,
         }
         if(this.item){
           this.ouId =  this.item?.items?.[0]?.equipment?.organizationMaster.id || this.item.ouId
@@ -365,7 +324,10 @@
         this.ownerForm.departmentId = item.id
       },
       onChangeNumber (val) {
+        
+        console.log('onChangeNumber this.ownerForm sssssssssssssssssssssssss')
         this.ownerForm = { ...this.ownerForm, equipmentNumber: val }
+        console.log('onChangeNumber this.ownerForm ',this.ownerForm)
       },
       onSubmit () {
         const valid = this.$refs.form.validate()
@@ -465,11 +427,21 @@
       removeDurableGoods (i) {
         this.form.equipments.splice(i, 1)
       },
-      // setNumberAllEquipments () {
-      //   this.form.equipments.forEach(equipment => {
-      //     this.getEquipmentNumber(equipment)
-      //   })
-      // },
+      onSelectEquipmentNumber (data ) {
+        console.log('onSelectEquipmentNumber  ', data)
+        if(data.item){
+          this.initCategoryForm.majorCategory = data.item?.majorCategory
+          this.initCategoryForm.subCategory = data.item?.subCategory
+          this.initCategoryForm.type = data.item?.type
+          this.initCategoryForm.brand = data.item?.brand
+          this.initCategoryForm.model = data.item?.model
+
+          this.form.item.equipment.name = data.item?.name
+
+          this.categoryKey = !this.categoryKey;
+        }
+        
+      },
 
     }
   }

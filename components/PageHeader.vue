@@ -44,8 +44,8 @@
         <ExportReportButton v-if="reportApiPath2" :apiPath="reportApiPath2" :name="reportName2" :text="exportText2" :query="reportQuery"/>
         <ExportReportButton v-if="reportApiPath" :apiPath="reportApiPath" :name="reportName" :text="exportText" :query="reportQuery"/>
       </div>
-      <div class="export-report-button">
-        <v-btn v-if="btnApproveAllPath" color="secondary" outlined elevation="2" @click="$emit('approveAll')">
+      <div  v-if="btnApproveAllPath" class="export-report-button">
+        <v-btn color="secondary" outlined elevation="2" @click="$emit('approveAll')">
           <slot>
             <div>{{ approveName }}</div>
           </slot>

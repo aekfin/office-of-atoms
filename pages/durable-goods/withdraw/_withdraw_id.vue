@@ -5,7 +5,9 @@
       <ExportReportButton apiPath="equipment/requisitionDocument" name="เอกสารประกอบการเบิกครุภัณฑ์" text="เอกสารประกอบการเบิกครุภัณฑ์" :query="{ equipmentRequestId: $route.params.withdraw_id }"/>
     </div>
     <Loading v-if="isLoading"/>
-    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" :requisitionStatus="requisitionStatus" type="เบิก" 
+    <!-- <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" :requisitionStatus="requisitionStatus" type="เบิก" 
+    cannotApprove backPath="/durable-goods/withdraw/" hideOwner isWithdraw @submit="onSubmit" @edit="onEdit"/> -->
+    <DurableGoodsWithdrawForm v-else :item="item" :viewMode="!isCreate" :requisitionStatus="requisitionStatus" type="เบิก" 
     cannotApprove backPath="/durable-goods/withdraw/" hideOwner isWithdraw @submit="onSubmit" @edit="onEdit"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
   </div>
@@ -61,7 +63,7 @@
           const formData = { ...form }
           formData.dateBorrow = this.$fn.convertDateToString(formData.dateBorrow)
           formData.itemIds = form.selected.map(item => item.id)
-          console.log('onSubmit ',formData);
+          console.log('onSubmitss ',formData);
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/requisition', data: formData })
           if (data.status.code == 400) {
             await this.$store.dispatch('snackbar', { text: `Error ${data.status.code}: ${data.status.description}`, props: { color: 'red', top: true } })
