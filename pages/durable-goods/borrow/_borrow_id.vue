@@ -6,7 +6,7 @@
       </template>
     </PageHeader>
     <Loading v-if="isLoading"/>
-    <DurableGoodsBorrowForm v-else :item="item" :viewMode="!isCreate" cannotApprove @submit="onSubmit" @edit="onEdit" :forEdit="true" :isBorrow="true"/>
+    <DurableGoodsBorrowForm2 v-else :item="item" :viewMode="!isCreate" cannotApprove @submit="onSubmit" @edit="onEdit" :forEdit="true" :isBorrow="true"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
   </div>
 </template>
@@ -15,7 +15,7 @@
   export default {
     components: {
       PageHeader: () => import('~/components/PageHeader.vue'),
-      DurableGoodsBorrowForm: () => import('~/components/DurableGoodsBorrowForm.vue'), 
+      DurableGoodsBorrowForm2: () => import('~/components/DurableGoodsBorrowForm2.vue'), 
       Loading: () => import('~/components/Loading.vue'),
       ConfirmDialog: () => import('~/components/ConfirmDialog.vue'),
     },

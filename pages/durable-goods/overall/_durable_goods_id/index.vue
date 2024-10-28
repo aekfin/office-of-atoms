@@ -51,7 +51,7 @@
           </v-col>
         </DurableGoodsOwner>
 
-        <div class="text-h5 mt-5"><b>เลือกครุภัณฑ์</b></div>
+        <div class="text-h5 mt-5"><b>เลือกครุภัณฑ์</b></div> 
         <v-container>
           <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
             <v-expansion-panel v-for="(equipment, i) in form.equipments" :key="i" accordion>
@@ -260,6 +260,7 @@
       },
     },
     mounted () {
+      console.log('8;ppppppp ', this.form.equipments);
       if (!this.isCreate) this.getData()
     },
     methods: {

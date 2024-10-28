@@ -51,7 +51,7 @@
     watch: {
       'value' (val) {
         this.val = val
-        console.log('this.valthis.valthis.val ',this.val)
+        // console.log('this.valthis.valthis.val ',this.val)
       },
       'val' (val) {
         this.$emit('update:value', val)

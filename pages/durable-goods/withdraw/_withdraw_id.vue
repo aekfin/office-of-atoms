@@ -10,7 +10,7 @@
     <DurableGoodsWithdrawForm v-else :item="item" :viewMode="!isCreate" :requisitionStatus="requisitionStatus" type="เบิก" 
     cannotApprove backPath="/durable-goods/withdraw/" hideOwner isWithdraw @submit="onSubmit" @edit="onEdit"/>
     <ConfirmDialog :value.sync="dialog" title="แจ้งเตือน" :text="errorText" hideSubmit closeText="รับทราบ"/>
-  </div>
+  </div> 
 </template>
 
 <script>

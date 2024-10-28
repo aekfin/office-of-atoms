@@ -46,12 +46,10 @@
     mounted () {
       this.setForm()
       
-      console.log('this.initCategory',this.initCategory);
       if (!_.isEmpty(this.initCategory)) this.onInitCategory()
     },
     methods: {
       async setForm () {
-        console.log('this.initForm',this.initForm);
         if (!_.isEmpty(this.initForm)) {
           try {
             this.form = this.initForm
@@ -66,7 +64,6 @@
         }
       },
       onInitCategory () {
-        console.log('this.initCategory this.initCategorysssssssssssssssssssssss',this.initCategory);
         this.form = {
           majorCategoryId: this.initCategory.majorCategory?.id,
           subCategoryId: this.initCategory.subCategory?.id,
@@ -79,11 +76,11 @@
         this.typeItems = [this.initCategory.type]
         this.brandItems = [this.initCategory.brand]
         this.modelItems = [this.initCategory.model]
-        console.log('this.majorCategoryItems',this.majorCategoryItems);
-        console.log('this.subCategoryItems',this.majorCategoryItems);
-        console.log('this.typeItems',this.typeItems);
-        console.log('this.brandItems',this.brandItems);
-        console.log('this.modelItems',this.modelItems);
+        // console.log('this.majorCategoryItems',this.majorCategoryItems);
+        // console.log('this.subCategoryItems',this.majorCategoryItems);
+        // console.log('this.typeItems',this.typeItems);
+        // console.log('this.brandItems',this.brandItems);
+        // console.log('this.modelItems',this.modelItems);
         this.$emit('change', { form: this.form })
       },
     }
