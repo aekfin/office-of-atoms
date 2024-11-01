@@ -241,6 +241,7 @@ import _ from 'lodash'
           try {
             this.companyNumberLoading = true
             const { data } = await this.$store.dispatch('http', { apiPath: 'Project/checkCompany', query: { companyNumber: this.form.companyNumber } })
+            console.log('checkCompanyNumber data',data);
             this.validCompanyNumber = data.data === false
             this.companyNumberLoading = false
             if (data === true) {

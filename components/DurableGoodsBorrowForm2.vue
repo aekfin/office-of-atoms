@@ -90,11 +90,11 @@
       </v-container> -->
       <v-container class="mt-2"> 
         <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
-            <v-expansion-panel v-for="(equipment, i) in form.equipments" :key="i" accordion>
-              <v-expansion-panel-header v-if="!viewMode" class="text-h6">
+            <v-expansion-panel v-for="(item, i) in form.items" :key="i" accordion>
+              <v-expansion-panel-header class="text-h6">
                 <div class="d-flex align-center">
                   <div>ครุภัณฑ์ รายการที่ {{ i + 1 }}.</div>
-                  <v-btn v-if="form.equipments.length > 1 && i === form.equipments.length - 1" class="ml-5" icon @click.stop="removeDurableGoods(i)">
+                  <v-btn v-if="form.items.length > 1 && i === form.items.length - 1 && !viewMode" class="ml-5" icon @click.stop="removeDurableGoods(i)">
                     <i class="material-icons">delete</i>
                   </v-btn>
                 </div>
@@ -104,12 +104,12 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-container>
-                  <v-text-field v-model="form.equipments[i].number" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/>
-                  <CategoryDurableGood :key="categoryKey" :initCategory="listInitCategoryForm[i]?.initCategoryForm" :itemEquipment="listItemEquipment[i]?.itemEquipment"  @change="res => form.equipments[i].categoryForm = res.form" :disabled="toggleEdit()" noRules 
-                  >
+                  <v-text-field v-model="form.numberList[i]" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/>
+                  <CategoryDurableGood :key="categoryKey" :initCategory="listInitCategoryForm[i]?.initCategoryForm" :itemEquipment="listItemEquipment[i]?.itemEquipment"  :disabled="toggleEdit()" noRules 
+                  @change="onChangeCategory($event,i)">
                     <v-col :cols="12" :md="9">
-                        <v-text-field v-if="viewMode && !onCategoryChange" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
-                      <SelectDropdown  v-else :value.sync="form.itemId[i]" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
+                        <v-text-field v-if="viewMode && !onCategoryChange[i]" :key="categoryChangeKey" v-model="form.nameList[i]" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
+                      <SelectDropdown v-else  :value.sync="form.itemId[i]" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
                         :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()" @select="onChangeEquipment($event,i)"/>
                     </v-col>
                   </CategoryDurableGood>
@@ -123,7 +123,7 @@
                       </v-col>
                     </template>
                   </CategoryDurableGood> -->
-                  <v-row v-if="isBorrow"  class="mb-5">
+                  <v-row v-if="isBorrow && !viewMode"  class="mb-5">
                     <v-btn block rounded outlined @click="addDurableGoods()">เพิ่มครุภัณฑ์</v-btn>
                   </v-row>
                 </v-container>
@@ -146,7 +146,7 @@
           <v-btn v-if="viewMode" large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
           <v-btn v-else large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
           <v-btn v-if="!viewMode" class="ml-4" elevation="2" large color="success" @click="onSubmit">{{ `ยื่นขอ${type}` }}</v-btn>          
-          <v-btn v-if="isVisibleProject === 'on'" class="ml-4" elevation="2" large color="success" @click="onEditWithdraw">บันทึก</v-btn>
+          <!-- <v-btn v-if="isVisibleProject === 'on'" class="ml-4" elevation="2" large color="success" @click="onEditWithdraw">บันทึกa</v-btn> -->
           <v-btn v-if="viewMode && forEdit" class="ml-4" elevation="2" large color="success" @click="onEdit">บันทึก</v-btn>
           <!-- <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn> -->
         </v-row>
@@ -181,7 +181,7 @@
       return {
         valid: true,
         form: {          
-          equipments: [
+          items: [
             {
               name: '',
               number: '',
@@ -198,6 +198,8 @@
             }
           ],
           itemId: [],
+          numberList: [],
+          nameList: [],
         },
         projectId: null,
         datetimeBorrowRules: [
@@ -225,8 +227,9 @@
         files: [],
         removeFiles: [],
         equipmentList: [],
-        categoryKey: false,        
-        onCategoryChange: false,
+        categoryKey: false,   
+        categoryChangeKey: false,     
+        onCategoryChange: [false],
         isVisibleProject: null,
         isVisibleEquipment: null,
         oldItem: [],
@@ -262,10 +265,11 @@
     },
     mounted () {
       
-      console.log('8;ppppppp ', this.form);
+      
       this.setForm()
     },
     created () {
+      console.log('8;pppppppหหห ', this.form);
       if (!this.form.item) {
         this.form.item = {};
       }
@@ -275,6 +279,7 @@
       if (!this.form.item.equipment.name) {
         this.form.item.equipment.name = '';
       }
+      console.log('this.item before this.form',this.form);
       console.log('this.item before set form',this.item);
       console.log('this.item ouId',this.item?.items?.[0]?.equipment?.organizationMaster.id);
       if(this.item){
@@ -291,16 +296,26 @@
           date.setDate(date.getDate() + 7)
           return date
         }
-        
-        console.log('this.item BorrowForm',this.item);
-          this.oldItem = this.item?.items;
+        this.oldItem = this.item?.items;
         
         this.form = {
           description: this.item?.description || '',
           dateBorrow: this.item?.dateBorrow || new Date(),
           dueDate: this.item?.dueDate || getDueDate(),
-          itemId:[  ],
+          itemId:[],          
+          numberList: [],
+          nameList:[],
           item: this.item?.items?.[0] || null,
+          items: this.item?.items || [
+            {
+                equipment: {},
+                majorCategory: {},
+                subCategory: {},
+                type: {},
+                brand: {},
+                model: {}
+            }
+          ],
           organization: this.item?.items?.[0]?.equipment?.organizationMaster || {},
           department: this.item?.items?.[0]?.equipment?.departmentMaster || {},
           owner: this.item?.items?.[0]?.equipment?.owner || {},
@@ -328,10 +343,29 @@
         if(this.item){
           this.ouId =  this.item?.items?.[0]?.equipment?.organizationMaster.id || this.item.ouId
           this.departmentId = this.item?.items?.[0]?.equipment?.departmentMaster.id || this.item.departmentId
+
+          console.log('this.item BorrowFormss',this.item);
+          for(let i = 0; i<this.item.items.length; i++){
+            this.listItemEquipment[i] = {itemEquipment: this.item.items[i].equipment}
+            this.listInitCategoryForm[i] = {initCategoryForm: this.item.items[i]}
+
+            this.form.numberList[i] = this.item.items[i].equipment.number
+            this.form.nameList[i] = this.item.items[i].equipment.name
+            // this.form.itemId[i] = this.item.items[i].equipment.id
+
+            this.onCategoryChange[i] = false
+            this.formExpand = [ ...this.formExpand, this.formExpand.length ]
+          }
+          console.log('this.listItemEquipment BorrowFormss', this.listItemEquipment);
+          console.log('this.onCategoryChange BorrowFormss', this.onCategoryChange);
+          console.log('this.form BorrowFormss', this.form);
+
+          this.categoryKey = !this.categoryKey;
+          
         }
         
         
-        console.log('this.form ',this.form ); 
+        console.log('this.formกกก ',this.form ); 
         if (this.item) this.setCategoryForm()
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
         this.step = index + 2
@@ -340,40 +374,49 @@
       setCategoryForm (category) {
         this.initCategoryForm = category || this.item?.items?.[0]
       },
-      onChangeCategory ({ form, trigger }) {
+      onChangeCategory ({ form, trigger },index) {
+        
+        console.log('onChangeCategory index', index)
         if (trigger) {
-          this.categoryForm = { ...form }
+          // this.categoryForm = { ...form }
           // this.form.itemId = null
-          this.onCategoryChange = true
+          // this.onCategoryChange = true
+          this.onCategoryChange[index] = true
+          this.categoryChangeKey = !this.categoryChangeKey;
         }
       },
       onChangeEquipment (val,index) {
         console.log('check index', index)
         console.log('check val', val)
 
-        // this.listInitCategoryForm = this.listInitCategoryForm.filter(
-        //   item => Object.keys(item.initCategoryForm).length !== 0
-        // );
+       
         
         console.log('this.listInitCategoryForm Before', this.listInitCategoryForm)
         // this.itemEquipment = val.item
-        this.listItemEquipment.push({itemEquipment: val.item})
-        // initCategoryForm
+        // this.listItemEquipment.push({itemEquipment: val.item})
+        this.listItemEquipment[index] = {itemEquipment: val.item}
 
+
+        this.initCategoryForm = {}
         this.initCategoryForm.majorCategory = val.item.majorCategory
         this.initCategoryForm.subCategory = val.item.subCategory
         this.initCategoryForm.type = val.item.type
         this.initCategoryForm.brand = val.item.brand
         this.initCategoryForm.model = val.item.model
+        
         // this.listInitCategoryForm.push({initCategoryForm: this.initCategoryForm})
         this.listInitCategoryForm[index] = {initCategoryForm: this.initCategoryForm}
+        // this.listInitCategoryForm.splice(index, 0, { initCategoryForm: this.initCategoryForm });
 
-        // console.log('this.listItemEquipment ', this.listItemEquipment)
+        console.log('this.listItemEquipment ', this.listItemEquipment)
         console.log('this.listInitCategoryForm After', this.listInitCategoryForm)
 
         this.categoryKey = !this.categoryKey;
         
-        this.form.number = val?.item?.number
+        // this.form.number = val?.item?.number
+        console.log('check val before this.form', this.form)
+        this.form.numberList = this.form.numberList.filter(item => item !== null);
+        this.form.numberList.splice(index, 1, val?.item?.number);
         // this.form.itemId = val?.item?.id
 
         this.form.itemId = this.form.itemId.filter(item => item !== null);
@@ -387,8 +430,8 @@
         // }
 
         
-        // console.log('check val before this.form', this.form)
-        // console.log('this.listItemEquipment ', this.listItemEquipment)
+        
+        console.log('this.listItemEquipment ', this.listItemEquipment)
         // console.log('this.listInitCategoryForm ', this.listInitCategoryForm)
       },      
       getApproverText (flow) { 
@@ -430,28 +473,29 @@
         if (this.isWithdraw) {
           this.form.selected = this.durableGoodsWithdraw.filter((goods, i) => this.selectedWithdraw[i])
         }
+        console.log('onSubmit valid ',valid);
+        console.log('this.departmentId ',this.departmentId);
         if (valid) { 
           const formData = { ...this.form }
           formData.ouId = this.ouId;
+          formData.departmentId = this.departmentId;
+          console.log('onSubmit formData ',formData);
           this.$emit('submit', formData)
         }
       },
       onEdit () {
         const valid = this.$refs.form.validate()
-        if (this.isWithdraw) {
-          this.form.selected = this.durableGoodsWithdraw.filter((goods, i) => this.selectedWithdraw[i])
-        }
         if (valid) {
+          this.form.itemId = this.listItemEquipment.map(item => item.itemEquipment.id);
           const formData = { ...this.form }
           formData.ouId = this.ouId;
+          formData.departmentId = this.departmentId;
+          console.log('onEdit formData ',formData);
           this.$emit('edit', formData)
         }
       },
       onEditWithdraw () {
         const valid = this.$refs.form.validate()
-        if (this.isWithdraw) {
-          this.form.selected = this.durableGoodsWithdraw.filter((goods, i) => this.selectedWithdraw[i])
-        }
         if (valid) {
           const formData = { ...this.form }
           formData.ouId = this.ouId;
@@ -502,29 +546,26 @@
         }
       },
       addDurableGoods () {
-        this.form.equipments.push(
+        this.form.items.push(
           {
-            name: '',
-            number: '',
-            year: (new Date()).getFullYear() + 543,
-            price: '',
-            description: '',
-            depreciation_rate: '',
-            classifier: '',
-            categoryForm: {},
-            quantity: 1,
-            registrationType: '1',
-            moneyType: 'BUDGET',
-            detailList: [this.getDetail()]
+              equipment: {},
+              majorCategory: {},
+              subCategory: {},
+              type: {},
+              brand: {},
+              model: {}
           }
         )
-
-        console.log('this.form.equipments ,,',this.form.equipments);
+        this.listInitCategoryForm.push({})
+        this.listItemEquipment.push({})
+        console.log('this.listInitCategoryForm ,,',this.listInitCategoryForm);
         this.formExpand = [ ...this.formExpand, this.formExpand.length ]
         // this.setNumberAllEquipments()
       },      
       removeDurableGoods (i) {
-        this.form.equipments.splice(i, 1)
+        console.log('removeDurableGoods ',i)
+        this.form.items.splice(i, 1)
+        this.form.itemId.splice(i, 1)
       },
       // setNumberAllEquipments () {
       //   this.form.equipments.forEach(equipment => {

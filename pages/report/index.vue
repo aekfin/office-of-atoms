@@ -164,7 +164,7 @@ import ReportTable from '~/components/ReportTable.vue'
             id: 18,
             name: 'รายการครุภัณฑ์',
             apiPath: 'report/equipmentRFID',
-            filters: [2, 3, 14, 15, 7, 8, 9, 10, 11, 12, 13, 16],
+            filters: [2, 3, 14, 15, 7, 8, 23, 9, 10, 11, 12, 13, 16],
           },
           {
             id: 19,

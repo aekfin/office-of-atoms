@@ -54,8 +54,8 @@
         </v-row>
         <v-row>
           <v-col :cols="12" :md="4">
-            <!-- <v-text-field v-model="form.projectNumber" label="เลขที่โครงการ หห*" :rules="codeRules" :disabled="disabledInfo"/> -->
-            <v-text-field v-model="form.projectNumber" label="เลขที่โครงการ *" :rules="[ruleFunction(form.projectName)]" :disabled="disabledInfo"/>
+            <v-text-field v-model="form.projectNumber" label="เลขที่โครงการ *" :rules="codeRules" :disabled="disabledInfo" :loading="projectNumberLoading" @blur="checkProjectNumber"/>
+            <!-- <v-text-field v-model="form.projectNumber" label="เลขที่โครงการ *" :rules="[ruleFunction(form.projectName)]" :disabled="disabledInfo"/> -->
           </v-col>
           <v-col :cols="12" :md="4">
             <v-text-field v-model="form.contractNumber" label="เลขที่ใบสั่งซื้อ/จ้าง หรือเลขที่สัญญา *" :rules="contractNumberRules" :disabled="disabledInfo"/>
@@ -310,7 +310,10 @@
           period4Date: '',
           period5: '',
           period5Date: '',
-        },
+        },        
+        originalProjectNumber: '',
+        projectNumberLoading: false,
+        validProjectNumber: true,
         attachFiles: [],
         removeFile: [],
         formExpand: [0, 1, 2],
@@ -441,6 +444,7 @@
             period4Date: data.period4Date ? this.$fn.convertStringToDate(data.period4Date) : '',
             period5Date: data.period5Date ? this.$fn.convertStringToDate(data.period5Date) : '',
           }
+          this.originalProjectNumber = data.projectNumber
           this.isLoading = false
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
@@ -602,6 +606,27 @@
           }
           return true;
         };
+      },
+      async checkProjectNumber () {
+        console.log('checkProjectNumber ',this.form.projectNumber);
+        console.log('originalProjectNumber ',this.form.originalProjectNumber);
+        if (this.form.projectNumber && this.originalProjectNumber !== this.form.projectNumber) {
+          try {
+            this.projectNumberLoading = true
+            const { data } = await this.$store.dispatch('http', { apiPath: 'Project/checkProjectNumber', query: { projectNumber: this.form.projectNumber } })
+            console.log('checkProjectNumber data',data);
+            this.validProjectNumber = data.data === false
+            this.projectNumberLoading = false
+            if (data === true) {
+              this.codeRules = ['เลขที่โครงการซ้ำ']
+            } else {
+              this.codeRules = [];
+            }
+            return Promise.resolve()
+          } catch (err) { return Promise.reject(err) } 
+        }else{
+          this.codeRules = ['โปรดใส่เลขที่โครงการ']
+        }
       },
     },
   }
