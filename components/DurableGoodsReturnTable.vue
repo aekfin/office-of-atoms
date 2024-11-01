@@ -45,7 +45,7 @@
           { text: 'ผู้ขอคืนครุภัณฑ์', value: 'user_fk.thaiFristName' },
           { text: 'วันที่คืน', value: 'dateBorrow', width: '120px', align: 'center' },
           { text: 'วันที่อนุมัติ', value: 'dateApprove', width: '120px', align: 'center' },
-          { text: 'ครุภัณฑ์', value: 'equipment', width: '220px', align: 'center' },
+          { text: 'รายการครุภัณฑ์', value: 'equipment', width: '220px', align: 'center' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
           { text: 'สถานะการคืน', value: 'status', width: '140px', align: 'center' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },

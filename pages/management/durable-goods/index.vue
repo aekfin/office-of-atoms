@@ -1,9 +1,9 @@
 <template>
   <div id="durable-goods-page">
     <PageHeader text="ค่าเริ่มต้นครุภัณฑ์" btnText="เพิ่มค่าเริ่มต้นครุภัณฑ์" createRoute="/management/durable-goods/create/" :filters="filters" :total="total"/>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter 
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter
     class="elevation-1 mt-6" :loading="isLoading"  >
-   
+
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
       <template #item.majorCategory="{ item }">
@@ -49,7 +49,7 @@
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
-          { text: 'ชื่อครุภัณฑ์', value: 'name', width: '200px' },
+          { text: 'รายการครุภัณฑ์', value: 'type.name', width: '200px' },
           { text: 'หมวดหมู่', value: 'majorCategory', width: '160px', align: 'center' },
           { text: 'ราคากลาง', value: 'price', align: 'center', width: '120px' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
@@ -59,23 +59,23 @@
         ],
         filters: [
           { type: 'textField',param: 'number',name: 'เลขที่ครุภัณฑ์' },
-          { type: 'textField',param: 'name',name: 'ชื่อครุภัณฑ์' },
-          { 
+          { type: 'textField',param: 'name',name: 'รายการครุภัณฑ์' },
+          {
             name: 'หมวดหมู่',
             param: 'majorCategoryId',
-            apiPath: 'equipment/category/getMejorCategorys', 
+            apiPath: 'equipment/category/getMejorCategorys',
           },
           {
             name: 'รายการครุภัณฑ์',
             param: 'typeId',
             apiPath: 'equipment/category/types',
           },
-          { 
+          {
             name: 'ยี่ห้อ',
             param: 'brandId',
             apiPath: 'equipment/category/brands',},
 
-          { 
+          {
             name: 'รุ่น',
             param: 'modelId',
             apiPath: 'equipment/category/models'

@@ -23,7 +23,7 @@
         count: 0,
         total: 0,
         items: [],
-        dialog: false,        
+        dialog: false,
         approveDialog: false,
       }
     },
@@ -31,7 +31,7 @@
       filters () {
         return [
           { type: 'textField',param: 'equipmentNumber',name: 'เลขที่ครุภัณฑ์', },
-          { type: 'textField',param: 'name',name: 'ชื่อครุภัณฑ์', },
+          { type: 'textField',param: 'name',name: 'รายการครุภัณฑ์', },
           { type: 'textField',param: 'majorCategory',name: 'หมวดหมู่', },
           { param: 'ouId', name: 'กอง', itemText: 'ouName', apiPath: 'Orgchart/getOrganizations' },
           { param: 'departmentId', name: 'กลุ่ม', itemText: 'departmentName', apiPath: 'Orgchart/getDepartments' },
@@ -67,7 +67,7 @@
         } catch (err) { return Promise.reject(err) }
       },
       handleApproveAll () {
-        this.approveDialog = true        
+        this.approveDialog = true
       },
       async approveAll () {
         // ฟังก์ชันนี้จะถูกเรียกเมื่อได้รับอีเวนต์ 'create'
@@ -79,14 +79,14 @@
             if(!data.content[i].isApprove){
               console.log('handleApproveAll  data',data.content[i].id);
               await this.$store.dispatch('http', { apiPath: 'equipment/confirm', query: { id: data.content[i].id } })
-            }                    
+            }
           }
           await this.$store.dispatch('snackbar', { text: `ยืนยันการตรวจนับครุภัณฑ์ทั้งหมดสำเร็จ` })
           await this.getList()
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
-        
+
       }
     },
   }

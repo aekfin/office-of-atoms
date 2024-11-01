@@ -1,9 +1,9 @@
 <template>
-  
+
   <div id="durable-goods-donation-page">
     <PageHeader text="การรับบริจาคครุภัณฑ์" btnText="เพิ่มการรับบริจาคครุภัณฑ์" createRoute="/durable-goods/donation/create/" :total="total" :filters="filters"
     reportApiPath="report/cancelDonate" reportName="รายงานยกเลิกการรับบริจาค" exportText="รายงานยกเลิกการรับบริจาค" :reportQuery="reportQuery"/>
-    
+
     <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter class="elevation-1 mt-6" :loading="isLoading">
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
@@ -63,11 +63,11 @@
         ],
         filters: [
           { type: 'textField',param: 'equipmentNumber',name: 'เลขที่ครุภัณฑ์', },
-          { type: 'textField',param: 'equipmentName',name: 'ชื่อครุภัณฑ์', },
-          { 
+          { type: 'textField',param: 'equipmentName',name: 'รายการครุภัณฑ์', },
+          {
             name: 'หมวดหมู่',
             param: 'majorCategoryId',
-            apiPath: 'equipment/category/getMejorCategorys', 
+            apiPath: 'equipment/category/getMejorCategorys',
           },
           // { type: 'textField',param: 'price',name: 'ราคากลาง', },
           {
@@ -78,17 +78,17 @@
             // param: 'typeId',
             // apiPath: 'parcel/getListParcelType',
           },
-          { 
+          {
             name: 'ยี่ห้อ',
             param: 'brandId',
             apiPath: 'equipment/category/brands',
           },
-          { 
+          {
             name: 'รุ่น',
             param: 'modelId',
             apiPath: 'equipment/category/models'
           },
-          { 
+          {
             type: 'textField',
             param: 'price',
             name: 'ราคากลาง'

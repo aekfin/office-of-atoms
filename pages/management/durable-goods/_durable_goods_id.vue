@@ -11,7 +11,7 @@
           </v-col>
           <v-col :cols="12" :md="3">
             <v-text-field :value="form.project && form.project.contractNumber || ''" label="เลขที่สั่งซื้อสั่งจ้าง/เลขที่สัญญา" :disabled="!isCreate"/>
-          </v-col>          
+          </v-col>
         </v-row>
         <v-row>
           <v-col :cols="12" :md="3">
@@ -28,7 +28,7 @@
         <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="({ form }) => categoryForm = form" @changeMajor="getEquipmentNumber" @changeDepreciationYear="changeDepreciationYear">
           <template #default>
             <v-col :cols="12" :md="isCreate ? 6 : 9">
-              <v-text-field v-model="form.name" name="name" label="ชื่อครุภัณฑ์"/>
+              <v-text-field v-model="form.name" name="name" label="ครุภัณฑ์"/>
             </v-col>
             <v-col v-if="isCreate" :cols="12" :md="3">
               <v-text-field v-model="form.quantity" name="quantity" label="จำนวน *" type="number" :rules="quantityRules" required @change="onQuantityChange"/>
@@ -52,7 +52,7 @@
             <SelectDropdown :value.sync="form.registrationType" itemValue="id" itemText="name" :items="$store.state.registrationList" label="ประเภททะเบียนครุภัณฑ์ *" :disabled="!isCreate" />
           </v-col>
           <v-col :cols="6" :md="3">
-            <SelectDropdown :value.sync="form.moneyType" itemValue="id" itemText="name" :items="$store.state.moneyTypeList" label="ประเภทของเงิน"/> 
+            <SelectDropdown :value.sync="form.moneyType" itemValue="id" itemText="name" :items="$store.state.moneyTypeList" label="ประเภทของเงิน"/>
           </v-col>
           <v-col :cols="12" class="pt-0">
             <v-textarea v-model="form.description" class="pt-0" label="คำอธิบายเพิ่มเติม" :rows="4"/>
@@ -348,7 +348,7 @@
             ...equipmentDetail,
           }
           // userId
-          
+
           const { data } = await this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/Edit', data: form })
           if (data?.status?.code == 200){
             await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์สำเร็จ' })
@@ -357,7 +357,7 @@
           else {
             await this.$store.dispatch('snackbar', { text: 'แก้ไขครุภัณฑ์ไม่สำเร็จ' , props: { color: 'red' }})
           }
-          
+
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },

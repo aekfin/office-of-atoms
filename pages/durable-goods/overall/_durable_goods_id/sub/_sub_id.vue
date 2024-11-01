@@ -23,7 +23,7 @@
                   <div class="mt-2">{{ equipment.departmentMaster.departmentName }}</div>
                 </v-col>
                 <v-col v-if="equipment.owner" :cols="12" :md="4">
-                  <b>บุคคล:</b>
+                  <b>ผู้รับผิดชอบ:</b>
                   <div class="mt-2">{{ equipment.owner.name }}</div>
                 </v-col>
               </v-row>
@@ -73,7 +73,7 @@
                   <div class="mt-2">{{ equipment.equipmentxMajorCategory.model.name }}</div>
                 </v-col>
                 <v-col :cols="12" :md="9">
-                  <b>ชื่อครุภัณฑ์</b>
+                  <b>รายการครุภัณฑ์</b>
                   <div class="mt-2">{{ equipment.name }}</div>
                 </v-col>
                 <v-col :cols="12" :md="3">
@@ -110,12 +110,12 @@
             <v-btn v-if="!subEquipment.newOne" color="error" icon @click.stop="handleDeleteAction(subEquipment)">
               <i class="material-icons">delete</i>
             </v-btn>
-          </h6>          
-          
+          </h6>
+
 
           <v-row>
             <v-col :cols="12" :md="6">
-              <v-text-field v-model="subEquipment.name" name="name" label="ชื่อครุภัณฑ์ย่อย *" :rules="nameRules" required/>
+              <v-text-field v-model="subEquipment.name" name="name" label="รายการครุภัณฑ์ย่อย *" :rules="nameRules" required/>
             </v-col>
             <v-col :cols="12" :md="3">
               <v-text-field v-model="subEquipment.cost" name="cost" label="มูลค่า *" :rules="classifierRules" required/>
@@ -205,8 +205,8 @@
           const deletes = this.subItemDelete.filter(equipment => equipment.id)
 
           if (deletes.length) {
-            await Promise.all(deletes.map(del => this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/deleteSubEquipment', data: del })))  
-            this.subItemDelete = [];           
+            await Promise.all(deletes.map(del => this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/deleteSubEquipment', data: del })))
+            this.subItemDelete = [];
           }
           this.isLoading = false
           return Promise.resolve()
@@ -253,7 +253,7 @@
           this.isLoadingNumber = true
           const query = { equipmentId: this.durableGoodsId, quantity: this.subEquipments.length, count: 0 }
           const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/genSubEquipmentNumber', query })
-          
+
           this.subEquipments.forEach((subEquipment, i) => {
             if (!subEquipment.number) {
               subEquipment.number = data[data.length-1]
@@ -275,16 +275,16 @@
               await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/importSubEquipment', data: createData })
             }
             if (edits.length) {
-              await Promise.all(edits.map(edit => this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/editSubEquipment', data: edit })))              
+              await Promise.all(edits.map(edit => this.$store.dispatch('http', { method: 'patch', apiPath: 'equipment/editSubEquipment', data: edit })))
             }
-             
+
             await this.getSubEquipment()
           }
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
-      handleDeleteAction (item) {   
-        if (item.id) {          
+      handleDeleteAction (item) {
+        if (item.id) {
           this.editORDelDialog = true
           this.subItemDelete.push(item);
         }else{
@@ -292,7 +292,7 @@
         }
       },
     },
-    
+
   }
 </script>
 

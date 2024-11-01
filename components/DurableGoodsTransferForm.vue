@@ -56,16 +56,16 @@
         </v-container>
       </template> -->
       <v-container class="mt-2">
-        <NumberDurableGood ref="numberDurableGood" :propNumber="form.item && form.item.equipment.number || ''" :disabled="viewMode" 
-        :propAssetNumber="form.item && form.item.equipment.assetNumber || ''" 
-        :propAssetNumberAorWor="form.item && form.item.equipment.assetNumberAorWor || ''" 
-        :propSerialNumber="form.item && form.item.equipment.serialNumber || ''" 
-        :propAssetSubNumber="form.item && form.item.equipment.assetSubNumber || ''" 
+        <NumberDurableGood ref="numberDurableGood" :propNumber="form.item && form.item.equipment.number || ''" :disabled="viewMode"
+        :propAssetNumber="form.item && form.item.equipment.assetNumber || ''"
+        :propAssetNumberAorWor="form.item && form.item.equipment.assetNumberAorWor || ''"
+        :propSerialNumber="form.item && form.item.equipment.serialNumber || ''"
+        :propAssetSubNumber="form.item && form.item.equipment.assetSubNumber || ''"
         :propNumberSubAorWor="form.item && form.item.equipment.numberSubAorWor || ''" @change="numberQuery = $event"/>
         <v-row>
           <v-col>
             <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" disabled/>
-            <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
+            <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="type.name" label="รายการครุภัณฑ์ *" :rules="durableGoodsRules" :apiPath="`equipment/getEquipments/statusAndDepartment?status=NEW&status=RETURNED`"
               :query="numberQuery" :disabled="viewMode" @select="onSelectDurableGoods"/>
           </v-col>
         </v-row>
@@ -108,7 +108,8 @@
       </v-container>
 
       <!-- <v-container v-if="viewMode"> -->
-      <v-container v-if="viewMode">
+
+      <v-container >
         <AttachFileBtn :value.sync="attachFiles" :attachments="files" accept="*" :multiple="false" :disabled="isApprover" @removeAttachment="onRemoveFile"/>
       </v-container>
 
@@ -148,7 +149,7 @@
     data () {
       return {
         valid: true,
-        form: null,        
+        form: null,
         ouId: null,
         transferNumber: null,
         datetimeBorrowRules: [
@@ -198,7 +199,7 @@
       async setForm () {
         console.log('this.item sssssssssssss',this.item)
         const data = this.item?.items?.[0]
-        
+
         console.log('this.item transferNumber',this.item?.transferNumber)
         this.transferNumber = this.item?.transferNumber;
         if(!this.viewMode){
@@ -219,7 +220,7 @@
           departmentId: this.item?.transferto?.departmentId || null,
           transferNumber: this.transferNumber
         }
-        
+
         console.log('this.forms ',this.form)
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
         this.step = index + 2

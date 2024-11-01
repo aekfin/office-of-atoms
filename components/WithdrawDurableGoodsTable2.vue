@@ -32,7 +32,7 @@
       isLoading: { type: Boolean },
       getActionIconList: { type: Function },
       selectList2: { type: Array },
-      isSale: { type: Boolean },      
+      isSale: { type: Boolean },
       List4: { type: Array },
     },
     data () {
@@ -40,7 +40,7 @@
         { text: '', value: 'selector', width: '50px', align: 'center' },
         { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
         { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
-        { text: 'ชื่อครุภัณฑ์', value: 'name' },
+        { text: 'รายการครุภัณฑ์', value: 'type.name' },
         { text: 'เลขที่สินทรัพย์', value: 'assetNumber' },
         { text: 'เลขที่สินทรัพย์ อว.', value: 'assetNumberAorWor' },
       ]
@@ -58,14 +58,14 @@
     },
     methods: {
       async changeCheckbox (selected,index,item) {
-        if(selected){  
-          let checkDup = 0;        
+        if(selected){
+          let checkDup = 0;
           for(let i = 0; i < this.List4.length; i++){
             if(this.List4[i].number == item[index].number){
               checkDup = 1;
             }
           }
-          if(checkDup == 0){            
+          if(checkDup == 0){
             this.List4.push(item[index]);
           }
         }else{

@@ -27,7 +27,7 @@
     <template #item.action="{ item }">
       <ActionIconList :list="getActionIconList(item)"/>
     </template>
-    
+
     <template #[`item.data-table-expand`]="{ item, expand, isExpanded }">
     <v-btn
       v-if="(item.children && item.children.length > 0) || 'show-expand' in $attrs" icon small class="v-data-table__expand-icon"
@@ -79,7 +79,7 @@
     },
   }
 
-  
+
 </script>
 
 <style lang="scss">
@@ -90,7 +90,7 @@
 <template>
   <v-data-table  :items="items" :itemsPerPage="100" disableSort hideDefaultFooter class="durable-goods-table elevation-1 mt-6" :loading="isLoading"
   :headers="dessertHeaders"
-      :expanded.sync="expanded"      
+      :expanded.sync="expanded"
         item-value="name"
         show-expand
       @click:row="rowClick"
@@ -115,11 +115,11 @@
     <template #item.action="{ item }">
       <ActionIconList :list="getActionIconList(item)"/>
     </template>
-    
+
     <!-- <template #[`item.data-table-expand`]="{ item, isExpanded }">
     <v-btn
       v-if="(item.children && item.children.length > 0) || 'show-expand' in $attrs" icon small class="v-data-table__expand-icon"
-      :class="{ 'v-data-table__expand-icon--active': isExpanded }" 
+      :class="{ 'v-data-table__expand-icon--active': isExpanded }"
     >
       <v-icon>$expand</v-icon>
     </v-btn>
@@ -172,13 +172,13 @@ import 'vuetify/dist/vuetify.min.css';
       getActionIconList: { type: Function },
     },
     data () {
-      
+
       const dessertHeaders = [
         { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
         // { text: 'โครงการ', value: 'project.projectName' },
         { text: 'เลขที่ครุภัณฑ์', value: 'number', align: 'center', width: '120px' },
         { text: 'รายการครุภัณฑ์', value: 'type.name', align: 'center', width: '160px' },
-        { text: 'เลขที่สินทรัพย์ อว.', value: 'assetNumberAorWor', align: 'center', width: '160px' },        
+        { text: 'เลขที่สินทรัพย์ อว.', value: 'assetNumberAorWor', align: 'center', width: '160px' },
         { text: 'เลขที่สั่งซื้อสั่งจ้าง/เลขที่สัญญา', value: 'project.contractNumber', align: 'center', width: '250px' },
         { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
         { text: 'ราคา', value: 'price', align: 'center', width: '100px' },
@@ -197,7 +197,7 @@ import 'vuetify/dist/vuetify.min.css';
         subEquipments: [],
         headerSubEquipments: [
           { text: 'เลขที่ครุภัณฑ์ย่อย', value: 'number', width: '160px' },
-          { text: 'ชื่อครุภัณฑ์ย่อย', value: 'name' },
+          { text: 'รายการครุภัณฑ์ย่อย', value: 'name' },
           { text: 'มูลค่า', value: 'cost' },
           { text: 'หน่วย', value: 'classifier' },
         ]
@@ -224,7 +224,7 @@ import 'vuetify/dist/vuetify.min.css';
       },
       async getSubEquipment (id) {
         try {
-          
+
           console.log('this.subEquipmentsssssssss ',this.subEquipments);
           this.isLoadingSubEquipments = true
           const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/getSubEquipments', query: { equipmentId: id } })
@@ -238,7 +238,7 @@ import 'vuetify/dist/vuetify.min.css';
     }
   }
 
-  
+
 </script>
 
 <style lang="scss">

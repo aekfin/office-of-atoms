@@ -24,12 +24,12 @@
         itemDelete: '',
         filters: [
           { type: 'textField',param: 'number',name: 'เลขที่ครุภัณฑ์', },
-          { type: 'textField',param: 'equipmentName',name: 'ชื่อครุภัณฑ์', },
+          { type: 'textField',param: 'equipmentName',name: 'รายการครุภัณฑ์', },
           {
             name: 'ประเภท',
             param: 'subCategoryId',
             apiPath: 'equipment/category/getSubCategorys',
-          }, 
+          },
           {
             name: 'ครุภัณฑ์',
             param: 'typeId',
@@ -60,9 +60,9 @@
         console.log('this.itemDelete ',this.itemDelete);
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('http', {apiPath: 'equipment/deleteTransfer/'+this.itemDelete}) 
-          if('400' === data.status.code){ 
-            await this.$store.dispatch('snackbar', { text: `Error : ${data.status.description}`, props: { color: 'red', top: true } })  
+          const { data } = await this.$store.dispatch('http', {apiPath: 'equipment/deleteTransfer/'+this.itemDelete})
+          if('400' === data.status.code){
+            await this.$store.dispatch('snackbar', { text: `Error : ${data.status.description}`, props: { color: 'red', top: true } })
           }
           await this.getList()
           return Promise.resolve(data)

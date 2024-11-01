@@ -51,7 +51,7 @@
           </v-col>
         </DurableGoodsOwner>
 
-        <div class="text-h5 mt-5"><b>เลือกครุภัณฑ์</b></div> 
+        <div class="text-h5 mt-5"><b>เลือกครุภัณฑ์</b></div>
         <v-container>
           <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
             <v-expansion-panel v-for="(equipment, i) in form.equipments" :key="i" accordion>
@@ -151,6 +151,7 @@
       <v-container class="mt-8">
         <v-row justify="end">
           <v-btn large plain @click="$router.push('/durable-goods/overall/')">ย้อนกลับ</v-btn>
+          <v-btn elevation="2" large color="success" @click="onSubmit2">บันทึกร่าง</v-btn>&nbsp;
           <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn>
         </v-row>
       </v-container>
@@ -173,7 +174,7 @@
       return {
         valid: true,
         isLoading: false,
-        isNumberLoading: false, 
+        isNumberLoading: false,
         initCategory: {},
         modelImages: [],
         form: {
@@ -343,7 +344,7 @@
           if (ouId && quantity && mejorCategoryId && inspectionDate) {
             this.isNumberLoading = true
             const query = { ouId, quantity, registrationType: equipment.registrationType, moneyType: equipment.moneyType, mejorCategoryId, inspectionDate, count }
-            
+
             const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query })
             data?.forEach((number, i) => {
               equipment.detailList[i].number = number
@@ -442,6 +443,9 @@
           else await this.onEdit()
         }
       },
+      async onSubmit2 () {
+        this.onCreate2();
+      },
       async onCreate () {
         try {
           const form = {
@@ -457,6 +461,29 @@
           await Promise.all(
             data.map((item, i) => {
               this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.getMapCategory(item), id: item.id } })
+            })
+          )
+          if (this.$refs.attachmentCreateDurableGoods) await this.$refs.attachmentCreateDurableGoods.uploadCreate(data.map(item => item.id))
+          await this.$store.dispatch('snackbar', { text: 'เพิ่มครุภัณฑ์สำเร็จ' })
+          this.$router.push('/durable-goods/overall/')
+          return Promise.resolve()
+        } catch (err) { return Promise.reject(err) }
+      },
+      async onCreate2 () {
+        try {
+          const form = {
+            ...this.form,
+            equipments: this.form.equipments.map(equipment => ({ ...equipment, ownerId: this.form.ownerId, ...this.convertDetail(equipment) })),
+            dateEntry: this.$fn.convertDateToString(this.form.dateEntry),
+            inspectionDate: this.$fn.convertDateToString(this.form.inspectionDate),
+            dateReceivedBefore: this.form.dateReceivedBefore ? this.$fn.convertDateToString(this.form.dateReceivedBefore) : '',
+            dateReceivedAfter: this.form.dateReceivedAfter ? this.$fn.convertDateToString(this.form.dateReceivedAfter) : '',
+          }
+          console.log('form ',form);
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/project/import', data: form })
+          await Promise.all(
+            data.map((item, i) => {
+              this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory2', data: { ...this.getMapCategory(item), id: item.id } })
             })
           )
           if (this.$refs.attachmentCreateDurableGoods) await this.$refs.attachmentCreateDurableGoods.uploadCreate(data.map(item => item.id))

@@ -5,9 +5,9 @@
       <i class="material-icons">qr_code_2</i>
       <div class="ml-1">QR Code ({{ selectorListObject.length }})</div>
     </v-btn>
-    <v-data-table :headers="headers" :items="items"  :itemsPerPage="20" 
+    <v-data-table :headers="headers" :items="items"  :itemsPerPage="20"
     disableSort hideDefaultFooter class="elevation-1" :loading="isLoading" >
-   
+
       <template #header.order>
         <div class="d-flex align-center">
           <i :key="refreshKey" class="material-icons pointer" @click="onSelectAll" v-html="isSelectAll ? 'check_box' : isIndeterminate ? 'indeterminate_check_box' : 'check_box_outline_blank'"/>
@@ -56,8 +56,8 @@
         count: 0,
         total: 0,
         items: [],
-    
-        originalHeaders: [ 
+
+        originalHeaders: [
           { text: 'ลำดับ', value: 'order', width: '120px', align: 'center' },
           { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
           // { text: 'ชื่อครุภัณฑ์', value: 'name' },
@@ -68,7 +68,7 @@
           // { text: 'ครุภัณฑ์ย่อย', value: 'subEquipments', width: '120px', align: 'center' },
           // { text: 'สถานะ', value: 'status', align: 'center', width: '160px' },
           { text: 'รายการครุภัณฑ์', value: 'type.name', align: 'center', width: '160px' },
-          { text: 'เลขที่สินทรัพย์ อว.', value: 'assetNumberAorWor', align: 'center', width: '160px' },        
+          { text: 'เลขที่สินทรัพย์ อว.', value: 'assetNumberAorWor', align: 'center', width: '160px' },
           { text: 'เลขที่สั่งซื้อสั่งจ้าง/เลขที่สัญญา', value: 'project.contractNumber', align: 'center', width: '250px' },
           { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
           { text: 'ราคา', value: 'price', align: 'center', width: '100px' },
@@ -87,7 +87,7 @@
         chkOnSelectMajorCategory: '',
         filters: [
           { type: 'textField',param: 'number',name: 'เลขที่ครุภัณฑ์', },
-          { type: 'textField',param: 'name',name: 'ชื่อครุภัณฑ์', },
+          { type: 'textField',param: 'name',name: 'รายการครุภัณฑ์', },
           {
             name: 'หมวดหมู่พัสดุ',
             param: 'majorCategoryId',
@@ -130,7 +130,7 @@
           //   name: 'รายการครุภัณฑ์',
           //   param: 'typeId',
           //   apiPath: '',
-          // },          
+          // },
           // {
           //   id: 12,
           //   name: 'ยี่ห้อ',
@@ -150,7 +150,7 @@
             param: 'status',
             options: this.$store.getters.durableGoodSelectableOptions,
           },
-          
+
         ]
       }
     },
@@ -210,14 +210,14 @@
           win.document.write(`<iframe src="${data}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`)
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
-      },      
+      },
       ouChanges (val) {
         console.log('val', val)
         console.log('this.filtersssss', this.filters)
         console.log('this.chkRelationFilters', this.chkRelationFilters)
         if(val.item){
           for(let i=0; i < this.filters.length;i++){
-            
+
             if(this.filters[i].id === 10){
               this.filters[i].apiPath = 'equipment/category/getSubCategoryByMejor/'+val.item.id;
               this.chkRelationFilters = 1;
@@ -232,15 +232,15 @@
             }
             if(this.chkRelationFilters === 3 && this.filters[i].id === 13){
               this.filters[i].apiPath = 'equipment/category/getModelsByBrand/'+val.item.id;
-            }            
-            
+            }
+
           }
-          
+
         }
       },
       clear (val) {
         console.log('clear val', val)
-        
+
       },
     }
   }

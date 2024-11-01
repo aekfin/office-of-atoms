@@ -44,7 +44,7 @@
       const headers = [
         { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
         { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '128px', align: 'center' },
-        { text: 'ชื่อครุภัณฑ์', value: 'name' },
+        { text: 'รายการครุภัณฑ์', value: 'name' },
         { text: 'เลขที่สินทรัพย์', value: 'assetNumber' },
         { text: 'เลขที่สินทรัพย์ย่อย', value: 'assetSubNumber' },
         { text: 'เลขที่ อว.', value: 'assetNumberAorWor' },
