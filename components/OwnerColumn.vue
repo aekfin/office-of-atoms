@@ -16,7 +16,7 @@
         <v-list-item-title>กลุ่ม : <b>{{ item.department.departmentName }}</b></v-list-item-title>
       </v-list-item>
       <v-list-item v-if="item.owner">
-        <v-list-item-title>บุคคล : <b>{{ item.owner && $fn.getName(item.owner) || '-' }}</b></v-list-item-title>
+        <v-list-item-title>ผู้รับผิดชอบ : <b>{{ item.owner && $fn.getName(item.owner) || '-' }}</b></v-list-item-title>
       </v-list-item>
     </v-list>
   </v-menu>

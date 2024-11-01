@@ -1,9 +1,9 @@
 <template>
   <div id="project-page">
     <PageHeader text="โครงการที่ใกล้หมดระยะประกัน" :total="total" :filters="filters" unit="โครงการ"/>
-    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter 
+    <v-data-table :headers="headers" :items="items" :itemsPerPage="20" disableSort hideDefaultFooter
     class="elevation-1 mt-6" :loading="isLoading"  >
-     
+
       <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
       <template #item.projectStartDate="{ item }">
         {{ $fn.displayDate(item.projectStartDate) }}
@@ -11,12 +11,18 @@
       <template #item.contractStartDate="{ item }">
         {{ $fn.displayDate(item.contractStartDate) }}
       </template>
+      <template #item.warrantyEndDate="{ item }">
+        {{ $fn.displayDate(item.warrantyEndDate) }}
+      </template>
+      <template #item.contractEndDate="{ item }">
+        {{ $fn.displayDate(item.contractEndDate) }}
+      </template>
       <template #item.action="{ item }">
         <ActionIconList :list="getActionIconList(item)"/>
       </template>
     </v-data-table>
     <Pagination/>
-    <ConfirmDialog :value.sync="errorDialog" title="แจ้งเตือน" text="ไม่สามารถลบโครงการได้ เนื่องจากมีการใช้โครงการนี้ไปแล้ว" hideSubmit closeText="รับทราบ"/>    
+    <ConfirmDialog :value.sync="errorDialog" title="แจ้งเตือน" text="ไม่สามารถลบโครงการได้ เนื่องจากมีการใช้โครงการนี้ไปแล้ว" hideSubmit closeText="รับทราบ"/>
     <ConfirmDialog :value.sync="deleteDialog" title="แจ้งเตือน" text="ยืนยันจะทำการลบโครงการหรือไม่" @submit="onDeleteType"/>
   </div>
 </template>
@@ -41,10 +47,11 @@
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'เลขที่โครงการ', value: 'projectNumber', width: '140px', align: 'center' },
           { text: 'ชื่อโครงการ', value: 'projectName', width: '28%' },
-          { text: 'เลขที่สัญญา', value: 'contractNumber', align: 'center' }, 
+          { text: 'เลขที่สัญญา', value: 'contractNumber', align: 'center' },
           { text: 'วันเริ่มโครงการ', value: 'projectStartDate', width: '140px', align: 'center' },
           { text: 'วันเริ่มสัญญา', value: 'contractStartDate', width: '140px', align: 'center' },
           { text: 'วันที่สิ้นสุดการรับประกัน', value: 'warrantyEndDate', width: '140px', align: 'center' },
+          { text: 'วันที่สิ้นสุดการรับประกัน', value: 'contractEndDate', width: '140px', align: 'center' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
         items: [],
@@ -71,11 +78,11 @@
           },
           { type: 'datePicker',
             param: 'projectStartDate',
-            name: 'วันทีเริ่มโครงการ' 
+            name: 'วันทีเริ่มโครงการ'
           },
           { type: 'datePicker',
             param: 'contractStartDate',
-            name: 'วันเริ่มสัญญา' 
+            name: 'วันเริ่มสัญญา'
           },
         ],
       }

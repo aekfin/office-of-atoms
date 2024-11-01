@@ -24,7 +24,7 @@
         isLoading: true,
         total: 0,
         count: 0,
-        deleteDialog: false,        
+        deleteDialog: false,
         itemDelete: '',
         originalHeaders: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
@@ -36,6 +36,11 @@
         headers: [],
         items: [],
         filters: [
+        {
+            type: 'textField',
+            param: 'year',
+            name: 'ปีงบประมาณ',
+          },
         {
             type: 'textField',
             param: 'name',
@@ -78,8 +83,8 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', {apiPath: 'parcel/deleteParcelMasters/'+this.itemDelete})
-          if('400' === data.status.code){ 
-            await this.$store.dispatch('snackbar', { text: `Error : ${data.status.description}`, props: { color: 'red', top: true } })  
+          if('400' === data.status.code){
+            await this.$store.dispatch('snackbar', { text: `Error : ${data.status.description}`, props: { color: 'red', top: true } })
           }
           await this.getList()
           return Promise.resolve(data)

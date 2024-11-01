@@ -8,13 +8,13 @@
     </v-col>
     <v-col :cols="12" :md="hideUser ? 6 : 4">
       <!-- <SelectDropdown :value.sync="departmentId" :label="`กลุ่ม ${onlyUser ? '' : '*'}`" itemText="departmentName" :rules="departmentRules" required :disabled="disabled" apiPath="Orgchart/getDepartments"/> -->
-      <SelectDropdown :value.sync="departmentId" :label="`กลุ่ม ${onlyUser ? '' : '*'}`" itemText="departmentName" :rules="departmentRules" required :disabled="disabled || !organizationId" apiPath="Orgchart/getDepartmentsByOU" 
+      <SelectDropdown :value.sync="departmentId" :label="`กลุ่ม ${onlyUser ? '' : '*'}`" itemText="departmentName" :rules="departmentRules" required :disabled="disabled || !organizationId" apiPath="Orgchart/getDepartmentsByOU"
       :query="{ ouId: organizationId }"/>
     </v-col>
     <v-col :cols="12" :md="4">
       <!-- <SelectDropdown :value.sync="userId" :label="`บุคคล ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" apiPath="user/listUsers"
          :rules="userRules" :query="{ departmentId: departmentId, ouId: organizationId }"/> -->
-      <AutocompleteDropdown v-if="!hideUser" :value.sync="userId" :label="`บุคคล ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" :apiPath="userApiPath"
+      <AutocompleteDropdown v-if="!hideUser" :value.sync="userId" :label="`ผู้รับผิดชอบ ${onlyUser ? '*' : ''}`" :itemText="$fn.getName" required :disabled="disabledUser" :items="userList" :apiPath="userApiPath"
         :searchApiPath="userApiPath" :rules="userRules" :query="userQuery" :searchQuery="userQuery" searchKey="email" noFilter :organizationId="organizationId" :departmentId="departmentId">
         <template #item="{ item }">
           <div v-if="item" style="display: flex; align-items: center; gap: 8px;">
@@ -22,7 +22,7 @@
             <div style="color: grey; font-size: 12px;">({{ item.email }})</div>
           </div>
         </template>
-      </AutocompleteDropdown> 
+      </AutocompleteDropdown>
     </v-col>
     <slot/>
   </v-row>
@@ -56,7 +56,7 @@
           v => this.onlyUser || !!v || 'โปรดเลือกกลุ่ม',
         ],
         userRules: [
-          v => !this.onlyUser || !!v || 'โปรดเลือกบุคคล',
+          v => !this.onlyUser || !!v || 'โปรดเลือกผู้รับผิดชอบ',
         ],
       }
     },

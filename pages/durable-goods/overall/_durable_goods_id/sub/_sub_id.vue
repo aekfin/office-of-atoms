@@ -23,7 +23,7 @@
                   <div class="mt-2">{{ equipment.departmentMaster.departmentName }}</div>
                 </v-col>
                 <v-col v-if="equipment.owner" :cols="12" :md="4">
-                  <b>บุคคล:</b>
+                  <b>ผู้รับผิดชอบ:</b>
                   <div class="mt-2">{{ equipment.owner.name }}</div>
                 </v-col>
               </v-row>
