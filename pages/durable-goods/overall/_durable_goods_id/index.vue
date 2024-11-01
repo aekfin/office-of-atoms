@@ -51,7 +51,7 @@
           </v-col>
         </DurableGoodsOwner>
 
-        <div class="text-h5 mt-5"><b>เลือกครุภัณฑ์</b></div> 
+        <div class="text-h5 mt-5"><b>เลือกครุภัณฑ์</b></div>
         <v-container>
           <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
             <v-expansion-panel v-for="(equipment, i) in form.equipments" :key="i" accordion>
@@ -71,7 +71,7 @@
                   <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="res => form.equipments[i].categoryForm = res.form" @changeMajor="setNumberAllEquipments" @changeModel="onChangeModel" @changeDepreciationYear="val => changeDepreciationYear(i, val)">
                     <template #default>
                       <v-col :cols="12" :md="isCreate ? 6 : 9">
-                        <v-text-field v-model="form.equipments[i].name" name="name" label="ชื่อครุภัณฑ์" />
+                        <v-text-field v-model="form.equipments[i].name" name="name" label="รายการครุภัณฑ์" />
                       </v-col>
                       <v-col v-if="isCreate" :cols="12" :md="3">
                         <v-text-field v-model="form.equipments[i].quantity" name="quantity" label="จำนวน *" type="number" :rules="quantityRules" required @change="onQuantityChange(form.equipments[i])"/>
@@ -173,7 +173,7 @@
       return {
         valid: true,
         isLoading: false,
-        isNumberLoading: false, 
+        isNumberLoading: false,
         initCategory: {},
         modelImages: [],
         form: {
@@ -343,7 +343,7 @@
           if (ouId && quantity && mejorCategoryId && inspectionDate) {
             this.isNumberLoading = true
             const query = { ouId, quantity, registrationType: equipment.registrationType, moneyType: equipment.moneyType, mejorCategoryId, inspectionDate, count }
-            
+
             const { data } = await this.$store.dispatch('http', { apiPath: `equipment/genEquipmentNumber` , query })
             data?.forEach((number, i) => {
               equipment.detailList[i].number = number

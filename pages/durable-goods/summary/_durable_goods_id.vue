@@ -22,7 +22,7 @@
         <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="({ form }) => categoryForm = form" @changeMajor="getEquipmentNumber">
           <template #default>
             <v-col :cols="12" :md="isCreate ? 6 : 9">
-              <v-text-field v-model="form.name" name="name" label="ชื่อครุภัณฑ์ " />
+              <v-text-field v-model="form.name" name="name" label="รายการครุภัณฑ์ " />
             </v-col>
             <v-col v-if="isCreate" :cols="12" :md="3">
               <v-text-field v-model="form.quantity" name="quantity" label="จำนวน *" type="number" :rules="quantityRules" required @change="onQuantityChange"/>
@@ -93,7 +93,7 @@
       CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
       DurableGoodsOwner: () => import('~/components/DurableGoodsOwner.vue'),
       AttachmentDurableGoods: () => import('~/components/AttachmentDurableGoods.vue'),
-      DurableGoodQRCode: () => import('~/components/DurableGoodQRCode.vue'), 
+      DurableGoodQRCode: () => import('~/components/DurableGoodQRCode.vue'),
     },
     data () {
       return {

@@ -47,14 +47,14 @@
                       <v-text-field v-model="form.equipments[i].donator" label="ผู้บริจาค *" :rules="donatorRules" required />
                     </v-col>
                     <v-col :cols="12" :md="6">
-                      <SelectDropdown :value.sync="form.equipments[i].userId" label="ผู้รับผิดชอบ *" :itemText="$fn.getName" :rules="userRules" required 
+                      <SelectDropdown :value.sync="form.equipments[i].userId" label="ผู้รับผิดชอบ *" :itemText="$fn.getName" :rules="userRules" required
                         :items="form.equipments[i].userList" apiPath="user/listUsers"/>
                     </v-col>
                   </v-row>
                   <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="res => form.equipments[i].categoryForm = res.form" @changeMajor="setNumberAllEquipments" @changeModel="onChangeModel">
                     <template #default>
                       <v-col :cols="12" :md="isCreate ? 6 : 9">
-                        <v-text-field v-model="form.equipments[i].name" name="name" label="ชื่อครุภัณฑ์"  />
+                        <v-text-field v-model="form.equipments[i].name" name="name" label="รายการครุภัณฑ์"  />
                       </v-col>
                       <v-col v-if="isCreate" :cols="12" :md="3">
                         <v-text-field v-model="form.equipments[i].quantity" name="quantity" label="จำนวน *" type="number" :rules="quantityRules" required @change="onQuantityChange(form.equipments[i])"/>

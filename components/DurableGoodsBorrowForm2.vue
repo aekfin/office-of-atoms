@@ -59,7 +59,7 @@
             </v-col> -->
             <v-col>
               <DurableGoodsOwner :organization.sync="ouId" :department.sync="departmentId" :hideUser="true" :disabled="false" @ouChange="onOuChange">
-              </DurableGoodsOwner> 
+              </DurableGoodsOwner>
             </v-col>
           </v-row>
         </v-container>
@@ -67,7 +67,7 @@
 
       <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการ${type}` }}</b>
       </h5>
-      <!-- <v-container class="mt-2">  
+      <!-- <v-container class="mt-2">
         <div v-if="isWithdraw && !viewMode || isVisibleProject === 'on'" >
           <v-col :cols="12" :md="12">
             <SelectDropdown :value.sync="projectId" itemValue="id" itemText="projectName" label="เลือกโครงการ *" apiPath="Project/getListProject" :rules="projectRules" @select="onSelectProject"/>
@@ -77,7 +77,7 @@
         <template v-else-if="isVisibleEquipment !== 'off'">
           <div>
             <v-text-field v-model="form.number" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/>
-            <CategoryDurableGood :key="categoryKey" :initCategory="initCategoryForm" :disabled="toggleEdit()" noRules :itemEquipment="itemEquipment" 
+            <CategoryDurableGood :key="categoryKey" :initCategory="initCategoryForm" :disabled="toggleEdit()" noRules :itemEquipment="itemEquipment"
             @change="onChangeCategory">
               <v-col :cols="12" :md="9">
                   <v-text-field v-if="viewMode && !onCategoryChange" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
@@ -88,7 +88,7 @@
           </div>
         </template>
       </v-container> -->
-      <v-container class="mt-2"> 
+      <v-container class="mt-2">
         <v-expansion-panels v-model="formExpand" class="form-expansion-panels" flat multiple>
             <v-expansion-panel v-for="(item, i) in form.items" :key="i" accordion>
               <v-expansion-panel-header class="text-h6">
@@ -105,7 +105,7 @@
               <v-expansion-panel-content>
                 <v-container>
                   <v-text-field v-model="form.numberList[i]" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/>
-                  <CategoryDurableGood :key="categoryKey" :initCategory="listInitCategoryForm[i]?.initCategoryForm" :itemEquipment="listItemEquipment[i]?.itemEquipment"  :disabled="toggleEdit()" noRules 
+                  <CategoryDurableGood :key="categoryKey" :initCategory="listInitCategoryForm[i]?.initCategoryForm" :itemEquipment="listItemEquipment[i]?.itemEquipment"  :disabled="toggleEdit()" noRules
                   @change="onChangeCategory($event,i)">
                     <v-col :cols="12" :md="9">
                         <v-text-field v-if="viewMode && !onCategoryChange[i]" :key="categoryChangeKey" v-model="form.nameList[i]" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
@@ -145,7 +145,7 @@
         <v-row v-else justify="end">
           <v-btn v-if="viewMode" large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
           <v-btn v-else large plain @click="$router.push(backPath)">ย้อนกลับ</v-btn>
-          <v-btn v-if="!viewMode" class="ml-4" elevation="2" large color="success" @click="onSubmit">{{ `ยื่นขอ${type}` }}</v-btn>          
+          <v-btn v-if="!viewMode" class="ml-4" elevation="2" large color="success" @click="onSubmit">{{ `ยื่นขอ${type}` }}</v-btn>
           <!-- <v-btn v-if="isVisibleProject === 'on'" class="ml-4" elevation="2" large color="success" @click="onEditWithdraw">บันทึกa</v-btn> -->
           <v-btn v-if="viewMode && forEdit" class="ml-4" elevation="2" large color="success" @click="onEdit">บันทึก</v-btn>
           <!-- <v-btn elevation="2" large color="success" @click="onSubmit">บันทึก</v-btn> -->
@@ -180,7 +180,7 @@
     data () {
       return {
         valid: true,
-        form: {          
+        form: {
           items: [
             {
               name: '',
@@ -227,13 +227,13 @@
         files: [],
         removeFiles: [],
         equipmentList: [],
-        categoryKey: false,   
-        categoryChangeKey: false,     
+        categoryKey: false,
+        categoryChangeKey: false,
         onCategoryChange: [false],
         isVisibleProject: null,
         isVisibleEquipment: null,
         oldItem: [],
-        formExpand: [0],        
+        formExpand: [0],
         List4: [],
         listItemEquipment: [
           { itemEquipment: {} },
@@ -264,8 +264,8 @@
       }
     },
     mounted () {
-      
-      
+
+
       this.setForm()
     },
     created () {
@@ -286,7 +286,7 @@
         this.ouId =  this.item?.items?.[0]?.equipment?.organizationMaster.id || this.item.ouId
         this.departmentId = this.item?.items?.[0]?.equipment?.departmentMaster.id || this.item.departmentId
       }
-      
+
       if (this.item) this.setCategoryForm()
     },
     methods: {
@@ -297,12 +297,12 @@
           return date
         }
         this.oldItem = this.item?.items;
-        
+
         this.form = {
           description: this.item?.description || '',
           dateBorrow: this.item?.dateBorrow || new Date(),
           dueDate: this.item?.dueDate || getDueDate(),
-          itemId:[],          
+          itemId:[],
           numberList: [],
           nameList:[],
           item: this.item?.items?.[0] || null,
@@ -321,7 +321,7 @@
           owner: this.item?.items?.[0]?.equipment?.owner || {},
           number: this.item?.items?.[0]?.equipment?.number || '',
           borrowId: this.item?.borrowId,
-          equipmentRequestId: this.item?.id, 
+          equipmentRequestId: this.item?.id,
           equipmentXRequestId: this.item?.items?.[0].equipmentXRequestId,
           equipments: [
             {
@@ -361,11 +361,11 @@
           console.log('this.form BorrowFormss', this.form);
 
           this.categoryKey = !this.categoryKey;
-          
+
         }
-        
-        
-        console.log('this.formกกก ',this.form ); 
+
+
+        console.log('this.formกกก ',this.form );
         if (this.item) this.setCategoryForm()
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
         this.step = index + 2
@@ -375,7 +375,7 @@
         this.initCategoryForm = category || this.item?.items?.[0]
       },
       onChangeCategory ({ form, trigger },index) {
-        
+
         console.log('onChangeCategory index', index)
         if (trigger) {
           // this.categoryForm = { ...form }
@@ -389,8 +389,8 @@
         console.log('check index', index)
         console.log('check val', val)
 
-       
-        
+
+
         console.log('this.listInitCategoryForm Before', this.listInitCategoryForm)
         // this.itemEquipment = val.item
         // this.listItemEquipment.push({itemEquipment: val.item})
@@ -403,7 +403,7 @@
         this.initCategoryForm.type = val.item.type
         this.initCategoryForm.brand = val.item.brand
         this.initCategoryForm.model = val.item.model
-        
+
         // this.listInitCategoryForm.push({initCategoryForm: this.initCategoryForm})
         this.listInitCategoryForm[index] = {initCategoryForm: this.initCategoryForm}
         // this.listInitCategoryForm.splice(index, 0, { initCategoryForm: this.initCategoryForm });
@@ -412,7 +412,7 @@
         console.log('this.listInitCategoryForm After', this.listInitCategoryForm)
 
         this.categoryKey = !this.categoryKey;
-        
+
         // this.form.number = val?.item?.number
         console.log('check val before this.form', this.form)
         this.form.numberList = this.form.numberList.filter(item => item !== null);
@@ -429,12 +429,12 @@
         //   this.form.itemId.push(val?.item?.id)
         // }
 
-        
-        
+
+
         console.log('this.listItemEquipment ', this.listItemEquipment)
         // console.log('this.listInitCategoryForm ', this.listInitCategoryForm)
-      },      
-      getApproverText (flow) { 
+      },
+      getApproverText (flow) {
         return flow?.emails?.reduce((str, email, i) => `${str}${i > 0 ? ', ' : ''}${email}`, 'ผู้อนุมัติ : ') || false
       },
       toggleEdit () {
@@ -475,7 +475,7 @@
         }
         console.log('onSubmit valid ',valid);
         console.log('this.departmentId ',this.departmentId);
-        if (valid) { 
+        if (valid) {
           const formData = { ...this.form }
           formData.ouId = this.ouId;
           formData.departmentId = this.departmentId;
@@ -526,7 +526,7 @@
           const res = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/returnedDocument', data })
           return Promise.resolve(res)
         } catch (err) { return Promise.reject(err) }
-      },      
+      },
       onOuChange ({ val }) {
         this.ouId = val
       },
@@ -534,7 +534,7 @@
         // ChooseNewEquipment
         this.isVisibleProject = 'on';
         this.isVisibleEquipment = 'off';
-      },      
+      },
       getDetail (data = {}) {
         return {
           number: data.number || '',
@@ -561,7 +561,7 @@
         console.log('this.listInitCategoryForm ,,',this.listInitCategoryForm);
         this.formExpand = [ ...this.formExpand, this.formExpand.length ]
         // this.setNumberAllEquipments()
-      },      
+      },
       removeDurableGoods (i) {
         console.log('removeDurableGoods ',i)
         this.form.items.splice(i, 1)

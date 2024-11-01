@@ -20,7 +20,7 @@
         total: 0,
         items: [],
         filters: [
-         
+
           {
             type: 'textField',
             name: 'ผู้ขอยืมครุภัณฑ์',
@@ -28,7 +28,7 @@
           },
           {
             type: 'textField',
-            name: 'ชื่อครุภัณฑ์',
+            name: 'รายการครุภัณฑ์',
             param: 'equipmentName',
           },
           {
@@ -48,7 +48,7 @@
             options: this.$store.getters.durableGoodSelectableOptionsRequestStatusEnum,
           },
         ],
-        
+
       }
     },
     watch: {

@@ -13,7 +13,7 @@
           </v-btn>
         </v-card-title>
         <v-card-text class="black--text pt-2 text-body-1">
-          <div v-if="equipment"><b>ชื่อครุภัณฑ์:</b> {{ equipment.name }}</div>
+          <div v-if="equipment"><b>รายการครุภัณฑ์:</b> {{ equipment.name }}</div>
           <Loading v-if="isLoading"/>
           <template v-else>
             <v-data-table v-if="subEquipments.length" :headers="headers" :items="subEquipments" :itemsPerPage="Infinity" disableSort hideDefaultFooter class="elevation-1 mt-2" :loading="isLoading"></v-data-table>
@@ -38,7 +38,7 @@
         subEquipments: [],
         headers: [
           { text: 'เลขที่ครุภัณฑ์ย่อย', value: 'number', width: '160px' },
-          { text: 'ชื่อครุภัณฑ์ย่อย', value: 'name' },
+          { text: 'รายการครุภัณฑ์ย่อย', value: 'name' },
         ]
       }
     },

@@ -40,7 +40,7 @@
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '128px', align: 'center' },
-          { text: 'ชื่อครุภัณฑ์', value: 'name' },
+          { text: 'รายการครุภัณฑ์', value: 'name' },
           // { text: 'หมวดหมู่', value: 'majorCategory', width: '120px', align: 'center' },
           { text: 'ผู้ครอบครอง', value: 'organization', width: '120px', align: 'center' },
           { text: 'สถานะการตรวจนับ', value: 'status_counting', width: '220px', align: 'center' },
@@ -51,7 +51,7 @@
     computed: {
       filters () {
         return [
-          { type: 'textField',param: 'equipmentName',name: 'ชื่อครุภัณฑ์', },
+          { type: 'textField',param: 'equipmentName',name: 'รายการครุภัณฑ์', },
           { type: 'datePicker',param: 'checkDate',name: 'วันที่ตรวจนับ' },
           { param: 'ouId', name: 'กอง', itemText: 'ouName', apiPath: 'Orgchart/getOrganizations' },
           { param: 'departmentId', name: 'กลุ่ม', itemText: 'departmentName', apiPath: 'Orgchart/getDepartments' },
