@@ -49,7 +49,7 @@
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
-          { text: 'รายการครุภัณฑ์', value: 'name', width: '200px' },
+          { text: 'รายการครุภัณฑ์', value: 'type.name', width: '200px' },
           { text: 'หมวดหมู่', value: 'majorCategory', width: '160px', align: 'center' },
           { text: 'ราคากลาง', value: 'price', align: 'center', width: '120px' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },

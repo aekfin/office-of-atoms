@@ -7,7 +7,10 @@
         <v-row>
           <v-col>
             <DurableGoodsOwner :organization.sync="ouId" :department.sync="departmentId" :user.sync="ownerId" :disabled="isCreate" @ouChange="onOuChange">
-            </DurableGoodsOwner> 
+              <v-col :cols="12">
+            <v-text-field v-model="location" label="สถานที่ติดตั้ง" />
+          </v-col>
+            </DurableGoodsOwner>
           </v-col>
         </v-row>
       </v-container>
@@ -41,6 +44,7 @@
         ouId: '',
         departmentId: '',
         ownerId: '',
+        location:''
       }
     },
     computed: {
@@ -52,12 +56,13 @@
       async getData () {
         try {
           this.isLoading = true
-          
+
         const { data } = await this.$store.dispatch('http', { apiPath: 'equipment/getEquipments/status/'+this.$route.params.durable_goods_id })
-        
+        console.log("data : ",data);
           this.ouId = data.organization.id
           this.departmentId = data.department.id
           this.ownerId = data.owner.id
+          this.location = data.location
 
           this.isLoading = false
           return Promise.resolve()
@@ -73,7 +78,12 @@
             console.log('this.ouId',this.ouId);
             console.log('this.departmentId',this.departmentId);
             console.log('this.ownerId',this.ownerId);
-            const form = {id: this.$route.params.durable_goods_id, ouId: this.ouId, departmentId: this.departmentId, ownerId: this.ownerId }
+            const form = {
+              id: this.$route.params.durable_goods_id,
+              ouId: this.ouId,
+              departmentId: this.departmentId, ownerId: this.ownerId,
+              location:this.location
+            }
             const { data } = await this.$store.dispatch('http', { method, apiPath, data: form})
             await this.$store.dispatch('snackbar', { text: 'แก้ไขผู้ครอบครองสำเร็จ' })
             this.$router.push('/durable-goods/verify-counting/')

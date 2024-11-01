@@ -40,7 +40,7 @@
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
           { text: 'เลขที่เอกสาร', value: 'documentNumber', width: '160px', align: 'center' },
           { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
-          { text: 'รายการครุภัณฑ์', value: 'name' },
+          { text: 'รายการครุภัณฑ์', value: 'type.name' },
           { text: 'หมวดหมู่', value: 'majorCategory', width: '160px', align: 'center' },
           { text: 'ราคาจำหน่าย', value: 'price', align: 'center', width: '140px' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },

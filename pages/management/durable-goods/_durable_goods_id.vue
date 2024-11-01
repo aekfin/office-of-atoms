@@ -28,7 +28,7 @@
         <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="({ form }) => categoryForm = form" @changeMajor="getEquipmentNumber" @changeDepreciationYear="changeDepreciationYear">
           <template #default>
             <v-col :cols="12" :md="isCreate ? 6 : 9">
-              <v-text-field v-model="form.name" name="name" label="รายการครุภัณฑ์"/>
+              <v-text-field v-model="form.name" name="name" label="ครุภัณฑ์"/>
             </v-col>
             <v-col v-if="isCreate" :cols="12" :md="3">
               <v-text-field v-model="form.quantity" name="quantity" label="จำนวน *" type="number" :rules="quantityRules" required @change="onQuantityChange"/>
