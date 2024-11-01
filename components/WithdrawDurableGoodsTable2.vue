@@ -40,7 +40,7 @@
         { text: '', value: 'selector', width: '50px', align: 'center' },
         { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
         { text: 'เลขที่ครุภัณฑ์', value: 'number', width: '160px', align: 'center' },
-        { text: 'รายการครุภัณฑ์', value: 'name' },
+        { text: 'รายการครุภัณฑ์', value: 'type.name' },
         { text: 'เลขที่สินทรัพย์', value: 'assetNumber' },
         { text: 'เลขที่สินทรัพย์ อว.', value: 'assetNumberAorWor' },
       ]

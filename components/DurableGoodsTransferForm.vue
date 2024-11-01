@@ -108,7 +108,8 @@
       </v-container>
 
       <!-- <v-container v-if="viewMode"> -->
-      <v-container v-if="viewMode">
+
+      <v-container >
         <AttachFileBtn :value.sync="attachFiles" :attachments="files" accept="*" :multiple="false" :disabled="isApprover" @removeAttachment="onRemoveFile"/>
       </v-container>
 
