@@ -209,7 +209,7 @@ import 'vuetify/dist/vuetify.min.css';
   },
     methods: {
       expandAllRows () {
-        console.log('fkyou')
+        console.log('this.items',this.items)
         
         // console.log('props fkyou',this.props);
         this.expanded = this.items.map(item => item.name);

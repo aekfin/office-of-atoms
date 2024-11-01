@@ -178,10 +178,14 @@
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath, data: { ...form, names: [form.name] }, query: this.$route.query })
           
           if (data?.status?.code == 400){
-            if(data?.status?.description){
+            if(data?.status?.description){              
+              if(data.status.description.includes('Duplicate entry')){
+                await this.$store.dispatch('snackbar', { text: 'ไม่สามารถบันทึกได้ เนื่องจากข้อมูลซ้ำ' , props: { color: 'red' }})
+              }else{
+                await this.$store.dispatch('snackbar', { text: `สร้าง${this.tabActive.text}ไม่สำเร็จ` , props: { color: 'red' }})
+              }
               //await this.$store.dispatch('snackbar', { text: `Error : ${data.status.description}`, props: { color: 'red', top: true } })  
-              await this.$store.dispatch('snackbar', { text: `สร้าง${this.tabActive.text}ไม่สำเร็จ` , props: { color: 'red' }})
-
+              
             }else{
               await this.$store.dispatch('snackbar', { text: `สร้าง${this.tabActive.text}ไม่สำเร็จ` , props: { color: 'red' }})
             }            

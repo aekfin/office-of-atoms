@@ -65,7 +65,8 @@
           <v-col :cols="12" md>
             <div class="d-flex align-center">
               <div v-if="isCreate" class="mr-4">{{ j + 1 }}.</div>
-              <v-text-field v-model="detail.number" name="code" label="เลขที่ครุภัณฑ์ *" required />
+              <v-text-field v-model="detail.number" name="code" label="เลขที่ครุภัณฑ์ *" required /> 
+              <!-- <v-text-field v-model="detail.number" name="code" label="เลขที่ครุภัณฑ์ *" required @blur="checkEquipmentNumber"/>  -->
             </div>
           </v-col>
           <v-col :cols="12" :md="3">
@@ -362,6 +363,27 @@
       },
       onSelectProject ({ item }) {
         this.form.project = item
+      },
+      async checkEquipmentNumber () {
+        console.log('checkProjectNumber ',this.form.projectNumber);
+        console.log('originalProjectNumber ',this.form.originalProjectNumber);
+        if (this.form.projectNumber && this.originalProjectNumber !== this.form.projectNumber) {
+          try {
+            this.projectNumberLoading = true
+            const { data } = await this.$store.dispatch('http', { apiPath: 'Project/checkProjectNumber', query: { projectNumber: this.form.projectNumber } })
+            console.log('checkProjectNumber data',data);
+            this.validProjectNumber = data.data === false
+            this.projectNumberLoading = false
+            if (data === true) {
+              this.codeRules = ['เลขที่โครงการซ้ำ']
+            } else {
+              this.codeRules = [];
+            }
+            return Promise.resolve()
+          } catch (err) { return Promise.reject(err) } 
+        }else{
+          this.codeRules = ['โปรดใส่เลขที่โครงการ']
+        }
       },
     }
   }
