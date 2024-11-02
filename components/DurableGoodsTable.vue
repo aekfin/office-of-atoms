@@ -175,7 +175,7 @@ import 'vuetify/dist/vuetify.min.css';
 
       const dessertHeaders = [
         { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
-        // { text: 'โครงการ', value: 'project.projectName' },
+        { text: 'สถานะรูปภาพ', value: 'statusFile' },
         { text: 'เลขที่ครุภัณฑ์', value: 'number', align: 'center', width: '120px' },
         { text: 'รายการครุภัณฑ์', value: 'type.name', align: 'center', width: '160px' },
         { text: 'เลขที่สินทรัพย์ อว.', value: 'assetNumberAorWor', align: 'center', width: '160px' },
@@ -210,7 +210,7 @@ import 'vuetify/dist/vuetify.min.css';
     methods: {
       expandAllRows () {
         console.log('this.items',this.items)
-        
+
         // console.log('props fkyou',this.props);
         this.expanded = this.items.map(item => item.name);
       },

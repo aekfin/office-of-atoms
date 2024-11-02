@@ -7,6 +7,7 @@
       numberfilters="true"/>
       <!-- reportName="พิมพ์ RFID มาตราฐาน" exportText="รายงานค่าเสื่อมครุภัณฑ์"
       reportName="พิมพ์ RFID ต่ำกว่าเกณฑ์" exportText="รายงานค่าเสื่อมครุภัณฑ์" -->
+
     <DurableGoodsTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
     <Pagination/>
     <ConfirmDialog :value.sync="deleteDialog" title="แจ้งเตือน" text="ยืนยันจะทำการลบบริหารครุภัณฑ์หรือไม่" @submit="onDelete"/>
@@ -143,10 +144,19 @@
               const id = data.content[i].id
               const response = await this.$store.dispatch('http', { apiPath: 'equipment/getSubEquipments', query: { equipmentId: id } })
               const subEquipmentModel = response.data.subEquipmentModel;
-              data.content[i].subEquipmentModel = subEquipmentModel
+              data.content[i].subEquipmentModel = subEquipmentModel;
+
+              const { data: files } = await this.$store.dispatch('http', { apiPath: `equipment/getUploadFile/${id}` })
+              var statusFile = "";
+              files.forEach(file => {
+                if (['.gif', '.jfif', '.pjpeg', '.jpeg', '.pjp', '.jpg', '.png', '.webp'].some(type => file.filename.includes(type))) {
+                  statusFile = "Y";
+                }
+              })
+              data.content[i].statusFile = statusFile;
             }
           }
-
+          console.log("data : ",data);
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }
