@@ -65,7 +65,7 @@
           <v-col :cols="12" md>
             <div class="d-flex align-center">
               <div v-if="isCreate" class="mr-4">{{ j + 1 }}.</div>
-              <v-text-field v-model="detail.number" name="code" label="เลขที่ครุภัณฑ์ *" required /> 
+              <v-text-field v-model="detail.number" name="code" label="เลขที่ครุภัณฑ์ *" required />
               <!-- <v-text-field v-model="detail.number" name="code" label="เลขที่ครุภัณฑ์ *" required @blur="checkEquipmentNumber"/>  -->
             </div>
           </v-col>
@@ -196,7 +196,6 @@
         try {
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: `equipment/${this.$route.params.durable_goods_id}` })
-          console.log('datdatadatadatหหหหหหหหหหหหaa ',data);
           let  moneyType = '';
           if(data.moneyType === 'เงินงบประมาณ'){
             moneyType = 'BUDGET';
@@ -325,18 +324,24 @@
               }
             ]
           }
-          console.log('sss form ',form);
-          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/import', data: form })
+
+          const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/importV2', data: form })
           await Promise.all(
             data.map((item) => {
               this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.categoryForm, id: item.id } })
             })
           )
-          // this.$route.params.durable_goods_id === data?.[0].id
-          await this.$store.dispatch('snackbar', { text: 'เพิ่มครุภัณฑ์สำเร็จ' })
-          this.$router.push('/management/durable-goods/')
-          return Promise.resolve(data)
-          // return Promise.resolve()
+          console.log('data : ',data);
+          if(data.length > 0){
+            await this.$store.dispatch('snackbar', { text: 'เพิ่มครุภัณฑ์สำเร็จ' })
+            this.$router.push('/management/durable-goods/')
+            return Promise.resolve(data)
+          }else{
+            await this.$store.dispatch('snackbar', { text: 'เพิ่มครุภัณฑ์ไม่สำเร็จ', props: { color: 'red', top: true } })
+          }
+          // // this.$route.params.durable_goods_id === data?.[0].id
+
+          // // return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
       },
       async onEdit () {
@@ -380,7 +385,7 @@
               this.codeRules = [];
             }
             return Promise.resolve()
-          } catch (err) { return Promise.reject(err) } 
+          } catch (err) { return Promise.reject(err) }
         }else{
           this.codeRules = ['โปรดใส่เลขที่โครงการ']
         }
