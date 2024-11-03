@@ -36,7 +36,7 @@
               <v-text-field v-model="budgetEnd" class="cost-field" label="งบประมาณสูงสุด *" :rules="budgetEndRules" type="number" :disabled="!budgetStart"/>
             </v-row>
           </v-col>
-          <v-col :cols="12" :md="6"> 
+          <v-col :cols="12" :md="6">
             <ProjectDropdown v-model="form.projectName" itemValue="projectName" itemText="projectName" label="โครงการ *" :apiPath="propjectApiPath" :query="projectQuery"
               :rules="projectRules" isProject required :disabled="!form.year || !budgetStart || !budgetEnd" @select="onSelectProject"/>
           </v-col>
@@ -189,11 +189,11 @@
                     </div>
                     <!-- <v-text-field v-model="contact.name" class="company-name" label="ชื่อ-นามสกุล *" :rules="contactNameRules" /> -->
                     <div v-if="!manualModes[i]" class="company-name">
-                      <v-text-field  v-model="contact.name"  label="ชื่อ-นามสกุล *" :rules="contactNameRules" />                      
+                      <v-text-field  v-model="contact.name"  label="ชื่อ-นามสกุล *" :rules="contactNameRules" />
                     </div>
                     <div v-else class="company-name">
-                          <UserDropdown v-model="contact.name" itemValue="thaiFristName" itemText="thaiFristName" label="ชื่อ-นามสกุล *" apiPath="Orgchart/user-detail" 
-                        :rules="contactNameRules" required  @select="onSelectUser($event,i)"/> 
+                          <UserDropdown v-model="contact.name" itemValue="thaiFristName" itemText="thaiFristName" label="ชื่อ-นามสกุล *" apiPath="Orgchart/user-detail"
+                        :rules="contactNameRules" required  @select="onSelectUser($event,i)"/>
                     </div>
                     <div>
                       <v-col :cols="4">
@@ -247,11 +247,11 @@
           </v-btn>
         <v-card-text class="red--text bottom-padding">
            <h3 class="centered-text">ไม่สามารถบันทึกได้เนื่องจากมีชื่อโครงการหรือเลขที่โครงการอยู่ในระบบแล้ว</h3>
-        </v-card-text>       
+        </v-card-text>
       </v-card>
     </v-dialog> -->
   </div>
-  
+
 </template>
 
 <script>
@@ -310,7 +310,7 @@
           period4Date: '',
           period5: '',
           period5Date: '',
-        },        
+        },
         originalProjectNumber: '',
         projectNumberLoading: false,
         validProjectNumber: true,
@@ -388,7 +388,7 @@
         phoneNumberRules: [
           v => v === '' || /^\d+$/.test(v) || 'กรุณากรอกเบอร์โทรศัพท์เป็นตัวตัวเลขเท่านั้น'
         ],
-        emailRules: [ 
+        emailRules: [
           v => !v || /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'โปรดตรวจสอบ E-Mail'
         ]
       }
@@ -411,7 +411,7 @@
           return { apiPath: 'Project/getLogProject', query: { id: this.$route.params.project_id } }
         }else{
           return null
-        }  
+        }
       },
     },
     watch: {
@@ -524,7 +524,9 @@
         this.form.committees[index].name = item.val
         console.log('onSelectUser item',item);
         console.log('onSelectUser index',index);
-        console.log('onSelectUser committees ',this.form.committees);
+        this.form.committees[index].email = item.item.email;
+        this.form.committees[index].mobile = item.item.phone;
+
       },
       toggleManualMode (index) {
         this.$set(this.manualModes, index, !this.manualModes[index]);
@@ -539,9 +541,9 @@
       },
       async onSubmit () {
         const valid = this.$refs.form.validate()
-       
+
         // window.alert('มีชื่อโครงการหรือเลขที่โครงการที่ระบุอยู่ในระบบแล้ว');
-        
+
         if (valid) {
           try {
             const form = { ...this.form }
@@ -555,7 +557,7 @@
                 this.form.period[i].periodDate = this.form.period[i].periodDate ? this.$fn.convertDateToString(this.form.period[i].periodDate) : '';
               }
             }
-            
+
             // form.period1Date = form.period1Date ? this.$fn.convertDateToString(form.period1Date) : ''
             // form.period2Date = form.period2Date ? this.$fn.convertDateToString(form.period2Date) : ''
             // form.period3Date = form.period3Date ? this.$fn.convertDateToString(form.period3Date) : ''
@@ -567,8 +569,8 @@
             console.log('form ',form)
             const res = await this.$store.dispatch('http', { method, apiPath, data: form })
             if(res.data.status){
-              if('400' === res.data.status.code){ 
-                await this.$store.dispatch('snackbar', { text: `Error : ${res.data.status.description}`, props: { color: 'red', top: true } })               
+              if('400' === res.data.status.code){
+                await this.$store.dispatch('snackbar', { text: `Error : ${res.data.status.description}`, props: { color: 'red', top: true } })
                 res.data.status.description == 'duplicate' ? this.dialog = true : false
               }else{
                 if (this.attachFiles.length) await this.uploadFiles(res.data.id)
@@ -577,7 +579,7 @@
                 await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างโครงการสำเร็จ' : 'แก้ไขโครงการสำเร็จ' })
                 this.$router.push('/project/')
                 // if (this.isCreate) this.$router.push('/project/')
-                // else await this.getData() 
+                // else await this.getData()
               }
             }else{
               if (this.attachFiles.length) await this.uploadFiles(res.data.id)
@@ -586,8 +588,8 @@
               await this.$store.dispatch('snackbar', { text: this.isCreate ? 'สร้างโครงการสำเร็จ' : 'แก้ไขโครงการสำเร็จ' })
               this.$router.push('/project/')
               // if (this.isCreate) this.$router.push('/project/')
-              // else await this.getData() 
-            }            
+              // else await this.getData()
+            }
             return Promise.resolve(res)
           } catch (err) {
             console.log(err)
@@ -623,7 +625,7 @@
               this.codeRules = [];
             }
             return Promise.resolve()
-          } catch (err) { return Promise.reject(err) } 
+          } catch (err) { return Promise.reject(err) }
         }else{
           this.codeRules = ['โปรดใส่เลขที่โครงการ']
         }

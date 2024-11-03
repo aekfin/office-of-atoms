@@ -27,10 +27,11 @@
         count: 0,
         total: 0,
         items: [],
-        deleteDialog: false,        
+        deleteDialog: false,
         itemDelete: '',
         headers: [
           { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
+          { text: 'ปีงบประมาณ', value: 'year' },
           { text: 'โครงการ', value: 'projectName' },
           { text: 'กอง', value: 'ouName', width: '180px' },
           { text: 'วัสดุคงคลัง', value: 'parcelMasterName', width: '180px' },
@@ -48,12 +49,14 @@
             type:"textField",
             param: 'parcelMasterName',
             name: 'วัสดุคงคลัง'
-          },          
+          },
           { type: 'number',param: 'yearMin',name: 'ปีงบประมาณเริ่มต้น' },
           { type: 'number',param: 'yearMax',name: 'ปีงบประมาณสิ้นสุด' }
         ]
       }
+
     },
+
     watch: {
       '$route.query' () {
         this.getList()

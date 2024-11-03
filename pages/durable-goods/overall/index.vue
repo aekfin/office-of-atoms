@@ -1,13 +1,14 @@
 <template>
   <div id="durable-goods-page">
-    <PageHeader text="บริหารครุภัณฑ์" btnText="เพิ่มครุภัณฑ์" createRoute="/durable-goods/overall/create/" :total="total" :filters="filters" 
+    <PageHeader text="บริหารครุภัณฑ์" btnText="เพิ่มครุภัณฑ์" createRoute="/durable-goods/overall/create/" :total="total" :filters="filters"
       reportApiPath="report/depreciation" reportName="รายงานค่าเสื่อมครุภัณฑ์" exportText="รายงานค่าเสื่อมครุภัณฑ์"
       reportApiPath1="report/equipmentGF?registrationType=1" reportName1="พิมพ์ RFID มาตราฐาน" exportText1="พิมพ์ RFID มาตราฐาน"
       reportApiPath2="report/equipmentGF?registrationType=2" reportName2="พิมพ์ RFID ต่ำกว่าเกณฑ์" exportText2="พิมพ์ RFID ต่ำกว่าเกณฑ์"
       numberfilters="true"/>
       <!-- reportName="พิมพ์ RFID มาตราฐาน" exportText="รายงานค่าเสื่อมครุภัณฑ์"
       reportName="พิมพ์ RFID ต่ำกว่าเกณฑ์" exportText="รายงานค่าเสื่อมครุภัณฑ์" -->
-    <DurableGoodsTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/> 
+
+    <DurableGoodsTable :items="items" :isLoading="isLoading" :getActionIconList="getActionIconList"/>
     <Pagination/>
     <ConfirmDialog :value.sync="deleteDialog" title="แจ้งเตือน" text="ยืนยันจะทำการลบบริหารครุภัณฑ์หรือไม่" @submit="onDelete"/>
   </div>
@@ -27,15 +28,15 @@
         deleteDialog: false,
         itemDelete: '',
         items: [],
-        filters: [    
-          { type: 'number',param: 'pageSize',name: 'จำนวนรายการในการแสดงผลของตาราง' },   
+        filters: [
+          { type: 'number',param: 'pageSize',name: 'จำนวนรายการในการแสดงผลของตาราง' },
           {
             type: 'textField',
             name: 'ชื่อโครงการ',
             param: 'projectName',
-          },    
+          },
           { type: 'number',param: 'yearMin',name: 'ปีงบประมาณเริ่มต้น' },
-          { type: 'number',param: 'yearMax',name: 'ปีงบประมาณสิ้นสุด' }, 
+          { type: 'number',param: 'yearMax',name: 'ปีงบประมาณสิ้นสุด' },
           {
             name: 'หมวดหมู่พัสดุ',
             param: 'majorCategoryId',
@@ -109,7 +110,7 @@
             name: 'สถานะ',
             param: 'status',
             options: this.$store.getters.durableGoodSelectableOptions,
-          },           
+          },
           // { type: 'datePicker',param: 'inspectionDateMin',name: 'วันที่ตรวจรับเริ่มต้น' },
           // { type: 'datePicker',param: 'inspectionDateMax',name: 'วันที่ตรวจรับสิ้นสุด' },
           {
@@ -143,10 +144,19 @@
               const id = data.content[i].id
               const response = await this.$store.dispatch('http', { apiPath: 'equipment/getSubEquipments', query: { equipmentId: id } })
               const subEquipmentModel = response.data.subEquipmentModel;
-              data.content[i].subEquipmentModel = subEquipmentModel
+              data.content[i].subEquipmentModel = subEquipmentModel;
+
+              const { data: files } = await this.$store.dispatch('http', { apiPath: `equipment/getUploadFile/${id}` })
+              var statusFile = "";
+              files.forEach(file => {
+                if (['.gif', '.jfif', '.pjpeg', '.jpeg', '.pjp', '.jpg', '.png', '.webp'].some(type => file.filename.includes(type))) {
+                  statusFile = "Y";
+                }
+              })
+              data.content[i].statusFile = statusFile;
             }
           }
-          
+          console.log("data : ",data);
           this.isLoading = false
           return Promise.resolve(data)
         } catch (err) { return Promise.reject(err) }

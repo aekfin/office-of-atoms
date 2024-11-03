@@ -483,7 +483,7 @@
           const { data } = await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/project/import', data: form })
           await Promise.all(
             data.map((item, i) => {
-              this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory2', data: { ...this.getMapCategory(item), id: item.id } })
+              this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/equipmentxCategory', data: { ...this.getMapCategory(item), id: item.id } })
             })
           )
           if (this.$refs.attachmentCreateDurableGoods) await this.$refs.attachmentCreateDurableGoods.uploadCreate(data.map(item => item.id))
