@@ -25,7 +25,7 @@
         <DurableGoodsOwner :organization="form.organizationId" :department.sync="form.departmentId" :user.sync="form.ownerId"  @ouChange="onOuChange"/>
 
         <div class="text-h5 mt-5 mb-2"><b>เลือกครุภัณฑ์</b></div>
-        <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="({ form }) => categoryForm = form" @changeMajor="getEquipmentNumber" @changeDepreciationYear="changeDepreciationYear">
+        <CategoryDurableGood :cols="3" :initCategory="initCategory" @change="({ form }) => categoryForm = form" noRules @changeMajor="getEquipmentNumber" @changeDepreciationYear="changeDepreciationYear">
           <template #default>
             <v-col :cols="12" :md="isCreate ? 6 : 9">
               <v-text-field v-model="form.name" name="name" label="ครุภัณฑ์"/>

@@ -47,13 +47,15 @@
         this.list = val
       },
       'search' () {
-        if (this.val !== this.search) {
-          clearTimeout(this.timeout)
-          this.timeout = setTimeout(() => {
-            this.list = []
-            this.getList()
-          }, 1000)
-        }
+        // console.log('search this.val',this.val)
+        // console.log('search this.search',this.search)
+        // if (this.val !== this.search) {
+        //   clearTimeout(this.timeout)
+        //   this.timeout = setTimeout(() => {
+        //     this.list = []
+        //     this.getList()
+        //   }, 1000)
+        // }
       },
       'query' (val, oldVal) {
         if (!_.isEqual(val, oldVal)) {

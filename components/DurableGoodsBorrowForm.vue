@@ -265,8 +265,8 @@
       if (!this.form.item.equipment.name) {
         this.form.item.equipment.name = '';
       }
-      console.log('this.item before set form',this.item);
-      console.log('this.item ouId',this.item?.items?.[0]?.equipment?.organizationMaster.id);
+      // console.log('this.item before set form',this.item);
+      // console.log('this.item ouId',this.item?.items?.[0]?.equipment?.organizationMaster.id);
       if(this.item){
         this.ouId =  this.item?.items?.[0]?.equipment?.organizationMaster.id || this.item.ouId
         this.departmentId = this.item?.items?.[0]?.equipment?.departmentMaster.id || this.item.departmentId
@@ -282,7 +282,7 @@
           return date
         }
         
-        console.log('this.item BorrowForm',this.item);
+        // console.log('this.item BorrowForm',this.item);
           this.oldItem = this.item?.items;
         
         this.form = {
@@ -305,7 +305,7 @@
         }
         
         
-        console.log('this.form ',this.form ); 
+        // console.log('this.form ',this.form ); 
         if (this.item) this.setCategoryForm()
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
         this.step = index + 2

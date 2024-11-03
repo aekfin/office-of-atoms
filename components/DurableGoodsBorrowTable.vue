@@ -54,7 +54,7 @@
           { text: 'วันที่คืน', value: 'dueDate', width: '120px', align: 'center' },
           { text: 'วันที่อนุมัติ', value: 'dateApprove', width: '120px', align: 'center' },
           { text: 'รายการครุภัณฑ์', value: 'equipment', width: '200px', align: 'center' },
-          { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
+          { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '140px', align: 'center' },
           { text: 'สถานะการยืม', value: 'status', width: '140px', align: 'center' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],

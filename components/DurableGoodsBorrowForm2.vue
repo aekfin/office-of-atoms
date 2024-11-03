@@ -280,7 +280,6 @@
       this.setForm()
     },
     created () {
-      console.log('8;pppppppหหห ', this.form);
       if (!this.form.item) {
         this.form.item = {};
       }
@@ -290,9 +289,9 @@
       if (!this.form.item.equipment.name) {
         this.form.item.equipment.name = '';
       }
-      console.log('this.item before this.form',this.form);
-      console.log('this.item before set form',this.item);
-      console.log('this.item ouId',this.item?.items?.[0]?.equipment?.organizationMaster.id);
+      // console.log('this.item before this.form',this.form);
+      // console.log('this.item before set form',this.item);
+      // console.log('this.item ouId',this.item?.items?.[0]?.equipment?.organizationMaster.id);
       if(this.item){
         this.ouId =  this.item?.items?.[0]?.equipment?.organizationMaster.id || this.item.ouId
         this.departmentId = this.item?.items?.[0]?.equipment?.departmentMaster.id || this.item.departmentId
@@ -355,7 +354,7 @@
           this.ouId =  this.item?.items?.[0]?.equipment?.organizationMaster.id || this.item.ouId
           this.departmentId = this.item?.items?.[0]?.equipment?.departmentMaster.id || this.item.departmentId
 
-          console.log('this.item BorrowFormss',this.item);
+          // console.log('this.item BorrowFormss',this.item);
           for(let i = 0; i<this.item.items.length; i++){
             this.listItemEquipment[i] = {itemEquipment: this.item.items[i].equipment}
             this.listInitCategoryForm[i] = {initCategoryForm: this.item.items[i]}
@@ -376,19 +375,19 @@
             this.onCategoryChange[i] = false
             this.formExpand = [ ...this.formExpand, this.formExpand.length ]
           }
-          console.log('this.listItemEquipment BorrowFormss', this.listItemEquipment);
-          console.log('this.onCategoryChange BorrowFormss', this.onCategoryChange);
-          console.log('this.form BorrowFormss', this.form);
+          // console.log('this.listItemEquipment BorrowFormss', this.listItemEquipment);
+          // console.log('this.onCategoryChange BorrowFormss', this.onCategoryChange);
+          // console.log('this.form BorrowFormss', this.form);
 
-          console.log('this.listItemEquipmentOriginal BorrowFormss', this.listItemEquipmentOriginal);
-          console.log('this.listInitCategoryFormOriginal BorrowFormss', this.listInitCategoryFormOriginal);
+          // console.log('this.listItemEquipmentOriginal BorrowFormss', this.listItemEquipmentOriginal);
+          // console.log('this.listInitCategoryFormOriginal BorrowFormss', this.listInitCategoryFormOriginal);
 
           this.categoryKey = !this.categoryKey;
 
         }
 
 
-        console.log('this.formกกก ',this.form );
+        // console.log('this.formกกก ',this.form );
         if (this.item) this.setCategoryForm()
         const index = this.item?.flows?.findIndex(flow => ['PENDING', 'REJECT'].includes(flow?.status)) || 0
         this.step = index + 2
@@ -399,7 +398,7 @@
       },
       onChangeCategory ({ form, trigger },index) {
 
-        console.log('onChangeCategory index', index)
+        // console.log('onChangeCategory index', index)
         if (trigger) {
           // this.categoryForm = { ...form }
           // this.form.itemId = null
@@ -409,12 +408,12 @@
         }
       },
       onChangeEquipment (val,index) {
-        console.log('check index', index)
-        console.log('check val', val)
+        // console.log('check index', index)
+        // console.log('check val', val)
 
 
 
-        console.log('this.listInitCategoryForm Before', this.listInitCategoryForm)
+        // console.log('this.listInitCategoryForm Before', this.listInitCategoryForm)
         this.listItemEquipment[index] = {itemEquipment: val.item}
 
 
@@ -427,12 +426,12 @@
 
         this.listInitCategoryForm[index] = {initCategoryForm: this.initCategoryForm}
 
-        console.log('this.listItemEquipment ', this.listItemEquipment)
-        console.log('this.listInitCategoryForm After', this.listInitCategoryForm)
+        // console.log('this.listItemEquipment ', this.listItemEquipment)
+        // console.log('this.listInitCategoryForm After', this.listInitCategoryForm)
 
         this.categoryKey = !this.categoryKey;
 
-        console.log('check val before this.form', this.form)
+        // console.log('check val before this.form', this.form)
         this.form.numberList = this.form.numberList.filter(item => item !== null);
         this.form.numberList.splice(index, 1, val?.item?.number);
 
@@ -440,9 +439,9 @@
         // this.form.itemId = this.form.itemId.filter(item => item !== null);
         // this.form.itemId.splice(index, 1, val?.item?.id);
 
-        console.log('this.listItemEquipment ', this.listItemEquipment)
-        console.log('this.listInitCategoryForm ', this.listInitCategoryForm)
-        console.log('this.form ', this.form)
+        // console.log('this.listItemEquipment ', this.listItemEquipment)
+        // console.log('this.listInitCategoryForm ', this.listInitCategoryForm)
+        // console.log('this.form ', this.form)
         
       },
       getApproverText (flow) {
@@ -478,15 +477,15 @@
       },
       async onChangeNumber (val,index) {
         // this.ownerForm = { ...this.ownerForm, equipmentNumber: val }
-        console.log('index ',index);
-        console.log('val ',val);
-        console.log('target._value ',val.target._value);
+        // console.log('index ',index);
+        // console.log('val ',val);
+        // console.log('target._value ',val.target._value);
 
         
-        console.log('this.numberListOriginal ',this.numberListOriginal);
-          console.log('this.nameListOriginal ',this.nameListOriginal);
-          console.log('this.listItemEquipmentOriginal ',this.listItemEquipmentOriginal);
-          console.log('this.listInitCategoryFormOriginal ',this.listInitCategoryFormOriginal);
+        // console.log('this.numberListOriginal ',this.numberListOriginal);
+        //   console.log('this.nameListOriginal ',this.nameListOriginal);
+        //   console.log('this.listItemEquipmentOriginal ',this.listItemEquipmentOriginal);
+        //   console.log('this.listInitCategoryFormOriginal ',this.listInitCategoryFormOriginal);
 
         let checkIndex = -1;
         for(let i = 0;i<this.numberListOriginal.length;i++){
@@ -498,10 +497,10 @@
           try {
             // this.isWithdrawLoading = true
             const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { pageSize: 1000, equipmentNumber: val.target._value} })
-            console.log('target._value data',data);
-            console.log(' data.content[0]', data.content[0]);
+            // console.log('target._value data',data);
+            // console.log(' data.content[0]', data.content[0]);
 
-            console.log('this.listInitCategoryForm Before', this.listInitCategoryForm)
+            // console.log('this.listInitCategoryForm Before', this.listInitCategoryForm)
             this.listItemEquipment[index] = {itemEquipment:  data.content[0]}
 
 
@@ -514,12 +513,12 @@
 
             this.listInitCategoryForm[index] = {initCategoryForm: this.initCategoryForm}
 
-            console.log('this.listItemEquipment ', this.listItemEquipment)
-            console.log('this.listInitCategoryForm After', this.listInitCategoryForm)
+            // console.log('this.listItemEquipment ', this.listItemEquipment)
+            // console.log('this.listInitCategoryForm After', this.listInitCategoryForm)
 
             this.categoryKey = !this.categoryKey;
 
-            console.log('check val before this.form', this.form)
+            // console.log('check val before this.form', this.form)
             this.form.numberList = this.form.numberList.filter(item => item !== null);
             this.form.numberList.splice(index, 1,  data?.content[0]?.number || val.target._value);
 
@@ -528,7 +527,7 @@
             this.form.itemId = this.form.itemId.filter(item => item !== null);
             this.form.itemId.splice(index, 1, data?.content[0]?.id || '');
 
-            console.log('this.form ', this.form)
+            // console.log('this.form ', this.form)
               return Promise.resolve()
           } catch (err) { return Promise.reject(err) }
         }else{
@@ -540,7 +539,7 @@
 
             this.categoryKey = !this.categoryKey;
 
-            console.log('check val before this.form', this.form)
+            // console.log('check val before this.form', this.form)
             this.form.numberList = this.form.numberList.filter(item => item !== null);
             this.form.numberList.splice(index, 1,  this.numberListOriginal[checkIndex]);
 
@@ -550,7 +549,7 @@
             this.form.itemId = this.form.itemId.filter(item => item !== null);
             this.form.itemId.splice(index, 1, this.itemIdOriginal[checkIndex]);
 
-            console.log('this.form ', this.form)
+            // console.log('this.form ', this.form)
               return Promise.resolve()
           } catch (err) { return Promise.reject(err) }
         }
@@ -560,13 +559,13 @@
         if (this.isWithdraw) {
           this.form.selected = this.durableGoodsWithdraw.filter((goods, i) => this.selectedWithdraw[i])
         }
-        console.log('onSubmit valid ',valid);
-        console.log('this.departmentId ',this.departmentId);
+        // console.log('onSubmit valid ',valid);
+        // console.log('this.departmentId ',this.departmentId);
         if (valid) {
           const formData = { ...this.form }
           formData.ouId = this.ouId;
           formData.departmentId = this.departmentId;
-          console.log('onSubmit formData ',formData);
+          // console.log('onSubmit formData ',formData);
           this.$emit('submit', formData)
         }
       },
@@ -579,8 +578,8 @@
           formData.departmentId = this.departmentId;
 
           // formData.itemId = formData.itemId.filter(id => !this.itemIdOriginal.includes(id));
-          console.log('onEdit this.itemIdOriginal bbbbbbbbbbbb ',this.itemIdOriginal);          
-          console.log('onEdit formData.itemId bbbbbbbbbbbbbb',formData.itemId);
+          // console.log('onEdit this.itemIdOriginal bbbbbbbbbbbb ',this.itemIdOriginal);          
+          // console.log('onEdit formData.itemId bbbbbbbbbbbbbb',formData.itemId);
           for(let i=formData.itemId.length; i>=0;i--){
             if(formData.itemId[i] == this.itemIdOriginal[i]){
               formData.itemId.splice(i, 1);
@@ -588,10 +587,10 @@
             }
           }
           formData.equipmentXRequestIdList = this.equipmentXRequestIdOriginalList;
-          console.log('onEdit this.itemIdOriginal ',this.itemIdOriginal);
-          console.log('onEdit this.equipmentXRequestIdOriginalList ',this.equipmentXRequestIdOriginalList);
-          console.log('onEdit formData.itemId ',formData.itemId);
-          console.log('onEdit formData ',formData);
+          // console.log('onEdit this.itemIdOriginal ',this.itemIdOriginal);
+          // console.log('onEdit this.equipmentXRequestIdOriginalList ',this.equipmentXRequestIdOriginalList);
+          // console.log('onEdit formData.itemId ',formData.itemId);
+          // console.log('onEdit formData ',formData);
           this.$emit('edit', formData)
         }
       },
@@ -659,12 +658,12 @@
         )
         this.listInitCategoryForm.push({})
         this.listItemEquipment.push({})
-        console.log('this.listInitCategoryForm ,,',this.listInitCategoryForm);
+        // console.log('this.listInitCategoryForm ,,',this.listInitCategoryForm);
         this.formExpand = [ ...this.formExpand, this.formExpand.length ]
         // this.setNumberAllEquipments()
       },
       removeDurableGoods (i) {
-        console.log('removeDurableGoods ',i)
+        // console.log('removeDurableGoods ',i)
         this.form.items.splice(i, 1)
         this.form.itemId.splice(i, 1)
       },
