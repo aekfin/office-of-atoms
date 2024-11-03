@@ -65,19 +65,36 @@
         </v-container>
       </template>
 
-      <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการ${type}` }}</b></h5>
+      <!-- <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการ${type}` }}</b></h5> -->
+      <h5 v-else class="text-h5 mt-5"><b>รายการครุภัณฑ์</b></h5>
+      <v-container class="mt-2"> 
+        <template>
+          <!-- <div> -->
+          <div v-for="(equipment, i) in equipments" :key="i">            
+            <div>ครุภัณฑ์ รายการที่ {{ i + 1 }}.</div>    
+            <!-- <v-text-field v-model="form.number" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/> -->
+            <EquipmentNumberDropdown v-model="equipment.initCategoryFormList.equipment.number" itemValue="number" itemText="number" label="เลขที่ครุภัณฑ์ *" apiPath="equipment/equipmentByKeyword" 
+                    :rules="ouNameRules" required :majorCategoryId="form.majorCategoryId" :subCategoryId="form.subCategoryId" :typeId="form.typeId" @select="onSelectEquipmentNumber"/>                
+            <CategoryDurableGood :key="categoryKey" :initCategory="equipment.initCategoryFormList" :disabled="true" noRules :itemEquipment="itemEquipment" 
+            @change="onChangeCategory">
+              <v-col :cols="12" :md="9">
+                  <v-text-field v-if="viewMode && !onCategoryChange" v-model="equipment.initCategoryFormList.equipment.name" label="ครุภัณฑ์ *" :disabled="true"/>
+                
+              </v-col>
+            </CategoryDurableGood>
+          </div>
+        </template>
+      </v-container>
+
+      <!-- <h5 class="text-h5 mt-5"><b>{{ `เลือกครุภัณฑ์ที่ต้องการ${type}` }}</b></h5>
       <v-container class="mt-2"> 
         <template>
           <div>
-            <!-- <v-text-field v-model="form.number" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/> -->
             <EquipmentNumberDropdown v-model="form.number" itemValue="number" itemText="number" label="เลขที่ครุภัณฑ์ *" apiPath="equipment/equipmentByKeyword" 
                     :rules="ouNameRules" required :majorCategoryId="form.majorCategoryId" :subCategoryId="form.subCategoryId" :typeId="form.typeId" @select="onSelectEquipmentNumber"/>                
             <CategoryDurableGood :key="categoryKey" :initCategory="initCategoryForm" :disabled="true" noRules :itemEquipment="itemEquipment" 
             @change="onChangeCategory">
               <v-col :cols="12" :md="9">
-                <!-- <v-text-field v-if="viewMode" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="toggleEdit()"/>
-                <SelectDropdown v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
-                  :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()"/> -->
                   <v-text-field v-if="viewMode && !onCategoryChange" v-model="form.item.equipment.name" label="ครุภัณฑ์ *" :disabled="true"/>
                 <SelectDropdown  v-else :value.sync="form.itemId" itemValue="id" itemText="name" label="ครุภัณฑ์ *" :rules="durableGoodsRules" :items="equipmentList" :apiPath="apiPath"
                   :query="{ ...categoryForm, ...ownerForm }" :disabled="toggleEdit()" @select="onChangeEquipment"/>
@@ -85,7 +102,7 @@
             </CategoryDurableGood>
           </div>
         </template>
-      </v-container>
+      </v-container> -->
 
       <v-container v-if="isReturned">
         <AttachFileBtn :value.sync="attachFiles" :attachments="files" accept="*" :multiple="false" :disabled="!isApprover" @removeAttachment="onRemoveFile"/>
@@ -113,7 +130,7 @@
 <script>
   export default {
     components: {
-      SelectDropdown: () => import('~/components/SelectDropdown.vue'),
+      // SelectDropdown: () => import('~/components/SelectDropdown.vue'),
       InputDatePicker: () => import('~/components/InputDatePicker.vue'),
       CategoryDurableGood: () => import('~/components/CategoryDurableGood.vue'),
       AttachFileBtn: () => import('~/components/AttachFileBtn.vue'),
@@ -153,6 +170,7 @@
             }
           ],
         },
+        equipments: [],
         projectId: null,
         datetimeBorrowRules: [
           v => !!v || `โปรดใส่วันที่${this.type}`,
@@ -238,6 +256,22 @@
           date.setDate(date.getDate() + 7)
           return date
         }
+
+        console.log('this.item withdraw',this.item);
+        console.log('this.form.equipmentsหหหห',this.equipments);
+        if(this.item){
+          for(let i = 0;i<this.item.items.length;i++){
+            console.log('test i',this.item.items[i].equipment.number);
+            const setData = this.item.items[i].equipment;
+            this.equipments.push(
+              {
+                initCategoryFormList: this.item?.items?.[i]
+              }
+            )            
+          }
+        }
+
+        console.log('this.equipments withdraw',this.equipments);
         
         console.log('this.item BorrowForm',this.item);
           this.oldItem = this.item?.items;

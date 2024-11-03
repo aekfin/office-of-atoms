@@ -85,10 +85,16 @@
             param: 'year',
           },
           {
-            type: 'textField',
-            param: 'thaiFristName', 
-            name: 'ผู้ขอเบิกวัสดุคงคลัง',
+            name: 'เดือน',
+            param: 'monthPickUpMax',
+            options: this.$store.getters.durableGoodSelecMonthOptions,
+            // itemText: 'month',
           },
+          // {
+          //   type: 'textField',
+          //   param: 'thaiFristName', 
+          //   name: 'ผู้ขอเบิกวัสดุคงคลัง',
+          // },
           { type: 'datePicker',
             param: 'datePickUpMin',
             name: 'ช่วงวันที่เบิกเริ่มต้น' 
@@ -107,11 +113,11 @@
             apiPath: 'Orgchart/getOrganizations',
             itemText: 'ouName',
           },
-          {
-              name: 'สถานะการเบิก',
-              param: 'status',
-              options: this.$store.getters.durableGoodSelectableOptionsRequestStatusEnum,
-          }
+          // {
+          //     name: 'สถานะการเบิก',
+          //     param: 'status',
+          //     options: this.$store.getters.durableGoodSelectableOptionsRequestStatusEnum,
+          // }
         ]
       }
     },

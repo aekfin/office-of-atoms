@@ -36,11 +36,9 @@
         headers: [],
         items: [],
         filters: [
-        {
-            type: 'textField',
-            param: 'year',
-            name: 'ปีงบประมาณ',
-          },
+                  
+        { type: 'number',param: 'yearMin',name: 'ปีงบประมาณเริ่มต้น' },
+        { type: 'number',param: 'yearMax',name: 'ปีงบประมาณสิ้นสุด' },
         {
             type: 'textField',
             param: 'name',

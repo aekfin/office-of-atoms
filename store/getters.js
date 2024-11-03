@@ -27,4 +27,8 @@ export default {
     const list = state.durableGoodSelecMonth 
     return Object.keys(list).map(key => ({ id: key, name: list[key] }))
   },
+  durableGoodSelecQuarterOptions (state) { 
+    const list = state.durableGoodSelecQuarter
+    return Object.keys(list).map(key => ({ id: key, name: list[key] }))
+  },
 }

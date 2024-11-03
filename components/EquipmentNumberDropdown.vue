@@ -67,9 +67,6 @@
     methods: {
       async getList (more = false) {
         try {
-          console.log('majorCategoryId ',this.majorCategoryId);
-          console.log('subCategoryId ',this.subCategoryId);
-          console.log('typeId ',this.typeId);
           this.isLoading = true
           const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { ...this.query, keyword: this.search
             , majorCategoryId: this.majorCategoryId, subCategoryId: this.subCategoryId, typeId: this.typeId   } })

@@ -48,160 +48,172 @@ import ReportTable from '~/components/ReportTable.vue'
         selectedFilters: [],
         reportGroup: [
           { id: 0, name: 'ทั้งหมด', types: [] },
-          { id: 1, name: 'หมวดหมู่วัสดุคงคลัง', types: [1, 2, 3, 4, 23, 24] },
-          { id: 2, name: 'หมวดหมู่ครุภัณฑ์', types: [5, 6, 7, 8, 14, 15, 16, 17, 18, 19, 20, 21, 22] },
-          { id: 3, name: 'จัดซื้อจัดจ้าง', types: [10, 11] },
-          { id: 4, name: 'แผนงาน โครงการ', types: [9, 12, 13] },
+          { id: 1, name: 'หมวดหมู่วัสดุคงคลัง', types: [1, 2, 3, 4, 5, 6, 7] },
+          { id: 2, name: 'หมวดหมู่ครุภัณฑ์', types: [8, 9, 10, 11, 17, 18, 19, 20, 21, 22, 23, 24, 25] },
+          { id: 3, name: 'จัดซื้อจัดจ้าง', types: [13, 14] },
+          { id: 4, name: 'แผนงาน โครงการ', types: [12, 15, 16] },
         ],
         columnList: [],
         valueList: [],
         showTable: false,
         showBtn: false,
         reportList: [
+          // {
+          //   id: 1,
+          //   name: 'รายงานวัสดุคงคลัง',
+          //   apiPath: 'report/pacelAll',
+          //   filters: [2, 3, 4, 5, 16],
+          // },
           {
             id: 1,
-            name: 'รายงานวัสดุคงคลัง',
-            apiPath: 'report/pacelAll',
-            filters: [2, 3, 4, 5, 16],
-          },
-          {
-            id: 2,
             name: 'รายงานเบิกจ่ายวัสดุคงคลังตามหน่วยงาน',
             apiPath: 'report/pacelWithOu',
             filters: [16, 2, 3, 4, 5, 14],
           },
           {
-            id: 3,
+            id: 2,
             name: 'รายงานตรวจนับวัสดุคงคลัง',
             apiPath: 'report/pacelVerificationReport',
             filters: [4, 5, 16],
           },
           {
-            id: 4,
+            id: 3,
             name: 'รายงานพัสดุถึงจุดสั่งชื้อ',
             apiPath: 'report/parcelMinnimumStock',
             filters: [4, 5, 16],
           },
           {
+            id: 4,
+            name: 'รายงานยอดคงเหลือ แบบที่ 1',
+            apiPath: 'report/pacelAll',
+            filters: [2, 3, 4, 5, 16],
+          },
+          {
             id: 5,
+            name: 'รายงานยอดคงเหลือ แบบที่ 2',
+            apiPath: 'report/pacelAll2',
+            filters: [2, 3, 4, 5, 16],
+          },
+          {
+            id: 6,
+            name: 'รายงานวัสดุคงคลังยอดคงเหลือ(รายเดือน)',
+            apiPath: 'report/pacelAllByMonth',
+            filters: [33, 4, 5, 16],
+          },
+          {
+            id: 7,
+            name: 'รายงานวัสดุคงคลังยอดคงเหลือ(ไตรมาส)',
+            apiPath: 'report/pacelAllByQuarter',
+            filters: [34, 4, 5, 16],
+          },
+          {
+            id: 8,
             name: 'รายงานการยืมคืนครุภัณฑ์',
             apiPath: 'report/borrowAndReturn',
             filters: [2, 3, 14, 15, 6, 17, 18, 16],
           },
           {
-            id: 6,
+            id: 9,
             name: 'รายงานการโอนย้ายครุภัณฑ์',
             apiPath: 'report/transfer',
             filters: [2, 3, 14, 15, 6, 7, 8, 16],
           },
           {
-            id: 7,
+            id: 10,
             name: 'รายงานการจำหน่ายครุภัณฑ์',
             apiPath: 'report/sale',
             filters: [2, 3, 20, 15, 6, 7, 8, 19, 21, 16],
           },
           {
-            id: 8,
+            id: 11,
             name: 'รายงานการรอคืนหลักประกัน',
             apiPath: 'report/project',
             filters: [2, 3, 22, 23, 24, 25, 26, 16],
           },
           {
-            id: 9,
+            id: 12,
             name: 'รายงานโครงการ',
             apiPath: 'report/projectWithEquipment',
             filters: [2, 3, 22, 27, 26, 28, 16],
           },
           {
-            id: 10,
+            id: 13,
             name: 'รายงานสถิติการจัดซื้อจัดจ้าง',
             apiPath: 'report/procurementSummary',
             filters: [2, 3, 22, 26, 29, 23, 16],
           },
           {
-            id: 11,
+            id: 14,
             name: 'รายงานโครงการจัดซื้อจัดจ้างที่ยังไม่เสร็จสิ้น',
             apiPath: 'report/procurementSummary-non-complete',
             filters: [2, 3, 22, 26, 29, 23, 16],
           },
           {
-            id: 12,
+            id: 15,
             name: 'รายงานติดตามสถานะการดำเนินการโครงการ',
             apiPath: 'report/procurementSummary',
             filters: [2, 3, 22, 26, 29, 23, 16],
           },
           {
-            id: 13,
+            id: 16,
             name: 'รายงานโครงการที่ได้รับการจัดซื้อจัดจ้าง',
             apiPath: 'report/procurementSummary',
             filters: [2, 3, 22, 26, 29, 23, 16],
           },
           {
-            id: 14,
+            id: 17,
             name: 'รายงานสินทรัพย์ที่มีการจำหน่ายพร้อมค่าเสื่อม',
             apiPath: 'report/saleReportAndDepreciation',
             filters: [2, 3, 20, 15, 19, 21, 6, 7, 16],
           },
           {
-            id: 15,
+            id: 18,
             name: 'รายงานการรับบริจาคครุภัณฑ์',
             apiPath: 'report/donate',
             filters: [2, 3, 20, 15, 30, 31, 6, 16],
           },
           {
-            id: 16,
+            id: 19,
             name: 'รายงานค่าเสื่อมครุภัณฑ์',
             apiPath: 'report/depreciation',
             filters: [2, 3, 20, 15, 6, 7, 8, 16],
           },
           {
-            id: 17,
+            id: 20,
             name: 'รายงานครุภัณฑ์ชนGFMIS',
             apiPath: 'report/equipment',
             filters: [2, 3, 14, 15, 7, 8, 9, 10, 11, 12, 13, 16],
           },
           {
-            id: 18,
+            id: 21,
             name: 'รายการครุภัณฑ์',
             apiPath: 'report/equipmentRFID',
             filters: [2, 3, 14, 15, 7, 8, 23, 9, 10, 11, 12, 13, 16],
           },
           {
-            id: 19,
+            id: 22,
             name: 'รายงานส่งซ่อมครุภัณฑ์',
             apiPath: 'report/repairReport',
             filters: [2, 3, 14, 15, 7, 8, 9, 10, 11, 12, 13, 16],
           },
           {
-            id: 20,
+            id: 23,
             name: 'แบบทะเบียนครุภัณฑ์ แสดงรายละเอียด',
             apiPath: 'report/equipmentGF',
             filters: [2, 3, 14, 15, 7, 8, 9, 10, 11, 12, 13, 16],
           },
           {
-            id: 21,
+            id: 24,
             name: 'รายงานทะเบียนคุมทรัพย์สิน (ต้องระบุเลขที่ครุภัณฑ์)',
             apiPath: 'report/equipmentGF',
             filters: [32, 16],
           },
           {
-            id: 22,
+            id: 25,
             name: 'รายงานตรวจนับครุภัณฑ์',
             apiPath: 'report/checkEquipmentReport ',
             filters: [20, 15, 32, 16],
-          },
-          {
-            id: 23,
-            name: 'รายงานวัสดุคงคลังยอดคงเหลือ',
-            apiPath: 'report/pacelAll2',
-            filters: [2, 3, 4, 5, 16],
-          },
-          {
-            id: 24,
-            name: 'รายงานวัสดุคงคลังยอดคงเหลือ(รายเดือน)',
-            apiPath: 'report/pacelAllByMonth',
-            filters: [33, 4, 5, 16],
-          },
+          }
         ],
         filterList: [
           {
@@ -403,6 +415,12 @@ import ReportTable from '~/components/ReportTable.vue'
             param: 'month',
             options: this.$store.getters.durableGoodSelecMonthOptions,
           },
+          {
+            id: 34,
+            name: 'ไตรมาส',
+            param: 'quarter',
+            options: this.$store.getters.durableGoodSelecQuarterOptions,
+          },
         ],
       }
     },
@@ -422,7 +440,7 @@ import ReportTable from '~/components/ReportTable.vue'
         this.selectedFilters = this.selectedReport?.filters.map(id => this.filterList.find(filter => filter.id === id)) || []
         this.$router.push({ query: {} })
         console.log('this.selectedReport',this.selectedReport);
-        if(this.selectedReport.id == 1 || this.selectedReport.id == 2 || this.selectedReport.id == 23 || this.selectedReport.id == 24){
+        if(this.selectedReport.id == 1 || this.selectedReport.id == 4 || this.selectedReport.id == 5 || this.selectedReport.id == 6 || this.selectedReport.id == 7){
           this.showBtn = false;
           this.showTable = false;
         }else{

@@ -105,6 +105,12 @@ export default () => ({
     '11': 'พฤศจิกายน',
     '12': 'ธันวาคม',
   },
+  durableGoodSelecQuarter: {
+    '1': 'ไตรมาสที่ 1',
+    '2': 'ไตรมาสที่ 2',
+    '3': 'ไตรมาสที่ 3',
+    '4': 'ไตรมาสที่ 4',
+  },
   companyTypeSelectable: {
     'corporation': 'นิติบุคคล',
     'person': 'บุคคลธรรมดา',

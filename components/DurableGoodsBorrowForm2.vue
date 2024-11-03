@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div class="durable-goods-borrow-form">
     <v-stepper v-if="viewMode && item" v-model="step" class="mt-10 mb-10" altLabels>
       <v-stepper-header>
@@ -104,7 +104,7 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <v-container>
-                  <v-text-field v-model="form.numberList[i]" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @change="onChangeNumber"/>
+                  <v-text-field v-model="form.numberList[i]" label="เลขที่ครุภัณฑ์" :disabled="toggleEdit()" @keyup="onChangeNumber($event,i)"/>
                   <CategoryDurableGood :key="categoryKey" :initCategory="listInitCategoryForm[i]?.initCategoryForm" :itemEquipment="listItemEquipment[i]?.itemEquipment"  :disabled="toggleEdit()" noRules
                   @change="onChangeCategory($event,i)">
                     <v-col :cols="12" :md="9">
@@ -201,6 +201,11 @@
           numberList: [],
           nameList: [],
         },
+        numberListOriginal: [],
+        nameListOriginal: [],
+        itemIdOriginal: [],
+        equipmentXRequestIdOriginalList:[],
+        equipmentXRequestIdList:[],
         projectId: null,
         datetimeBorrowRules: [
           v => !!v || `โปรดใส่วันที่${this.type}`,
@@ -242,6 +247,12 @@
         { initCategoryForm: {} },
         ],
         initCategoryForm: {},
+        listItemEquipmentOriginal: [
+          { itemEquipment: {} },
+        ],
+        listInitCategoryFormOriginal: [
+        { initCategoryForm: {} },
+        ],
       }
     },
     computed: {
@@ -353,12 +364,24 @@
             this.form.nameList[i] = this.item.items[i].equipment.name
             // this.form.itemId[i] = this.item.items[i].equipment.id
 
+            this.listItemEquipmentOriginal[i] = {itemEquipment: this.item.items[i].equipment}
+            this.listInitCategoryFormOriginal[i] = {initCategoryForm: this.item.items[i]}
+
+            this.numberListOriginal[i] = this.item.items[i].equipment.number
+            this.nameListOriginal[i] = this.item.items[i].equipment.name
+            this.itemIdOriginal[i] = this.item.items[i].equipment.id
+
+            this.equipmentXRequestIdOriginalList[i] = this.item.items[i].equipmentXRequestId
+
             this.onCategoryChange[i] = false
             this.formExpand = [ ...this.formExpand, this.formExpand.length ]
           }
           console.log('this.listItemEquipment BorrowFormss', this.listItemEquipment);
           console.log('this.onCategoryChange BorrowFormss', this.onCategoryChange);
           console.log('this.form BorrowFormss', this.form);
+
+          console.log('this.listItemEquipmentOriginal BorrowFormss', this.listItemEquipmentOriginal);
+          console.log('this.listInitCategoryFormOriginal BorrowFormss', this.listInitCategoryFormOriginal);
 
           this.categoryKey = !this.categoryKey;
 
@@ -392,8 +415,6 @@
 
 
         console.log('this.listInitCategoryForm Before', this.listInitCategoryForm)
-        // this.itemEquipment = val.item
-        // this.listItemEquipment.push({itemEquipment: val.item})
         this.listItemEquipment[index] = {itemEquipment: val.item}
 
 
@@ -404,35 +425,25 @@
         this.initCategoryForm.brand = val.item.brand
         this.initCategoryForm.model = val.item.model
 
-        // this.listInitCategoryForm.push({initCategoryForm: this.initCategoryForm})
         this.listInitCategoryForm[index] = {initCategoryForm: this.initCategoryForm}
-        // this.listInitCategoryForm.splice(index, 0, { initCategoryForm: this.initCategoryForm });
 
         console.log('this.listItemEquipment ', this.listItemEquipment)
         console.log('this.listInitCategoryForm After', this.listInitCategoryForm)
 
         this.categoryKey = !this.categoryKey;
 
-        // this.form.number = val?.item?.number
         console.log('check val before this.form', this.form)
         this.form.numberList = this.form.numberList.filter(item => item !== null);
         this.form.numberList.splice(index, 1, val?.item?.number);
-        // this.form.itemId = val?.item?.id
 
-        this.form.itemId = this.form.itemId.filter(item => item !== null);
-        this.form.itemId.splice(index, 1, val?.item?.id);
-        // this.form.itemId.push(val?.item?.id)
-
-        // if(this.form.itemId[0] === null){
-        //   this.form.itemId = [val?.item?.id]
-        // }else{
-        //   this.form.itemId.push(val?.item?.id)
-        // }
-
-
+        this.form.itemId[index] = val?.item?.id
+        // this.form.itemId = this.form.itemId.filter(item => item !== null);
+        // this.form.itemId.splice(index, 1, val?.item?.id);
 
         console.log('this.listItemEquipment ', this.listItemEquipment)
-        // console.log('this.listInitCategoryForm ', this.listInitCategoryForm)
+        console.log('this.listInitCategoryForm ', this.listInitCategoryForm)
+        console.log('this.form ', this.form)
+        
       },
       getApproverText (flow) {
         return flow?.emails?.reduce((str, email, i) => `${str}${i > 0 ? ', ' : ''}${email}`, 'ผู้อนุมัติ : ') || false
@@ -465,8 +476,84 @@
       onSelectDepartment ({ item }) {
         this.ownerForm.departmentId = item.id
       },
-      onChangeNumber (val) {
-        this.ownerForm = { ...this.ownerForm, equipmentNumber: val }
+      async onChangeNumber (val,index) {
+        // this.ownerForm = { ...this.ownerForm, equipmentNumber: val }
+        console.log('index ',index);
+        console.log('val ',val);
+        console.log('target._value ',val.target._value);
+
+        
+        console.log('this.numberListOriginal ',this.numberListOriginal);
+          console.log('this.nameListOriginal ',this.nameListOriginal);
+          console.log('this.listItemEquipmentOriginal ',this.listItemEquipmentOriginal);
+          console.log('this.listInitCategoryFormOriginal ',this.listInitCategoryFormOriginal);
+
+        let checkIndex = -1;
+        for(let i = 0;i<this.numberListOriginal.length;i++){
+          if(val.target._value === this.numberListOriginal[i]){
+            checkIndex = i;
+          }
+        }
+        if(checkIndex < 0){
+          try {
+            // this.isWithdrawLoading = true
+            const { data } = await this.$store.dispatch('http', { apiPath: this.apiPath, query: { pageSize: 1000, equipmentNumber: val.target._value} })
+            console.log('target._value data',data);
+            console.log(' data.content[0]', data.content[0]);
+
+            console.log('this.listInitCategoryForm Before', this.listInitCategoryForm)
+            this.listItemEquipment[index] = {itemEquipment:  data.content[0]}
+
+
+            this.initCategoryForm = {}
+            this.initCategoryForm.majorCategory =  data.content[0]?.majorCategory || {}
+            this.initCategoryForm.subCategory =  data.content[0]?.subCategory || {}
+            this.initCategoryForm.type =  data.content[0]?.type || {}
+            this.initCategoryForm.brand =  data.content[0]?.brand || {}
+            this.initCategoryForm.model =  data.content[0]?.model || {},
+
+            this.listInitCategoryForm[index] = {initCategoryForm: this.initCategoryForm}
+
+            console.log('this.listItemEquipment ', this.listItemEquipment)
+            console.log('this.listInitCategoryForm After', this.listInitCategoryForm)
+
+            this.categoryKey = !this.categoryKey;
+
+            console.log('check val before this.form', this.form)
+            this.form.numberList = this.form.numberList.filter(item => item !== null);
+            this.form.numberList.splice(index, 1,  data?.content[0]?.number || val.target._value);
+
+            this.form.nameList[index] = data?.content[0]?.name || ''
+
+            this.form.itemId = this.form.itemId.filter(item => item !== null);
+            this.form.itemId.splice(index, 1, data?.content[0]?.id || '');
+
+            console.log('this.form ', this.form)
+              return Promise.resolve()
+          } catch (err) { return Promise.reject(err) }
+        }else{
+          try {
+           
+            this.listItemEquipment[index] = this.listItemEquipmentOriginal[checkIndex]
+
+            this.listInitCategoryForm[index] = this.listInitCategoryFormOriginal[checkIndex]
+
+            this.categoryKey = !this.categoryKey;
+
+            console.log('check val before this.form', this.form)
+            this.form.numberList = this.form.numberList.filter(item => item !== null);
+            this.form.numberList.splice(index, 1,  this.numberListOriginal[checkIndex]);
+
+            this.form.nameList[index] = this.nameListOriginal[checkIndex]
+            
+            
+            this.form.itemId = this.form.itemId.filter(item => item !== null);
+            this.form.itemId.splice(index, 1, this.itemIdOriginal[checkIndex]);
+
+            console.log('this.form ', this.form)
+              return Promise.resolve()
+          } catch (err) { return Promise.reject(err) }
+        }
       },
       onSubmit () {
         const valid = this.$refs.form.validate()
@@ -490,6 +577,20 @@
           const formData = { ...this.form }
           formData.ouId = this.ouId;
           formData.departmentId = this.departmentId;
+
+          // formData.itemId = formData.itemId.filter(id => !this.itemIdOriginal.includes(id));
+          console.log('onEdit this.itemIdOriginal bbbbbbbbbbbb ',this.itemIdOriginal);          
+          console.log('onEdit formData.itemId bbbbbbbbbbbbbb',formData.itemId);
+          for(let i=formData.itemId.length; i>=0;i--){
+            if(formData.itemId[i] == this.itemIdOriginal[i]){
+              formData.itemId.splice(i, 1);
+              this.equipmentXRequestIdOriginalList.splice(i, 1);
+            }
+          }
+          formData.equipmentXRequestIdList = this.equipmentXRequestIdOriginalList;
+          console.log('onEdit this.itemIdOriginal ',this.itemIdOriginal);
+          console.log('onEdit this.equipmentXRequestIdOriginalList ',this.equipmentXRequestIdOriginalList);
+          console.log('onEdit formData.itemId ',formData.itemId);
           console.log('onEdit formData ',formData);
           this.$emit('edit', formData)
         }
