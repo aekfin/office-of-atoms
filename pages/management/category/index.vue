@@ -231,7 +231,8 @@
             await this.$store.dispatch('http', { method: 'post', apiPath: 'equipment/uploadFileModel', data })
           }
           if (removeFiles?.length) {
-            await Promise.all(removeFiles.map(file => this.$axios({ method: 'delete', url: `${file}/delete`.replace('/frs/webservice', '') })))
+            // await Promise.all(removeFiles.map(file => this.$axios({ method: 'delete', url: `${file}/delete`.replace('/frs/webservice', '') })))
+            await Promise.all(removeFiles.map(file => this.$axios({ method: 'post', url: `${file}/delete`.replace('/frs/webservice', '') })))
           }
           return Promise.resolve()
         } catch (err) { return Promise.reject(err) }
