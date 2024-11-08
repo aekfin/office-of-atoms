@@ -136,26 +136,65 @@
       async getList () {
         try {
           this.isLoading = true
-          const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/project/getEquipments', query: this.$route.query, context: this })
-          console.log('getList',data)
-          for(let i=0; i < data.size;i++){
-            // if(data.content[i].haveSupEquipment){
-            if (data.content[i] && data.content[i].haveSupEquipment) {
-              const id = data.content[i].id
-              const response = await this.$store.dispatch('http', { apiPath: 'equipment/getSubEquipments', query: { equipmentId: id } })
-              const subEquipmentModel = response.data.subEquipmentModel;
-              data.content[i].subEquipmentModel = subEquipmentModel;
+          // const { data } = await this.$store.dispatch('getListPagination', { apiPath: 'equipment/project/getEquipments', query: this.$route.query, context: this })
+          // console.log('getList',data)
+          // for(let i=0; i < data.size;i++){
+          //   // if(data.content[i].haveSupEquipment){
+          //   if (data.content[i] && data.content[i].haveSupEquipment) {
+          //     const id = data.content[i].id
+          //     const response = await this.$store.dispatch('http', { apiPath: 'equipment/getSubEquipments', query: { equipmentId: id } })
+          //     const subEquipmentModel = response.data.subEquipmentModel;
+          //     data.content[i].subEquipmentModel = subEquipmentModel;
+          //   }
 
-              const { data: files } = await this.$store.dispatch('http', { apiPath: `equipment/getUploadFile/${id}` })
-              var statusFile = "";
-              files.forEach(file => {
-                if (['.gif', '.jfif', '.pjpeg', '.jpeg', '.pjp', '.jpg', '.png', '.webp'].some(type => file.filename.includes(type))) {
-                  statusFile = "Y";
-                }
-              })
-              data.content[i].statusFile = statusFile;
+          //   const { data: files } = await this.$store.dispatch('http', { apiPath: `equipment/getUploadFile/${data.content[i].id}` })
+          //     var statusFile = "ไม่มีรูปภาพ";
+          //     var statusFileColor = "REJECT";
+          //     files.forEach(file => {
+          //       if (['.gif', '.jfif', '.pjpeg', '.jpeg', '.pjp', '.jpg', '.png', '.webp'].some(type => file.filename.includes(type))) {
+          //         statusFile = 'มีรูปภาพ';
+          //         statusFileColor = 'SUCCESS';
+          //       }
+          //     })
+              
+          //     data.content[i].statusFile = statusFile;
+          //     data.content[i].statusFileColor = statusFileColor;
+          // }
+          const { data } = await this.$store.dispatch('getListPagination', { 
+            apiPath: 'equipment/project/getEquipments', 
+            query: this.$route.query, 
+            context: this 
+          });
+          console.log('getList', data);
+
+          const fetchAllData = data.content.map(async (item, i) => {
+            if (item && item.haveSupEquipment) {
+              const response = await this.$store.dispatch('http', {
+                apiPath: 'equipment/getSubEquipments',
+                query: { equipmentId: item.id }
+              });
+              item.subEquipmentModel = response.data.subEquipmentModel;
             }
-          }
+
+            const { data: files } = await this.$store.dispatch('http', {
+              apiPath: `equipment/getUploadFile/${item.id}`
+            });
+
+            let statusFile = "ไม่มีรูปภาพ";
+            let statusFileColor = "REJECT";
+            files.forEach(file => {
+              if (['.gif', '.jfif', '.pjpeg', '.jpeg', '.pjp', '.jpg', '.png', '.webp'].some(type => file.filename.includes(type))) {
+                statusFile = 'มีรูปภาพ';
+                statusFileColor = 'SUCCESS';
+              }
+            });
+
+            item.statusFile = statusFile;
+            item.statusFileColor = statusFileColor;
+          });
+
+          // รอให้ทุกคำขอเสร็จสิ้นพร้อมกัน
+          await Promise.all(fetchAllData);
           console.log("data : ",data);
           this.isLoading = false
           return Promise.resolve(data)

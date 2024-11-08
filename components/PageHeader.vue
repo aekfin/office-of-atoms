@@ -169,6 +169,7 @@
       },
       onClear () {
         this.$router.push({ query: {} })
+        this.selectedFilter = null;
         this.dialog = false
       },
       onApply () {
@@ -182,9 +183,15 @@
         this.dialog = false
       },
       onSelect ({ val, item }) {
-        console.log('val ',val);
-        console.log('item ',item);
-        const query = {"pageSize": val}
+        // console.log('val ',val);
+        // console.log('item ',item);
+        let  query = Object.entries(this.form).reduce((form, [key, val]) => {
+          const isDate = key?.toLowerCase()?.includes('date')
+          val = isDate && val ? this.$fn.convertDateToString(val).substring(0, 10) : val
+          return val ? { ...form, [key]: val } : form
+        }, {})
+        query = { ...query, pageSize: val };
+        console.log('query ',query);
         this.$router.push({ query })
         this.dialog = false
       },

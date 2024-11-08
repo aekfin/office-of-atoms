@@ -44,16 +44,19 @@
             <v-text-field v-else-if="form.item" v-model="form.item.name" label="ครุภัณฑ์ *" disabled/>
           </v-col>
         </v-row> -->
+        <h5 class="text-h5 mt-5"><b>{{ `จำหน่ายจากการส่งซ่อม` }}</b></h5>
         <WithdrawDurableGoodsTable3 v-if="isCreate" :items="saleItems3" :selectList3="selectList3" :List4="List4" isSale :query="numberQuery" />
       </v-container>
       
       <v-container v-if="isCreate">
+        <h5 class="text-h5 mt-5"><b>{{ `จำหน่ายจากการตรวจนับ` }}</b></h5>
         <WithdrawDurableGoodsTable :items="saleItems" :selectList="selectList" :List4="List4" isSale/>
       </v-container>
 
    
 
       <v-container v-if="isCreate">
+        <h5 class="text-h5 mt-5"><b>{{ `จำหน่ายออกจากพัศดุคงคลัง` }}</b></h5>
         <WithdrawDurableGoodsTable2 :items="saleItems2" :selectList2="selectList2" :List4="List4" isSale/>
       </v-container>
 

@@ -97,6 +97,9 @@
     >
     <template #item.order="{ index }">{{ $store.state.paginationIndex + index + 1 }}</template>
     <template #item.price="{ item }">{{ $fn.getPrice(item.price) }}</template>
+    <template #item.statusFile="{ item }">
+      <v-chip :color="$store.state.approveStatusColor[item.statusFileColor]">{{ item.statusFile }}</v-chip> 
+    </template>
     <template #item.majorCategory="{ item }">
       <EquipmentColumn :item="item"/>
     </template>
@@ -175,7 +178,7 @@ import 'vuetify/dist/vuetify.min.css';
 
       const dessertHeaders = [
         { text: 'ลำดับ', value: 'order', width: '50px', align: 'center' },
-        { text: 'สถานะรูปภาพ', value: 'statusFile' },
+        { text: 'สถานะรูปภาพ', value: 'statusFile', width: '150px', align: 'center' },
         { text: 'เลขที่ครุภัณฑ์', value: 'number', align: 'center', width: '120px' },
         { text: 'รายการครุภัณฑ์', value: 'type.name', align: 'center', width: '160px' },
         { text: 'เลขที่สินทรัพย์ อว.', value: 'assetNumberAorWor', align: 'center', width: '160px' },

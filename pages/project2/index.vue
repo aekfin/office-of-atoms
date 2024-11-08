@@ -49,16 +49,16 @@
           { text: 'ชื่อโครงการ', value: 'projectName', width: '28%' },
           { text: 'เลขที่สัญญา', value: 'contractNumber', align: 'center' },
           { text: 'วันเริ่มโครงการ', value: 'projectStartDate', width: '140px', align: 'center' },
-          { text: 'วันเริ่มสัญญา', value: 'contractStartDate', width: '140px', align: 'center' },
-          { text: 'วันที่สิ้นสุดการรับประกัน', value: 'warrantyEndDate', width: '140px', align: 'center' },
-          { text: 'วันที่สิ้นสุดการรับประกัน', value: 'contractEndDate', width: '140px', align: 'center' },
+          { text: 'วันเริ่มสัญญา', value: 'contractStartDate', width: '130px', align: 'center' },
+          { text: 'วันที่สิ้นสุดการรับประกัน', value: 'warrantyEndDate', width: '180px', align: 'center' },
+          { text: 'วันสิ้นสุดสัญญา', value: 'contractEndDate', width: '160px', align: 'center' },
           { text: 'เครื่องมือ', value: 'action', width: '100px', align: 'center' },
         ],
         items: [],
         filters: [
           {
             type: 'textField',
-            name: 'เลขที่โครงการ',
+            name: 'เลขที่โครงการ', 
             param: 'projectNumber',
           },
           {

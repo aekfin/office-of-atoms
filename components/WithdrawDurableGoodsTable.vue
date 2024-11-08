@@ -11,7 +11,7 @@
     </template>
     <template #item.organization.ouName="{ item }">
       <OwnerColumn :item="item"/>
-    </template>
+    </template> 
     <template #item.dateEntry="{ item }">
       <div>{{ $fn.displayDate(item.dateEntry) }}</div>
     </template>

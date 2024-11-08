@@ -49,7 +49,7 @@
           { text: 'วันที่ส่งซ่อม', value: 'dateBorrow', width: '120px', align: 'center' },
           { text: 'วันที่ซ่อม', value: 'dateApprove', width: '120px', align: 'center' },
           { text: 'เลขที่ครุภัณฑ์', value: 'equipmentNumber', width: '150px', align: 'center' },
-          { text: 'รายการครุภัณฑ์', value: 'equipment', width: '160px', align: 'center' },
+          { text: 'รายการครุภัณฑ์', value: 'equipments[0].type.name', width: '160px', align: 'center' },
           { text: 'ผู้ครอบครอง', value: 'organization.ouName', width: '120px', align: 'center' },
           { text: 'สถานะการซ่อม', value: 'status', align: 'center', width: '140px' },
           { text: 'เครื่องมือ', value: 'action', width: '120px', align: 'center' },
